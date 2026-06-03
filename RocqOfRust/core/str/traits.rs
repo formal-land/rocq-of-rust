@@ -23,7 +23,8 @@ impl Ord for str {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl PartialEq for str {
+#[rustc_const_unstable(feature = "const_cmp", issue = "143800")]
+impl const PartialEq for str {
     #[inline]
     fn eq(&self, other: &str) -> bool {
         self.as_bytes() == other.as_bytes()
@@ -31,7 +32,8 @@ impl PartialEq for str {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl Eq for str {}
+#[rustc_const_unstable(feature = "const_cmp", issue = "143800")]
+impl const Eq for str {}
 
 /// Implements comparison operations on strings.
 ///
@@ -49,9 +51,10 @@ impl PartialOrd for str {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<I> ops::Index<I> for str
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+impl<I> const ops::Index<I> for str
 where
-    I: SliceIndex<str>,
+    I: [const] SliceIndex<str>,
 {
     type Output = I::Output;
 
@@ -62,9 +65,10 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<I> ops::IndexMut<I> for str
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+impl<I> const ops::IndexMut<I> for str
 where
-    I: SliceIndex<str>,
+    I: [const] SliceIndex<str>,
 {
     #[inline]
     fn index_mut(&mut self, index: I) -> &mut I::Output {
@@ -92,7 +96,8 @@ const fn str_index_overflow_fail() -> ! {
 ///
 /// Equivalent to `&self[0 .. len]` or `&mut self[0 .. len]`.
 #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-unsafe impl SliceIndex<str> for ops::RangeFull {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl const SliceIndex<str> for ops::RangeFull {
     type Output = str;
     #[inline]
     fn get(self, slice: &str) -> Option<&Self::Output> {
@@ -156,7 +161,8 @@ unsafe impl SliceIndex<str> for ops::RangeFull {
 /// // &s[3 .. 100];
 /// ```
 #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-unsafe impl SliceIndex<str> for ops::Range<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl const SliceIndex<str> for ops::Range<usize> {
     type Output = str;
     #[inline]
     fn get(self, slice: &str) -> Option<&Self::Output> {
@@ -186,6 +192,7 @@ unsafe impl SliceIndex<str> for ops::Range<usize> {
         }
     }
     #[inline]
+    #[track_caller]
     unsafe fn get_unchecked(self, slice: *const str) -> *const Self::Output {
         let slice = slice as *const [u8];
 
@@ -213,6 +220,7 @@ unsafe impl SliceIndex<str> for ops::Range<usize> {
         }
     }
     #[inline]
+    #[track_caller]
     unsafe fn get_unchecked_mut(self, slice: *mut str) -> *mut Self::Output {
         let slice = slice as *mut [u8];
 
@@ -258,7 +266,8 @@ unsafe impl SliceIndex<str> for ops::Range<usize> {
 }
 
 #[unstable(feature = "new_range_api", issue = "125687")]
-unsafe impl SliceIndex<str> for range::Range<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl const SliceIndex<str> for range::Range<usize> {
     type Output = str;
     #[inline]
     fn get(self, slice: &str) -> Option<&Self::Output> {
@@ -288,6 +297,7 @@ unsafe impl SliceIndex<str> for range::Range<usize> {
         }
     }
     #[inline]
+    #[track_caller]
     unsafe fn get_unchecked(self, slice: *const str) -> *const Self::Output {
         let slice = slice as *const [u8];
 
@@ -315,6 +325,7 @@ unsafe impl SliceIndex<str> for range::Range<usize> {
         }
     }
     #[inline]
+    #[track_caller]
     unsafe fn get_unchecked_mut(self, slice: *mut str) -> *mut Self::Output {
         let slice = slice as *mut [u8];
 
@@ -427,7 +438,8 @@ unsafe impl SliceIndex<str> for (ops::Bound<usize>, ops::Bound<usize>) {
 /// Panics if `end` does not point to the starting byte offset of a
 /// character (as defined by `is_char_boundary`), or if `end > len`.
 #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-unsafe impl SliceIndex<str> for ops::RangeTo<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl const SliceIndex<str> for ops::RangeTo<usize> {
     type Output = str;
     #[inline]
     fn get(self, slice: &str) -> Option<&Self::Output> {
@@ -495,7 +507,8 @@ unsafe impl SliceIndex<str> for ops::RangeTo<usize> {
 /// Panics if `begin` does not point to the starting byte offset of
 /// a character (as defined by `is_char_boundary`), or if `begin > len`.
 #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-unsafe impl SliceIndex<str> for ops::RangeFrom<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl const SliceIndex<str> for ops::RangeFrom<usize> {
     type Output = str;
     #[inline]
     fn get(self, slice: &str) -> Option<&Self::Output> {
@@ -550,7 +563,8 @@ unsafe impl SliceIndex<str> for ops::RangeFrom<usize> {
 }
 
 #[unstable(feature = "new_range_api", issue = "125687")]
-unsafe impl SliceIndex<str> for range::RangeFrom<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl const SliceIndex<str> for range::RangeFrom<usize> {
     type Output = str;
     #[inline]
     fn get(self, slice: &str) -> Option<&Self::Output> {
@@ -621,7 +635,8 @@ unsafe impl SliceIndex<str> for range::RangeFrom<usize> {
 /// to the ending byte offset of a character (`end + 1` is either a starting
 /// byte offset or equal to `len`), if `begin > end`, or if `end >= len`.
 #[stable(feature = "inclusive_range", since = "1.26.0")]
-unsafe impl SliceIndex<str> for ops::RangeInclusive<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl const SliceIndex<str> for ops::RangeInclusive<usize> {
     type Output = str;
     #[inline]
     fn get(self, slice: &str) -> Option<&Self::Output> {
@@ -658,15 +673,16 @@ unsafe impl SliceIndex<str> for ops::RangeInclusive<usize> {
 }
 
 #[unstable(feature = "new_range_api", issue = "125687")]
-unsafe impl SliceIndex<str> for range::RangeInclusive<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl const SliceIndex<str> for range::RangeInclusive<usize> {
     type Output = str;
     #[inline]
     fn get(self, slice: &str) -> Option<&Self::Output> {
-        if self.end == usize::MAX { None } else { self.into_slice_range().get(slice) }
+        if self.last == usize::MAX { None } else { self.into_slice_range().get(slice) }
     }
     #[inline]
     fn get_mut(self, slice: &mut str) -> Option<&mut Self::Output> {
-        if self.end == usize::MAX { None } else { self.into_slice_range().get_mut(slice) }
+        if self.last == usize::MAX { None } else { self.into_slice_range().get_mut(slice) }
     }
     #[inline]
     unsafe fn get_unchecked(self, slice: *const str) -> *const Self::Output {
@@ -680,14 +696,14 @@ unsafe impl SliceIndex<str> for range::RangeInclusive<usize> {
     }
     #[inline]
     fn index(self, slice: &str) -> &Self::Output {
-        if self.end == usize::MAX {
+        if self.last == usize::MAX {
             str_index_overflow_fail();
         }
         self.into_slice_range().index(slice)
     }
     #[inline]
     fn index_mut(self, slice: &mut str) -> &mut Self::Output {
-        if self.end == usize::MAX {
+        if self.last == usize::MAX {
             str_index_overflow_fail();
         }
         self.into_slice_range().index_mut(slice)
@@ -709,7 +725,8 @@ unsafe impl SliceIndex<str> for range::RangeInclusive<usize> {
 /// (`end + 1` is either a starting byte offset as defined by
 /// `is_char_boundary`, or equal to `len`), or if `end >= len`.
 #[stable(feature = "inclusive_range", since = "1.26.0")]
-unsafe impl SliceIndex<str> for ops::RangeToInclusive<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl const SliceIndex<str> for ops::RangeToInclusive<usize> {
     type Output = str;
     #[inline]
     fn get(self, slice: &str) -> Option<&Self::Output> {
@@ -751,6 +768,20 @@ unsafe impl SliceIndex<str> for ops::RangeToInclusive<usize> {
 /// that do not contain a lifetime parameter themselves. In other words, you can
 /// parse an `i32` with `FromStr`, but not a `&i32`. You can parse a struct that
 /// contains an `i32`, but not one that contains an `&i32`.
+///
+/// # Input format and round-tripping
+///
+/// The input format expected by a type's `FromStr` implementation depends on the type. Check the
+/// type's documentation for the input formats it knows how to parse. Note that the input format of
+/// a type's `FromStr` implementation might not necessarily accept the output format of its
+/// `Display` implementation, and even if it does, the `Display` implementation may not be lossless
+/// so the round-trip may lose information.
+///
+/// However, if a type has a lossless `Display` implementation whose output is meant to be
+/// conveniently machine-parseable and not just meant for human consumption, then the type may wish
+/// to accept the same format in `FromStr`, and document that usage. Having both `Display` and
+/// `FromStr` implementations where the result of `Display` cannot be parsed with `FromStr` may
+/// surprise users.
 ///
 /// # Examples
 ///
@@ -795,7 +826,8 @@ unsafe impl SliceIndex<str> for ops::RangeToInclusive<usize> {
 /// assert!(Point::from_str("(1 2)").is_err());
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
-pub trait FromStr: Sized {
+#[rustc_const_unstable(feature = "const_convert", issue = "143773")]
+pub const trait FromStr: Sized {
     /// The associated error which can be returned from parsing.
     #[stable(feature = "rust1", since = "1.0.0")]
     type Err;

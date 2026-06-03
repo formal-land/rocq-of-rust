@@ -449,8 +449,8 @@ Module borrow.
     Definition Self (B : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ].
     
     (*
-        pub const fn is_borrowed(&self) -> bool {
-            match *self {
+        pub const fn is_borrowed(c: &Self) -> bool {
+            match *c {
                 Borrowed(_) => true,
                 Owned(_) => false,
             }
@@ -459,16 +459,16 @@ Module borrow.
     Definition is_borrowed (B : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self B in
       match ε, τ, α with
-      | [], [], [ self ] =>
+      | [], [], [ c ] =>
         ltac:(M.monadic
-          (let self :=
+          (let c :=
             M.alloc (|
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ] ],
-              self
+              c
             |) in
           M.match_operator (|
             Ty.path "bool",
-            M.deref (| M.read (| self |) |),
+            M.deref (| M.read (| c |) |),
             [
               fun γ =>
                 ltac:(M.monadic
@@ -496,19 +496,19 @@ Module borrow.
     Global Typeclasses Opaque is_borrowed.
     
     (*
-        pub const fn is_owned(&self) -> bool {
-            !self.is_borrowed()
+        pub const fn is_owned(c: &Self) -> bool {
+            !Cow::is_borrowed(c)
         }
     *)
     Definition is_owned (B : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self B in
       match ε, τ, α with
-      | [], [], [ self ] =>
+      | [], [], [ c ] =>
         ltac:(M.monadic
-          (let self :=
+          (let c :=
             M.alloc (|
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ] ],
-              self
+              c
             |) in
           M.call_closure (|
             Ty.path "bool",
@@ -522,7 +522,7 @@ Module borrow.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| c |) |) |) ]
               |)
             ]
           |)))
@@ -798,7 +798,7 @@ Module borrow.
     Global Typeclasses Opaque into_owned.
   End Impl_alloc_borrow_Cow_B.
   
-  Module Impl_core_ops_deref_Deref_where_core_marker_Sized_B_where_alloc_borrow_ToOwned_B_where_core_borrow_Borrow_associated_in_trait_alloc_borrow_ToOwned___B_Owned_B_for_alloc_borrow_Cow_B.
+  Module Impl_core_ops_deref_Deref_where_core_marker_Sized_B_where_alloc_borrow_ToOwned_B_for_alloc_borrow_Cow_B.
     Definition Self (B : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ].
     
     (*     type Target = B; *)
@@ -889,20 +889,46 @@ Module borrow.
         (Self B)
         (* Instance *)
         [ ("Target", InstanceField.Ty (_Target B)); ("deref", InstanceField.Method (deref B)) ].
-  End Impl_core_ops_deref_Deref_where_core_marker_Sized_B_where_alloc_borrow_ToOwned_B_where_core_borrow_Borrow_associated_in_trait_alloc_borrow_ToOwned___B_Owned_B_for_alloc_borrow_Cow_B.
+  End Impl_core_ops_deref_Deref_where_core_marker_Sized_B_where_alloc_borrow_ToOwned_B_for_alloc_borrow_Cow_B.
   
-  Module Impl_core_ops_deref_DerefPure_where_core_marker_Sized_B_where_alloc_borrow_ToOwned_B_where_core_borrow_Borrow_associated_in_trait_alloc_borrow_ToOwned___B_Owned_B_for_alloc_borrow_Cow_B.
-    Definition Self (B : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ].
+  Module Impl_core_ops_deref_DerefPure_where_core_clone_Clone_T_for_alloc_borrow_Cow_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::borrow::Cow") [] [ T ].
     
     Axiom Implements :
-      forall (B : Ty.t),
+      forall (T : Ty.t),
       M.IsTraitInstance
         "core::ops::deref::DerefPure"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self B)
+        (Self T)
         (* Instance *) [].
-  End Impl_core_ops_deref_DerefPure_where_core_marker_Sized_B_where_alloc_borrow_ToOwned_B_where_core_borrow_Borrow_associated_in_trait_alloc_borrow_ToOwned___B_Owned_B_for_alloc_borrow_Cow_B.
+  End Impl_core_ops_deref_DerefPure_where_core_clone_Clone_T_for_alloc_borrow_Cow_T.
+  
+  Module Impl_core_ops_deref_DerefPure_for_alloc_borrow_Cow_str.
+    Definition Self : Ty.t := Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ].
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::ops::deref::DerefPure"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_ops_deref_DerefPure_for_alloc_borrow_Cow_str.
+  
+  Module Impl_core_ops_deref_DerefPure_where_core_clone_Clone_T_for_alloc_borrow_Cow_slice_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.apply (Ty.path "slice") [] [ T ] ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::ops::deref::DerefPure"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_ops_deref_DerefPure_where_core_clone_Clone_T_for_alloc_borrow_Cow_slice_T.
   
   Module Impl_core_cmp_Eq_where_core_marker_Sized_B_where_core_cmp_Eq_B_where_alloc_borrow_ToOwned_B_for_alloc_borrow_Cow_B.
     Definition Self (B : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ].
@@ -1688,35 +1714,33 @@ Module borrow.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (| Ty.path "str", "is_empty", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::Deref",
-                                    Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
-                                    [],
-                                    [],
-                                    "deref",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
-                                |)
+                        M.get_associated_function (| Ty.path "str", "is_empty", [], [] |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                               |)
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.write (|
                     M.deref (| M.read (| self |) |),
@@ -1735,31 +1759,30 @@ Module borrow.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "str",
-                                        "is_empty",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| rhs |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "str",
+                                      "is_empty",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| rhs |) |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1958,35 +1981,33 @@ Module borrow.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (| Ty.path "str", "is_empty", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::Deref",
-                                    Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
-                                    [],
-                                    [],
-                                    "deref",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
-                                |)
+                        M.get_associated_function (| Ty.path "str", "is_empty", [], [] |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                               |)
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.write (| M.deref (| M.read (| self |) |), M.read (| rhs |) |)));
               fun γ =>
@@ -1998,48 +2019,47 @@ Module borrow.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "str",
-                                        "is_empty",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply
-                                                  (Ty.path "alloc::borrow::Cow")
-                                                  []
-                                                  [ Ty.path "str" ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "str",
+                                      "is_empty",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                            M.get_trait_method (|
+                                              "core::ops::deref::Deref",
+                                              Ty.apply
+                                                (Ty.path "alloc::borrow::Cow")
                                                 []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, rhs |) ]
-                                            |)
+                                                [ Ty.path "str" ],
+                                              [],
+                                              [],
+                                              "deref",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, rhs |) ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|

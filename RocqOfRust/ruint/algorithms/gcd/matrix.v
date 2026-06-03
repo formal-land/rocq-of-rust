@@ -12,6 +12,18 @@ Module algorithms.
           fields := [ Ty.path "u64"; Ty.path "u64"; Ty.path "u64"; Ty.path "u64"; Ty.path "bool" ];
         } *)
       
+      Module Impl_core_clone_TrivialClone_for_ruint_algorithms_gcd_matrix_Matrix.
+        Definition Self : Ty.t := Ty.path "ruint::algorithms::gcd::matrix::Matrix".
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::clone::TrivialClone"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            Self
+            (* Instance *) [].
+      End Impl_core_clone_TrivialClone_for_ruint_algorithms_gcd_matrix_Matrix.
+      
       Module Impl_core_clone_Clone_for_ruint_algorithms_gcd_matrix_Matrix.
         Definition Self : Ty.t := Ty.path "ruint::algorithms::gcd::matrix::Matrix".
         
@@ -748,15 +760,14 @@ Module algorithms.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                    |)
-                                  |)) in
+                                    BinOp.eq,
+                                    [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -784,12 +795,11 @@ Module algorithms.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "ruint::algorithms::gcd::matrix::Matrix",
-                                        4
-                                      |)) in
+                                    M.SubPointer.get_struct_tuple_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "ruint::algorithms::gcd::matrix::Matrix",
+                                      4
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1235,12 +1245,11 @@ Module algorithms.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "ruint::algorithms::gcd::matrix::Matrix",
-                            4
-                          |)) in
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "ruint::algorithms::gcd::matrix::Matrix",
+                          4
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Tuple
                         [
@@ -1487,32 +1496,31 @@ Module algorithms.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialOrd",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        [],
-                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                        "ge",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, a |);
-                                        M.borrow (| Pointer.Kind.Ref, b |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialOrd",
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      [],
+                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                      "ge",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, a |);
+                                      M.borrow (| Pointer.Kind.Ref, b |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1545,15 +1553,14 @@ Module algorithms.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.le,
-                                  [ M.read (| s |); Value.Integer IntegerKind.Usize 64 ]
-                                |)
-                              |)) in
+                                BinOp.le,
+                                [ M.read (| s |); Value.Integer IntegerKind.Usize 64 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.call_closure (|
@@ -1660,15 +1667,14 @@ Module algorithms.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.le,
-                                          [ M.read (| s |); Value.Integer IntegerKind.Usize 128 ]
-                                        |)
-                                      |)) in
+                                        BinOp.le,
+                                        [ M.read (| s |); Value.Integer IntegerKind.Usize 128 ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1977,7 +1983,7 @@ Module algorithms.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                              (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -1989,21 +1995,20 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ge,
-                                                      [ M.read (| r0 |); M.read (| r1 |) ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.ge,
+                                                    [ M.read (| r0 |); M.read (| r1 |) ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -2032,15 +2037,14 @@ Module algorithms.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [ M.read (| r1 |); Value.Integer IntegerKind.U64 0 ]
-                                    |)
-                                  |)) in
+                                    BinOp.eq,
+                                    [ M.read (| r1 |); Value.Integer IntegerKind.U64 0 ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -2135,15 +2139,14 @@ Module algorithms.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [ M.read (| r0 |); Value.Integer IntegerKind.U64 0 ]
-                                              |)
-                                            |)) in
+                                              BinOp.eq,
+                                              [ M.read (| r0 |); Value.Integer IntegerKind.U64 0 ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -2235,15 +2238,14 @@ Module algorithms.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [ M.read (| r1 |); Value.Integer IntegerKind.U64 0 ]
-                                              |)
-                                            |)) in
+                                              BinOp.eq,
+                                              [ M.read (| r1 |); Value.Integer IntegerKind.U64 0 ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -2422,7 +2424,7 @@ Module algorithms.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                              (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -2434,31 +2436,30 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ge,
-                                                      [
-                                                        M.read (| a0 |);
-                                                        M.call_closure (|
-                                                          Ty.path "u64",
-                                                          BinOp.Wrap.shl,
-                                                          [
-                                                            Value.Integer IntegerKind.U64 1;
-                                                            Value.Integer IntegerKind.I32 63
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.ge,
+                                                    [
+                                                      M.read (| a0 |);
+                                                      M.call_closure (|
+                                                        Ty.path "u64",
+                                                        BinOp.Wrap.shl,
+                                                        [
+                                                          Value.Integer IntegerKind.U64 1;
+                                                          Value.Integer IntegerKind.I32 63
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -2486,7 +2487,7 @@ Module algorithms.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                              (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -2498,21 +2499,20 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ge,
-                                                      [ M.read (| a0 |); M.read (| a1 |) ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.ge,
+                                                    [ M.read (| a0 |); M.read (| a1 |) ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -2549,23 +2549,22 @@ Module algorithms.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.lt,
-                                      [
-                                        M.read (| a1 |);
-                                        M.read (|
-                                          get_constant (|
-                                            "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
-                                            Ty.path "u64"
-                                          |)
+                                    BinOp.lt,
+                                    [
+                                      M.read (| a1 |);
+                                      M.read (|
+                                        get_constant (|
+                                          "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
+                                          Ty.path "u64"
                                         |)
-                                      ]
-                                    |)
-                                  |)) in
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -2624,23 +2623,22 @@ Module algorithms.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.lt,
-                                      [
-                                        M.read (| a2 |);
-                                        M.read (|
-                                          get_constant (|
-                                            "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
-                                            Ty.path "u64"
-                                          |)
+                                    BinOp.lt,
+                                    [
+                                      M.read (| a2 |);
+                                      M.read (|
+                                        get_constant (|
+                                          "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
+                                          Ty.path "u64"
                                         |)
-                                      ]
-                                    |)
-                                  |)) in
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -2673,30 +2671,35 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                LogicalOp.and (|
+                                                BinOp.ge,
+                                                [ M.read (| a2 |); M.read (| v2 |) ]
+                                              |)
+                                            |) in
+                                          let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Bool true
+                                            |) in
+                                          let γ :=
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.ge,
+                                                [
                                                   M.call_closure (|
-                                                    Ty.path "bool",
-                                                    BinOp.ge,
-                                                    [ M.read (| a2 |); M.read (| v2 |) ]
-                                                  |),
-                                                  ltac:(M.monadic
-                                                    (M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ge,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u64",
-                                                          BinOp.Wrap.sub,
-                                                          [ M.read (| a1 |); M.read (| a2 |) ]
-                                                        |);
-                                                        M.read (| u2 |)
-                                                      ]
-                                                    |)))
-                                                |)
-                                              |)) in
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.sub,
+                                                    [ M.read (| a1 |); M.read (| a2 |) ]
+                                                  |);
+                                                  M.read (| u2 |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -2788,23 +2791,22 @@ Module algorithms.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.ge,
-                                              [
-                                                M.read (| a3 |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
-                                                    Ty.path "u64"
-                                                  |)
+                                            BinOp.ge,
+                                            [
+                                              M.read (| a3 |);
+                                              M.read (|
+                                                get_constant (|
+                                                  "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
+                                                  Ty.path "u64"
                                                 |)
-                                              ]
-                                            |)
-                                          |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -2826,11 +2828,7 @@ Module algorithms.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
-                                                        Ty.path "bool",
-                                                        Value.Bool true
-                                                      |)) in
+                                                    M.alloc (| Ty.path "bool", Value.Bool true |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -2845,24 +2843,23 @@ Module algorithms.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      UnOp.not,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.lt,
-                                                                          [
-                                                                            M.read (| a2 |);
-                                                                            M.read (| a3 |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                    UnOp.not,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.lt,
+                                                                        [
+                                                                          M.read (| a2 |);
+                                                                          M.read (| a3 |)
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -2899,11 +2896,7 @@ Module algorithms.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
-                                                        Ty.path "bool",
-                                                        Value.Bool true
-                                                      |)) in
+                                                    M.alloc (| Ty.path "bool", Value.Bool true |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -2918,26 +2911,25 @@ Module algorithms.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      UnOp.not,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.gt,
-                                                                          [
-                                                                            M.read (| a2 |);
-                                                                            Value.Integer
-                                                                              IntegerKind.U64
-                                                                              0
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                    UnOp.not,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.gt,
+                                                                        [
+                                                                          M.read (| a2 |);
+                                                                          Value.Integer
+                                                                            IntegerKind.U64
+                                                                            0
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -3014,23 +3006,22 @@ Module algorithms.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.lt,
-                                                          [
-                                                            M.read (| a3 |);
-                                                            M.read (|
-                                                              get_constant (|
-                                                                "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
-                                                                Ty.path "u64"
-                                                              |)
+                                                        BinOp.lt,
+                                                        [
+                                                          M.read (| a3 |);
+                                                          M.read (|
+                                                            get_constant (|
+                                                              "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
+                                                              Ty.path "u64"
                                                             |)
-                                                          ]
-                                                        |)
-                                                      |)) in
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -3061,11 +3052,7 @@ Module algorithms.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
-                                                        Ty.path "bool",
-                                                        Value.Bool true
-                                                      |)) in
+                                                    M.alloc (| Ty.path "bool", Value.Bool true |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -3080,24 +3067,23 @@ Module algorithms.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      UnOp.not,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.lt,
-                                                                          [
-                                                                            M.read (| a2 |);
-                                                                            M.read (| a3 |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                    UnOp.not,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.lt,
+                                                                        [
+                                                                          M.read (| a2 |);
+                                                                          M.read (| a3 |)
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -3134,11 +3120,7 @@ Module algorithms.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
-                                                        Ty.path "bool",
-                                                        Value.Bool true
-                                                      |)) in
+                                                    M.alloc (| Ty.path "bool", Value.Bool true |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -3153,26 +3135,25 @@ Module algorithms.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      UnOp.not,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.gt,
-                                                                          [
-                                                                            M.read (| a2 |);
-                                                                            Value.Integer
-                                                                              IntegerKind.U64
-                                                                              0
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                    UnOp.not,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.gt,
+                                                                        [
+                                                                          M.read (| a2 |);
+                                                                          Value.Integer
+                                                                            IntegerKind.U64
+                                                                            0
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -3344,7 +3325,7 @@ Module algorithms.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                              (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -3356,29 +3337,28 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ge,
-                                                      [
-                                                        M.read (| a2 |);
-                                                        M.read (|
-                                                          get_constant (|
-                                                            "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
-                                                            Ty.path "u64"
-                                                          |)
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.ge,
+                                                    [
+                                                      M.read (| a2 |);
+                                                      M.read (|
+                                                        get_constant (|
+                                                          "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
+                                                          Ty.path "u64"
                                                         |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -3406,7 +3386,7 @@ Module algorithms.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                              (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -3418,29 +3398,28 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.lt,
-                                                      [
-                                                        M.read (| a3 |);
-                                                        M.read (|
-                                                          get_constant (|
-                                                            "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
-                                                            Ty.path "u64"
-                                                          |)
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.lt,
+                                                    [
+                                                      M.read (| a3 |);
+                                                      M.read (|
+                                                        get_constant (|
+                                                          "ruint::algorithms::gcd::matrix::from_u64_prefix::LIMIT",
+                                                          Ty.path "u64"
                                                         |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -3469,7 +3448,7 @@ Module algorithms.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use even in
+                              (let γ := even in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -3480,8 +3459,7 @@ Module algorithms.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let γ :=
-                                            M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -3496,22 +3474,20 @@ Module algorithms.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              UnOp.not,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.ge,
-                                                                  [ M.read (| a2 |); M.read (| v2 |)
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                            UnOp.not,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.ge,
+                                                                [ M.read (| a2 |); M.read (| v2 |) ]
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -3549,26 +3525,25 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.ge,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "u64",
-                                                      BinOp.Wrap.sub,
-                                                      [ M.read (| a1 |); M.read (| a2 |) ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "u64",
-                                                      BinOp.Wrap.add,
-                                                      [ M.read (| u2 |); M.read (| u1 |) ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                BinOp.ge,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.sub,
+                                                    [ M.read (| a1 |); M.read (| a2 |) ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.add,
+                                                    [ M.read (| u2 |); M.read (| u1 |) ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -3581,36 +3556,39 @@ Module algorithms.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        LogicalOp.and (|
+                                                        BinOp.ge,
+                                                        [ M.read (| a3 |); M.read (| u3 |) ]
+                                                      |)
+                                                    |) in
+                                                  let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.read (| γ |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  let γ :=
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.ge,
+                                                        [
                                                           M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.ge,
-                                                            [ M.read (| a3 |); M.read (| u3 |) ]
-                                                          |),
-                                                          ltac:(M.monadic
-                                                            (M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.ge,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "u64",
-                                                                  BinOp.Wrap.sub,
-                                                                  [ M.read (| a2 |); M.read (| a3 |)
-                                                                  ]
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.path "u64",
-                                                                  BinOp.Wrap.add,
-                                                                  [ M.read (| v3 |); M.read (| v2 |)
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)))
-                                                        |)
-                                                      |)) in
+                                                            Ty.path "u64",
+                                                            BinOp.Wrap.sub,
+                                                            [ M.read (| a2 |); M.read (| a3 |) ]
+                                                          |);
+                                                          M.call_closure (|
+                                                            Ty.path "u64",
+                                                            BinOp.Wrap.add,
+                                                            [ M.read (| v3 |); M.read (| v2 |) ]
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -3669,8 +3647,7 @@ Module algorithms.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let γ :=
-                                            M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -3685,22 +3662,20 @@ Module algorithms.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              UnOp.not,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.ge,
-                                                                  [ M.read (| a2 |); M.read (| u2 |)
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                            UnOp.not,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.ge,
+                                                                [ M.read (| a2 |); M.read (| u2 |) ]
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -3738,26 +3713,25 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.ge,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "u64",
-                                                      BinOp.Wrap.sub,
-                                                      [ M.read (| a1 |); M.read (| a2 |) ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "u64",
-                                                      BinOp.Wrap.add,
-                                                      [ M.read (| v2 |); M.read (| v1 |) ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                BinOp.ge,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.sub,
+                                                    [ M.read (| a1 |); M.read (| a2 |) ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.add,
+                                                    [ M.read (| v2 |); M.read (| v1 |) ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -3770,36 +3744,39 @@ Module algorithms.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        LogicalOp.and (|
+                                                        BinOp.ge,
+                                                        [ M.read (| a3 |); M.read (| v3 |) ]
+                                                      |)
+                                                    |) in
+                                                  let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.read (| γ |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  let γ :=
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.ge,
+                                                        [
                                                           M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.ge,
-                                                            [ M.read (| a3 |); M.read (| v3 |) ]
-                                                          |),
-                                                          ltac:(M.monadic
-                                                            (M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.ge,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "u64",
-                                                                  BinOp.Wrap.sub,
-                                                                  [ M.read (| a2 |); M.read (| a3 |)
-                                                                  ]
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.path "u64",
-                                                                  BinOp.Wrap.add,
-                                                                  [ M.read (| u3 |); M.read (| u2 |)
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)))
-                                                        |)
-                                                      |)) in
+                                                            Ty.path "u64",
+                                                            BinOp.Wrap.sub,
+                                                            [ M.read (| a2 |); M.read (| a3 |) ]
+                                                          |);
+                                                          M.call_closure (|
+                                                            Ty.path "u64",
+                                                            BinOp.Wrap.add,
+                                                            [ M.read (| u3 |); M.read (| u2 |) ]
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -3904,7 +3881,7 @@ Module algorithms.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                              (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -3916,21 +3893,20 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ge,
-                                                      [ M.read (| r0 |); M.read (| r1 |) ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.ge,
+                                                    [ M.read (| r0 |); M.read (| r1 |) ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -4003,33 +3979,32 @@ Module algorithms.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialEq",
-                                        Ty.path "ruint::algorithms::gcd::matrix::Matrix",
-                                        [],
-                                        [ Ty.path "ruint::algorithms::gcd::matrix::Matrix" ],
-                                        "eq",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, q |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          get_associated_constant (|
-                                            Ty.path "ruint::algorithms::gcd::matrix::Matrix",
-                                            "IDENTITY",
-                                            Ty.path "ruint::algorithms::gcd::matrix::Matrix"
-                                          |)
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.path "ruint::algorithms::gcd::matrix::Matrix",
+                                      [],
+                                      [ Ty.path "ruint::algorithms::gcd::matrix::Matrix" ],
+                                      "eq",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, q |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        get_associated_constant (|
+                                          Ty.path "ruint::algorithms::gcd::matrix::Matrix",
+                                          "IDENTITY",
+                                          Ty.path "ruint::algorithms::gcd::matrix::Matrix"
                                         |)
-                                      ]
-                                    |)
-                                  |)) in
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (| M.read (| M.return_ (| M.read (| q |) |) |) |)));

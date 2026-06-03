@@ -24,19 +24,6 @@ Module result.
   Axiom IsDiscriminant_Result_Ok : M.IsDiscriminant "core::result::Result::Ok" 0.
   Axiom IsDiscriminant_Result_Err : M.IsDiscriminant "core::result::Result::Err" 1.
   
-  Module Impl_core_marker_Copy_where_core_marker_Copy_T_where_core_marker_Copy_E_for_core_result_Result_T_E.
-    Definition Self (T E : Ty.t) : Ty.t := Ty.apply (Ty.path "core::result::Result") [] [ T; E ].
-    
-    Axiom Implements :
-      forall (T E : Ty.t),
-      M.IsTraitInstance
-        "core::marker::Copy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T E)
-        (* Instance *) [].
-  End Impl_core_marker_Copy_where_core_marker_Copy_T_where_core_marker_Copy_E_for_core_result_Result_T_E.
-  
   Module Impl_core_marker_StructuralPartialEq_for_core_result_Result_T_E.
     Definition Self (T E : Ty.t) : Ty.t := Ty.apply (Ty.path "core::result::Result") [] [ T; E ].
     
@@ -632,6 +619,19 @@ Module result.
         (* Instance *) [ ("cmp", InstanceField.Method (cmp T E)) ].
   End Impl_core_cmp_Ord_where_core_cmp_Ord_T_where_core_cmp_Ord_E_for_core_result_Result_T_E.
   
+  Module Impl_core_marker_Copy_where_core_marker_Copy_T_where_core_marker_Copy_E_for_core_result_Result_T_E.
+    Definition Self (T E : Ty.t) : Ty.t := Ty.apply (Ty.path "core::result::Result") [] [ T; E ].
+    
+    Axiom Implements :
+      forall (T E : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T E)
+        (* Instance *) [].
+  End Impl_core_marker_Copy_where_core_marker_Copy_T_where_core_marker_Copy_E_for_core_result_Result_T_E.
+  
   Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_where_core_fmt_Debug_E_for_core_result_Result_T_E.
     Definition Self (T E : Ty.t) : Ty.t := Ty.apply (Ty.path "core::result::Result") [] [ T; E ].
     
@@ -891,7 +891,12 @@ Module result.
     Global Typeclasses Opaque is_ok.
     
     (*
-        pub fn is_ok_and(self, f: impl FnOnce(T) -> bool) -> bool {
+        pub const fn is_ok_and<F>(self, f: F) -> bool
+        where
+            F: [const] FnOnce(T) -> bool + [const] Destruct,
+            T: [const] Destruct,
+            E: [const] Destruct,
+        {
             match self {
                 Err(_) => false,
                 Ok(x) => f(x),
@@ -901,10 +906,10 @@ Module result.
     Definition is_ok_and (T E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self T E in
       match ε, τ, α with
-      | [], [ impl_FnOnce_T__arrow_bool ], [ self; f ] =>
+      | [], [ F ], [ self; f ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "core::result::Result") [] [ T; E ], self |) in
-          let f := M.alloc (| impl_FnOnce_T__arrow_bool, f |) in
+          let f := M.alloc (| F, f |) in
           M.match_operator (|
             Ty.path "bool",
             self,
@@ -923,7 +928,7 @@ Module result.
                     Ty.path "bool",
                     M.get_trait_method (|
                       "core::ops::function::FnOnce",
-                      impl_FnOnce_T__arrow_bool,
+                      F,
                       [],
                       [ Ty.tuple [ T ] ],
                       "call_once",
@@ -984,7 +989,12 @@ Module result.
     Global Typeclasses Opaque is_err.
     
     (*
-        pub fn is_err_and(self, f: impl FnOnce(E) -> bool) -> bool {
+        pub const fn is_err_and<F>(self, f: F) -> bool
+        where
+            F: [const] FnOnce(E) -> bool + [const] Destruct,
+            E: [const] Destruct,
+            T: [const] Destruct,
+        {
             match self {
                 Ok(_) => false,
                 Err(e) => f(e),
@@ -994,10 +1004,10 @@ Module result.
     Definition is_err_and (T E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self T E in
       match ε, τ, α with
-      | [], [ impl_FnOnce_E__arrow_bool ], [ self; f ] =>
+      | [], [ F ], [ self; f ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "core::result::Result") [] [ T; E ], self |) in
-          let f := M.alloc (| impl_FnOnce_E__arrow_bool, f |) in
+          let f := M.alloc (| F, f |) in
           M.match_operator (|
             Ty.path "bool",
             self,
@@ -1016,7 +1026,7 @@ Module result.
                     Ty.path "bool",
                     M.get_trait_method (|
                       "core::ops::function::FnOnce",
-                      impl_FnOnce_E__arrow_bool,
+                      F,
                       [],
                       [ Ty.tuple [ E ] ],
                       "call_once",
@@ -1037,7 +1047,11 @@ Module result.
     Global Typeclasses Opaque is_err_and.
     
     (*
-        pub fn ok(self) -> Option<T> {
+        pub const fn ok(self) -> Option<T>
+        where
+            T: [const] Destruct,
+            E: [const] Destruct,
+        {
             match self {
                 Ok(x) => Some(x),
                 Err(_) => None,
@@ -1077,7 +1091,11 @@ Module result.
     Global Typeclasses Opaque ok.
     
     (*
-        pub fn err(self) -> Option<E> {
+        pub const fn err(self) -> Option<E>
+        where
+            T: [const] Destruct,
+            E: [const] Destruct,
+        {
             match self {
                 Ok(_) => None,
                 Err(x) => Some(x),
@@ -1232,7 +1250,10 @@ Module result.
     Global Typeclasses Opaque as_mut.
     
     (*
-        pub fn map<U, F: FnOnce(T) -> U>(self, op: F) -> Result<U, E> {
+        pub const fn map<U, F>(self, op: F) -> Result<U, E>
+        where
+            F: [const] FnOnce(T) -> U + [const] Destruct,
+        {
             match self {
                 Ok(t) => Ok(op(t)),
                 Err(e) => Err(e),
@@ -1292,7 +1313,13 @@ Module result.
     Global Typeclasses Opaque map.
     
     (*
-        pub fn map_or<U, F: FnOnce(T) -> U>(self, default: U, f: F) -> U {
+        pub const fn map_or<U, F>(self, default: U, f: F) -> U
+        where
+            F: [const] FnOnce(T) -> U + [const] Destruct,
+            T: [const] Destruct,
+            E: [const] Destruct,
+            U: [const] Destruct,
+        {
             match self {
                 Ok(t) => f(t),
                 Err(_) => default,
@@ -1346,7 +1373,11 @@ Module result.
     Global Typeclasses Opaque map_or.
     
     (*
-        pub fn map_or_else<U, D: FnOnce(E) -> U, F: FnOnce(T) -> U>(self, default: D, f: F) -> U {
+        pub const fn map_or_else<U, D, F>(self, default: D, f: F) -> U
+        where
+            D: [const] FnOnce(E) -> U + [const] Destruct,
+            F: [const] FnOnce(T) -> U + [const] Destruct,
+        {
             match self {
                 Ok(t) => f(t),
                 Err(e) => default(e),
@@ -1413,7 +1444,78 @@ Module result.
     Global Typeclasses Opaque map_or_else.
     
     (*
-        pub fn map_err<F, O: FnOnce(E) -> F>(self, op: O) -> Result<T, F> {
+        pub const fn map_or_default<U, F>(self, f: F) -> U
+        where
+            F: [const] FnOnce(T) -> U + [const] Destruct,
+            U: [const] Default,
+            T: [const] Destruct,
+            E: [const] Destruct,
+        {
+            match self {
+                Ok(t) => f(t),
+                Err(_) => U::default(),
+            }
+        }
+    *)
+    Definition map_or_default
+        (T E : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T E in
+      match ε, τ, α with
+      | [], [ U; F ], [ self; f ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "core::result::Result") [] [ T; E ], self |) in
+          let f := M.alloc (| F, f |) in
+          M.match_operator (|
+            U,
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
+                  let t := M.copy (| T, γ0_0 |) in
+                  M.call_closure (|
+                    U,
+                    M.get_trait_method (|
+                      "core::ops::function::FnOnce",
+                      F,
+                      [],
+                      [ Ty.tuple [ T ] ],
+                      "call_once",
+                      [],
+                      []
+                    |),
+                    [ M.read (| f |); Value.Tuple [ M.read (| t |) ] ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
+                  M.call_closure (|
+                    U,
+                    M.get_trait_method (| "core::default::Default", U, [], [], "default", [], [] |),
+                    []
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_map_or_default :
+      forall (T E : Ty.t),
+      M.IsAssociatedFunction.C (Self T E) "map_or_default" (map_or_default T E).
+    Admitted.
+    Global Typeclasses Opaque map_or_default.
+    
+    (*
+        pub const fn map_err<F, O>(self, op: O) -> Result<T, F>
+        where
+            O: [const] FnOnce(E) -> F + [const] Destruct,
+        {
             match self {
                 Ok(t) => Ok(t),
                 Err(e) => Err(op(e)),
@@ -1473,7 +1575,10 @@ Module result.
     Global Typeclasses Opaque map_err.
     
     (*
-        pub fn inspect<F: FnOnce(&T)>(self, f: F) -> Self {
+        pub const fn inspect<F>(self, f: F) -> Self
+        where
+            F: [const] FnOnce(&T) + [const] Destruct,
+        {
             if let Ok(ref t) = self {
                 f(t);
             }
@@ -1540,7 +1645,10 @@ Module result.
     Global Typeclasses Opaque inspect.
     
     (*
-        pub fn inspect_err<F: FnOnce(&E)>(self, f: F) -> Self {
+        pub const fn inspect_err<F>(self, f: F) -> Self
+        where
+            F: [const] FnOnce(&E) + [const] Destruct,
+        {
             if let Err(ref e) = self {
                 f(e);
             }
@@ -1607,11 +1715,11 @@ Module result.
     Global Typeclasses Opaque inspect_err.
     
     (*
-        pub fn as_deref(&self) -> Result<&T::Target, &E>
+        pub const fn as_deref(&self) -> Result<&T::Target, &E>
         where
-            T: Deref,
+            T: [const] Deref,
         {
-            self.as_ref().map(|t| t.deref())
+            self.as_ref().map(Deref::deref)
         }
     *)
     Definition as_deref (T E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1669,49 +1777,7 @@ Module result.
                 |),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ],
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let t := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "core::ops::deref::Deref"
-                                        []
-                                        []
-                                        T
-                                        "Target"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::Deref",
-                                    T,
-                                    [],
-                                    [],
-                                    "deref",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |) ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+              M.get_trait_method (| "core::ops::deref::Deref", T, [], [], "deref", [], [] |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1724,11 +1790,11 @@ Module result.
     Global Typeclasses Opaque as_deref.
     
     (*
-        pub fn as_deref_mut(&mut self) -> Result<&mut T::Target, &mut E>
+        pub const fn as_deref_mut(&mut self) -> Result<&mut T::Target, &mut E>
         where
-            T: DerefMut,
+            T: [const] DerefMut,
         {
-            self.as_mut().map(|t| t.deref_mut())
+            self.as_mut().map(DerefMut::deref_mut)
         }
     *)
     Definition as_deref_mut
@@ -1794,50 +1860,7 @@ Module result.
                 |),
                 [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
               |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ],
-                          M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let t := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "core::ops::deref::Deref"
-                                        []
-                                        []
-                                        T
-                                        "Target"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::DerefMut",
-                                    T,
-                                    [],
-                                    [],
-                                    "deref_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| t |) |) |)
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+              M.get_trait_method (| "core::ops::deref::DerefMut", T, [], [], "deref_mut", [], [] |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1850,7 +1873,7 @@ Module result.
     Global Typeclasses Opaque as_deref_mut.
     
     (*
-        pub fn iter(&self) -> Iter<'_, T> {
+        pub const fn iter(&self) -> Iter<'_, T> {
             Iter { inner: self.as_ref().ok() }
         }
     *)
@@ -1908,7 +1931,7 @@ Module result.
     Global Typeclasses Opaque iter.
     
     (*
-        pub fn iter_mut(&mut self) -> IterMut<'_, T> {
+        pub const fn iter_mut(&mut self) -> IterMut<'_, T> {
             IterMut { inner: self.as_mut().ok() }
         }
     *)
@@ -2112,9 +2135,10 @@ Module result.
     Global Typeclasses Opaque unwrap.
     
     (*
-        pub fn unwrap_or_default(self) -> T
+        pub const fn unwrap_or_default(self) -> T
         where
-            T: Default,
+            T: [const] Default + [const] Destruct,
+            E: [const] Destruct,
         {
             match self {
                 Ok(x) => x,
@@ -2306,9 +2330,9 @@ Module result.
     Global Typeclasses Opaque unwrap_err.
     
     (*
-        pub fn into_ok(self) -> T
+        pub const fn into_ok(self) -> T
         where
-            E: Into<!>,
+            E: [const] Into<!>,
         {
             match self {
                 Ok(x) => x,
@@ -2364,9 +2388,9 @@ Module result.
     Global Typeclasses Opaque into_ok.
     
     (*
-        pub fn into_err(self) -> E
+        pub const fn into_err(self) -> E
         where
-            T: Into<!>,
+            T: [const] Into<!>,
         {
             match self {
                 Ok(x) => x.into(),
@@ -2422,7 +2446,12 @@ Module result.
     Global Typeclasses Opaque into_err.
     
     (*
-        pub fn and<U>(self, res: Result<U, E>) -> Result<U, E> {
+        pub const fn and<U>(self, res: Result<U, E>) -> Result<U, E>
+        where
+            T: [const] Destruct,
+            E: [const] Destruct,
+            U: [const] Destruct,
+        {
             match self {
                 Ok(_) => res,
                 Err(e) => Err(e),
@@ -2463,7 +2492,10 @@ Module result.
     Global Typeclasses Opaque and.
     
     (*
-        pub fn and_then<U, F: FnOnce(T) -> Result<U, E>>(self, op: F) -> Result<U, E> {
+        pub const fn and_then<U, F>(self, op: F) -> Result<U, E>
+        where
+            F: [const] FnOnce(T) -> Result<U, E> + [const] Destruct,
+        {
             match self {
                 Ok(t) => op(t),
                 Err(e) => Err(e),
@@ -2517,7 +2549,12 @@ Module result.
     Global Typeclasses Opaque and_then.
     
     (*
-        pub fn or<F>(self, res: Result<T, F>) -> Result<T, F> {
+        pub const fn or<F>(self, res: Result<T, F>) -> Result<T, F>
+        where
+            T: [const] Destruct,
+            E: [const] Destruct,
+            F: [const] Destruct,
+        {
             match self {
                 Ok(v) => Ok(v),
                 Err(_) => res,
@@ -2558,7 +2595,10 @@ Module result.
     Global Typeclasses Opaque or.
     
     (*
-        pub fn or_else<F, O: FnOnce(E) -> Result<T, F>>(self, op: O) -> Result<T, F> {
+        pub const fn or_else<F, O>(self, op: O) -> Result<T, F>
+        where
+            O: [const] FnOnce(E) -> Result<T, F> + [const] Destruct,
+        {
             match self {
                 Ok(t) => Ok(t),
                 Err(e) => op(e),
@@ -2612,7 +2652,11 @@ Module result.
     Global Typeclasses Opaque or_else.
     
     (*
-        pub fn unwrap_or(self, default: T) -> T {
+        pub const fn unwrap_or(self, default: T) -> T
+        where
+            T: [const] Destruct,
+            E: [const] Destruct,
+        {
             match self {
                 Ok(t) => t,
                 Err(_) => default,
@@ -2653,7 +2697,10 @@ Module result.
     Global Typeclasses Opaque unwrap_or.
     
     (*
-        pub fn unwrap_or_else<F: FnOnce(E) -> T>(self, op: F) -> T {
+        pub const fn unwrap_or_else<F>(self, op: F) -> T
+        where
+            F: [const] FnOnce(E) -> T + [const] Destruct,
+        {
             match self {
                 Ok(t) => t,
                 Err(e) => op(e),
@@ -2712,11 +2759,15 @@ Module result.
     Global Typeclasses Opaque unwrap_or_else.
     
     (*
-        pub unsafe fn unwrap_unchecked(self) -> T {
+        pub const unsafe fn unwrap_unchecked(self) -> T {
             match self {
                 Ok(t) => t,
-                // SAFETY: the safety contract must be upheld by the caller.
-                Err(_) => unsafe { hint::unreachable_unchecked() },
+                Err(e) => {
+                    // FIXME(const-hack): to avoid E: const Destruct bound
+                    super::mem::forget(e);
+                    // SAFETY: the safety contract must be upheld by the caller.
+                    unsafe { hint::unreachable_unchecked() }
+                }
             }
         }
     *)
@@ -2745,11 +2796,23 @@ Module result.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
-                  M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::hint::unreachable_unchecked", [], [] |),
-                      []
+                  let e := M.copy (| E, γ0_0 |) in
+                  M.read (|
+                    let~ _ : Ty.tuple [] :=
+                      M.call_closure (|
+                        Ty.tuple [],
+                        M.get_function (| "core::mem::forget", [], [ E ] |),
+                        [ M.read (| e |) ]
+                      |) in
+                    M.alloc (|
+                      T,
+                      M.never_to_any (|
+                        M.call_closure (|
+                          Ty.path "never",
+                          M.get_function (| "core::hint::unreachable_unchecked", [], [] |),
+                          []
+                        |)
+                      |)
                     |)
                   |)))
             ]
@@ -3221,7 +3284,7 @@ Module result.
   
   (*
   fn unwrap_failed(msg: &str, error: &dyn fmt::Debug) -> ! {
-      panic!("{msg}: {error:?}")
+      panic!("{msg}: {error:?}");
   }
   *)
   Definition unwrap_failed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3238,83 +3301,79 @@ Module result.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.read (|
+              let~ args :
+                  Ty.tuple
+                    [
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ] ]
+                    ] :=
+                Value.Tuple
+                  [ M.borrow (| Pointer.Kind.Ref, msg |); M.borrow (| Pointer.Kind.Ref, error |)
+                  ] in
+              let~ args :
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 2 ]
+                    [ Ty.path "core::fmt::rt::Argument" ] :=
+                Value.Array
+                  [
+                    M.call_closure (|
+                      Ty.path "core::fmt::rt::Argument",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::rt::Argument",
+                        "new_display",
+                        [],
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "core::fmt::rt::Argument",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::rt::Argument",
+                        "new_debug",
+                        [],
+                        [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ] ]
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |) |)
+                        |)
+                      ]
+                    |)
+                  ] in
+              M.alloc (|
                 Ty.path "core::fmt::Arguments",
-                "new_v1",
-                [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
+                M.call_closure (|
+                  Ty.path "core::fmt::Arguments",
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new",
+                    [ Value.Integer IntegerKind.Usize 6; Value.Integer IntegerKind.Usize 2 ],
+                    []
+                  |),
+                  [
                     M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 2 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "" |); mk_str (| ": " |) ]
-                      |)
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
+                      M.deref (| M.mk_byte_str_ref 6 [ 192; 2; 58; 32; 192; 0 ] |)
+                    |);
                     M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 2 ]
-                          [ Ty.path "core::fmt::rt::Argument" ],
-                        Value.Array
-                          [
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_display",
-                                [],
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.borrow (| Pointer.Kind.Ref, msg |) |)
-                                |)
-                              ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_debug",
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
-                                ]
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.borrow (| Pointer.Kind.Ref, error |) |)
-                                |)
-                              ]
-                            |)
-                          ]
-                      |)
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                     |)
-                  |)
+                  ]
                 |)
-              ]
+              |)
             |)
           ]
         |)))
@@ -3536,6 +3595,19 @@ Module result.
           ("clone_from", InstanceField.Method (clone_from T E))
         ].
   End Impl_core_clone_Clone_where_core_clone_Clone_T_where_core_clone_Clone_E_for_core_result_Result_T_E.
+  
+  Module Impl_core_clone_UseCloned_where_core_clone_UseCloned_T_where_core_clone_UseCloned_E_for_core_result_Result_T_E.
+    Definition Self (T E : Ty.t) : Ty.t := Ty.apply (Ty.path "core::result::Result") [] [ T; E ].
+    
+    Axiom Implements :
+      forall (T E : Ty.t),
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T E)
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_where_core_clone_UseCloned_T_where_core_clone_UseCloned_E_for_core_result_Result_T_E.
   
   Module Impl_core_iter_traits_collect_IntoIterator_for_core_result_Result_T_E.
     Definition Self (T E : Ty.t) : Ty.t := Ty.apply (Ty.path "core::result::Result") [] [ T; E ].
@@ -3877,32 +3949,31 @@ Module result.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [ Ty.apply (Ty.path "&") [] [ T ] ],
-                                "is_some",
-                                [],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
                                 []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::result::Iter",
-                                    "inner"
-                                  |)
+                                [ Ty.apply (Ty.path "&") [] [ T ] ],
+                              "is_some",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::result::Iter",
+                                  "inner"
                                 |)
-                              ]
-                            |)
-                          |)) in
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Integer IntegerKind.Usize 1));
                   fun γ => ltac:(M.monadic (Value.Integer IntegerKind.Usize 0))
@@ -4250,32 +4321,31 @@ Module result.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                "is_some",
-                                [],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
                                 []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::result::IterMut",
-                                    "inner"
-                                  |)
+                                [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                              "is_some",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::result::IterMut",
+                                  "inner"
                                 |)
-                              ]
-                            |)
-                          |)) in
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Integer IntegerKind.Usize 1));
                   fun γ => ltac:(M.monadic (Value.Integer IntegerKind.Usize 0))
@@ -4625,29 +4695,28 @@ Module result.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                                "is_some",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::result::IntoIter",
-                                    "inner"
-                                  |)
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                              "is_some",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::result::IntoIter",
+                                  "inner"
                                 |)
-                              ]
-                            |)
-                          |)) in
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Integer IntegerKind.Usize 1));
                   fun γ => ltac:(M.monadic (Value.Integer IntegerKind.Usize 0))

@@ -83,19 +83,6 @@ Module range.
         (* Instance *) [ ("clone", InstanceField.Method (clone Idx)) ].
   End Impl_core_clone_Clone_where_core_clone_Clone_Idx_for_core_range_Range_Idx.
   
-  Module Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_Range_Idx.
-    Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::Range") [] [ Idx ].
-    
-    Axiom Implements :
-      forall (Idx : Ty.t),
-      M.IsTraitInstance
-        "core::marker::Copy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self Idx)
-        (* Instance *) [].
-  End Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_Range_Idx.
-  
   Module Impl_core_default_Default_where_core_default_Default_Idx_for_core_range_Range_Idx.
     Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::Range") [] [ Idx ].
     
@@ -265,6 +252,19 @@ Module range.
         (* Instance *)
         [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq Idx)) ].
   End Impl_core_cmp_Eq_where_core_cmp_Eq_Idx_for_core_range_Range_Idx.
+  
+  Module Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_Range_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::Range") [] [ Idx ].
+    
+    Axiom Implements :
+      forall (Idx : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Idx)
+        (* Instance *) [].
+  End Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_Range_Idx.
   
   Module Impl_core_hash_Hash_where_core_hash_Hash_Idx_for_core_range_Range_Idx.
     Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::Range") [] [ Idx ].
@@ -546,27 +546,11 @@ Module range.
                                 Ty.path "core::fmt::Arguments",
                                 M.get_associated_function (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  "from_str",
+                                  [],
                                   []
                                 |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| ".." |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                [ mk_str (| ".." |) ]
                               |)
                             ]
                           |)
@@ -786,7 +770,7 @@ Module range.
     Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::Range") [] [ Idx ].
     
     (*
-        pub fn iter(&self) -> IterRange<Idx> {
+        pub fn iter(&self) -> RangeIter<Idx> {
             self.clone().into_iter()
         }
     *)
@@ -801,7 +785,7 @@ Module range.
               self
             |) in
           M.call_closure (|
-            Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Idx ],
+            Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Idx ],
             M.get_trait_method (|
               "core::iter::traits::collect::IntoIterator",
               Ty.apply (Ty.path "core::range::Range") [] [ Idx ],
@@ -836,10 +820,10 @@ Module range.
     Admitted.
     Global Typeclasses Opaque iter.
     (*
-        pub fn contains<U>(&self, item: &U) -> bool
+        pub const fn contains<U>(&self, item: &U) -> bool
         where
-            Idx: PartialOrd<U>,
-            U: ?Sized + PartialOrd<Idx>,
+            Idx: [const] PartialOrd<U>,
+            U: ?Sized + [const] PartialOrd<Idx>,
         {
             <Self as RangeBounds<Idx>>::contains(self, item)
         }
@@ -881,7 +865,10 @@ Module range.
     Global Typeclasses Opaque contains.
     
     (*
-        pub fn is_empty(&self) -> bool {
+        pub const fn is_empty(&self) -> bool
+        where
+            Idx: [const] PartialOrd,
+        {
             !(self.start < self.end)
         }
     *)
@@ -1121,6 +1108,54 @@ Module range.
         ].
   End Impl_core_ops_range_RangeBounds_T_for_core_range_Range_ref__T.
   
+  Module Impl_core_ops_range_IntoBounds_T_for_core_range_Range_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::Range") [] [ T ].
+    
+    (*
+        fn into_bounds(self) -> (Bound<T>, Bound<T>) {
+            (Included(self.start), Excluded(self.end))
+        }
+    *)
+    Definition into_bounds (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "core::range::Range") [] [ T ], self |) in
+          Value.Tuple
+            [
+              Value.StructTuple
+                "core::ops::range::Bound::Included"
+                []
+                [ T ]
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (| self, "core::range::Range", "start" |)
+                  |)
+                ];
+              Value.StructTuple
+                "core::ops::range::Bound::Excluded"
+                []
+                [ T ]
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (| self, "core::range::Range", "end" |)
+                  |)
+                ]
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::ops::range::IntoBounds"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ T ]
+        (Self T)
+        (* Instance *) [ ("into_bounds", InstanceField.Method (into_bounds T)) ].
+  End Impl_core_ops_range_IntoBounds_T_for_core_range_Range_T.
+  
   Module Impl_core_convert_From_core_range_Range_T_for_core_ops_range_Range_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ops::range::Range") [] [ T ].
     
@@ -1213,7 +1248,7 @@ Module range.
       name := "RangeInclusive";
       const_params := [];
       ty_params := [ "Idx" ];
-      fields := [ ("start", Idx); ("end_", Idx) ];
+      fields := [ ("start", Idx); ("last", Idx) ];
     } *)
   
   Module Impl_core_clone_Clone_where_core_clone_Clone_Idx_for_core_range_RangeInclusive_Idx.
@@ -1259,7 +1294,7 @@ Module range.
                     |)
                   ]
                 |));
-              ("end_",
+              ("last",
                 M.call_closure (|
                   Idx,
                   M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
@@ -1272,7 +1307,7 @@ Module range.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "core::range::RangeInclusive",
-                            "end"
+                            "last"
                           |)
                         |)
                       |)
@@ -1380,7 +1415,7 @@ Module range.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "core::range::RangeInclusive",
-                      "end"
+                      "last"
                     |)
                   |);
                   M.borrow (|
@@ -1388,7 +1423,7 @@ Module range.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| other |) |),
                       "core::range::RangeInclusive",
-                      "end"
+                      "last"
                     |)
                   |)
                 ]
@@ -1505,7 +1540,7 @@ Module range.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "core::range::RangeInclusive",
-                          "end"
+                          "last"
                         |)
                       |)
                     |)
@@ -1536,7 +1571,7 @@ Module range.
         fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
             self.start.fmt(fmt)?;
             write!(fmt, "..=")?;
-            self.end.fmt(fmt)?;
+            self.last.fmt(fmt)?;
             Ok(())
         }
     *)
@@ -1738,27 +1773,11 @@ Module range.
                                 Ty.path "core::fmt::Arguments",
                                 M.get_associated_function (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  "from_str",
+                                  [],
                                   []
                                 |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| "..=" |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                [ mk_str (| "..=" |) ]
                               |)
                             ]
                           |)
@@ -1877,7 +1896,7 @@ Module range.
                                 M.SubPointer.get_struct_record_field (|
                                   M.deref (| M.read (| self |) |),
                                   "core::range::RangeInclusive",
-                                  "end"
+                                  "last"
                                 |)
                               |);
                               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
@@ -1979,10 +1998,10 @@ Module range.
       Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ].
     
     (*
-        pub fn contains<U>(&self, item: &U) -> bool
+        pub const fn contains<U>(&self, item: &U) -> bool
         where
-            Idx: PartialOrd<U>,
-            U: ?Sized + PartialOrd<Idx>,
+            Idx: [const] PartialOrd<U>,
+            U: ?Sized + [const] PartialOrd<Idx>,
         {
             <Self as RangeBounds<Idx>>::contains(self, item)
         }
@@ -2027,8 +2046,11 @@ Module range.
     Global Typeclasses Opaque contains.
     
     (*
-        pub fn is_empty(&self) -> bool {
-            !(self.start <= self.end)
+        pub const fn is_empty(&self) -> bool
+        where
+            Idx: [const] PartialOrd,
+        {
+            !(self.start <= self.last)
         }
     *)
     Definition is_empty (Idx : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2065,7 +2087,7 @@ Module range.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "core::range::RangeInclusive",
-                      "end"
+                      "last"
                     |)
                   |)
                 ]
@@ -2081,7 +2103,7 @@ Module range.
     Admitted.
     Global Typeclasses Opaque is_empty.
     (*
-        pub fn iter(&self) -> IterRangeInclusive<Idx> {
+        pub fn iter(&self) -> RangeInclusiveIter<Idx> {
             self.clone().into_iter()
         }
     *)
@@ -2099,7 +2121,7 @@ Module range.
               self
             |) in
           M.call_closure (|
-            Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ Idx ],
+            Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ Idx ],
             M.get_trait_method (|
               "core::iter::traits::collect::IntoIterator",
               Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ],
@@ -2142,7 +2164,7 @@ Module range.
     
     (*
         pub(crate) const fn into_slice_range(self) -> Range<usize> {
-            Range { start: self.start, end: self.end + 1 }
+            Range { start: self.start, end: self.last + 1 }
         }
     *)
     Definition into_slice_range (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2176,7 +2198,7 @@ Module range.
                       M.SubPointer.get_struct_record_field (|
                         self,
                         "core::range::RangeInclusive",
-                        "end"
+                        "last"
                       |)
                     |);
                     Value.Integer IntegerKind.Usize 1
@@ -2237,7 +2259,7 @@ Module range.
     
     (*
         fn end_bound(&self) -> Bound<&T> {
-            Included(&self.end)
+            Included(&self.last)
         }
     *)
     Definition end_bound (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2266,7 +2288,7 @@ Module range.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "core::range::RangeInclusive",
-                      "end"
+                      "last"
                     |)
                   |)
                 |)
@@ -2339,7 +2361,7 @@ Module range.
     
     (*
         fn end_bound(&self) -> Bound<&T> {
-            Included(self.end)
+            Included(self.last)
         }
     *)
     Definition end_bound (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2372,7 +2394,7 @@ Module range.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "core::range::RangeInclusive",
-                      "end"
+                      "last"
                     |)
                   |)
                 |)
@@ -2395,13 +2417,70 @@ Module range.
         ].
   End Impl_core_ops_range_RangeBounds_T_for_core_range_RangeInclusive_ref__T.
   
+  Module Impl_core_ops_range_IntoBounds_T_for_core_range_RangeInclusive_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::RangeInclusive") [] [ T ].
+    
+    (*
+        fn into_bounds(self) -> (Bound<T>, Bound<T>) {
+            (Included(self.start), Included(self.last))
+        }
+    *)
+    Definition into_bounds (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "core::range::RangeInclusive") [] [ T ], self |) in
+          Value.Tuple
+            [
+              Value.StructTuple
+                "core::ops::range::Bound::Included"
+                []
+                [ T ]
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::range::RangeInclusive",
+                      "start"
+                    |)
+                  |)
+                ];
+              Value.StructTuple
+                "core::ops::range::Bound::Included"
+                []
+                [ T ]
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::range::RangeInclusive",
+                      "last"
+                    |)
+                  |)
+                ]
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::ops::range::IntoBounds"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ T ]
+        (Self T)
+        (* Instance *) [ ("into_bounds", InstanceField.Method (into_bounds T)) ].
+  End Impl_core_ops_range_IntoBounds_T_for_core_range_RangeInclusive_T.
+  
   Module Impl_core_convert_From_core_range_RangeInclusive_T_for_core_ops_range_RangeInclusive_T.
     Definition Self (T : Ty.t) : Ty.t :=
       Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ T ].
     
     (*
         fn from(value: RangeInclusive<T>) -> Self {
-            Self::new(value.start, value.end)
+            Self::new(value.start, value.last)
         }
     *)
     Definition from (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2431,7 +2510,7 @@ Module range.
                 M.SubPointer.get_struct_record_field (|
                   value,
                   "core::range::RangeInclusive",
-                  "end"
+                  "last"
                 |)
               |)
             ]
@@ -2459,8 +2538,8 @@ Module range.
                 "attempted to convert from an exhausted `legacy::RangeInclusive` (unspecified behavior)"
             );
     
-            let (start, end) = value.into_inner();
-            RangeInclusive { start, end }
+            let (start, last) = value.into_inner();
+            RangeInclusive { start, last }
         }
     *)
     Definition from (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2479,29 +2558,28 @@ Module range.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        value,
-                                        "core::ops::range::RangeInclusive",
-                                        "exhausted"
-                                      |)
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                UnOp.not,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      value,
+                                      "core::ops::range::RangeInclusive",
+                                      "exhausted"
                                     |)
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -2512,30 +2590,13 @@ Module range.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
+                                "from_str",
+                                [],
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "attempted to convert from an exhausted `legacy::RangeInclusive` (unspecified behavior)"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
+                                mk_str (|
+                                  "attempted to convert from an exhausted `legacy::RangeInclusive` (unspecified behavior)"
                                 |)
                               ]
                             |)
@@ -2568,12 +2629,12 @@ Module range.
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                       let start := M.copy (| T, γ0_0 |) in
-                      let end_ := M.copy (| T, γ0_1 |) in
+                      let last := M.copy (| T, γ0_1 |) in
                       Value.mkStructRecord
                         "core::range::RangeInclusive"
                         []
                         [ T ]
-                        [ ("start", M.read (| start |)); ("end_", M.read (| end_ |)) ]))
+                        [ ("start", M.read (| start |)); ("last", M.read (| last |)) ]))
                 ]
               |)
             |)
@@ -2652,19 +2713,6 @@ Module range.
         (Self Idx)
         (* Instance *) [ ("clone", InstanceField.Method (clone Idx)) ].
   End Impl_core_clone_Clone_where_core_clone_Clone_Idx_for_core_range_RangeFrom_Idx.
-  
-  Module Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_RangeFrom_Idx.
-    Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ].
-    
-    Axiom Implements :
-      forall (Idx : Ty.t),
-      M.IsTraitInstance
-        "core::marker::Copy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self Idx)
-        (* Instance *) [].
-  End Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_RangeFrom_Idx.
   
   Module Impl_core_marker_StructuralPartialEq_for_core_range_RangeFrom_Idx.
     Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ].
@@ -2770,6 +2818,19 @@ Module range.
         (* Instance *)
         [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq Idx)) ].
   End Impl_core_cmp_Eq_where_core_cmp_Eq_Idx_for_core_range_RangeFrom_Idx.
+  
+  Module Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_RangeFrom_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ].
+    
+    Axiom Implements :
+      forall (Idx : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Idx)
+        (* Instance *) [].
+  End Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_RangeFrom_Idx.
   
   Module Impl_core_hash_Hash_where_core_hash_Hash_Idx_for_core_range_RangeFrom_Idx.
     Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ].
@@ -3024,27 +3085,11 @@ Module range.
                                 Ty.path "core::fmt::Arguments",
                                 M.get_associated_function (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  "from_str",
+                                  [],
                                   []
                                 |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| ".." |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                [ mk_str (| ".." |) ]
                               |)
                             ]
                           |)
@@ -3143,7 +3188,7 @@ Module range.
     Definition Self (Idx : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ].
     
     (*
-        pub fn iter(&self) -> IterRangeFrom<Idx> {
+        pub fn iter(&self) -> RangeFromIter<Idx> {
             self.clone().into_iter()
         }
     *)
@@ -3158,7 +3203,7 @@ Module range.
               self
             |) in
           M.call_closure (|
-            Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ Idx ],
+            Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ Idx ],
             M.get_trait_method (|
               "core::iter::traits::collect::IntoIterator",
               Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ],
@@ -3193,10 +3238,10 @@ Module range.
     Admitted.
     Global Typeclasses Opaque iter.
     (*
-        pub fn contains<U>(&self, item: &U) -> bool
+        pub const fn contains<U>(&self, item: &U) -> bool
         where
-            Idx: PartialOrd<U>,
-            U: ?Sized + PartialOrd<Idx>,
+            Idx: [const] PartialOrd<U>,
+            U: ?Sized + [const] PartialOrd<Idx>,
         {
             <Self as RangeBounds<Idx>>::contains(self, item)
         }
@@ -3401,6 +3446,50 @@ Module range.
         ].
   End Impl_core_ops_range_RangeBounds_T_for_core_range_RangeFrom_ref__T.
   
+  Module Impl_core_ops_range_IntoBounds_T_for_core_range_RangeFrom_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::RangeFrom") [] [ T ].
+    
+    (*
+        fn into_bounds(self) -> (Bound<T>, Bound<T>) {
+            (Included(self.start), Unbounded)
+        }
+    *)
+    Definition into_bounds (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "core::range::RangeFrom") [] [ T ], self |) in
+          Value.Tuple
+            [
+              Value.StructTuple
+                "core::ops::range::Bound::Included"
+                []
+                [ T ]
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::range::RangeFrom",
+                      "start"
+                    |)
+                  |)
+                ];
+              Value.StructTuple "core::ops::range::Bound::Unbounded" [] [ T ] []
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::ops::range::IntoBounds"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ T ]
+        (Self T)
+        (* Instance *) [ ("into_bounds", InstanceField.Method (into_bounds T)) ].
+  End Impl_core_ops_range_IntoBounds_T_for_core_range_RangeFrom_T.
+  
   Module Impl_core_convert_From_core_range_RangeFrom_T_for_core_ops_range_RangeFrom_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ T ].
     
@@ -3483,4 +3572,832 @@ Module range.
         (Self T)
         (* Instance *) [ ("from", InstanceField.Method (from T)) ].
   End Impl_core_convert_From_core_ops_range_RangeFrom_T_for_core_range_RangeFrom_T.
+  
+  (* StructRecord
+    {
+      name := "RangeToInclusive";
+      const_params := [];
+      ty_params := [ "Idx" ];
+      fields := [ ("last", Idx) ];
+    } *)
+  
+  Module Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_RangeToInclusive_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ].
+    
+    Axiom Implements :
+      forall (Idx : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Idx)
+        (* Instance *) [].
+  End Impl_core_marker_Copy_where_core_marker_Copy_Idx_for_core_range_RangeToInclusive_Idx.
+  
+  Module Impl_core_clone_Clone_where_core_clone_Clone_Idx_for_core_range_RangeToInclusive_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ].
+    
+    (* Clone *)
+    Definition clone (Idx : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Idx in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ] ],
+              self
+            |) in
+          Value.mkStructRecord
+            "core::range::RangeToInclusive"
+            []
+            [ Idx ]
+            [
+              ("last",
+                M.call_closure (|
+                  Idx,
+                  M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::range::RangeToInclusive",
+                            "last"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Idx : Ty.t),
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Idx)
+        (* Instance *) [ ("clone", InstanceField.Method (clone Idx)) ].
+  End Impl_core_clone_Clone_where_core_clone_Clone_Idx_for_core_range_RangeToInclusive_Idx.
+  
+  Module Impl_core_marker_StructuralPartialEq_for_core_range_RangeToInclusive_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ].
+    
+    Axiom Implements :
+      forall (Idx : Ty.t),
+      M.IsTraitInstance
+        "core::marker::StructuralPartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Idx)
+        (* Instance *) [].
+  End Impl_core_marker_StructuralPartialEq_for_core_range_RangeToInclusive_Idx.
+  
+  Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_Idx_core_range_RangeToInclusive_Idx_for_core_range_RangeToInclusive_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ].
+    
+    (* PartialEq *)
+    Definition eq (Idx : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Idx in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ] ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ] ],
+              other
+            |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_trait_method (| "core::cmp::PartialEq", Idx, [], [ Idx ], "eq", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "core::range::RangeToInclusive",
+                  "last"
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| other |) |),
+                  "core::range::RangeToInclusive",
+                  "last"
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Idx : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::PartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *)
+        [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ] ]
+        (Self Idx)
+        (* Instance *) [ ("eq", InstanceField.Method (eq Idx)) ].
+  End Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_Idx_core_range_RangeToInclusive_Idx_for_core_range_RangeToInclusive_Idx.
+  
+  Module Impl_core_cmp_Eq_where_core_cmp_Eq_Idx_for_core_range_RangeToInclusive_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ].
+    
+    (* Eq *)
+    Definition assert_receiver_is_total_eq
+        (Idx : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self Idx in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ] ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.tuple [],
+            Value.DeclaredButUndefined,
+            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Idx : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::Eq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Idx)
+        (* Instance *)
+        [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq Idx)) ].
+  End Impl_core_cmp_Eq_where_core_cmp_Eq_Idx_for_core_range_RangeToInclusive_Idx.
+  
+  Module Impl_core_hash_Hash_where_core_hash_Hash_Idx_for_core_range_RangeToInclusive_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ].
+    
+    (* Hash *)
+    Definition hash (Idx : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Idx in
+      match ε, τ, α with
+      | [], [ __H ], [ self; state ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ] ],
+              self
+            |) in
+          let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
+          M.call_closure (|
+            Ty.tuple [],
+            M.get_trait_method (| "core::hash::Hash", Idx, [], [], "hash", [], [ __H ] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::range::RangeToInclusive",
+                      "last"
+                    |)
+                  |)
+                |)
+              |);
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Idx : Ty.t),
+      M.IsTraitInstance
+        "core::hash::Hash"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Idx)
+        (* Instance *) [ ("hash", InstanceField.Method (hash Idx)) ].
+  End Impl_core_hash_Hash_where_core_hash_Hash_Idx_for_core_range_RangeToInclusive_Idx.
+  
+  Module Impl_core_fmt_Debug_where_core_fmt_Debug_Idx_for_core_range_RangeToInclusive_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ].
+    
+    (*
+        fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+            write!(fmt, "..=")?;
+            self.last.fmt(fmt)?;
+            Ok(())
+        }
+    *)
+    Definition fmt (Idx : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Idx in
+      match ε, τ, α with
+      | [], [], [ self; fmt ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ] ],
+              self
+            |) in
+          let fmt :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
+                          Ty.tuple []
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
+                            Ty.tuple []
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Formatter",
+                              "write_fmt",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
+                              M.call_closure (|
+                                Ty.path "core::fmt::Arguments",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "from_str",
+                                  [],
+                                  []
+                                |),
+                                [ mk_str (| "..=" |) ]
+                              |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val := M.copy (| Ty.tuple [], γ0_0 |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
+                          Ty.tuple []
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
+                            Ty.tuple []
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                            M.get_trait_method (| "core::fmt::Debug", Idx, [], [], "fmt", [], [] |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::range::RangeToInclusive",
+                                  "last"
+                                |)
+                              |);
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val := M.copy (| Ty.tuple [], γ0_0 |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]
+                    [ Value.Tuple [] ]
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Idx : Ty.t),
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Idx)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt Idx)) ].
+  End Impl_core_fmt_Debug_where_core_fmt_Debug_Idx_for_core_range_RangeToInclusive_Idx.
+  
+  Module Impl_core_range_RangeToInclusive_Idx.
+    Definition Self (Idx : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ].
+    
+    (*
+        pub const fn contains<U>(&self, item: &U) -> bool
+        where
+            Idx: [const] PartialOrd<U>,
+            U: ?Sized + [const] PartialOrd<Idx>,
+        {
+            <Self as RangeBounds<Idx>>::contains(self, item)
+        }
+    *)
+    Definition contains (Idx : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Idx in
+      match ε, τ, α with
+      | [], [ U ], [ self; item ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ] ],
+              self
+            |) in
+          let item := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], item |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_trait_method (|
+              "core::ops::range::RangeBounds",
+              Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ Idx ],
+              [],
+              [ Idx ],
+              "contains",
+              [],
+              [ U ]
+            |),
+            [
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| item |) |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_contains :
+      forall (Idx : Ty.t),
+      M.IsAssociatedFunction.C (Self Idx) "contains" (contains Idx).
+    Admitted.
+    Global Typeclasses Opaque contains.
+  End Impl_core_range_RangeToInclusive_Idx.
+  
+  Module Impl_core_convert_From_core_ops_range_RangeToInclusive_T_for_core_range_RangeToInclusive_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ T ].
+    
+    (*
+        fn from(value: legacy::RangeToInclusive<T>) -> Self {
+            Self { last: value.end }
+        }
+    *)
+    Definition from (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ value ] =>
+        ltac:(M.monadic
+          (let value :=
+            M.alloc (| Ty.apply (Ty.path "core::ops::range::RangeToInclusive") [] [ T ], value |) in
+          Value.mkStructRecord
+            "core::range::RangeToInclusive"
+            []
+            [ T ]
+            [
+              ("last",
+                M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    value,
+                    "core::ops::range::RangeToInclusive",
+                    "end"
+                  |)
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::convert::From"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *)
+        [ Ty.apply (Ty.path "core::ops::range::RangeToInclusive") [] [ T ] ]
+        (Self T)
+        (* Instance *) [ ("from", InstanceField.Method (from T)) ].
+  End Impl_core_convert_From_core_ops_range_RangeToInclusive_T_for_core_range_RangeToInclusive_T.
+  
+  Module Impl_core_convert_From_core_range_RangeToInclusive_T_for_core_ops_range_RangeToInclusive_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::ops::range::RangeToInclusive") [] [ T ].
+    
+    (*
+        fn from(value: RangeToInclusive<T>) -> Self {
+            Self { end: value.last }
+        }
+    *)
+    Definition from (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ value ] =>
+        ltac:(M.monadic
+          (let value :=
+            M.alloc (| Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ T ], value |) in
+          Value.mkStructRecord
+            "core::ops::range::RangeToInclusive"
+            []
+            [ T ]
+            [
+              ("end_",
+                M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    value,
+                    "core::range::RangeToInclusive",
+                    "last"
+                  |)
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::convert::From"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *)
+        [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ T ] ]
+        (Self T)
+        (* Instance *) [ ("from", InstanceField.Method (from T)) ].
+  End Impl_core_convert_From_core_range_RangeToInclusive_T_for_core_ops_range_RangeToInclusive_T.
+  
+  Module Impl_core_ops_range_RangeBounds_T_for_core_range_RangeToInclusive_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ T ].
+    
+    (*
+        fn start_bound(&self) -> Bound<&T> {
+            Unbounded
+        }
+    *)
+    Definition start_bound (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ T ] ],
+              self
+            |) in
+          Value.StructTuple
+            "core::ops::range::Bound::Unbounded"
+            []
+            [ Ty.apply (Ty.path "&") [] [ T ] ]
+            []))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn end_bound(&self) -> Bound<&T> {
+            Included(&self.last)
+        }
+    *)
+    Definition end_bound (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ T ] ],
+              self
+            |) in
+          Value.StructTuple
+            "core::ops::range::Bound::Included"
+            []
+            [ Ty.apply (Ty.path "&") [] [ T ] ]
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::range::RangeToInclusive",
+                      "last"
+                    |)
+                  |)
+                |)
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::ops::range::RangeBounds"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ T ]
+        (Self T)
+        (* Instance *)
+        [
+          ("start_bound", InstanceField.Method (start_bound T));
+          ("end_bound", InstanceField.Method (end_bound T))
+        ].
+  End Impl_core_ops_range_RangeBounds_T_for_core_range_RangeToInclusive_T.
+  
+  Module Impl_core_ops_range_IntoBounds_T_for_core_range_RangeToInclusive_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ T ].
+    
+    (*
+        fn into_bounds(self) -> (Bound<T>, Bound<T>) {
+            (Unbounded, Included(self.last))
+        }
+    *)
+    Definition into_bounds (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "core::range::RangeToInclusive") [] [ T ], self |) in
+          Value.Tuple
+            [
+              Value.StructTuple "core::ops::range::Bound::Unbounded" [] [ T ] [];
+              Value.StructTuple
+                "core::ops::range::Bound::Included"
+                []
+                [ T ]
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::range::RangeToInclusive",
+                      "last"
+                    |)
+                  |)
+                ]
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::ops::range::IntoBounds"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ T ]
+        (Self T)
+        (* Instance *) [ ("into_bounds", InstanceField.Method (into_bounds T)) ].
+  End Impl_core_ops_range_IntoBounds_T_for_core_range_RangeToInclusive_T.
 End range.

@@ -226,6 +226,45 @@ Module iter.
           M.IsAssociatedFunction.C (Self I) "new" (new I).
         Admitted.
         Global Typeclasses Opaque new.
+        
+        (*
+            pub fn next_index(&self) -> usize {
+                self.count
+            }
+        *)
+        Definition next_index
+            (I : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self I in
+          match ε, τ, α with
+          | [], [], [ self ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::iter::adapters::enumerate::Enumerate") [] [ I ] ],
+                  self
+                |) in
+              M.read (|
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "core::iter::adapters::enumerate::Enumerate",
+                  "count"
+                |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Global Instance AssociatedFunction_next_index :
+          forall (I : Ty.t),
+          M.IsAssociatedFunction.C (Self I) "next_index" (next_index I).
+        Admitted.
+        Global Typeclasses Opaque next_index.
       End Impl_core_iter_adapters_enumerate_Enumerate_I.
       
       Module Impl_core_iter_traits_iterator_Iterator_where_core_iter_traits_iterator_Iterator_I_for_core_iter_adapters_enumerate_Enumerate_I.

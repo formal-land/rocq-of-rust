@@ -183,7 +183,7 @@ mod sip;
 /// [impl]: ../../std/primitive.str.html#impl-Hash-for-str
 #[stable(feature = "rust1", since = "1.0.0")]
 #[rustc_diagnostic_item = "Hash"]
-pub trait Hash {
+pub trait Hash: marker::PointeeSized {
     /// Feeds this value into the given [`Hasher`].
     ///
     /// # Examples
@@ -633,6 +633,7 @@ impl<H: Hasher + ?Sized> Hasher for &mut H {
 ///
 /// [`build_hasher`]: BuildHasher::build_hasher
 /// [`HashMap`]: ../../std/collections/struct.HashMap.html
+#[cfg_attr(not(test), rustc_diagnostic_item = "BuildHasher")]
 #[stable(since = "1.7.0", feature = "build_hasher")]
 pub trait BuildHasher {
     /// Type of the hasher that will be created.
@@ -752,11 +753,8 @@ pub struct BuildHasherDefault<H>(marker::PhantomData<fn() -> H>);
 
 impl<H> BuildHasherDefault<H> {
     /// Creates a new BuildHasherDefault for Hasher `H`.
-    #[stable(feature = "build_hasher_default_const_new", since = "CURRENT_RUSTC_VERSION")]
-    #[rustc_const_stable(
-        feature = "build_hasher_default_const_new",
-        since = "CURRENT_RUSTC_VERSION"
-    )]
+    #[stable(feature = "build_hasher_default_const_new", since = "1.85.0")]
+    #[rustc_const_stable(feature = "build_hasher_default_const_new", since = "1.85.0")]
     pub const fn new() -> Self {
         BuildHasherDefault(marker::PhantomData)
     }
@@ -804,7 +802,7 @@ impl<H> Eq for BuildHasherDefault<H> {}
 
 mod impls {
     use super::*;
-    use crate::{mem, slice};
+    use crate::slice;
 
     macro_rules! impl_write {
         ($(($ty:ident, $meth:ident),)*) => {$(
@@ -817,7 +815,7 @@ mod impls {
 
                 #[inline]
                 fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                    let newlen = mem::size_of_val(data);
+                    let newlen = size_of_val(data);
                     let ptr = data.as_ptr() as *const u8;
                     // SAFETY: `ptr` is valid and aligned, as this macro is only used
                     // for numeric primitives which have no padding. The new slice only
@@ -889,7 +887,7 @@ mod impls {
             maybe_tuple_doc! {
                 $($name)+ @
                 #[stable(feature = "rust1", since = "1.0.0")]
-                impl<$($name: Hash),+> Hash for ($($name,)+) where last_type!($($name,)+): ?Sized {
+                impl<$($name: Hash),+> Hash for ($($name,)+) {
                     #[allow(non_snake_case)]
                     #[inline]
                     fn hash<S: Hasher>(&self, state: &mut S) {
@@ -913,11 +911,6 @@ mod impls {
             #[$meta]
             $item
         };
-    }
-
-    macro_rules! last_type {
-        ($a:ident,) => { $a };
-        ($a:ident, $($rest_a:ident,)+) => { last_type!($($rest_a,)+) };
     }
 
     impl_hash_tuple! {}
@@ -944,7 +937,7 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
-    impl<T: ?Sized + Hash> Hash for &T {
+    impl<T: ?Sized + marker::PointeeSized + Hash> Hash for &T {
         #[inline]
         fn hash<H: Hasher>(&self, state: &mut H) {
             (**self).hash(state);
@@ -952,7 +945,7 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
-    impl<T: ?Sized + Hash> Hash for &mut T {
+    impl<T: ?Sized + marker::PointeeSized + Hash> Hash for &mut T {
         #[inline]
         fn hash<H: Hasher>(&self, state: &mut H) {
             (**self).hash(state);
@@ -960,7 +953,7 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
-    impl<T: ?Sized> Hash for *const T {
+    impl<T: ?Sized + marker::PointeeSized> Hash for *const T {
         #[inline]
         fn hash<H: Hasher>(&self, state: &mut H) {
             let (address, metadata) = self.to_raw_parts();
@@ -970,7 +963,7 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
-    impl<T: ?Sized> Hash for *mut T {
+    impl<T: ?Sized + marker::PointeeSized> Hash for *mut T {
         #[inline]
         fn hash<H: Hasher>(&self, state: &mut H) {
             let (address, metadata) = self.to_raw_parts();

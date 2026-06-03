@@ -736,7 +736,7 @@ Module collections.
           Ty.apply (Ty.path "alloc::collections::btree::merge_iter::MergeIterInner") [] [ I ].
         
         (*
-            pub fn new(a: I, b: I) -> Self {
+            pub(super) fn new(a: I, b: I) -> Self {
                 MergeIterInner { a, b, peeked: None }
             }
         *)
@@ -772,7 +772,7 @@ Module collections.
         Global Typeclasses Opaque new.
         
         (*
-            pub fn nexts<Cmp: Fn(&I::Item, &I::Item) -> Ordering>(
+            pub(super) fn nexts<Cmp: Fn(&I::Item, &I::Item) -> Ordering>(
                 &mut self,
                 cmp: Cmp,
             ) -> (Option<I::Item>, Option<I::Item>)
@@ -795,7 +795,7 @@ Module collections.
                         b_next = self.b.next();
                     }
                 }
-                if let (Some(ref a1), Some(ref b1)) = (&a_next, &b_next) {
+                if let (Some(a1), Some(b1)) = (&a_next, &b_next) {
                     match cmp(a1, b1) {
                         Ordering::Less => self.peeked = b_next.take().map(Peeked::B),
                         Ordering::Greater => self.peeked = a_next.take().map(Peeked::A),
@@ -1505,7 +1505,7 @@ Module collections.
         Global Typeclasses Opaque nexts.
         
         (*
-            pub fn lens(&self) -> (usize, usize)
+            pub(super) fn lens(&self) -> (usize, usize)
             where
                 I: ExactSizeIterator,
             {

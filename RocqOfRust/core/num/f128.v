@@ -841,48 +841,42 @@ Module f128.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (| Ty.path "f128", "is_nan", [], [] |),
+                                  [ M.read (| self |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "f128",
-                                      "is_nan",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| self |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| bits |);
-                                        M.call_closure (|
-                                          Ty.path "u128",
-                                          M.get_associated_function (|
-                                            Ty.path "f128",
-                                            "to_bits",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.read (|
-                                              get_associated_constant (|
-                                                Ty.path "f128",
-                                                "INFINITY",
-                                                Ty.path "f128"
-                                              |)
+                                    BinOp.eq,
+                                    [
+                                      M.read (| bits |);
+                                      M.call_closure (|
+                                        Ty.path "u128",
+                                        M.get_associated_function (|
+                                          Ty.path "f128",
+                                          "to_bits",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (|
+                                            get_associated_constant (|
+                                              Ty.path "f128",
+                                              "INFINITY",
+                                              Ty.path "f128"
                                             |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (| M.read (| M.return_ (| M.read (| self |) |) |) |)));
@@ -918,15 +912,14 @@ Module f128.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| abs |); Value.Integer IntegerKind.U128 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ M.read (| abs |); Value.Integer IntegerKind.U128 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -945,15 +938,14 @@ Module f128.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| bits |); M.read (| abs |) ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [ M.read (| bits |); M.read (| abs |) ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1035,48 +1027,42 @@ Module f128.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (| Ty.path "f128", "is_nan", [], [] |),
+                                  [ M.read (| self |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "f128",
-                                      "is_nan",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| self |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| bits |);
-                                        M.call_closure (|
-                                          Ty.path "u128",
-                                          M.get_associated_function (|
-                                            Ty.path "f128",
-                                            "to_bits",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.read (|
-                                              get_associated_constant (|
-                                                Ty.path "f128",
-                                                "NEG_INFINITY",
-                                                Ty.path "f128"
-                                              |)
+                                    BinOp.eq,
+                                    [
+                                      M.read (| bits |);
+                                      M.call_closure (|
+                                        Ty.path "u128",
+                                        M.get_associated_function (|
+                                          Ty.path "f128",
+                                          "to_bits",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (|
+                                            get_associated_constant (|
+                                              Ty.path "f128",
+                                              "NEG_INFINITY",
+                                              Ty.path "f128"
                                             |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (| M.read (| M.return_ (| M.read (| self |) |) |) |)));
@@ -1112,15 +1098,14 @@ Module f128.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| abs |); Value.Integer IntegerKind.U128 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ M.read (| abs |); Value.Integer IntegerKind.U128 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1139,15 +1124,14 @@ Module f128.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| bits |); M.read (| abs |) ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [ M.read (| bits |); M.read (| abs |) ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1211,8 +1195,10 @@ Module f128.
     
     (*
         pub const fn to_degrees(self) -> Self {
-            // Use a literal for better precision.
-            const PIS_IN_180: f128 = 57.2957795130823208767981548141051703324054724665643215491602_f128;
+            // The division here is correctly rounded with respect to the true value of 180/π.
+            // Although π is irrational and already rounded, the double rounding happens
+            // to produce correct result for f128.
+            const PIS_IN_180: f128 = 180.0 / consts::PI;
             self * PIS_IN_180
         }
     *)
@@ -1239,7 +1225,8 @@ Module f128.
     
     (*
         pub const fn to_radians(self) -> f128 {
-            // Use a literal for better precision.
+            // Use a literal to avoid double rounding, consts::PI is already rounded,
+            // and dividing would round again.
             const RADS_PER_DEG: f128 =
                 0.0174532925199432957692369076848861271344287188854172545609719_f128;
             self * RADS_PER_DEG
@@ -1314,15 +1301,7 @@ Module f128.
     
     (*
         pub const fn maximum(self, other: f128) -> f128 {
-            if self > other {
-                self
-            } else if other > self {
-                other
-            } else if self == other {
-                if self.is_sign_positive() && other.is_sign_negative() { self } else { other }
-            } else {
-                self + other
-            }
+            intrinsics::maximumf128(self, other)
         }
     *)
     Definition maximum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1331,123 +1310,10 @@ Module f128.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.path "f128", self |) in
           let other := M.alloc (| Ty.path "f128", other |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "f128",
-            M.alloc (| Ty.tuple [], Value.Tuple [] |),
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ :=
-                    M.use
-                      (M.alloc (|
-                        Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.gt,
-                          [ M.read (| self |); M.read (| other |) ]
-                        |)
-                      |)) in
-                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.read (| self |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (M.match_operator (|
-                    Ty.path "f128",
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.gt,
-                                  [ M.read (| other |); M.read (| self |) ]
-                                |)
-                              |)) in
-                          let _ :=
-                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          M.read (| other |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.path "f128",
-                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let γ :=
-                                    M.use
-                                      (M.alloc (|
-                                        Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| self |); M.read (| other |) ]
-                                        |)
-                                      |)) in
-                                  let _ :=
-                                    is_constant_or_break_match (|
-                                      M.read (| γ |),
-                                      Value.Bool true
-                                    |) in
-                                  M.match_operator (|
-                                    Ty.path "f128",
-                                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let γ :=
-                                            M.use
-                                              (M.alloc (|
-                                                Ty.path "bool",
-                                                LogicalOp.and (|
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_associated_function (|
-                                                      Ty.path "f128",
-                                                      "is_sign_positive",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| self |) ]
-                                                  |),
-                                                  ltac:(M.monadic
-                                                    (M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_associated_function (|
-                                                        Ty.path "f128",
-                                                        "is_sign_negative",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.read (| other |) ]
-                                                    |)))
-                                                |)
-                                              |)) in
-                                          let _ :=
-                                            is_constant_or_break_match (|
-                                              M.read (| γ |),
-                                              Value.Bool true
-                                            |) in
-                                          M.read (| self |)));
-                                      fun γ => ltac:(M.monadic (M.read (| other |)))
-                                    ]
-                                  |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "f128",
-                                    BinOp.Wrap.add,
-                                    [ M.read (| self |); M.read (| other |) ]
-                                  |)))
-                            ]
-                          |)))
-                    ]
-                  |)))
-            ]
+            M.get_function (| "core::intrinsics::maximumf128", [], [] |),
+            [ M.read (| self |); M.read (| other |) ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1458,16 +1324,7 @@ Module f128.
     
     (*
         pub const fn minimum(self, other: f128) -> f128 {
-            if self < other {
-                self
-            } else if other < self {
-                other
-            } else if self == other {
-                if self.is_sign_negative() && other.is_sign_positive() { self } else { other }
-            } else {
-                // At least one input is NaN. Use `+` to perform NaN propagation and quieting.
-                self + other
-            }
+            intrinsics::minimumf128(self, other)
         }
     *)
     Definition minimum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1476,123 +1333,10 @@ Module f128.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.path "f128", self |) in
           let other := M.alloc (| Ty.path "f128", other |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "f128",
-            M.alloc (| Ty.tuple [], Value.Tuple [] |),
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ :=
-                    M.use
-                      (M.alloc (|
-                        Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.lt,
-                          [ M.read (| self |); M.read (| other |) ]
-                        |)
-                      |)) in
-                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.read (| self |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (M.match_operator (|
-                    Ty.path "f128",
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| other |); M.read (| self |) ]
-                                |)
-                              |)) in
-                          let _ :=
-                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          M.read (| other |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.path "f128",
-                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let γ :=
-                                    M.use
-                                      (M.alloc (|
-                                        Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| self |); M.read (| other |) ]
-                                        |)
-                                      |)) in
-                                  let _ :=
-                                    is_constant_or_break_match (|
-                                      M.read (| γ |),
-                                      Value.Bool true
-                                    |) in
-                                  M.match_operator (|
-                                    Ty.path "f128",
-                                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let γ :=
-                                            M.use
-                                              (M.alloc (|
-                                                Ty.path "bool",
-                                                LogicalOp.and (|
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_associated_function (|
-                                                      Ty.path "f128",
-                                                      "is_sign_negative",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| self |) ]
-                                                  |),
-                                                  ltac:(M.monadic
-                                                    (M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_associated_function (|
-                                                        Ty.path "f128",
-                                                        "is_sign_positive",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.read (| other |) ]
-                                                    |)))
-                                                |)
-                                              |)) in
-                                          let _ :=
-                                            is_constant_or_break_match (|
-                                              M.read (| γ |),
-                                              Value.Bool true
-                                            |) in
-                                          M.read (| self |)));
-                                      fun γ => ltac:(M.monadic (M.read (| other |)))
-                                    ]
-                                  |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "f128",
-                                    BinOp.Wrap.add,
-                                    [ M.read (| self |); M.read (| other |) ]
-                                  |)))
-                            ]
-                          |)))
-                    ]
-                  |)))
-            ]
+            M.get_function (| "core::intrinsics::minimumf128", [], [] |),
+            [ M.read (| self |); M.read (| other |) ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1603,7 +1347,6 @@ Module f128.
     
     (*
         pub const fn midpoint(self, other: f128) -> f128 {
-            const LO: f128 = f128::MIN_POSITIVE * 2.;
             const HI: f128 = f128::MAX / 2.;
     
             let (a, b) = (self, other);
@@ -1613,14 +1356,7 @@ Module f128.
             if abs_a <= HI && abs_b <= HI {
                 // Overflow is impossible
                 (a + b) / 2.
-            } else if abs_a < LO {
-                // Not safe to halve `a` (would underflow)
-                a + (b / 2.)
-            } else if abs_b < LO {
-                // Not safe to halve `b` (would underflow)
-                (a / 2.) + b
             } else {
-                // Safe to halve `a` and `b`
                 (a / 2.) + (b / 2.)
             }
         }
@@ -1666,39 +1402,41 @@ Module f128.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    LogicalOp.and (|
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [
-                                          M.read (| abs_a |);
-                                          M.read (|
-                                            get_constant (|
-                                              "core::f128::midpoint::HI",
-                                              Ty.path "f128"
-                                            |)
-                                          |)
-                                        ]
-                                      |),
-                                      ltac:(M.monadic
-                                        (M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.le,
-                                          [
-                                            M.read (| abs_b |);
-                                            M.read (|
-                                              get_constant (|
-                                                "core::f128::midpoint::HI",
-                                                Ty.path "f128"
-                                              |)
-                                            |)
-                                          ]
-                                        |)))
-                                    |)
-                                  |)) in
+                                    BinOp.le,
+                                    [
+                                      M.read (| abs_a |);
+                                      M.read (|
+                                        get_constant (|
+                                          "core::f128::midpoint::HI",
+                                          Ty.path "f128"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                |) in
+                              let _ :=
+                                is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                              let γ :=
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.le,
+                                    [
+                                      M.read (| abs_b |);
+                                      M.read (|
+                                        get_constant (|
+                                          "core::f128::midpoint::HI",
+                                          Ty.path "f128"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.call_closure (|
@@ -1715,119 +1453,20 @@ Module f128.
                               |)));
                           fun γ =>
                             ltac:(M.monadic
-                              (M.match_operator (|
+                              (M.call_closure (|
                                 Ty.path "f128",
-                                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                BinOp.Wrap.add,
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ :=
-                                        M.use
-                                          (M.alloc (|
-                                            Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.lt,
-                                              [
-                                                M.read (| abs_a |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "core::f128::midpoint::LO",
-                                                    Ty.path "f128"
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
-                                      let _ :=
-                                        is_constant_or_break_match (|
-                                          M.read (| γ |),
-                                          Value.Bool true
-                                        |) in
-                                      M.call_closure (|
-                                        Ty.path "f128",
-                                        BinOp.Wrap.add,
-                                        [
-                                          M.read (| a |);
-                                          M.call_closure (|
-                                            Ty.path "f128",
-                                            BinOp.Wrap.div,
-                                            [ M.read (| b |); M.read (| UnsupportedLiteral |) ]
-                                          |)
-                                        ]
-                                      |)));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (M.match_operator (|
-                                        Ty.path "f128",
-                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let γ :=
-                                                M.use
-                                                  (M.alloc (|
-                                                    Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.lt,
-                                                      [
-                                                        M.read (| abs_b |);
-                                                        M.read (|
-                                                          get_constant (|
-                                                            "core::f128::midpoint::LO",
-                                                            Ty.path "f128"
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)) in
-                                              let _ :=
-                                                is_constant_or_break_match (|
-                                                  M.read (| γ |),
-                                                  Value.Bool true
-                                                |) in
-                                              M.call_closure (|
-                                                Ty.path "f128",
-                                                BinOp.Wrap.add,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "f128",
-                                                    BinOp.Wrap.div,
-                                                    [
-                                                      M.read (| a |);
-                                                      M.read (| UnsupportedLiteral |)
-                                                    ]
-                                                  |);
-                                                  M.read (| b |)
-                                                ]
-                                              |)));
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (M.call_closure (|
-                                                Ty.path "f128",
-                                                BinOp.Wrap.add,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "f128",
-                                                    BinOp.Wrap.div,
-                                                    [
-                                                      M.read (| a |);
-                                                      M.read (| UnsupportedLiteral |)
-                                                    ]
-                                                  |);
-                                                  M.call_closure (|
-                                                    Ty.path "f128",
-                                                    BinOp.Wrap.div,
-                                                    [
-                                                      M.read (| b |);
-                                                      M.read (| UnsupportedLiteral |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)))
-                                        ]
-                                      |)))
+                                  M.call_closure (|
+                                    Ty.path "f128",
+                                    BinOp.Wrap.div,
+                                    [ M.read (| a |); M.read (| UnsupportedLiteral |) ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "f128",
+                                    BinOp.Wrap.div,
+                                    [ M.read (| b |); M.read (| UnsupportedLiteral |) ]
+                                  |)
                                 ]
                               |)))
                         ]
@@ -2122,7 +1761,7 @@ Module f128.
     Global Typeclasses Opaque from_ne_bytes.
     
     (*
-        pub fn total_cmp(&self, other: &Self) -> crate::cmp::Ordering {
+        pub const fn total_cmp(&self, other: &Self) -> crate::cmp::Ordering {
             let mut left = self.to_bits() as i128;
             let mut right = other.to_bits() as i128;
     
@@ -2291,27 +1930,26 @@ Module f128.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_function (| "core::intrinsics::likely", [], [] |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.le,
-                                      [ M.read (| min |); M.read (| max |) ]
-                                    |)
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_function (| "core::intrinsics::likely", [], [] |),
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.le,
+                                    [ M.read (| min |); M.read (| max |) ]
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -2331,15 +1969,14 @@ Module f128.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.lt,
-                              [ M.read (| self |); M.read (| min |) ]
-                            |)
-                          |)) in
+                            BinOp.lt,
+                            [ M.read (| self |); M.read (| min |) ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] := M.write (| self, M.read (| min |) |) in
@@ -2356,15 +1993,14 @@ Module f128.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [ M.read (| self |); M.read (| max |) ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [ M.read (| self |); M.read (| max |) ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] := M.write (| self, M.read (| max |) |) in
@@ -2381,6 +2017,91 @@ Module f128.
     Global Instance AssociatedFunction_clamp : M.IsAssociatedFunction.C Self "clamp" clamp.
     Admitted.
     Global Typeclasses Opaque clamp.
+    
+    (*
+        pub fn clamp_magnitude(self, limit: f128) -> f128 {
+            assert!(limit >= 0.0, "limit must be non-negative");
+            let limit = limit.abs(); // Canonicalises -0.0 to 0.0
+            self.clamp(-limit, limit)
+        }
+    *)
+    Definition clamp_magnitude (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; limit ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let limit := M.alloc (| Ty.path "f128", limit |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| limit |); M.read (| UnsupportedLiteral |) ]
+                              |)
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.never_to_any (|
+                        M.call_closure (|
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
+                                [],
+                                []
+                              |),
+                              [ mk_str (| "limit must be non-negative" |) ]
+                            |)
+                          ]
+                        |)
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |) in
+            let~ limit : Ty.path "f128" :=
+              M.call_closure (|
+                Ty.path "f128",
+                M.get_associated_function (| Ty.path "f128", "abs", [], [] |),
+                [ M.read (| limit |) ]
+              |) in
+            M.alloc (|
+              Ty.path "f128",
+              M.call_closure (|
+                Ty.path "f128",
+                M.get_associated_function (| Ty.path "f128", "clamp", [], [] |),
+                [
+                  M.read (| self |);
+                  M.call_closure (| Ty.path "f128", UnOp.neg, [ M.read (| limit |) ] |);
+                  M.read (| limit |)
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_clamp_magnitude :
+      M.IsAssociatedFunction.C Self "clamp_magnitude" clamp_magnitude.
+    Admitted.
+    Global Typeclasses Opaque clamp_magnitude.
     
     (*
         pub const fn abs(self) -> Self {
@@ -2446,15 +2167,14 @@ Module f128.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (| Ty.path "f128", "is_nan", [], [] |),
-                          [ M.read (| self |) ]
-                        |)
-                      |)) in
+                        M.get_associated_function (| Ty.path "f128", "is_nan", [], [] |),
+                        [ M.read (| self |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (|
                     get_associated_constant (| Ty.path "f128", "NAN", Ty.path "f128" |)
@@ -2477,8 +2197,7 @@ Module f128.
     
     (*
         pub const fn copysign(self, sign: f128) -> f128 {
-            // SAFETY: this is actually a safe intrinsic
-            unsafe { intrinsics::copysignf128(self, sign) }
+            intrinsics::copysignf128(self, sign)
         }
     *)
     Definition copysign (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2498,5 +2217,505 @@ Module f128.
     Global Instance AssociatedFunction_copysign : M.IsAssociatedFunction.C Self "copysign" copysign.
     Admitted.
     Global Typeclasses Opaque copysign.
+    
+    (*
+        pub const fn algebraic_add(self, rhs: f128) -> f128 {
+            intrinsics::fadd_algebraic(self, rhs)
+        }
+    *)
+    Definition algebraic_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; rhs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let rhs := M.alloc (| Ty.path "f128", rhs |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::fadd_algebraic", [], [ Ty.path "f128" ] |),
+            [ M.read (| self |); M.read (| rhs |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_algebraic_add :
+      M.IsAssociatedFunction.C Self "algebraic_add" algebraic_add.
+    Admitted.
+    Global Typeclasses Opaque algebraic_add.
+    
+    (*
+        pub const fn algebraic_sub(self, rhs: f128) -> f128 {
+            intrinsics::fsub_algebraic(self, rhs)
+        }
+    *)
+    Definition algebraic_sub (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; rhs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let rhs := M.alloc (| Ty.path "f128", rhs |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::fsub_algebraic", [], [ Ty.path "f128" ] |),
+            [ M.read (| self |); M.read (| rhs |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_algebraic_sub :
+      M.IsAssociatedFunction.C Self "algebraic_sub" algebraic_sub.
+    Admitted.
+    Global Typeclasses Opaque algebraic_sub.
+    
+    (*
+        pub const fn algebraic_mul(self, rhs: f128) -> f128 {
+            intrinsics::fmul_algebraic(self, rhs)
+        }
+    *)
+    Definition algebraic_mul (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; rhs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let rhs := M.alloc (| Ty.path "f128", rhs |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::fmul_algebraic", [], [ Ty.path "f128" ] |),
+            [ M.read (| self |); M.read (| rhs |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_algebraic_mul :
+      M.IsAssociatedFunction.C Self "algebraic_mul" algebraic_mul.
+    Admitted.
+    Global Typeclasses Opaque algebraic_mul.
+    
+    (*
+        pub const fn algebraic_div(self, rhs: f128) -> f128 {
+            intrinsics::fdiv_algebraic(self, rhs)
+        }
+    *)
+    Definition algebraic_div (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; rhs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let rhs := M.alloc (| Ty.path "f128", rhs |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::fdiv_algebraic", [], [ Ty.path "f128" ] |),
+            [ M.read (| self |); M.read (| rhs |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_algebraic_div :
+      M.IsAssociatedFunction.C Self "algebraic_div" algebraic_div.
+    Admitted.
+    Global Typeclasses Opaque algebraic_div.
+    
+    (*
+        pub const fn algebraic_rem(self, rhs: f128) -> f128 {
+            intrinsics::frem_algebraic(self, rhs)
+        }
+    *)
+    Definition algebraic_rem (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; rhs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let rhs := M.alloc (| Ty.path "f128", rhs |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::frem_algebraic", [], [ Ty.path "f128" ] |),
+            [ M.read (| self |); M.read (| rhs |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_algebraic_rem :
+      M.IsAssociatedFunction.C Self "algebraic_rem" algebraic_rem.
+    Admitted.
+    Global Typeclasses Opaque algebraic_rem.
+    (*
+        pub const fn floor(self) -> f128 {
+            intrinsics::floorf128(self)
+        }
+    *)
+    Definition floor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::floorf128", [], [] |),
+            [ M.read (| self |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_floor : M.IsAssociatedFunction.C Self "floor" floor.
+    Admitted.
+    Global Typeclasses Opaque floor.
+    
+    (*
+        pub const fn ceil(self) -> f128 {
+            intrinsics::ceilf128(self)
+        }
+    *)
+    Definition ceil (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::ceilf128", [], [] |),
+            [ M.read (| self |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_ceil : M.IsAssociatedFunction.C Self "ceil" ceil.
+    Admitted.
+    Global Typeclasses Opaque ceil.
+    
+    (*
+        pub const fn round(self) -> f128 {
+            intrinsics::roundf128(self)
+        }
+    *)
+    Definition round (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::roundf128", [], [] |),
+            [ M.read (| self |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_round : M.IsAssociatedFunction.C Self "round" round.
+    Admitted.
+    Global Typeclasses Opaque round.
+    
+    (*
+        pub const fn round_ties_even(self) -> f128 {
+            intrinsics::round_ties_even_f128(self)
+        }
+    *)
+    Definition round_ties_even (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::round_ties_even_f128", [], [] |),
+            [ M.read (| self |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_round_ties_even :
+      M.IsAssociatedFunction.C Self "round_ties_even" round_ties_even.
+    Admitted.
+    Global Typeclasses Opaque round_ties_even.
+    
+    (*
+        pub const fn trunc(self) -> f128 {
+            intrinsics::truncf128(self)
+        }
+    *)
+    Definition trunc (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::truncf128", [], [] |),
+            [ M.read (| self |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_trunc : M.IsAssociatedFunction.C Self "trunc" trunc.
+    Admitted.
+    Global Typeclasses Opaque trunc.
+    
+    (*
+        pub const fn fract(self) -> f128 {
+            self - self.trunc()
+        }
+    *)
+    Definition fract (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          M.call_closure (|
+            Ty.path "f128",
+            BinOp.Wrap.sub,
+            [
+              M.read (| self |);
+              M.call_closure (|
+                Ty.path "f128",
+                M.get_associated_function (| Ty.path "f128", "trunc", [], [] |),
+                [ M.read (| self |) ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_fract : M.IsAssociatedFunction.C Self "fract" fract.
+    Admitted.
+    Global Typeclasses Opaque fract.
+    
+    (*
+        pub const fn mul_add(self, a: f128, b: f128) -> f128 {
+            intrinsics::fmaf128(self, a, b)
+        }
+    *)
+    Definition mul_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; a; b ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let a := M.alloc (| Ty.path "f128", a |) in
+          let b := M.alloc (| Ty.path "f128", b |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::fmaf128", [], [] |),
+            [ M.read (| self |); M.read (| a |); M.read (| b |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_mul_add : M.IsAssociatedFunction.C Self "mul_add" mul_add.
+    Admitted.
+    Global Typeclasses Opaque mul_add.
+    
+    (*
+        pub fn div_euclid(self, rhs: f128) -> f128 {
+            let q = (self / rhs).trunc();
+            if self % rhs < 0.0 {
+                return if rhs > 0.0 { q - 1.0 } else { q + 1.0 };
+            }
+            q
+        }
+    *)
+    Definition div_euclid (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; rhs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let rhs := M.alloc (| Ty.path "f128", rhs |) in
+          M.catch_return (Ty.path "f128") (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ q : Ty.path "f128" :=
+                  M.call_closure (|
+                    Ty.path "f128",
+                    M.get_associated_function (| Ty.path "f128", "trunc", [], [] |),
+                    [
+                      M.call_closure (|
+                        Ty.path "f128",
+                        BinOp.Wrap.div,
+                        [ M.read (| self |); M.read (| rhs |) ]
+                      |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "f128",
+                                    BinOp.Wrap.rem,
+                                    [ M.read (| self |); M.read (| rhs |) ]
+                                  |);
+                                  M.read (| UnsupportedLiteral |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.match_operator (|
+                                  Ty.path "f128",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.gt,
+                                              [ M.read (| rhs |); M.read (| UnsupportedLiteral |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.call_closure (|
+                                          Ty.path "f128",
+                                          BinOp.Wrap.sub,
+                                          [ M.read (| q |); M.read (| UnsupportedLiteral |) ]
+                                        |)));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (M.call_closure (|
+                                          Ty.path "f128",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| q |); M.read (| UnsupportedLiteral |) ]
+                                        |)))
+                                  ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                q
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_div_euclid :
+      M.IsAssociatedFunction.C Self "div_euclid" div_euclid.
+    Admitted.
+    Global Typeclasses Opaque div_euclid.
+    
+    (*
+        pub fn rem_euclid(self, rhs: f128) -> f128 {
+            let r = self % rhs;
+            if r < 0.0 { r + rhs.abs() } else { r }
+        }
+    *)
+    Definition rem_euclid (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; rhs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let rhs := M.alloc (| Ty.path "f128", rhs |) in
+          M.read (|
+            let~ r : Ty.path "f128" :=
+              M.call_closure (|
+                Ty.path "f128",
+                BinOp.Wrap.rem,
+                [ M.read (| self |); M.read (| rhs |) ]
+              |) in
+            M.alloc (|
+              Ty.path "f128",
+              M.match_operator (|
+                Ty.path "f128",
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.lt,
+                            [ M.read (| r |); M.read (| UnsupportedLiteral |) ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.call_closure (|
+                        Ty.path "f128",
+                        BinOp.Wrap.add,
+                        [
+                          M.read (| r |);
+                          M.call_closure (|
+                            Ty.path "f128",
+                            M.get_associated_function (| Ty.path "f128", "abs", [], [] |),
+                            [ M.read (| rhs |) ]
+                          |)
+                        ]
+                      |)));
+                  fun γ => ltac:(M.monadic (M.read (| r |)))
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_rem_euclid :
+      M.IsAssociatedFunction.C Self "rem_euclid" rem_euclid.
+    Admitted.
+    Global Typeclasses Opaque rem_euclid.
+    
+    (*
+        pub fn powi(self, n: i32) -> f128 {
+            intrinsics::powif128(self, n)
+        }
+    *)
+    Definition powi (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; n ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          let n := M.alloc (| Ty.path "i32", n |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::powif128", [], [] |),
+            [ M.read (| self |); M.read (| n |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_powi : M.IsAssociatedFunction.C Self "powi" powi.
+    Admitted.
+    Global Typeclasses Opaque powi.
+    
+    (*
+        pub fn sqrt(self) -> f128 {
+            intrinsics::sqrtf128(self)
+        }
+    *)
+    Definition sqrt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "f128", self |) in
+          M.call_closure (|
+            Ty.path "f128",
+            M.get_function (| "core::intrinsics::sqrtf128", [], [] |),
+            [ M.read (| self |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_sqrt : M.IsAssociatedFunction.C Self "sqrt" sqrt.
+    Admitted.
+    Global Typeclasses Opaque sqrt.
   End Impl_f128.
+  
 End f128.

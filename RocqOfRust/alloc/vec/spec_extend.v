@@ -289,7 +289,7 @@ Module vec.
           (* Instance *) [ ("spec_extend", InstanceField.Method (spec_extend T I A)) ].
     End Impl_alloc_vec_spec_extend_SpecExtend_where_core_alloc_Allocator_A_where_core_iter_traits_iterator_Iterator_I_where_core_clone_Clone_T_ref__T_I_for_alloc_vec_Vec_T_A.
     
-    Module Impl_alloc_vec_spec_extend_SpecExtend_where_core_alloc_Allocator_A_where_core_marker_Copy_T_ref__T_core_slice_iter_Iter_T_for_alloc_vec_Vec_T_A.
+    Module Impl_alloc_vec_spec_extend_SpecExtend_where_core_alloc_Allocator_A_where_core_clone_TrivialClone_T_ref__T_core_slice_iter_Iter_T_for_alloc_vec_Vec_T_A.
       Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ].
       
       (*
@@ -355,6 +355,6 @@ Module vec.
           [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
           (Self T A)
           (* Instance *) [ ("spec_extend", InstanceField.Method (spec_extend T A)) ].
-    End Impl_alloc_vec_spec_extend_SpecExtend_where_core_alloc_Allocator_A_where_core_marker_Copy_T_ref__T_core_slice_iter_Iter_T_for_alloc_vec_Vec_T_A.
+    End Impl_alloc_vec_spec_extend_SpecExtend_where_core_alloc_Allocator_A_where_core_clone_TrivialClone_T_ref__T_core_slice_iter_Iter_T_for_alloc_vec_Vec_T_A.
   End spec_extend.
 End vec.

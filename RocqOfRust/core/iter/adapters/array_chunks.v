@@ -346,21 +346,20 @@ Module iter.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.ne,
-                                      [ N; Value.Integer IntegerKind.Usize 0 ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.ne,
+                                    [ N; Value.Integer IntegerKind.Usize 0 ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -372,28 +371,11 @@ Module iter.
                                   Ty.path "core::fmt::Arguments",
                                   M.get_associated_function (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
+                                    "from_str",
+                                    [],
                                     []
                                   |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array
-                                              [ mk_str (| "chunk size must be non-zero" |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
+                                  [ mk_str (| "chunk size must be non-zero" |) ]
                                 |)
                               ]
                             |)
@@ -440,11 +422,11 @@ Module iter.
         Global Typeclasses Opaque new.
         
         (*
-            pub fn into_remainder(mut self) -> Option<array::IntoIter<I::Item, N>> {
+            pub fn into_remainder(mut self) -> array::IntoIter<I::Item, N> {
                 if self.remainder.is_none() {
                     while let Some(_) = self.next() {}
                 }
-                self.remainder
+                self.remainder.unwrap_or_default()
             }
         *)
         Definition into_remainder
@@ -472,44 +454,43 @@ Module iter.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::array::iter::IntoIter")
-                                          [ N ]
-                                          [
-                                            Ty.associated_in_trait
-                                              "core::iter::traits::iterator::Iterator"
-                                              []
-                                              []
-                                              I
-                                              "Item"
-                                          ]
-                                      ],
-                                    "is_none",
-                                    [],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
                                     []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        self,
-                                        "core::iter::adapters::array_chunks::ArrayChunks",
-                                        "remainder"
-                                      |)
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::array::iter::IntoIter")
+                                        [ N ]
+                                        [
+                                          Ty.associated_in_trait
+                                            "core::iter::traits::iterator::Iterator"
+                                            []
+                                            []
+                                            I
+                                            "Item"
+                                        ]
+                                    ],
+                                  "is_none",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "core::iter::adapters::array_chunks::ArrayChunks",
+                                      "remainder"
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -599,10 +580,55 @@ Module iter.
                       fun γ => ltac:(M.monadic (Value.Tuple []))
                     ]
                   |) in
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "core::iter::adapters::array_chunks::ArrayChunks",
-                  "remainder"
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::array::iter::IntoIter")
+                    [ N ]
+                    [ Ty.associated_in_trait "core::iter::traits::iterator::Iterator" [] [] I "Item"
+                    ],
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ N ]
+                      [
+                        Ty.associated_in_trait
+                          "core::iter::traits::iterator::Iterator"
+                          []
+                          []
+                          I
+                          "Item"
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::IntoIter")
+                            [ N ]
+                            [
+                              Ty.associated_in_trait
+                                "core::iter::traits::iterator::Iterator"
+                                []
+                                []
+                                I
+                                "Item"
+                            ]
+                        ],
+                      "unwrap_or_default",
+                      [],
+                      []
+                    |),
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::iter::adapters::array_chunks::ArrayChunks",
+                          "remainder"
+                        |)
+                      |)
+                    ]
+                  |)
                 |)
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -670,44 +696,43 @@ Module iter.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::array::iter::IntoIter")
-                                              [ N ]
-                                              [
-                                                Ty.associated_in_trait
-                                                  "core::iter::traits::iterator::Iterator"
-                                                  []
-                                                  []
-                                                  I
-                                                  "Item"
-                                              ]
-                                          ],
-                                        "is_some",
-                                        [],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::iter::adapters::array_chunks::ArrayChunks",
-                                            "remainder"
-                                          |)
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::array::iter::IntoIter")
+                                            [ N ]
+                                            [
+                                              Ty.associated_in_trait
+                                                "core::iter::traits::iterator::Iterator"
+                                                []
+                                                []
+                                                I
+                                                "Item"
+                                            ]
+                                        ],
+                                      "is_some",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::array_chunks::ArrayChunks",
+                                          "remainder"
                                         |)
-                                      ]
-                                    |)
-                                  |)) in
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -1412,7 +1437,7 @@ Module iter.
                     match self.iter.next_chunk() {
                         Ok(chunk) => acc = f(acc, chunk)?,
                         Err(remainder) => {
-                            // Make sure to not override `self.remainder` with an empty array
+                            // Make sure to not overwrite `self.remainder` with an empty array
                             // when `next` is called after `ArrayChunks` exhaustion.
                             self.remainder.get_or_insert(remainder);
         
@@ -3072,22 +3097,21 @@ Module iter.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.ge,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.sub,
-                                              [ M.read (| inner_len |); M.read (| i |) ]
-                                            |);
-                                            N
-                                          ]
-                                        |)
-                                      |)) in
+                                        BinOp.ge,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.sub,
+                                            [ M.read (| inner_len |); M.read (| i |) ]
+                                          |);
+                                          N
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),

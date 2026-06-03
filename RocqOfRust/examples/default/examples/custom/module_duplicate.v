@@ -24,28 +24,12 @@ Module foo.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "foo::gre::bar
+                        [ mk_str (| "foo::gre::bar
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -84,28 +68,12 @@ Module foo.
                       Ty.path "core::fmt::Arguments",
                       M.get_associated_function (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
+                        "from_str",
+                        [],
                         []
                       |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "foo::bar
+                      [ mk_str (| "foo::bar
 " |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
                     |)
                   ]
                 |) in

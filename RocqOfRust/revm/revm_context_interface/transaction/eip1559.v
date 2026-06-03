@@ -48,6 +48,9 @@ Module transaction.
             (Self T)
             (* Instance *) [ ("kind", InstanceField.Method (kind T)) ].
       End Impl_revm_context_interface_transaction_eip1559_Eip1559Tx_where_revm_context_interface_transaction_eip1559_Eip1559Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_ref__T_for_ref__T.
+    End underscore.
+    
+    Module underscore_1.
       Module Impl_revm_context_interface_transaction_eip1559_Eip1559Tx_where_revm_context_interface_transaction_eip1559_Eip1559Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -101,6 +104,9 @@ Module transaction.
             (Self T)
             (* Instance *) [ ("kind", InstanceField.Method (kind T)) ].
       End Impl_revm_context_interface_transaction_eip1559_Eip1559Tx_where_revm_context_interface_transaction_eip1559_Eip1559Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
+    End underscore_1.
+    
+    Module underscore_2.
       Module Impl_revm_context_interface_transaction_eip1559_Eip1559Tx_where_revm_context_interface_transaction_eip1559_Eip1559Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_alloc_sync_Arc_T_alloc_alloc_Global_for_alloc_sync_Arc_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -167,6 +173,9 @@ Module transaction.
             (Self T)
             (* Instance *) [ ("kind", InstanceField.Method (kind T)) ].
       End Impl_revm_context_interface_transaction_eip1559_Eip1559Tx_where_revm_context_interface_transaction_eip1559_Eip1559Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_alloc_sync_Arc_T_alloc_alloc_Global_for_alloc_sync_Arc_T_alloc_alloc_Global.
+    End underscore_2.
+    
+    Module underscore_3.
       Module Impl_revm_context_interface_transaction_eip1559_Eip1559Tx_where_revm_context_interface_transaction_eip1559_Eip1559Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_alloc_rc_Rc_T_alloc_alloc_Global_for_alloc_rc_Rc_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -232,6 +241,12 @@ Module transaction.
             (Self T)
             (* Instance *) [ ("kind", InstanceField.Method (kind T)) ].
       End Impl_revm_context_interface_transaction_eip1559_Eip1559Tx_where_revm_context_interface_transaction_eip1559_Eip1559Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_alloc_rc_Rc_T_alloc_alloc_Global_for_alloc_rc_Rc_T_alloc_alloc_Global.
+    End underscore_3.
+    
+    (* Trait *)
+    (* Empty module 'Eip1559CommonTxFields' *)
+    
+    Module underscore_4.
       Module Impl_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_ref__T_for_ref__T.
         Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
         
@@ -406,6 +421,9 @@ Module transaction.
               ("access_list", InstanceField.Method (access_list T))
             ].
       End Impl_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_ref__T_for_ref__T.
+    End underscore_4.
+    
+    Module underscore_5.
       Module Impl_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -625,6 +643,9 @@ Module transaction.
               ("access_list", InstanceField.Method (access_list T))
             ].
       End Impl_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
+    End underscore_5.
+    
+    Module underscore_6.
       Module Impl_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_sync_Arc_T_alloc_alloc_Global_for_alloc_sync_Arc_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -896,6 +917,9 @@ Module transaction.
               ("access_list", InstanceField.Method (access_list T))
             ].
       End Impl_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_sync_Arc_T_alloc_alloc_Global_for_alloc_sync_Arc_T_alloc_alloc_Global.
+    End underscore_6.
+    
+    Module underscore_7.
       Module Impl_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_rc_Rc_T_alloc_alloc_Global_for_alloc_rc_Rc_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -1163,16 +1187,6 @@ Module transaction.
               ("access_list", InstanceField.Method (access_list T))
             ].
       End Impl_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_where_revm_context_interface_transaction_eip1559_Eip1559CommonTxFields_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_rc_Rc_T_alloc_alloc_Global_for_alloc_rc_Rc_T_alloc_alloc_Global.
-    End underscore.
-    
-    
-    
-    
-    (* Trait *)
-    (* Empty module 'Eip1559CommonTxFields' *)
-    
-    
-    
-    
+    End underscore_7.
   End eip1559.
 End transaction.

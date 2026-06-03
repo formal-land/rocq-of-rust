@@ -34,15 +34,14 @@ Module utils.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [ M.read (| rem |); Value.Integer IntegerKind.Usize 0 ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [ M.read (| rem |); Value.Integer IntegerKind.Usize 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (| rem |)));
                 fun γ => ltac:(M.monadic (M.read (| b |)))

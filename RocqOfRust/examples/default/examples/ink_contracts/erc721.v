@@ -313,6 +313,18 @@ Module Impl_core_default_Default_for_erc721_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_erc721_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_erc721_AccountId.
+  Definition Self : Ty.t := Ty.path "erc721::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_erc721_AccountId.
+
 Module Impl_core_clone_Clone_for_erc721_AccountId.
   Definition Self : Ty.t := Ty.path "erc721::AccountId".
   
@@ -727,6 +739,18 @@ Module Impl_core_cmp_Eq_for_erc721_Error.
       (* Instance *)
       [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
 End Impl_core_cmp_Eq_for_erc721_Error.
+
+Module Impl_core_clone_TrivialClone_for_erc721_Error.
+  Definition Self : Ty.t := Ty.path "erc721::Error".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_erc721_Error.
 
 Module Impl_core_clone_Clone_for_erc721_Error.
   Definition Self : Ty.t := Ty.path "erc721::Error".
@@ -1582,26 +1606,25 @@ Module Impl_erc721_Erc721.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_trait_method (|
-                                  "core::cmp::PartialEq",
-                                  Ty.path "erc721::AccountId",
-                                  [],
-                                  [ Ty.path "erc721::AccountId" ],
-                                  "eq",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, to |);
-                                  M.borrow (| Pointer.Kind.Ref, caller |)
-                                ]
-                              |)
-                            |)) in
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.path "erc721::AccountId",
+                                [],
+                                [ Ty.path "erc721::AccountId" ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, to |);
+                                M.borrow (| Pointer.Kind.Ref, caller |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -1657,7 +1680,7 @@ Module Impl_erc721_Erc721.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use approved in
+                        (let γ := approved in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
@@ -1981,91 +2004,160 @@ Module Impl_erc721_Erc721.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  LogicalOp.or (|
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialEq",
+                              UnOp.not,
+                              [
+                                LogicalOp.or (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "erc721::AccountId" ],
+                                      [],
+                                      [
                                         Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.path "erc721::AccountId" ],
-                                        [],
-                                        [
+                                          [ Ty.path "erc721::AccountId" ]
+                                      ],
+                                      "eq",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, owner |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
+                                            [ Ty.path "erc721::AccountId" ],
+                                          Value.StructTuple
+                                            "core::option::Option::Some"
+                                            []
                                             [ Ty.path "erc721::AccountId" ]
-                                        ],
-                                        "eq",
+                                            [ M.read (| caller |) ]
+                                        |)
+                                      |)
+                                    ]
+                                  |),
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.path "erc721::Erc721",
+                                        "approved_for_all",
                                         [],
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, owner |);
                                         M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.alloc (|
+                                          M.deref (| M.read (| self |) |)
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "erc721::AccountId",
+                                          M.get_associated_function (|
                                             Ty.apply
                                               (Ty.path "core::option::Option")
                                               []
                                               [ Ty.path "erc721::AccountId" ],
-                                            Value.StructTuple
-                                              "core::option::Option::Some"
-                                              []
-                                              [ Ty.path "erc721::AccountId" ]
-                                              [ M.read (| caller |) ]
-                                          |)
+                                            "expect",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.read (| owner |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| mk_str (| "Error with AccountId" |) |)
+                                            |)
+                                          ]
+                                        |);
+                                        M.read (| caller |)
+                                      ]
+                                    |)))
+                                |)
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.never_to_any (|
+                          M.read (|
+                            M.return_ (|
+                              Value.StructTuple
+                                "core::result::Result::Err"
+                                []
+                                [ Ty.tuple []; Ty.path "erc721::Error" ]
+                                [ Value.StructTuple "erc721::Error::NotAllowed" [] [] [] ]
+                            |)
+                          |)
+                        |)));
+                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                  ]
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.path "erc721::AccountId",
+                                [],
+                                [ Ty.path "erc721::AccountId" ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.path "erc721::AccountId",
+                                    M.call_closure (|
+                                      Ty.path "erc721::AccountId",
+                                      M.get_trait_method (|
+                                        "core::convert::From",
+                                        Ty.path "erc721::AccountId",
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            [ Ty.path "u8" ]
+                                        ],
+                                        "from",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        lib.repeat (|
+                                          Value.Integer IntegerKind.U8 0,
+                                          Value.Integer IntegerKind.Usize 32
                                         |)
                                       ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.path "erc721::Erc721",
-                                          "approved_for_all",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "erc721::AccountId",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.path "erc721::AccountId" ],
-                                              "expect",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.read (| owner |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| mk_str (| "Error with AccountId" |) |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.read (| caller |)
-                                        ]
-                                      |)))
+                                    |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2089,107 +2181,35 @@ Module Impl_erc721_Erc721.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_trait_method (|
-                                  "core::cmp::PartialEq",
-                                  Ty.path "erc721::AccountId",
-                                  [],
-                                  [ Ty.path "erc721::AccountId" ],
-                                  "eq",
-                                  [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "erc721::Mapping")
                                   []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.path "erc721::AccountId",
-                                      M.call_closure (|
-                                        Ty.path "erc721::AccountId",
-                                        M.get_trait_method (|
-                                          "core::convert::From",
-                                          Ty.path "erc721::AccountId",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 32 ]
-                                              [ Ty.path "u8" ]
-                                          ],
-                                          "from",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          lib.repeat (|
-                                            Value.Integer IntegerKind.U8 0,
-                                            Value.Integer IntegerKind.Usize 32
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)) in
-                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                        M.never_to_any (|
-                          M.read (|
-                            M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
+                                  [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
+                                "contains",
+                                [],
                                 []
-                                [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                [ Value.StructTuple "erc721::Error::NotAllowed" [] [] [] ]
-                            |)
-                          |)
-                        |)));
-                    fun γ => ltac:(M.monadic (Value.Tuple []))
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.match_operator (|
-                  Ty.tuple [],
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "erc721::Mapping")
-                                    []
-                                    [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
-                                  "contains",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "erc721::Erc721",
-                                      "token_approvals"
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "erc721::Erc721",
+                                    "token_approvals"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2534,38 +2554,37 @@ Module Impl_erc721_Erc721.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        UnOp.not,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "erc721::Mapping")
-                                                []
-                                                [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
-                                              "contains",
-                                              [],
+                                      UnOp.not,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "erc721::Mapping")
                                               []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| token_owner |) |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    |)) in
+                                              [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
+                                            "contains",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| token_owner |) |)
+                                            |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -2935,32 +2954,31 @@ Module Impl_erc721_Erc721.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "erc721::Mapping")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
-                                          "contains",
-                                          [],
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "erc721::Mapping")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| token_owner |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)) in
+                                          [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
+                                        "contains",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| token_owner |) |)
+                                        |);
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -2988,57 +3006,56 @@ Module Impl_erc721_Erc721.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_trait_method (|
-                                          "core::cmp::PartialEq",
-                                          Ty.path "erc721::AccountId",
-                                          [],
-                                          [ Ty.path "erc721::AccountId" ],
-                                          "eq",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| to |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
+                                      M.get_trait_method (|
+                                        "core::cmp::PartialEq",
+                                        Ty.path "erc721::AccountId",
+                                        [],
+                                        [ Ty.path "erc721::AccountId" ],
+                                        "eq",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| to |) |)
+                                        |);
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.path "erc721::AccountId",
+                                            M.call_closure (|
                                               Ty.path "erc721::AccountId",
-                                              M.call_closure (|
+                                              M.get_trait_method (|
+                                                "core::convert::From",
                                                 Ty.path "erc721::AccountId",
-                                                M.get_trait_method (|
-                                                  "core::convert::From",
-                                                  Ty.path "erc721::AccountId",
-                                                  [],
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 32 ]
-                                                      [ Ty.path "u8" ]
-                                                  ],
-                                                  "from",
-                                                  [],
-                                                  []
-                                                |),
+                                                [],
                                                 [
-                                                  lib.repeat (|
-                                                    Value.Integer IntegerKind.U8 0,
-                                                    Value.Integer IntegerKind.Usize 32
-                                                  |)
-                                                ]
-                                              |)
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                                    [ Ty.path "u8" ]
+                                                ],
+                                                "from",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                lib.repeat (|
+                                                  Value.Integer IntegerKind.U8 0,
+                                                  Value.Integer IntegerKind.Usize 32
+                                                |)
+                                              ]
                                             |)
                                           |)
-                                        ]
-                                      |)
-                                    |)) in
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -3261,32 +3278,31 @@ Module Impl_erc721_Erc721.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "erc721::Erc721",
-                                      "exists",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      M.read (| id |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.path "erc721::Erc721",
+                                    "exists",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |);
+                                    M.read (| id |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -3310,37 +3326,36 @@ Module Impl_erc721_Erc721.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "erc721::Erc721",
-                                      "approved_or_owner",
-                                      [],
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.path "erc721::Erc721",
+                                    "approved_or_owner",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |);
+                                    Value.StructTuple
+                                      "core::option::Option::Some"
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::Some"
-                                        []
-                                        [ Ty.path "erc721::AccountId" ]
-                                        [ M.read (| caller |) ];
-                                      M.read (| id |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                      [ Ty.path "erc721::AccountId" ]
+                                      [ M.read (| caller |) ];
+                                    M.read (| id |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -4545,26 +4560,25 @@ Module Impl_erc721_Erc721.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialEq",
-                                              Ty.path "erc721::AccountId",
-                                              [],
-                                              [ Ty.path "erc721::AccountId" ],
-                                              "ne",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (| Pointer.Kind.Ref, owner |);
-                                              M.borrow (| Pointer.Kind.Ref, caller |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialEq",
+                                            Ty.path "erc721::AccountId",
+                                            [],
+                                            [ Ty.path "erc721::AccountId" ],
+                                            "ne",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (| Pointer.Kind.Ref, owner |);
+                                            M.borrow (| Pointer.Kind.Ref, caller |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),

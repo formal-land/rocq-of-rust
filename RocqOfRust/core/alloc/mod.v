@@ -22,6 +22,18 @@ Module alloc.
         (* Instance *) [].
   End Impl_core_marker_Copy_for_core_alloc_AllocError.
   
+  Module Impl_core_clone_TrivialClone_for_core_alloc_AllocError.
+    Definition Self : Ty.t := Ty.path "core::alloc::AllocError".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_alloc_AllocError.
+  
   Module Impl_core_clone_Clone_for_core_alloc_AllocError.
     Definition Self : Ty.t := Ty.path "core::alloc::AllocError".
     
@@ -507,7 +519,7 @@ Module alloc.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -519,44 +531,41 @@ Module alloc.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.ge,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::alloc::layout::Layout",
-                                                        "size",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, new_layout |)
-                                                      ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::alloc::layout::Layout",
-                                                        "size",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, old_layout |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.ge,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::alloc::layout::Layout",
+                                                      "size",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.borrow (| Pointer.Kind.Ref, new_layout |) ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::alloc::layout::Layout",
+                                                      "size",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.borrow (| Pointer.Kind.Ref, old_layout |) ]
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -571,35 +580,13 @@ Module alloc.
                                               Ty.path "core::fmt::Arguments",
                                               M.get_associated_function (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                "from_str",
+                                                [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [
-                                                            mk_str (|
-                                                              "`new_layout.size()` must be greater than or equal to `old_layout.size()`"
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
+                                                mk_str (|
+                                                  "`new_layout.size()` must be greater than or equal to `old_layout.size()`"
                                                 |)
                                               ]
                                             |)
@@ -792,11 +779,7 @@ Module alloc.
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
                         Ty.tuple [],
-                        M.get_function (|
-                          "core::intrinsics::copy_nonoverlapping",
-                          [],
-                          [ Ty.path "u8" ]
-                        |),
+                        M.get_function (| "core::ptr::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
                         [
                           M.call_closure (|
                             Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
@@ -931,7 +914,7 @@ Module alloc.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -943,44 +926,41 @@ Module alloc.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.ge,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::alloc::layout::Layout",
-                                                        "size",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, new_layout |)
-                                                      ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::alloc::layout::Layout",
-                                                        "size",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, old_layout |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.ge,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::alloc::layout::Layout",
+                                                      "size",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.borrow (| Pointer.Kind.Ref, new_layout |) ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::alloc::layout::Layout",
+                                                      "size",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.borrow (| Pointer.Kind.Ref, old_layout |) ]
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -995,35 +975,13 @@ Module alloc.
                                               Ty.path "core::fmt::Arguments",
                                               M.get_associated_function (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                "from_str",
+                                                [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [
-                                                            mk_str (|
-                                                              "`new_layout.size()` must be greater than or equal to `old_layout.size()`"
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
+                                                mk_str (|
+                                                  "`new_layout.size()` must be greater than or equal to `old_layout.size()`"
                                                 |)
                                               ]
                                             |)
@@ -1216,11 +1174,7 @@ Module alloc.
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
                         Ty.tuple [],
-                        M.get_function (|
-                          "core::intrinsics::copy_nonoverlapping",
-                          [],
-                          [ Ty.path "u8" ]
-                        |),
+                        M.get_function (| "core::ptr::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
                         [
                           M.call_closure (|
                             Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
@@ -1351,7 +1305,7 @@ Module alloc.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1363,44 +1317,41 @@ Module alloc.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.le,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::alloc::layout::Layout",
-                                                        "size",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, new_layout |)
-                                                      ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::alloc::layout::Layout",
-                                                        "size",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, old_layout |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.le,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::alloc::layout::Layout",
+                                                      "size",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.borrow (| Pointer.Kind.Ref, new_layout |) ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::alloc::layout::Layout",
+                                                      "size",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.borrow (| Pointer.Kind.Ref, old_layout |) ]
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -1415,35 +1366,13 @@ Module alloc.
                                               Ty.path "core::fmt::Arguments",
                                               M.get_associated_function (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                "from_str",
+                                                [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [
-                                                            mk_str (|
-                                                              "`new_layout.size()` must be smaller than or equal to `old_layout.size()`"
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
+                                                mk_str (|
+                                                  "`new_layout.size()` must be smaller than or equal to `old_layout.size()`"
                                                 |)
                                               ]
                                             |)
@@ -1636,11 +1565,7 @@ Module alloc.
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
                         Ty.tuple [],
-                        M.get_function (|
-                          "core::intrinsics::copy_nonoverlapping",
-                          [],
-                          [ Ty.path "u8" ]
-                        |),
+                        M.get_function (| "core::ptr::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
                         [
                           M.call_closure (|
                             Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
@@ -2031,4 +1956,286 @@ Module alloc.
           ("shrink", InstanceField.Method (shrink A))
         ].
   End Impl_core_alloc_Allocator_where_core_alloc_Allocator_A_where_core_marker_Sized_A_for_ref__A.
+  
+  Module Impl_core_alloc_Allocator_where_core_alloc_Allocator_A_where_core_marker_Sized_A_for_ref_mut_A.
+    Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ A ].
+    
+    (*
+        fn allocate(&self, layout: Layout) -> Result<NonNull<[u8]>, AllocError> {
+            ( **self).allocate(layout)
+        }
+    *)
+    Definition allocate (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self; layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ], self |) in
+          let layout := M.alloc (| Ty.path "core::alloc::layout::Layout", layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", A, [], [], "allocate", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              |);
+              M.read (| layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn allocate_zeroed(&self, layout: Layout) -> Result<NonNull<[u8]>, AllocError> {
+            ( **self).allocate_zeroed(layout)
+        }
+    *)
+    Definition allocate_zeroed
+        (A : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self; layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ], self |) in
+          let layout := M.alloc (| Ty.path "core::alloc::layout::Layout", layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", A, [], [], "allocate_zeroed", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              |);
+              M.read (| layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        unsafe fn deallocate(&self, ptr: NonNull<u8>, layout: Layout) {
+            // SAFETY: the safety contract must be upheld by the caller
+            unsafe { ( **self).deallocate(ptr, layout) }
+        }
+    *)
+    Definition deallocate (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self; ptr; layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ], self |) in
+          let ptr :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+              ptr
+            |) in
+          let layout := M.alloc (| Ty.path "core::alloc::layout::Layout", layout |) in
+          M.call_closure (|
+            Ty.tuple [],
+            M.get_trait_method (| "core::alloc::Allocator", A, [], [], "deallocate", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              |);
+              M.read (| ptr |);
+              M.read (| layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        unsafe fn grow(
+            &self,
+            ptr: NonNull<u8>,
+            old_layout: Layout,
+            new_layout: Layout,
+        ) -> Result<NonNull<[u8]>, AllocError> {
+            // SAFETY: the safety contract must be upheld by the caller
+            unsafe { ( **self).grow(ptr, old_layout, new_layout) }
+        }
+    *)
+    Definition grow (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self; ptr; old_layout; new_layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ], self |) in
+          let ptr :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+              ptr
+            |) in
+          let old_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", old_layout |) in
+          let new_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", new_layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", A, [], [], "grow", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              |);
+              M.read (| ptr |);
+              M.read (| old_layout |);
+              M.read (| new_layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        unsafe fn grow_zeroed(
+            &self,
+            ptr: NonNull<u8>,
+            old_layout: Layout,
+            new_layout: Layout,
+        ) -> Result<NonNull<[u8]>, AllocError> {
+            // SAFETY: the safety contract must be upheld by the caller
+            unsafe { ( **self).grow_zeroed(ptr, old_layout, new_layout) }
+        }
+    *)
+    Definition grow_zeroed (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self; ptr; old_layout; new_layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ], self |) in
+          let ptr :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+              ptr
+            |) in
+          let old_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", old_layout |) in
+          let new_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", new_layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", A, [], [], "grow_zeroed", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              |);
+              M.read (| ptr |);
+              M.read (| old_layout |);
+              M.read (| new_layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        unsafe fn shrink(
+            &self,
+            ptr: NonNull<u8>,
+            old_layout: Layout,
+            new_layout: Layout,
+        ) -> Result<NonNull<[u8]>, AllocError> {
+            // SAFETY: the safety contract must be upheld by the caller
+            unsafe { ( **self).shrink(ptr, old_layout, new_layout) }
+        }
+    *)
+    Definition shrink (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self; ptr; old_layout; new_layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ], self |) in
+          let ptr :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+              ptr
+            |) in
+          let old_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", old_layout |) in
+          let new_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", new_layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", A, [], [], "shrink", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              |);
+              M.read (| ptr |);
+              M.read (| old_layout |);
+              M.read (| new_layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (A : Ty.t),
+      M.IsTraitInstance
+        "core::alloc::Allocator"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self A)
+        (* Instance *)
+        [
+          ("allocate", InstanceField.Method (allocate A));
+          ("allocate_zeroed", InstanceField.Method (allocate_zeroed A));
+          ("deallocate", InstanceField.Method (deallocate A));
+          ("grow", InstanceField.Method (grow A));
+          ("grow_zeroed", InstanceField.Method (grow_zeroed A));
+          ("shrink", InstanceField.Method (shrink A))
+        ].
+  End Impl_core_alloc_Allocator_where_core_alloc_Allocator_A_where_core_marker_Sized_A_for_ref_mut_A.
 End alloc.

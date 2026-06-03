@@ -25,6 +25,18 @@ Module common.
     M.IsDiscriminant "alloy_primitives::common::TxKind::Create" 0.
   Axiom IsDiscriminant_TxKind_Call : M.IsDiscriminant "alloy_primitives::common::TxKind::Call" 1.
   
+  Module Impl_core_clone_TrivialClone_for_alloy_primitives_common_TxKind.
+    Definition Self : Ty.t := Ty.path "alloy_primitives::common::TxKind".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_alloy_primitives_common_TxKind.
+  
   Module Impl_core_clone_Clone_for_alloy_primitives_common_TxKind.
     Definition Self : Ty.t := Ty.path "alloy_primitives::common::TxKind".
     

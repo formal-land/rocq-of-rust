@@ -231,98 +231,91 @@ Module instructions.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.Wrap.bit_or,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.Wrap.bit_or,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.gt,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          0
+                                                    BinOp.Wrap.bit_or,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.Wrap.bit_or,
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.Wrap.bit_or,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.gt,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        0
+                                                                    |)
+                                                                  |);
+                                                                  M.cast
+                                                                    (Ty.path "u64")
+                                                                    (M.read (|
+                                                                      get_associated_constant (|
+                                                                        Ty.path "usize",
+                                                                        "MAX",
+                                                                        Ty.path "usize"
                                                                       |)
-                                                                    |);
-                                                                    M.cast
-                                                                      (Ty.path "u64")
-                                                                      (M.read (|
-                                                                        get_associated_constant (|
-                                                                          Ty.path "usize",
-                                                                          "MAX",
-                                                                          Ty.path "usize"
-                                                                        |)
-                                                                      |))
-                                                                  ]
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.ne,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          1
-                                                                      |)
-                                                                    |);
-                                                                    Value.Integer IntegerKind.U64 0
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.ne,
-                                                              [
-                                                                M.read (|
-                                                                  M.SubPointer.get_array_field (|
-                                                                    M.deref (| M.read (| x |) |),
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      2
-                                                                  |)
-                                                                |);
-                                                                Value.Integer IntegerKind.U64 0
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.ne,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.deref (| M.read (| x |) |),
-                                                                Value.Integer IntegerKind.Usize 3
+                                                                    |))
+                                                                ]
+                                                              |);
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.ne,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        1
+                                                                    |)
+                                                                  |);
+                                                                  Value.Integer IntegerKind.U64 0
+                                                                ]
                                                               |)
-                                                            |);
-                                                            Value.Integer IntegerKind.U64 0
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                            ]
+                                                          |);
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.ne,
+                                                            [
+                                                              M.read (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.deref (| M.read (| x |) |),
+                                                                  Value.Integer IntegerKind.Usize 2
+                                                                |)
+                                                              |);
+                                                              Value.Integer IntegerKind.U64 0
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |);
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.ne,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_array_field (|
+                                                              M.deref (| M.read (| x |) |),
+                                                              Value.Integer IntegerKind.Usize 3
+                                                            |)
+                                                          |);
+                                                          Value.Integer IntegerKind.U64 0
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -415,68 +408,65 @@ Module instructions.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_associated_function (|
-                                                        Ty.path "revm_interpreter::gas::Gas",
-                                                        "record_cost",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&mut")
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    M.get_associated_function (|
+                                                      Ty.path "revm_interpreter::gas::Gas",
+                                                      "record_cost",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.path "revm_interpreter::gas::Gas"
+                                                              ],
+                                                            M.get_trait_method (|
+                                                              "revm_interpreter::interpreter_types::LoopControl",
+                                                              Ty.associated_in_trait
+                                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                                 []
-                                                                [
-                                                                  Ty.path
-                                                                    "revm_interpreter::gas::Gas"
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                                Ty.associated_in_trait
-                                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                                  []
-                                                                  []
-                                                                  WIRE
-                                                                  "Control",
-                                                                [],
-                                                                [],
-                                                                "gas",
-                                                                [],
                                                                 []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    M.deref (|
-                                                                      M.read (| interpreter |)
-                                                                    |),
-                                                                    "revm_interpreter::interpreter::Interpreter",
-                                                                    "control"
-                                                                  |)
+                                                                WIRE
+                                                                "Control",
+                                                              [],
+                                                              [],
+                                                              "gas",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (|
+                                                                    M.read (| interpreter |)
+                                                                  |),
+                                                                  "revm_interpreter::interpreter::Interpreter",
+                                                                  "control"
                                                                 |)
-                                                              ]
-                                                            |)
+                                                              |)
+                                                            ]
                                                           |)
-                                                        |);
-                                                        M.read (| gas_used |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                        |)
+                                                      |);
+                                                      M.read (| gas_used |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -582,15 +572,14 @@ Module instructions.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| len |); Value.Integer IntegerKind.Usize 0 ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [ M.read (| len |); Value.Integer IntegerKind.Usize 0 ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -671,112 +660,109 @@ Module instructions.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
                                                                 Ty.path "bool",
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.Wrap.bit_or,
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.Wrap.bit_or,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.Wrap.bit_or,
-                                                                          [
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.gt,
-                                                                              [
-                                                                                M.read (|
-                                                                                  M.SubPointer.get_array_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (| x |)
-                                                                                    |),
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      0
+                                                                BinOp.Wrap.bit_or,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.Wrap.bit_or,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.Wrap.bit_or,
+                                                                        [
+                                                                          M.call_closure (|
+                                                                            Ty.path "bool",
+                                                                            BinOp.gt,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (| x |)
+                                                                                  |),
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    0
+                                                                                |)
+                                                                              |);
+                                                                              M.cast
+                                                                                (Ty.path "u64")
+                                                                                (M.read (|
+                                                                                  get_associated_constant (|
+                                                                                    Ty.path "usize",
+                                                                                    "MAX",
+                                                                                    Ty.path "usize"
                                                                                   |)
-                                                                                |);
-                                                                                M.cast
-                                                                                  (Ty.path "u64")
-                                                                                  (M.read (|
-                                                                                    get_associated_constant (|
-                                                                                      Ty.path
-                                                                                        "usize",
-                                                                                      "MAX",
-                                                                                      Ty.path
-                                                                                        "usize"
-                                                                                    |)
-                                                                                  |))
-                                                                              ]
-                                                                            |);
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.ne,
-                                                                              [
-                                                                                M.read (|
-                                                                                  M.SubPointer.get_array_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (| x |)
-                                                                                    |),
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      1
-                                                                                  |)
-                                                                                |);
-                                                                                Value.Integer
-                                                                                  IntegerKind.U64
-                                                                                  0
-                                                                              ]
-                                                                            |)
-                                                                          ]
-                                                                        |);
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.ne,
-                                                                          [
-                                                                            M.read (|
-                                                                              M.SubPointer.get_array_field (|
-                                                                                M.deref (|
-                                                                                  M.read (| x |)
-                                                                                |),
-                                                                                Value.Integer
-                                                                                  IntegerKind.Usize
-                                                                                  2
-                                                                              |)
-                                                                            |);
-                                                                            Value.Integer
-                                                                              IntegerKind.U64
-                                                                              0
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |);
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.ne,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| x |)
-                                                                            |),
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              3
+                                                                                |))
+                                                                            ]
+                                                                          |);
+                                                                          M.call_closure (|
+                                                                            Ty.path "bool",
+                                                                            BinOp.ne,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (| x |)
+                                                                                  |),
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    1
+                                                                                |)
+                                                                              |);
+                                                                              Value.Integer
+                                                                                IntegerKind.U64
+                                                                                0
+                                                                            ]
                                                                           |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)) in
+                                                                        ]
+                                                                      |);
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.ne,
+                                                                        [
+                                                                          M.read (|
+                                                                            M.SubPointer.get_array_field (|
+                                                                              M.deref (|
+                                                                                M.read (| x |)
+                                                                              |),
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                2
+                                                                            |)
+                                                                          |);
+                                                                          Value.Integer
+                                                                            IntegerKind.U64
+                                                                            0
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |);
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.ne,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.SubPointer.get_array_field (|
+                                                                          M.deref (|
+                                                                            M.read (| x |)
+                                                                          |),
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            3
+                                                                        |)
+                                                                      |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -1076,7 +1062,7 @@ Module instructions.
                                                           []
                                                           WIRE
                                                           "Memory")
-                                                        "{{synthetic}}'1",
+                                                        "{{anon_assoc}}",
                                                       [],
                                                       [],
                                                       "deref",
@@ -1097,7 +1083,7 @@ Module instructions.
                                                               []
                                                               WIRE
                                                               "Memory")
-                                                            "{{synthetic}}'1",
+                                                            "{{anon_assoc}}",
                                                           M.call_closure (|
                                                             Ty.associated_in_trait
                                                               "revm_interpreter::interpreter_types::MemoryTrait"
@@ -1109,7 +1095,7 @@ Module instructions.
                                                                 []
                                                                 WIRE
                                                                 "Memory")
-                                                              "{{synthetic}}'1",
+                                                              "{{anon_assoc}}",
                                                             M.get_trait_method (|
                                                               "revm_interpreter::interpreter_types::MemoryTrait",
                                                               Ty.associated_in_trait
@@ -1274,68 +1260,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::BASE",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::BASE",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1387,124 +1372,122 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "revm_interpreter::interpreter_types::StackTrait",
-                                        Ty.associated_in_trait
-                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                          []
-                                          []
-                                          WIRE
-                                          "Stack",
-                                        [],
-                                        [],
-                                        "push",
-                                        [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTrait",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| interpreter |) |),
-                                            "revm_interpreter::interpreter::Interpreter",
-                                            "stack"
-                                          |)
-                                        |);
-                                        M.call_closure (|
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "push",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| interpreter |) |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
+                                        |)
+                                      |);
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        M.get_trait_method (|
+                                          "core::convert::Into",
                                           Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
+                                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
                                             [],
-                                          M.get_trait_method (|
-                                            "core::convert::Into",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ],
+                                          "into",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
                                             Ty.apply
                                               (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
                                               [ Value.Integer IntegerKind.Usize 32 ]
                                               [],
-                                            [],
+                                            M.get_associated_function (|
+                                              Ty.path "alloy_primitives::bits::address::Address",
+                                              "into_word",
+                                              [],
+                                              []
+                                            |),
                                             [
-                                              Ty.apply
-                                                (Ty.path "ruint::Uint")
-                                                [
-                                                  Value.Integer IntegerKind.Usize 256;
-                                                  Value.Integer IntegerKind.Usize 4
-                                                ]
-                                                []
-                                            ],
-                                            "into",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path
-                                                  "alloy_primitives::bits::fixed::FixedBytes")
-                                                [ Value.Integer IntegerKind.Usize 32 ]
-                                                [],
-                                              M.get_associated_function (|
-                                                Ty.path "alloy_primitives::bits::address::Address",
-                                                "into_word",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.path
+                                                    "alloy_primitives::bits::address::Address",
+                                                  M.call_closure (|
                                                     Ty.path
                                                       "alloy_primitives::bits::address::Address",
-                                                    M.call_closure (|
-                                                      Ty.path
-                                                        "alloy_primitives::bits::address::Address",
-                                                      M.get_trait_method (|
-                                                        "revm_interpreter::interpreter_types::InputsTrait",
-                                                        Ty.associated_in_trait
-                                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                          []
-                                                          []
-                                                          WIRE
-                                                          "Input",
-                                                        [],
-                                                        [],
-                                                        "target_address",
-                                                        [],
+                                                    M.get_trait_method (|
+                                                      "revm_interpreter::interpreter_types::InputsTrait",
+                                                      Ty.associated_in_trait
+                                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                                         []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| interpreter |) |),
-                                                            "revm_interpreter::interpreter::Interpreter",
-                                                            "input"
-                                                          |)
+                                                        []
+                                                        WIRE
+                                                        "Input",
+                                                      [],
+                                                      [],
+                                                      "target_address",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| interpreter |) |),
+                                                          "revm_interpreter::interpreter::Interpreter",
+                                                          "input"
                                                         |)
-                                                      ]
-                                                    |)
+                                                      |)
+                                                    ]
                                                   |)
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1595,68 +1578,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::BASE",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::BASE",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1708,124 +1690,122 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "revm_interpreter::interpreter_types::StackTrait",
-                                        Ty.associated_in_trait
-                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                          []
-                                          []
-                                          WIRE
-                                          "Stack",
-                                        [],
-                                        [],
-                                        "push",
-                                        [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTrait",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| interpreter |) |),
-                                            "revm_interpreter::interpreter::Interpreter",
-                                            "stack"
-                                          |)
-                                        |);
-                                        M.call_closure (|
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "push",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| interpreter |) |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
+                                        |)
+                                      |);
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        M.get_trait_method (|
+                                          "core::convert::Into",
                                           Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
+                                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
                                             [],
-                                          M.get_trait_method (|
-                                            "core::convert::Into",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ],
+                                          "into",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
                                             Ty.apply
                                               (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
                                               [ Value.Integer IntegerKind.Usize 32 ]
                                               [],
-                                            [],
+                                            M.get_associated_function (|
+                                              Ty.path "alloy_primitives::bits::address::Address",
+                                              "into_word",
+                                              [],
+                                              []
+                                            |),
                                             [
-                                              Ty.apply
-                                                (Ty.path "ruint::Uint")
-                                                [
-                                                  Value.Integer IntegerKind.Usize 256;
-                                                  Value.Integer IntegerKind.Usize 4
-                                                ]
-                                                []
-                                            ],
-                                            "into",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path
-                                                  "alloy_primitives::bits::fixed::FixedBytes")
-                                                [ Value.Integer IntegerKind.Usize 32 ]
-                                                [],
-                                              M.get_associated_function (|
-                                                Ty.path "alloy_primitives::bits::address::Address",
-                                                "into_word",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.path
+                                                    "alloy_primitives::bits::address::Address",
+                                                  M.call_closure (|
                                                     Ty.path
                                                       "alloy_primitives::bits::address::Address",
-                                                    M.call_closure (|
-                                                      Ty.path
-                                                        "alloy_primitives::bits::address::Address",
-                                                      M.get_trait_method (|
-                                                        "revm_interpreter::interpreter_types::InputsTrait",
-                                                        Ty.associated_in_trait
-                                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                          []
-                                                          []
-                                                          WIRE
-                                                          "Input",
-                                                        [],
-                                                        [],
-                                                        "caller_address",
-                                                        [],
+                                                    M.get_trait_method (|
+                                                      "revm_interpreter::interpreter_types::InputsTrait",
+                                                      Ty.associated_in_trait
+                                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                                         []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| interpreter |) |),
-                                                            "revm_interpreter::interpreter::Interpreter",
-                                                            "input"
-                                                          |)
+                                                        []
+                                                        WIRE
+                                                        "Input",
+                                                      [],
+                                                      [],
+                                                      "caller_address",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| interpreter |) |),
+                                                          "revm_interpreter::interpreter::Interpreter",
+                                                          "input"
                                                         |)
-                                                      ]
-                                                    |)
+                                                      |)
+                                                    ]
                                                   |)
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1913,68 +1893,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::BASE",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::BASE",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -2026,39 +2005,46 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "revm_interpreter::interpreter_types::StackTrait",
-                                        Ty.associated_in_trait
-                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                          []
-                                          []
-                                          WIRE
-                                          "Stack",
-                                        [],
-                                        [],
-                                        "push",
-                                        [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTrait",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| interpreter |) |),
-                                            "revm_interpreter::interpreter::Interpreter",
-                                            "stack"
-                                          |)
-                                        |);
-                                        M.call_closure (|
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "push",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| interpreter |) |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
+                                        |)
+                                      |);
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        M.get_associated_function (|
                                           Ty.apply
                                             (Ty.path "ruint::Uint")
                                             [
@@ -2066,53 +2052,45 @@ Module instructions.
                                               Value.Integer IntegerKind.Usize 4
                                             ]
                                             [],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "ruint::Uint")
-                                              [
-                                                Value.Integer IntegerKind.Usize 256;
-                                                Value.Integer IntegerKind.Usize 4
-                                              ]
-                                              [],
-                                            "from",
-                                            [],
-                                            [ Ty.path "usize" ]
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LegacyBytecode",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Bytecode",
-                                                [],
-                                                [],
-                                                "bytecode_len",
-                                                [],
+                                          "from",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LegacyBytecode",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "bytecode"
-                                                  |)
+                                                []
+                                                WIRE
+                                                "Bytecode",
+                                              [],
+                                              [],
+                                              "bytecode_len",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "bytecode"
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -2368,98 +2346,91 @@ Module instructions.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.Wrap.bit_or,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.Wrap.bit_or,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.gt,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          0
+                                                    BinOp.Wrap.bit_or,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.Wrap.bit_or,
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.Wrap.bit_or,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.gt,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        0
+                                                                    |)
+                                                                  |);
+                                                                  M.cast
+                                                                    (Ty.path "u64")
+                                                                    (M.read (|
+                                                                      get_associated_constant (|
+                                                                        Ty.path "usize",
+                                                                        "MAX",
+                                                                        Ty.path "usize"
                                                                       |)
-                                                                    |);
-                                                                    M.cast
-                                                                      (Ty.path "u64")
-                                                                      (M.read (|
-                                                                        get_associated_constant (|
-                                                                          Ty.path "usize",
-                                                                          "MAX",
-                                                                          Ty.path "usize"
-                                                                        |)
-                                                                      |))
-                                                                  ]
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.ne,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          1
-                                                                      |)
-                                                                    |);
-                                                                    Value.Integer IntegerKind.U64 0
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.ne,
-                                                              [
-                                                                M.read (|
-                                                                  M.SubPointer.get_array_field (|
-                                                                    M.deref (| M.read (| x |) |),
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      2
-                                                                  |)
-                                                                |);
-                                                                Value.Integer IntegerKind.U64 0
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.ne,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.deref (| M.read (| x |) |),
-                                                                Value.Integer IntegerKind.Usize 3
+                                                                    |))
+                                                                ]
+                                                              |);
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.ne,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        1
+                                                                    |)
+                                                                  |);
+                                                                  Value.Integer IntegerKind.U64 0
+                                                                ]
                                                               |)
-                                                            |);
-                                                            Value.Integer IntegerKind.U64 0
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                            ]
+                                                          |);
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.ne,
+                                                            [
+                                                              M.read (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.deref (| M.read (| x |) |),
+                                                                  Value.Integer IntegerKind.Usize 2
+                                                                |)
+                                                              |);
+                                                              Value.Integer IntegerKind.U64 0
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |);
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.ne,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_array_field (|
+                                                              M.deref (| M.read (| x |) |),
+                                                              Value.Integer IntegerKind.Usize 3
+                                                            |)
+                                                          |);
+                                                          Value.Integer IntegerKind.U64 0
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -2649,79 +2620,78 @@ Module instructions.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.Wrap.bit_and,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.Wrap.bit_and,
-                                                                          [
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.eq,
-                                                                              [
-                                                                                M.read (|
-                                                                                  M.SubPointer.get_array_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (| x |)
-                                                                                    |),
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      1
-                                                                                  |)
-                                                                                |);
-                                                                                Value.Integer
-                                                                                  IntegerKind.U64
-                                                                                  0
-                                                                              ]
-                                                                            |);
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.eq,
-                                                                              [
-                                                                                M.read (|
-                                                                                  M.SubPointer.get_array_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (| x |)
-                                                                                    |),
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      2
-                                                                                  |)
-                                                                                |);
-                                                                                Value.Integer
-                                                                                  IntegerKind.U64
-                                                                                  0
-                                                                              ]
+                                                                    BinOp.Wrap.bit_and,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.Wrap.bit_and,
+                                                                        [
+                                                                          M.call_closure (|
+                                                                            Ty.path "bool",
+                                                                            BinOp.eq,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (| x |)
+                                                                                  |),
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    1
+                                                                                |)
+                                                                              |);
+                                                                              Value.Integer
+                                                                                IntegerKind.U64
+                                                                                0
+                                                                            ]
+                                                                          |);
+                                                                          M.call_closure (|
+                                                                            Ty.path "bool",
+                                                                            BinOp.eq,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (| x |)
+                                                                                  |),
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    2
+                                                                                |)
+                                                                              |);
+                                                                              Value.Integer
+                                                                                IntegerKind.U64
+                                                                                0
+                                                                            ]
+                                                                          |)
+                                                                        ]
+                                                                      |);
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.eq,
+                                                                        [
+                                                                          M.read (|
+                                                                            M.SubPointer.get_array_field (|
+                                                                              M.deref (|
+                                                                                M.read (| x |)
+                                                                              |),
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                3
                                                                             |)
-                                                                          ]
-                                                                        |);
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.eq,
-                                                                          [
-                                                                            M.read (|
-                                                                              M.SubPointer.get_array_field (|
-                                                                                M.deref (|
-                                                                                  M.read (| x |)
-                                                                                |),
-                                                                                Value.Integer
-                                                                                  IntegerKind.Usize
-                                                                                  3
-                                                                              |)
-                                                                            |);
-                                                                            Value.Integer
-                                                                              IntegerKind.U64
-                                                                              0
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                          |);
+                                                                          Value.Integer
+                                                                            IntegerKind.U64
+                                                                            0
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -2929,68 +2899,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::VERYLOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::VERYLOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -3271,77 +3240,74 @@ Module instructions.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.Wrap.bit_and,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.Wrap.bit_and,
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| x |)
-                                                                            |),
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              1
-                                                                          |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
-                                                                    |);
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| x |)
-                                                                            |),
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              2
-                                                                          |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
+                                                            BinOp.Wrap.bit_and,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_and,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.eq,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.SubPointer.get_array_field (|
+                                                                          M.deref (|
+                                                                            M.read (| x |)
+                                                                          |),
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            1
+                                                                        |)
+                                                                      |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
+                                                                  |);
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.eq,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.SubPointer.get_array_field (|
+                                                                          M.deref (|
+                                                                            M.read (| x |)
+                                                                          |),
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            2
+                                                                        |)
+                                                                      |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |);
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.eq,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        3
                                                                     |)
-                                                                  ]
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.eq,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          3
-                                                                      |)
-                                                                    |);
-                                                                    Value.Integer IntegerKind.U64 0
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                                  |);
+                                                                  Value.Integer IntegerKind.U64 0
+                                                                ]
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -3432,15 +3398,14 @@ Module instructions.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.lt,
-                                              [ M.read (| offset |); M.read (| input_len |) ]
-                                            |)
-                                          |)) in
+                                            BinOp.lt,
+                                            [ M.read (| offset |); M.read (| input_len |) ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -3476,11 +3441,7 @@ Module instructions.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
-                                                        Ty.path "bool",
-                                                        Value.Bool true
-                                                      |)) in
+                                                    M.alloc (| Ty.path "bool", Value.Bool true |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -3495,50 +3456,45 @@ Module instructions.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      UnOp.not,
-                                                                      [
-                                                                        LogicalOp.and (|
-                                                                          M.call_closure (|
+                                                                    UnOp.not,
+                                                                    [
+                                                                      LogicalOp.and (|
+                                                                        M.call_closure (|
+                                                                          Ty.path "bool",
+                                                                          BinOp.le,
+                                                                          [
+                                                                            M.read (| count |);
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              32
+                                                                          ]
+                                                                        |),
+                                                                        ltac:(M.monadic
+                                                                          (M.call_closure (|
                                                                             Ty.path "bool",
                                                                             BinOp.le,
                                                                             [
-                                                                              M.read (| count |);
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                32
+                                                                              M.call_closure (|
+                                                                                Ty.path "usize",
+                                                                                BinOp.Wrap.add,
+                                                                                [
+                                                                                  M.read (|
+                                                                                    offset
+                                                                                  |);
+                                                                                  M.read (| count |)
+                                                                                ]
+                                                                              |);
+                                                                              M.read (| input_len |)
                                                                             ]
-                                                                          |),
-                                                                          ltac:(M.monadic
-                                                                            (M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.le,
-                                                                              [
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  BinOp.Wrap.add,
-                                                                                  [
-                                                                                    M.read (|
-                                                                                      offset
-                                                                                    |);
-                                                                                    M.read (|
-                                                                                      count
-                                                                                    |)
-                                                                                  ]
-                                                                                |);
-                                                                                M.read (|
-                                                                                  input_len
-                                                                                |)
-                                                                              ]
-                                                                            |)))
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                          |)))
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -3571,7 +3527,7 @@ Module instructions.
                                           M.call_closure (|
                                             Ty.tuple [],
                                             M.get_function (|
-                                              "core::intrinsics::copy_nonoverlapping",
+                                              "core::ptr::copy_nonoverlapping",
                                               [],
                                               [ Ty.path "u8" ]
                                             |),
@@ -3818,68 +3774,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::BASE",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::BASE",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -3931,39 +3886,46 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "revm_interpreter::interpreter_types::StackTrait",
-                                        Ty.associated_in_trait
-                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                          []
-                                          []
-                                          WIRE
-                                          "Stack",
-                                        [],
-                                        [],
-                                        "push",
-                                        [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTrait",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| interpreter |) |),
-                                            "revm_interpreter::interpreter::Interpreter",
-                                            "stack"
-                                          |)
-                                        |);
-                                        M.call_closure (|
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "push",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| interpreter |) |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
+                                        |)
+                                      |);
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        M.get_associated_function (|
                                           Ty.apply
                                             (Ty.path "ruint::Uint")
                                             [
@@ -3971,77 +3933,69 @@ Module instructions.
                                               Value.Integer IntegerKind.Usize 4
                                             ]
                                             [],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "ruint::Uint")
-                                              [
-                                                Value.Integer IntegerKind.Usize 256;
-                                                Value.Integer IntegerKind.Usize 4
-                                              ]
+                                          "from",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              "len",
                                               [],
-                                            "from",
-                                            [],
-                                            [ Ty.path "usize" ]
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "slice")
-                                                            []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "revm_interpreter::interpreter_types::InputsTrait",
-                                                        Ty.associated_in_trait
-                                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                          []
-                                                          []
-                                                          WIRE
-                                                          "Input",
-                                                        [],
-                                                        [],
-                                                        "input",
-                                                        [],
-                                                        []
-                                                      |),
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| interpreter |) |),
-                                                            "revm_interpreter::interpreter::Interpreter",
-                                                            "input"
-                                                          |)
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "revm_interpreter::interpreter_types::InputsTrait",
+                                                      Ty.associated_in_trait
+                                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                        []
+                                                        []
+                                                        WIRE
+                                                        "Input",
+                                                      [],
+                                                      [],
+                                                      "input",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| interpreter |) |),
+                                                          "revm_interpreter::interpreter::Interpreter",
+                                                          "input"
                                                         |)
-                                                      ]
-                                                    |)
+                                                      |)
+                                                    ]
                                                   |)
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -4129,68 +4083,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::BASE",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::BASE",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -4242,76 +4195,75 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "revm_interpreter::interpreter_types::StackTrait",
-                                        Ty.associated_in_trait
-                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                          []
-                                          []
-                                          WIRE
-                                          "Stack",
-                                        [],
-                                        [],
-                                        "push",
-                                        [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTrait",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| interpreter |) |),
-                                            "revm_interpreter::interpreter::Interpreter",
-                                            "stack"
-                                          |)
-                                        |);
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            [],
-                                          M.get_trait_method (|
-                                            "revm_interpreter::interpreter_types::InputsTrait",
-                                            Ty.associated_in_trait
-                                              "revm_interpreter::interpreter_types::InterpreterTypes"
-                                              []
-                                              []
-                                              WIRE
-                                              "Input",
-                                            [],
-                                            [],
-                                            "call_value",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| interpreter |) |),
-                                                "revm_interpreter::interpreter::Interpreter",
-                                                "input"
-                                              |)
-                                            |)
-                                          ]
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "push",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| interpreter |) |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        M.get_trait_method (|
+                                          "revm_interpreter::interpreter_types::InputsTrait",
+                                          Ty.associated_in_trait
+                                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                                            []
+                                            []
+                                            WIRE
+                                            "Input",
+                                          [],
+                                          [],
+                                          "call_value",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| interpreter |) |),
+                                              "revm_interpreter::interpreter::Interpreter",
+                                              "input"
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -4564,98 +4516,91 @@ Module instructions.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.Wrap.bit_or,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.Wrap.bit_or,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.gt,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          0
+                                                    BinOp.Wrap.bit_or,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.Wrap.bit_or,
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.Wrap.bit_or,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.gt,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        0
+                                                                    |)
+                                                                  |);
+                                                                  M.cast
+                                                                    (Ty.path "u64")
+                                                                    (M.read (|
+                                                                      get_associated_constant (|
+                                                                        Ty.path "usize",
+                                                                        "MAX",
+                                                                        Ty.path "usize"
                                                                       |)
-                                                                    |);
-                                                                    M.cast
-                                                                      (Ty.path "u64")
-                                                                      (M.read (|
-                                                                        get_associated_constant (|
-                                                                          Ty.path "usize",
-                                                                          "MAX",
-                                                                          Ty.path "usize"
-                                                                        |)
-                                                                      |))
-                                                                  ]
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.ne,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          1
-                                                                      |)
-                                                                    |);
-                                                                    Value.Integer IntegerKind.U64 0
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.ne,
-                                                              [
-                                                                M.read (|
-                                                                  M.SubPointer.get_array_field (|
-                                                                    M.deref (| M.read (| x |) |),
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      2
-                                                                  |)
-                                                                |);
-                                                                Value.Integer IntegerKind.U64 0
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.ne,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.deref (| M.read (| x |) |),
-                                                                Value.Integer IntegerKind.Usize 3
+                                                                    |))
+                                                                ]
+                                                              |);
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.ne,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        1
+                                                                    |)
+                                                                  |);
+                                                                  Value.Integer IntegerKind.U64 0
+                                                                ]
                                                               |)
-                                                            |);
-                                                            Value.Integer IntegerKind.U64 0
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                            ]
+                                                          |);
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.ne,
+                                                            [
+                                                              M.read (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.deref (| M.read (| x |) |),
+                                                                  Value.Integer IntegerKind.Usize 2
+                                                                |)
+                                                              |);
+                                                              Value.Integer IntegerKind.U64 0
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |);
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.ne,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_array_field (|
+                                                              M.deref (| M.read (| x |) |),
+                                                              Value.Integer IntegerKind.Usize 3
+                                                            |)
+                                                          |);
+                                                          Value.Integer IntegerKind.U64 0
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -4845,79 +4790,78 @@ Module instructions.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.Wrap.bit_and,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.Wrap.bit_and,
-                                                                          [
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.eq,
-                                                                              [
-                                                                                M.read (|
-                                                                                  M.SubPointer.get_array_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (| x |)
-                                                                                    |),
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      1
-                                                                                  |)
-                                                                                |);
-                                                                                Value.Integer
-                                                                                  IntegerKind.U64
-                                                                                  0
-                                                                              ]
-                                                                            |);
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.eq,
-                                                                              [
-                                                                                M.read (|
-                                                                                  M.SubPointer.get_array_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (| x |)
-                                                                                    |),
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      2
-                                                                                  |)
-                                                                                |);
-                                                                                Value.Integer
-                                                                                  IntegerKind.U64
-                                                                                  0
-                                                                              ]
+                                                                    BinOp.Wrap.bit_and,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.Wrap.bit_and,
+                                                                        [
+                                                                          M.call_closure (|
+                                                                            Ty.path "bool",
+                                                                            BinOp.eq,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (| x |)
+                                                                                  |),
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    1
+                                                                                |)
+                                                                              |);
+                                                                              Value.Integer
+                                                                                IntegerKind.U64
+                                                                                0
+                                                                            ]
+                                                                          |);
+                                                                          M.call_closure (|
+                                                                            Ty.path "bool",
+                                                                            BinOp.eq,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (| x |)
+                                                                                  |),
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    2
+                                                                                |)
+                                                                              |);
+                                                                              Value.Integer
+                                                                                IntegerKind.U64
+                                                                                0
+                                                                            ]
+                                                                          |)
+                                                                        ]
+                                                                      |);
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.eq,
+                                                                        [
+                                                                          M.read (|
+                                                                            M.SubPointer.get_array_field (|
+                                                                              M.deref (|
+                                                                                M.read (| x |)
+                                                                              |),
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                3
                                                                             |)
-                                                                          ]
-                                                                        |);
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.eq,
-                                                                          [
-                                                                            M.read (|
-                                                                              M.SubPointer.get_array_field (|
-                                                                                M.deref (|
-                                                                                  M.read (| x |)
-                                                                                |),
-                                                                                Value.Integer
-                                                                                  IntegerKind.Usize
-                                                                                  3
-                                                                              |)
-                                                                            |);
-                                                                            Value.Integer
-                                                                              IntegerKind.U64
-                                                                              0
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                          |);
+                                                                          Value.Integer
+                                                                            IntegerKind.U64
+                                                                            0
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -5114,59 +5058,58 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_specification::hardfork::SpecId",
+                                      "is_enabled_in",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
                                         Ty.path "revm_specification::hardfork::SpecId",
-                                        "is_enabled_in",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "revm_specification::hardfork::SpecId",
-                                          M.get_trait_method (|
-                                            "revm_interpreter::interpreter_types::RuntimeFlag",
-                                            Ty.associated_in_trait
-                                              "revm_interpreter::interpreter_types::InterpreterTypes"
-                                              []
-                                              []
-                                              WIRE
-                                              "RuntimeFlag",
-                                            [],
-                                            [],
-                                            "spec_id",
-                                            [],
+                                        M.get_trait_method (|
+                                          "revm_interpreter::interpreter_types::RuntimeFlag",
+                                          Ty.associated_in_trait
+                                            "revm_interpreter::interpreter_types::InterpreterTypes"
                                             []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| interpreter |) |),
-                                                "revm_interpreter::interpreter::Interpreter",
-                                                "runtime_flag"
-                                              |)
+                                            []
+                                            WIRE
+                                            "RuntimeFlag",
+                                          [],
+                                          [],
+                                          "spec_id",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| interpreter |) |),
+                                              "revm_interpreter::interpreter::Interpreter",
+                                              "runtime_flag"
                                             |)
-                                          ]
-                                        |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::BYZANTIUM"
-                                          []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                          |)
+                                        ]
+                                      |);
+                                      Value.StructTuple
+                                        "revm_specification::hardfork::SpecId::BYZANTIUM"
+                                        []
+                                        []
+                                        []
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5218,68 +5161,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::BASE",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::BASE",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5331,39 +5273,46 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "revm_interpreter::interpreter_types::StackTrait",
-                                        Ty.associated_in_trait
-                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                          []
-                                          []
-                                          WIRE
-                                          "Stack",
-                                        [],
-                                        [],
-                                        "push",
-                                        [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTrait",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| interpreter |) |),
-                                            "revm_interpreter::interpreter::Interpreter",
-                                            "stack"
-                                          |)
-                                        |);
-                                        M.call_closure (|
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "push",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| interpreter |) |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
+                                        |)
+                                      |);
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        M.get_associated_function (|
                                           Ty.apply
                                             (Ty.path "ruint::Uint")
                                             [
@@ -5371,77 +5320,69 @@ Module instructions.
                                               Value.Integer IntegerKind.Usize 4
                                             ]
                                             [],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "ruint::Uint")
-                                              [
-                                                Value.Integer IntegerKind.Usize 256;
-                                                Value.Integer IntegerKind.Usize 4
-                                              ]
+                                          "from",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              "len",
                                               [],
-                                            "from",
-                                            [],
-                                            [ Ty.path "usize" ]
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "slice")
-                                                            []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "revm_interpreter::interpreter_types::ReturnData",
-                                                        Ty.associated_in_trait
-                                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                          []
-                                                          []
-                                                          WIRE
-                                                          "ReturnData",
-                                                        [],
-                                                        [],
-                                                        "buffer",
-                                                        [],
-                                                        []
-                                                      |),
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| interpreter |) |),
-                                                            "revm_interpreter::interpreter::Interpreter",
-                                                            "return_data"
-                                                          |)
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "revm_interpreter::interpreter_types::ReturnData",
+                                                      Ty.associated_in_trait
+                                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                        []
+                                                        []
+                                                        WIRE
+                                                        "ReturnData",
+                                                      [],
+                                                      [],
+                                                      "buffer",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| interpreter |) |),
+                                                          "revm_interpreter::interpreter::Interpreter",
+                                                          "return_data"
                                                         |)
-                                                      ]
-                                                    |)
+                                                      |)
+                                                    ]
                                                   |)
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5554,59 +5495,58 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_specification::hardfork::SpecId",
+                                      "is_enabled_in",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
                                         Ty.path "revm_specification::hardfork::SpecId",
-                                        "is_enabled_in",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "revm_specification::hardfork::SpecId",
-                                          M.get_trait_method (|
-                                            "revm_interpreter::interpreter_types::RuntimeFlag",
-                                            Ty.associated_in_trait
-                                              "revm_interpreter::interpreter_types::InterpreterTypes"
-                                              []
-                                              []
-                                              WIRE
-                                              "RuntimeFlag",
-                                            [],
-                                            [],
-                                            "spec_id",
-                                            [],
+                                        M.get_trait_method (|
+                                          "revm_interpreter::interpreter_types::RuntimeFlag",
+                                          Ty.associated_in_trait
+                                            "revm_interpreter::interpreter_types::InterpreterTypes"
                                             []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| interpreter |) |),
-                                                "revm_interpreter::interpreter::Interpreter",
-                                                "runtime_flag"
-                                              |)
+                                            []
+                                            WIRE
+                                            "RuntimeFlag",
+                                          [],
+                                          [],
+                                          "spec_id",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| interpreter |) |),
+                                              "revm_interpreter::interpreter::Interpreter",
+                                              "runtime_flag"
                                             |)
-                                          ]
-                                        |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::BYZANTIUM"
-                                          []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                          |)
+                                        ]
+                                      |);
+                                      Value.StructTuple
+                                        "revm_specification::hardfork::SpecId::BYZANTIUM"
+                                        []
+                                        []
+                                        []
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5825,104 +5765,99 @@ Module instructions.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.Wrap.bit_or,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.Wrap.bit_or,
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.gt,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| x |)
-                                                                            |),
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              0
+                                                        BinOp.Wrap.bit_or,
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.Wrap.bit_or,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.gt,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.SubPointer.get_array_field (|
+                                                                          M.deref (|
+                                                                            M.read (| x |)
+                                                                          |),
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            0
+                                                                        |)
+                                                                      |);
+                                                                      M.cast
+                                                                        (Ty.path "u64")
+                                                                        (M.read (|
+                                                                          get_associated_constant (|
+                                                                            Ty.path "usize",
+                                                                            "MAX",
+                                                                            Ty.path "usize"
                                                                           |)
-                                                                        |);
-                                                                        M.cast
-                                                                          (Ty.path "u64")
-                                                                          (M.read (|
-                                                                            get_associated_constant (|
-                                                                              Ty.path "usize",
-                                                                              "MAX",
-                                                                              Ty.path "usize"
-                                                                            |)
-                                                                          |))
-                                                                      ]
-                                                                    |);
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.ne,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| x |)
-                                                                            |),
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              1
-                                                                          |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
-                                                                    |)
-                                                                  ]
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.ne,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          2
-                                                                      |)
-                                                                    |);
-                                                                    Value.Integer IntegerKind.U64 0
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.ne,
-                                                              [
-                                                                M.read (|
-                                                                  M.SubPointer.get_array_field (|
-                                                                    M.deref (| M.read (| x |) |),
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      3
+                                                                        |))
+                                                                    ]
+                                                                  |);
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.ne,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.SubPointer.get_array_field (|
+                                                                          M.deref (|
+                                                                            M.read (| x |)
+                                                                          |),
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            1
+                                                                        |)
+                                                                      |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
                                                                   |)
-                                                                |);
-                                                                Value.Integer IntegerKind.U64 0
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      |)) in
+                                                                ]
+                                                              |);
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.ne,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        2
+                                                                    |)
+                                                                  |);
+                                                                  Value.Integer IntegerKind.U64 0
+                                                                ]
+                                                              |)
+                                                            ]
+                                                          |);
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.ne,
+                                                            [
+                                                              M.read (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.deref (| M.read (| x |) |),
+                                                                  Value.Integer IntegerKind.Usize 3
+                                                                |)
+                                                              |);
+                                                              Value.Integer IntegerKind.U64 0
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -6075,77 +6010,74 @@ Module instructions.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.Wrap.bit_and,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.Wrap.bit_and,
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| x |)
-                                                                            |),
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              1
-                                                                          |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
-                                                                    |);
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| x |)
-                                                                            |),
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              2
-                                                                          |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
+                                                            BinOp.Wrap.bit_and,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_and,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.eq,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.SubPointer.get_array_field (|
+                                                                          M.deref (|
+                                                                            M.read (| x |)
+                                                                          |),
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            1
+                                                                        |)
+                                                                      |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
+                                                                  |);
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.eq,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.SubPointer.get_array_field (|
+                                                                          M.deref (|
+                                                                            M.read (| x |)
+                                                                          |),
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            2
+                                                                        |)
+                                                                      |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |);
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.eq,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        3
                                                                     |)
-                                                                  ]
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.eq,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          3
-                                                                      |)
-                                                                    |);
-                                                                    Value.Integer IntegerKind.U64 0
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                                  |);
+                                                                  Value.Integer IntegerKind.U64 0
+                                                                ]
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -6200,109 +6132,111 @@ Module instructions.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            LogicalOp.and (|
+                                            BinOp.gt,
+                                            [
+                                              M.read (| data_end |);
                                               M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.gt,
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                  "len",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  M.read (| data_end |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "slice")
-                                                        []
-                                                        [ Ty.path "u8" ],
-                                                      "len",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.call_closure (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
                                                             Ty.apply
-                                                              (Ty.path "&")
+                                                              (Ty.path "slice")
                                                               []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "slice")
-                                                                  []
-                                                                  [ Ty.path "u8" ]
-                                                              ],
-                                                            M.get_trait_method (|
-                                                              "revm_interpreter::interpreter_types::ReturnData",
-                                                              Ty.associated_in_trait
-                                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                                []
-                                                                []
-                                                                WIRE
-                                                                "ReturnData",
-                                                              [],
-                                                              [],
-                                                              "buffer",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (|
-                                                                    M.read (| interpreter |)
-                                                                  |),
-                                                                  "revm_interpreter::interpreter::Interpreter",
-                                                                  "return_data"
-                                                                |)
-                                                              |)
-                                                            ]
+                                                              [ Ty.path "u8" ]
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "revm_interpreter::interpreter_types::ReturnData",
+                                                          Ty.associated_in_trait
+                                                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                            []
+                                                            []
+                                                            WIRE
+                                                            "ReturnData",
+                                                          [],
+                                                          [],
+                                                          "buffer",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (|
+                                                                M.read (| interpreter |)
+                                                              |),
+                                                              "revm_interpreter::interpreter::Interpreter",
+                                                              "return_data"
+                                                            |)
                                                           |)
-                                                        |)
+                                                        ]
                                                       |)
-                                                    ]
+                                                    |)
                                                   |)
                                                 ]
-                                              |),
-                                              ltac:(M.monadic
-                                                (M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_trait_method (|
-                                                        "revm_interpreter::interpreter_types::RuntimeFlag",
-                                                        Ty.associated_in_trait
-                                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                          []
-                                                          []
-                                                          WIRE
-                                                          "RuntimeFlag",
-                                                        [],
-                                                        [],
-                                                        "is_eof",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| interpreter |) |),
-                                                            "revm_interpreter::interpreter::Interpreter",
-                                                            "runtime_flag"
-                                                          |)
-                                                        |)
-                                                      ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
+                                      let _ :=
+                                        is_constant_or_break_match (|
+                                          M.read (| γ |),
+                                          Value.Bool true
+                                        |) in
+                                      let γ :=
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_trait_method (|
+                                                  "revm_interpreter::interpreter_types::RuntimeFlag",
+                                                  Ty.associated_in_trait
+                                                    "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                    []
+                                                    []
+                                                    WIRE
+                                                    "RuntimeFlag",
+                                                  [],
+                                                  [],
+                                                  "is_eof",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| interpreter |) |),
+                                                      "revm_interpreter::interpreter::Interpreter",
+                                                      "runtime_flag"
                                                     |)
-                                                  ]
-                                                |)))
-                                            |)
-                                          |)) in
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -6566,43 +6500,42 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "revm_interpreter::interpreter_types::RuntimeFlag",
-                                        Ty.associated_in_trait
-                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                          []
-                                          []
-                                          WIRE
-                                          "RuntimeFlag",
-                                        [],
-                                        [],
-                                        "is_eof",
-                                        [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::RuntimeFlag",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| interpreter |) |),
-                                            "revm_interpreter::interpreter::Interpreter",
-                                            "runtime_flag"
-                                          |)
+                                        []
+                                        WIRE
+                                        "RuntimeFlag",
+                                      [],
+                                      [],
+                                      "is_eof",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| interpreter |) |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "runtime_flag"
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6654,68 +6587,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::VERYLOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::VERYLOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6978,77 +6910,74 @@ Module instructions.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.Wrap.bit_and,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.Wrap.bit_and,
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| x |)
-                                                                            |),
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              1
-                                                                          |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
-                                                                    |);
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| x |)
-                                                                            |),
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              2
-                                                                          |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
+                                                            BinOp.Wrap.bit_and,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_and,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.eq,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.SubPointer.get_array_field (|
+                                                                          M.deref (|
+                                                                            M.read (| x |)
+                                                                          |),
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            1
+                                                                        |)
+                                                                      |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
+                                                                  |);
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.eq,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.SubPointer.get_array_field (|
+                                                                          M.deref (|
+                                                                            M.read (| x |)
+                                                                          |),
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            2
+                                                                        |)
+                                                                      |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |);
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.eq,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (| M.read (| x |) |),
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        3
                                                                     |)
-                                                                  ]
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.eq,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| x |)
-                                                                        |),
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          3
-                                                                      |)
-                                                                    |);
-                                                                    Value.Integer IntegerKind.U64 0
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                                  |);
+                                                                  Value.Integer IntegerKind.U64 0
+                                                                ]
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -7504,68 +7433,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::BASE",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::BASE",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -7617,39 +7545,46 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "revm_interpreter::interpreter_types::StackTrait",
-                                        Ty.associated_in_trait
-                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                          []
-                                          []
-                                          WIRE
-                                          "Stack",
-                                        [],
-                                        [],
-                                        "push",
-                                        [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTrait",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| interpreter |) |),
-                                            "revm_interpreter::interpreter::Interpreter",
-                                            "stack"
-                                          |)
-                                        |);
-                                        M.call_closure (|
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "push",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| interpreter |) |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
+                                        |)
+                                      |);
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        M.get_associated_function (|
                                           Ty.apply
                                             (Ty.path "ruint::Uint")
                                             [
@@ -7657,72 +7592,64 @@ Module instructions.
                                               Value.Integer IntegerKind.Usize 4
                                             ]
                                             [],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "ruint::Uint")
-                                              [
-                                                Value.Integer IntegerKind.Usize 256;
-                                                Value.Integer IntegerKind.Usize 4
-                                              ]
+                                          "from",
+                                          [],
+                                          [ Ty.path "u64" ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "u64",
+                                            M.get_associated_function (|
+                                              Ty.path "revm_interpreter::gas::Gas",
+                                              "remaining",
                                               [],
-                                            "from",
-                                            [],
-                                            [ Ty.path "u64" ]
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              M.get_associated_function (|
-                                                Ty.path "revm_interpreter::gas::Gas",
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&mut")
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.path "revm_interpreter::gas::Gas" ],
+                                                    M.get_trait_method (|
+                                                      "revm_interpreter::interpreter_types::LoopControl",
+                                                      Ty.associated_in_trait
+                                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                                         []
-                                                        [ Ty.path "revm_interpreter::gas::Gas" ],
-                                                      M.get_trait_method (|
-                                                        "revm_interpreter::interpreter_types::LoopControl",
-                                                        Ty.associated_in_trait
-                                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                          []
-                                                          []
-                                                          WIRE
-                                                          "Control",
-                                                        [],
-                                                        [],
-                                                        "gas",
-                                                        [],
                                                         []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| interpreter |) |),
-                                                            "revm_interpreter::interpreter::Interpreter",
-                                                            "control"
-                                                          |)
+                                                        WIRE
+                                                        "Control",
+                                                      [],
+                                                      [],
+                                                      "gas",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| interpreter |) |),
+                                                          "revm_interpreter::interpreter::Interpreter",
+                                                          "control"
                                                         |)
-                                                      ]
-                                                    |)
+                                                      |)
+                                                    ]
                                                   |)
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -7855,63 +7782,62 @@ Module instructions.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.path "revm_interpreter::gas::Gas",
-                                                "record_cost",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&mut")
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_associated_function (|
+                                              Ty.path "revm_interpreter::gas::Gas",
+                                              "record_cost",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.path "revm_interpreter::gas::Gas" ],
+                                                    M.get_trait_method (|
+                                                      "revm_interpreter::interpreter_types::LoopControl",
+                                                      Ty.associated_in_trait
+                                                        "revm_interpreter::interpreter_types::InterpreterTypes"
                                                         []
-                                                        [ Ty.path "revm_interpreter::gas::Gas" ],
-                                                      M.get_trait_method (|
-                                                        "revm_interpreter::interpreter_types::LoopControl",
-                                                        Ty.associated_in_trait
-                                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                          []
-                                                          []
-                                                          impl_InterpreterTypes
-                                                          "Control",
-                                                        [],
-                                                        [],
-                                                        "gas",
-                                                        [],
                                                         []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| interpreter |) |),
-                                                            "revm_interpreter::interpreter::Interpreter",
-                                                            "control"
-                                                          |)
+                                                        impl_InterpreterTypes
+                                                        "Control",
+                                                      [],
+                                                      [],
+                                                      "gas",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| interpreter |) |),
+                                                          "revm_interpreter::interpreter::Interpreter",
+                                                          "control"
                                                         |)
-                                                      ]
-                                                    |)
+                                                      |)
+                                                    ]
                                                   |)
-                                                |);
-                                                M.read (| gas_used |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                                |)
+                                              |);
+                                              M.read (| gas_used |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -8021,15 +7947,14 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| len |); Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ M.read (| len |); Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -8107,88 +8032,87 @@ Module instructions.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.Wrap.bit_or,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.Wrap.bit_or,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.Wrap.bit_or,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.gt,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.deref (| M.read (| x |) |),
-                                                                Value.Integer IntegerKind.Usize 0
+                                            BinOp.Wrap.bit_or,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.Wrap.bit_or,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.Wrap.bit_or,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.gt,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_array_field (|
+                                                              M.deref (| M.read (| x |) |),
+                                                              Value.Integer IntegerKind.Usize 0
+                                                            |)
+                                                          |);
+                                                          M.cast
+                                                            (Ty.path "u64")
+                                                            (M.read (|
+                                                              get_associated_constant (|
+                                                                Ty.path "usize",
+                                                                "MAX",
+                                                                Ty.path "usize"
                                                               |)
-                                                            |);
-                                                            M.cast
-                                                              (Ty.path "u64")
-                                                              (M.read (|
-                                                                get_associated_constant (|
-                                                                  Ty.path "usize",
-                                                                  "MAX",
-                                                                  Ty.path "usize"
-                                                                |)
-                                                              |))
-                                                          ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.ne,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.deref (| M.read (| x |) |),
-                                                                Value.Integer IntegerKind.Usize 1
-                                                              |)
-                                                            |);
-                                                            Value.Integer IntegerKind.U64 0
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ne,
-                                                      [
-                                                        M.read (|
-                                                          M.SubPointer.get_array_field (|
-                                                            M.deref (| M.read (| x |) |),
-                                                            Value.Integer IntegerKind.Usize 2
-                                                          |)
-                                                        |);
-                                                        Value.Integer IntegerKind.U64 0
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |);
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.ne,
-                                                  [
-                                                    M.read (|
-                                                      M.SubPointer.get_array_field (|
-                                                        M.deref (| M.read (| x |) |),
-                                                        Value.Integer IntegerKind.Usize 3
+                                                            |))
+                                                        ]
+                                                      |);
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.ne,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_array_field (|
+                                                              M.deref (| M.read (| x |) |),
+                                                              Value.Integer IntegerKind.Usize 1
+                                                            |)
+                                                          |);
+                                                          Value.Integer IntegerKind.U64 0
+                                                        ]
                                                       |)
-                                                    |);
-                                                    Value.Integer IntegerKind.U64 0
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                    ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.ne,
+                                                    [
+                                                      M.read (|
+                                                        M.SubPointer.get_array_field (|
+                                                          M.deref (| M.read (| x |) |),
+                                                          Value.Integer IntegerKind.Usize 2
+                                                        |)
+                                                      |);
+                                                      Value.Integer IntegerKind.U64 0
+                                                    ]
+                                                  |)
+                                                ]
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.ne,
+                                                [
+                                                  M.read (|
+                                                    M.SubPointer.get_array_field (|
+                                                      M.deref (| M.read (| x |) |),
+                                                      Value.Integer IntegerKind.Usize 3
+                                                    |)
+                                                  |);
+                                                  Value.Integer IntegerKind.U64 0
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),

@@ -140,6 +140,18 @@ Module bits.
     Axiom IsDiscriminant_BloomInput_Hash :
       M.IsDiscriminant "alloy_primitives::bits::bloom::BloomInput::Hash" 1.
     
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_bits_bloom_BloomInput.
+      Definition Self : Ty.t := Ty.path "alloy_primitives::bits::bloom::BloomInput".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_bits_bloom_BloomInput.
+    
     Module Impl_core_clone_Clone_for_alloy_primitives_bits_bloom_BloomInput.
       Definition Self : Ty.t := Ty.path "alloy_primitives::bits::bloom::BloomInput".
       

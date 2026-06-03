@@ -9,786 +9,6 @@ Module num.
     Module private.
       (* Trait *)
       (* Empty module 'Sealed' *)
-      
-      (* StructTuple
-        {
-          name := "NonZeroU8Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "u8" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU8Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU8Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroU8Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroU8Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU8Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU8Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU8Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU8Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU8Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU8Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU8Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroU16Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "u16" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU16Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU16Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroU16Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroU16Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU16Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU16Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU16Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU16Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU16Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU16Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU16Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroU32Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "u32" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU32Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU32Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroU32Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroU32Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU32Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU32Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU32Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU32Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU32Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU32Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU32Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroU64Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "u64" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU64Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU64Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroU64Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroU64Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU64Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU64Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU64Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU64Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU64Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU64Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU64Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroU128Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "u128" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU128Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU128Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroU128Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroU128Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroU128Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU128Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU128Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroU128Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU128Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU128Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroU128Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroUsizeInner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "usize" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroUsizeInner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroUsizeInner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroUsizeInner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroUsizeInner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroUsizeInner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroUsizeInner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroUsizeInner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroUsizeInner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroUsizeInner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroUsizeInner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroUsizeInner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroI8Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "i8" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI8Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI8Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroI8Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroI8Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI8Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI8Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI8Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI8Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI8Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI8Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI8Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroI16Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "i16" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI16Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI16Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroI16Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroI16Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI16Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI16Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI16Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI16Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI16Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI16Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI16Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroI32Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "i32" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI32Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI32Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroI32Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroI32Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI32Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI32Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI32Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI32Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI32Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI32Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI32Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroI64Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "i64" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI64Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI64Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroI64Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroI64Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI64Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI64Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI64Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI64Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI64Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI64Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI64Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroI128Inner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "i128" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI128Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI128Inner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroI128Inner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroI128Inner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroI128Inner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI128Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI128Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroI128Inner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI128Inner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI128Inner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroI128Inner.
-      
-      (* StructTuple
-        {
-          name := "NonZeroIsizeInner";
-          const_params := [];
-          ty_params := [];
-          fields := [ Ty.path "isize" ];
-        } *)
-      
-      Module Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroIsizeInner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroIsizeInner".
-        
-        (*                 Clone *)
-        Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ self ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "core::num::nonzero::private::NonZeroIsizeInner" ],
-                  self
-                |) in
-              M.match_operator (|
-                Ty.path "core::num::nonzero::private::NonZeroIsizeInner",
-                Value.DeclaredButUndefined,
-                [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::clone::Clone"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [ ("clone", InstanceField.Method clone) ].
-      End Impl_core_clone_Clone_for_core_num_nonzero_private_NonZeroIsizeInner.
-      
-      Module Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroIsizeInner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroIsizeInner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::Copy"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_Copy_for_core_num_nonzero_private_NonZeroIsizeInner.
-      
-      Module Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroIsizeInner.
-        Definition Self : Ty.t := Ty.path "core::num::nonzero::private::NonZeroIsizeInner".
-        
-        Axiom Implements :
-          M.IsTraitInstance
-            "core::marker::StructuralPartialEq"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) []
-            Self
-            (* Instance *) [].
-      End Impl_core_marker_StructuralPartialEq_for_core_num_nonzero_private_NonZeroIsizeInner.
     End private.
     
     Module Impl_core_num_nonzero_private_Sealed_for_u8.
@@ -806,8 +26,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_u8.
       Definition Self : Ty.t := Ty.path "u8".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU8Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroU8Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -833,8 +53,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_u16.
       Definition Self : Ty.t := Ty.path "u16".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU16Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroU16Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -860,8 +80,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_u32.
       Definition Self : Ty.t := Ty.path "u32".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU32Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroU32Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -887,8 +107,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_u64.
       Definition Self : Ty.t := Ty.path "u64".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU64Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroU64Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -914,8 +134,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_u128.
       Definition Self : Ty.t := Ty.path "u128".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroU128Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroU128Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -941,8 +161,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_usize.
       Definition Self : Ty.t := Ty.path "usize".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroUsizeInner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroUsizeInner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -968,8 +188,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_i8.
       Definition Self : Ty.t := Ty.path "i8".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI8Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroI8Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -995,8 +215,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_i16.
       Definition Self : Ty.t := Ty.path "i16".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI16Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroI16Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -1022,8 +242,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_i32.
       Definition Self : Ty.t := Ty.path "i32".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI32Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroI32Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -1049,8 +269,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_i64.
       Definition Self : Ty.t := Ty.path "i64".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI64Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroI64Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -1076,8 +296,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_i128.
       Definition Self : Ty.t := Ty.path "i128".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroI128Inner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroI128Inner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -1103,8 +323,8 @@ Module num.
     Module Impl_core_num_nonzero_ZeroablePrimitive_for_isize.
       Definition Self : Ty.t := Ty.path "isize".
       
-      (*                 type NonZeroInner = private::$NonZeroInner; *)
-      Definition _NonZeroInner : Ty.t := Ty.path "core::num::nonzero::private::NonZeroIsizeInner".
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroIsizeInner".
       
       Axiom Implements :
         M.IsTraitInstance
@@ -1114,6 +334,33 @@ Module num.
           Self
           (* Instance *) [ ("NonZeroInner", InstanceField.Ty _NonZeroInner) ].
     End Impl_core_num_nonzero_ZeroablePrimitive_for_isize.
+    
+    Module Impl_core_num_nonzero_private_Sealed_for_char.
+      Definition Self : Ty.t := Ty.path "char".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::num::nonzero::private::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_num_nonzero_private_Sealed_for_char.
+    
+    Module Impl_core_num_nonzero_ZeroablePrimitive_for_char.
+      Definition Self : Ty.t := Ty.path "char".
+      
+      (*                 type NonZeroInner = super::niche_types::$NonZeroInner; *)
+      Definition _NonZeroInner : Ty.t := Ty.path "core::num::niche_types::NonZeroCharInner".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::num::nonzero::ZeroablePrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("NonZeroInner", InstanceField.Ty _NonZeroInner) ].
+    End Impl_core_num_nonzero_ZeroablePrimitive_for_char.
     
     (* StructTuple
       {
@@ -1748,6 +995,20 @@ Module num.
           (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
     End Impl_core_clone_Clone_where_core_num_nonzero_ZeroablePrimitive_T_for_core_num_nonzero_NonZero_T.
     
+    Module Impl_core_clone_UseCloned_where_core_num_nonzero_ZeroablePrimitive_T_for_core_num_nonzero_NonZero_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::UseCloned"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_clone_UseCloned_where_core_num_nonzero_ZeroablePrimitive_T_for_core_num_nonzero_NonZero_T.
+    
     Module Impl_core_marker_Copy_where_core_num_nonzero_ZeroablePrimitive_T_for_core_num_nonzero_NonZero_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ].
@@ -1761,6 +1022,20 @@ Module num.
           (Self T)
           (* Instance *) [].
     End Impl_core_marker_Copy_where_core_num_nonzero_ZeroablePrimitive_T_for_core_num_nonzero_NonZero_T.
+    
+    Module Impl_core_clone_TrivialClone_where_core_num_nonzero_ZeroablePrimitive_T_for_core_num_nonzero_NonZero_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_where_core_num_nonzero_ZeroablePrimitive_T_for_core_num_nonzero_NonZero_T.
     
     Module Impl_core_cmp_PartialEq_where_core_num_nonzero_ZeroablePrimitive_T_where_core_cmp_PartialEq_T_core_num_nonzero_NonZero_T_for_core_num_nonzero_NonZero_T.
       Definition Self (T : Ty.t) : Ty.t :=
@@ -2302,7 +1577,7 @@ Module num.
           ].
     End Impl_core_cmp_PartialOrd_where_core_num_nonzero_ZeroablePrimitive_T_where_core_cmp_PartialOrd_T_core_num_nonzero_NonZero_T_for_core_num_nonzero_NonZero_T.
     
-    Module Impl_core_cmp_Ord_where_core_num_nonzero_ZeroablePrimitive_T_where_core_cmp_Ord_T_for_core_num_nonzero_NonZero_T.
+    Module Impl_core_cmp_Ord_where_core_num_nonzero_ZeroablePrimitive_T_where_core_cmp_Ord_T_where_core_marker_Destruct_T_for_core_num_nonzero_NonZero_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ].
       
@@ -2569,7 +1844,7 @@ Module num.
             ("min", InstanceField.Method (min T));
             ("clamp", InstanceField.Method (clamp T))
           ].
-    End Impl_core_cmp_Ord_where_core_num_nonzero_ZeroablePrimitive_T_where_core_cmp_Ord_T_for_core_num_nonzero_NonZero_T.
+    End Impl_core_cmp_Ord_where_core_num_nonzero_ZeroablePrimitive_T_where_core_cmp_Ord_T_where_core_marker_Destruct_T_for_core_num_nonzero_NonZero_T.
     
     Module Impl_core_hash_Hash_where_core_num_nonzero_ZeroablePrimitive_T_where_core_hash_Hash_T_for_core_num_nonzero_NonZero_T.
       Definition Self (T : Ty.t) : Ty.t :=
@@ -3121,19 +2396,18 @@ Module num.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_function (|
-                                          "core::ub_checks::check_language_ub",
-                                          [],
-                                          []
-                                        |),
+                                      M.get_function (|
+                                        "core::ub_checks::check_language_ub",
+                                        [],
                                         []
-                                      |)
-                                    |)) in
+                                      |),
+                                      []
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -3387,19 +2661,18 @@ Module num.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_function (|
-                                                      "core::intrinsics::ub_checks",
-                                                      [],
-                                                      []
-                                                    |),
+                                                  M.get_function (|
+                                                    "core::intrinsics::ub_checks",
+                                                    [],
                                                     []
-                                                  |)
-                                                |)) in
+                                                  |),
+                                                  []
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -3617,6 +2890,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u8" :=
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (| Ty.path "u8", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u8",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u8", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| M.use bit |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "u8" :=
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "u8" :=
+                M.call_closure (|
+                  Ty.path "u8",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (| Ty.path "u8", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -4773,6 +4277,114 @@ Module num.
       Global Typeclasses Opaque isqrt.
       
       (*
+              pub const fn cast_signed(self) -> NonZero<$Sint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_signed()) }
+              }
+      *)
+      Definition cast_signed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "i8",
+                  M.get_associated_function (| Ty.path "u8", "cast_signed", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_signed :
+        M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Admitted.
+      Global Typeclasses Opaque cast_signed.
+      
+      (*
+              pub const fn bit_width(self) -> NonZero<u32> {
+                  // SAFETY: Since `self.leading_zeros()` is always less than
+                  // `Self::BITS`, this subtraction can never be zero.
+                  unsafe { NonZero::new_unchecked(Self::BITS - self.leading_zeros()) }
+              }
+      *)
+      Definition bit_width (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_bit_width :
+        M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Admitted.
+      Global Typeclasses Opaque bit_width.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -5802,6 +5414,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u16" :=
+                M.call_closure (|
+                  Ty.path "u16",
+                  M.get_associated_function (| Ty.path "u16", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u16",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u16", Value.Integer IntegerKind.U16 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u16", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| M.use bit |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "u16" :=
+                M.call_closure (|
+                  Ty.path "u16",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "u16" :=
+                M.call_closure (|
+                  Ty.path "u16",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "u16",
+                      M.get_associated_function (| Ty.path "u16", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -6958,6 +6801,114 @@ Module num.
       Global Typeclasses Opaque isqrt.
       
       (*
+              pub const fn cast_signed(self) -> NonZero<$Sint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_signed()) }
+              }
+      *)
+      Definition cast_signed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "i16",
+                  M.get_associated_function (| Ty.path "u16", "cast_signed", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u16",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_signed :
+        M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Admitted.
+      Global Typeclasses Opaque cast_signed.
+      
+      (*
+              pub const fn bit_width(self) -> NonZero<u32> {
+                  // SAFETY: Since `self.leading_zeros()` is always less than
+                  // `Self::BITS`, this subtraction can never be zero.
+                  unsafe { NonZero::new_unchecked(Self::BITS - self.leading_zeros()) }
+              }
+      *)
+      Definition bit_width (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_bit_width :
+        M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Admitted.
+      Global Typeclasses Opaque bit_width.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -7987,6 +7938,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u32" :=
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (| Ty.path "u32", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u32",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u32", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| M.use bit |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "u32" :=
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "u32" :=
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (| Ty.path "u32", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -9143,6 +9325,114 @@ Module num.
       Global Typeclasses Opaque isqrt.
       
       (*
+              pub const fn cast_signed(self) -> NonZero<$Sint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_signed()) }
+              }
+      *)
+      Definition cast_signed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "i32",
+                  M.get_associated_function (| Ty.path "u32", "cast_signed", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_signed :
+        M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Admitted.
+      Global Typeclasses Opaque cast_signed.
+      
+      (*
+              pub const fn bit_width(self) -> NonZero<u32> {
+                  // SAFETY: Since `self.leading_zeros()` is always less than
+                  // `Self::BITS`, this subtraction can never be zero.
+                  unsafe { NonZero::new_unchecked(Self::BITS - self.leading_zeros()) }
+              }
+      *)
+      Definition bit_width (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_bit_width :
+        M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Admitted.
+      Global Typeclasses Opaque bit_width.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -10172,6 +10462,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u64" :=
+                M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "u64", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u64", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| M.use bit |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "u64" :=
+                M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "u64" :=
+                M.call_closure (|
+                  Ty.path "u64",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "u64",
+                      M.get_associated_function (| Ty.path "u64", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -11328,6 +11849,114 @@ Module num.
       Global Typeclasses Opaque isqrt.
       
       (*
+              pub const fn cast_signed(self) -> NonZero<$Sint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_signed()) }
+              }
+      *)
+      Definition cast_signed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "i64",
+                  M.get_associated_function (| Ty.path "u64", "cast_signed", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u64",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_signed :
+        M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Admitted.
+      Global Typeclasses Opaque cast_signed.
+      
+      (*
+              pub const fn bit_width(self) -> NonZero<u32> {
+                  // SAFETY: Since `self.leading_zeros()` is always less than
+                  // `Self::BITS`, this subtraction can never be zero.
+                  unsafe { NonZero::new_unchecked(Self::BITS - self.leading_zeros()) }
+              }
+      *)
+      Definition bit_width (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_bit_width :
+        M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Admitted.
+      Global Typeclasses Opaque bit_width.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -12357,6 +12986,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u128" :=
+                M.call_closure (|
+                  Ty.path "u128",
+                  M.get_associated_function (| Ty.path "u128", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u128",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u128", Value.Integer IntegerKind.U128 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u128", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| M.use bit |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "u128" :=
+                M.call_closure (|
+                  Ty.path "u128",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "u128" :=
+                M.call_closure (|
+                  Ty.path "u128",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "u128",
+                      M.get_associated_function (| Ty.path "u128", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -13514,6 +14374,114 @@ Module num.
       Global Typeclasses Opaque isqrt.
       
       (*
+              pub const fn cast_signed(self) -> NonZero<$Sint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_signed()) }
+              }
+      *)
+      Definition cast_signed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "i128",
+                  M.get_associated_function (| Ty.path "u128", "cast_signed", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u128",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_signed :
+        M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Admitted.
+      Global Typeclasses Opaque cast_signed.
+      
+      (*
+              pub const fn bit_width(self) -> NonZero<u32> {
+                  // SAFETY: Since `self.leading_zeros()` is always less than
+                  // `Self::BITS`, this subtraction can never be zero.
+                  unsafe { NonZero::new_unchecked(Self::BITS - self.leading_zeros()) }
+              }
+      *)
+      Definition bit_width (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_bit_width :
+        M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Admitted.
+      Global Typeclasses Opaque bit_width.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -14543,6 +15511,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "usize" :=
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (| Ty.path "usize", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "usize",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "usize", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| M.use bit |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "usize" :=
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "usize" :=
+                M.call_closure (|
+                  Ty.path "usize",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (| Ty.path "usize", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -15703,6 +16902,114 @@ Module num.
       Global Typeclasses Opaque isqrt.
       
       (*
+              pub const fn cast_signed(self) -> NonZero<$Sint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_signed()) }
+              }
+      *)
+      Definition cast_signed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_associated_function (| Ty.path "usize", "cast_signed", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_signed :
+        M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Admitted.
+      Global Typeclasses Opaque cast_signed.
+      
+      (*
+              pub const fn bit_width(self) -> NonZero<u32> {
+                  // SAFETY: Since `self.leading_zeros()` is always less than
+                  // `Self::BITS`, this subtraction can never be zero.
+                  unsafe { NonZero::new_unchecked(Self::BITS - self.leading_zeros()) }
+              }
+      *)
+      Definition bit_width (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_bit_width :
+        M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Admitted.
+      Global Typeclasses Opaque bit_width.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -16724,6 +18031,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u8" :=
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (| Ty.path "u8", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u8",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u8", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.cast (Ty.path "i8") (M.read (| bit |)) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "i8" :=
+                M.call_closure (|
+                  Ty.path "i8",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "i8" :=
+                M.call_closure (|
+                  Ty.path "i8",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "i8",
+                      M.get_associated_function (| Ty.path "i8", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -18090,6 +19628,56 @@ Module num.
       Global Typeclasses Opaque wrapping_neg.
       
       (*
+              pub const fn cast_unsigned(self) -> NonZero<$Uint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_unsigned()) }
+              }
+      *)
+      Definition cast_unsigned (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (| Ty.path "i8", "cast_unsigned", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "i8",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i8" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_unsigned :
+        M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Admitted.
+      Global Typeclasses Opaque cast_unsigned.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -18901,6 +20489,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u16" :=
+                M.call_closure (|
+                  Ty.path "u16",
+                  M.get_associated_function (| Ty.path "u16", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u16",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u16", Value.Integer IntegerKind.U16 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u16", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.cast (Ty.path "i16") (M.read (| bit |)) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "i16" :=
+                M.call_closure (|
+                  Ty.path "i16",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "i16" :=
+                M.call_closure (|
+                  Ty.path "i16",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "i16",
+                      M.get_associated_function (| Ty.path "i16", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -20268,6 +22087,56 @@ Module num.
       Global Typeclasses Opaque wrapping_neg.
       
       (*
+              pub const fn cast_unsigned(self) -> NonZero<$Uint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_unsigned()) }
+              }
+      *)
+      Definition cast_unsigned (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u16",
+                  M.get_associated_function (| Ty.path "i16", "cast_unsigned", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "i16",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i16" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_unsigned :
+        M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Admitted.
+      Global Typeclasses Opaque cast_unsigned.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -21079,6 +22948,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u32" :=
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (| Ty.path "u32", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u32",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u32", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.cast (Ty.path "i32") (M.read (| bit |)) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "i32" :=
+                M.call_closure (|
+                  Ty.path "i32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "i32" :=
+                M.call_closure (|
+                  Ty.path "i32",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "i32",
+                      M.get_associated_function (| Ty.path "i32", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -22446,6 +24546,56 @@ Module num.
       Global Typeclasses Opaque wrapping_neg.
       
       (*
+              pub const fn cast_unsigned(self) -> NonZero<$Uint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_unsigned()) }
+              }
+      *)
+      Definition cast_unsigned (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (| Ty.path "i32", "cast_unsigned", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "i32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i32" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_unsigned :
+        M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Admitted.
+      Global Typeclasses Opaque cast_unsigned.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -23257,6 +25407,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u64" :=
+                M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "u64", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u64", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.cast (Ty.path "i64") (M.read (| bit |)) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "i64" :=
+                M.call_closure (|
+                  Ty.path "i64",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "i64" :=
+                M.call_closure (|
+                  Ty.path "i64",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "i64",
+                      M.get_associated_function (| Ty.path "i64", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -24624,6 +27005,56 @@ Module num.
       Global Typeclasses Opaque wrapping_neg.
       
       (*
+              pub const fn cast_unsigned(self) -> NonZero<$Uint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_unsigned()) }
+              }
+      *)
+      Definition cast_unsigned (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "i64", "cast_unsigned", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "i64",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i64" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_unsigned :
+        M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Admitted.
+      Global Typeclasses Opaque cast_unsigned.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -25435,6 +27866,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "u128" :=
+                M.call_closure (|
+                  Ty.path "u128",
+                  M.get_associated_function (| Ty.path "u128", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "u128",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u128", Value.Integer IntegerKind.U128 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "u128", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.cast (Ty.path "i128") (M.read (| bit |)) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "i128" :=
+                M.call_closure (|
+                  Ty.path "i128",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "i128" :=
+                M.call_closure (|
+                  Ty.path "i128",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "i128",
+                      M.get_associated_function (| Ty.path "i128", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -26804,6 +29466,56 @@ Module num.
       Global Typeclasses Opaque wrapping_neg.
       
       (*
+              pub const fn cast_unsigned(self) -> NonZero<$Uint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_unsigned()) }
+              }
+      *)
+      Definition cast_unsigned (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "u128",
+                  M.get_associated_function (| Ty.path "i128", "cast_unsigned", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "i128",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "i128" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_unsigned :
+        M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Admitted.
+      Global Typeclasses Opaque cast_unsigned.
+      
+      (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {
                       if let Some(result) = self.get().checked_mul(other.get()) {
                           // SAFETY:
@@ -27615,6 +30327,237 @@ Module num.
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
+      
+      (*
+                  pub const fn isolate_highest_one(self) -> Self {
+                      // SAFETY:
+                      // `self` is non-zero, so masking to preserve only the most
+                      // significant set bit will result in a non-zero `n`.
+                      // and self.leading_zeros() is always < $INT::BITS since
+                      // at least one of the bits in the number is not zero
+                      unsafe {
+                          let bit = (((1 as $Uint) << (<$Uint>::BITS - 1)).unchecked_shr(self.leading_zeros()));
+                          NonZero::new_unchecked(bit as $Int)
+                      }
+                  }
+      *)
+      Definition isolate_highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                self
+              |) in
+            M.read (|
+              let~ bit : Ty.path "usize" :=
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (| Ty.path "usize", "unchecked_shr", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "usize",
+                      BinOp.Wrap.shl,
+                      [
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 1 |))
+                        |);
+                        M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              get_associated_constant (| Ty.path "usize", "BITS", Ty.path "u32" |)
+                            |);
+                            Value.Integer IntegerKind.U32 1
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u32",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                        "leading_zeros",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.cast (Ty.path "isize") (M.read (| bit |)) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_highest_one :
+        M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_highest_one.
+      
+      (*
+                  pub const fn isolate_lowest_one(self) -> Self {
+                      let n = self.get();
+                      let n = n & n.wrapping_neg();
+      
+                      // SAFETY: `self` is non-zero, so `self` with only its least
+                      // significant set bit will remain non-zero.
+                      unsafe { NonZero::new_unchecked(n) }
+                  }
+      *)
+      Definition isolate_lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                self
+              |) in
+            M.read (|
+              let~ n : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ n : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  BinOp.Wrap.bit_and,
+                  [
+                    M.read (| n |);
+                    M.call_closure (|
+                      Ty.path "isize",
+                      M.get_associated_function (| Ty.path "isize", "wrapping_neg", [], [] |),
+                      [ M.read (| n |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| n |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_isolate_lowest_one :
+        M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Admitted.
+      Global Typeclasses Opaque isolate_lowest_one.
+      
+      (*
+                  pub const fn highest_one(self) -> u32 {
+                      Self::BITS - 1 - self.leading_zeros()
+                  }
+      *)
+      Definition highest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.sub,
+              [
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                        "BITS",
+                        Ty.path "u32"
+                      |)
+                    |);
+                    Value.Integer IntegerKind.U32 1
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_highest_one :
+        M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Admitted.
+      Global Typeclasses Opaque highest_one.
+      
+      (*
+                  pub const fn lowest_one(self) -> u32 {
+                      self.trailing_zeros()
+                  }
+      *)
+      Definition lowest_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u32",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                "trailing_zeros",
+                [],
+                []
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_lowest_one :
+        M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Admitted.
+      Global Typeclasses Opaque lowest_one.
       
       (*
                   pub const fn count_ones(self) -> NonZero<u32> {
@@ -28988,6 +31931,56 @@ Module num.
         M.IsAssociatedFunction.C Self "wrapping_neg" wrapping_neg.
       Admitted.
       Global Typeclasses Opaque wrapping_neg.
+      
+      (*
+              pub const fn cast_unsigned(self) -> NonZero<$Uint> {
+                  // SAFETY: `self.get()` can't be zero
+                  unsafe { NonZero::new_unchecked(self.get().cast_unsigned()) }
+              }
+      *)
+      Definition cast_unsigned (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (| Ty.path "isize", "cast_unsigned", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "isize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "isize" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_unsigned :
+        M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Admitted.
+      Global Typeclasses Opaque cast_unsigned.
       
       (*
                   pub const fn checked_mul(self, other: Self) -> Option<Self> {

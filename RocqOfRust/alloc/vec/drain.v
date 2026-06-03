@@ -559,22 +559,21 @@ Module vec.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.read (|
-                                    get_constant (|
-                                      "core::mem::SizedTypeProperties::IS_ZST",
-                                      Ty.path "bool"
-                                    |)
+                              UnOp.not,
+                              [
+                                M.read (|
+                                  get_constant (|
+                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                    Ty.path "bool"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ start_ptr : Ty.apply (Ty.path "*mut") [] [ T ] :=
@@ -613,25 +612,24 @@ Module vec.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.ne,
-                                            [
-                                              M.read (| unyielded_ptr |);
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "*const") [] [ T ],
-                                                M.pointer_coercion
-                                                  M.PointerCoercion.MutToConstPointer
-                                                  (Ty.apply (Ty.path "*mut") [] [ T ])
-                                                  (Ty.apply (Ty.path "*const") [] [ T ]),
-                                                [ M.read (| start_ptr |) ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          BinOp.ne,
+                                          [
+                                            M.read (| unyielded_ptr |);
+                                            M.call_closure (|
+                                              Ty.apply (Ty.path "*const") [] [ T ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.MutToConstPointer
+                                                (Ty.apply (Ty.path "*mut") [] [ T ])
+                                                (Ty.apply (Ty.path "*const") [] [ T ]),
+                                              [ M.read (| start_ptr |) ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -645,7 +643,7 @@ Module vec.
                                       let~ _ : Ty.tuple [] :=
                                         M.call_closure (|
                                           Ty.tuple [],
-                                          M.get_function (| "core::intrinsics::copy", [], [ T ] |),
+                                          M.get_function (| "core::ptr::copy", [], [ T ] |),
                                           [
                                             M.read (| src |);
                                             M.read (| dst |);
@@ -666,22 +664,21 @@ Module vec.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.ne,
-                                            [
-                                              M.read (| tail |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.add,
-                                                [ M.read (| start |); M.read (| unyielded_len |) ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          BinOp.ne,
+                                          [
+                                            M.read (| tail |);
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.add,
+                                              [ M.read (| start |); M.read (| unyielded_len |) ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -730,7 +727,7 @@ Module vec.
                                       let~ _ : Ty.tuple [] :=
                                         M.call_closure (|
                                           Ty.tuple [],
-                                          M.get_function (| "core::intrinsics::copy", [], [ T ] |),
+                                          M.get_function (| "core::ptr::copy", [], [ T ] |),
                                           [
                                             M.read (| src |);
                                             M.read (| dst |);
@@ -1245,7 +1242,7 @@ Module vec.
                   // it from the original vec but also avoid creating a &mut to the front since that could
                   // invalidate raw pointers to it which some unsafe code might rely on.
                   let vec_ptr = vec.as_mut().as_mut_ptr();
-                  let drop_offset = drop_ptr.sub_ptr(vec_ptr);
+                  let drop_offset = drop_ptr.offset_from_unsigned(vec_ptr);
                   let to_drop = ptr::slice_from_raw_parts_mut(vec_ptr.add(drop_offset), drop_len);
                   ptr::drop_in_place(to_drop);
               }
@@ -1325,11 +1322,10 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
-                                  Ty.path "bool"
-                                |)) in
+                              get_constant (|
+                                "core::mem::SizedTypeProperties::IS_ZST",
+                                Ty.path "bool"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -1460,15 +1456,14 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [ M.read (| drop_len |); Value.Integer IntegerKind.Usize 0 ]
-                                  |)
-                                |)) in
+                                  BinOp.eq,
+                                  [ M.read (| drop_len |); Value.Integer IntegerKind.Usize 0 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -1540,7 +1535,7 @@ Module vec.
                       Ty.path "usize",
                       M.get_associated_function (|
                         Ty.apply (Ty.path "*const") [] [ T ],
-                        "sub_ptr",
+                        "offset_from_unsigned",
                         [],
                         []
                       |),

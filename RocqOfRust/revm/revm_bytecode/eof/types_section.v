@@ -148,6 +148,18 @@ Module eof.
           (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
     End Impl_core_fmt_Debug_for_revm_bytecode_eof_types_section_TypesSection.
     
+    Module Impl_core_clone_TrivialClone_for_revm_bytecode_eof_types_section_TypesSection.
+      Definition Self : Ty.t := Ty.path "revm_bytecode::eof::types_section::TypesSection".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_revm_bytecode_eof_types_section_TypesSection.
+    
     Module Impl_core_clone_Clone_for_revm_bytecode_eof_types_section_TypesSection.
       Definition Self : Ty.t := Ty.path "revm_bytecode::eof::types_section::TypesSection".
       
@@ -2321,40 +2333,23 @@ Module eof.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
-                                  Ty.path "bool",
+                              M.alloc (|
+                                Ty.path "bool",
+                                LogicalOp.or (|
                                   LogicalOp.or (|
-                                    LogicalOp.or (|
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.gt,
-                                        [
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "revm_bytecode::eof::types_section::TypesSection",
-                                              "inputs"
-                                            |)
-                                          |);
-                                          Value.Integer IntegerKind.U8 127
-                                        ]
-                                      |),
-                                      ltac:(M.monadic
-                                        (M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
-                                          [
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "revm_bytecode::eof::types_section::TypesSection",
-                                                "outputs"
-                                              |)
-                                            |);
-                                            Value.Integer IntegerKind.U8 128
-                                          ]
-                                        |)))
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.gt,
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_bytecode::eof::types_section::TypesSection",
+                                            "inputs"
+                                          |)
+                                        |);
+                                        Value.Integer IntegerKind.U8 127
+                                      ]
                                     |),
                                     ltac:(M.monadic
                                       (M.call_closure (|
@@ -2365,14 +2360,30 @@ Module eof.
                                             M.SubPointer.get_struct_record_field (|
                                               M.deref (| M.read (| self |) |),
                                               "revm_bytecode::eof::types_section::TypesSection",
-                                              "max_stack_size"
+                                              "outputs"
                                             |)
                                           |);
-                                          Value.Integer IntegerKind.U16 1023
+                                          Value.Integer IntegerKind.U8 128
                                         ]
                                       |)))
-                                  |)
-                                |)) in
+                                  |),
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.gt,
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_bytecode::eof::types_section::TypesSection",
+                                            "max_stack_size"
+                                          |)
+                                        |);
+                                        Value.Integer IntegerKind.U16 1023
+                                      ]
+                                    |)))
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -2403,32 +2414,31 @@ Module eof.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [
-                                      M.cast
-                                        (Ty.path "u16")
-                                        (M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "revm_bytecode::eof::types_section::TypesSection",
-                                            "inputs"
-                                          |)
-                                        |));
-                                      M.read (|
+                                  BinOp.gt,
+                                  [
+                                    M.cast
+                                      (Ty.path "u16")
+                                      (M.read (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
                                           "revm_bytecode::eof::types_section::TypesSection",
-                                          "max_stack_size"
+                                          "inputs"
                                         |)
+                                      |));
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "revm_bytecode::eof::types_section::TypesSection",
+                                        "max_stack_size"
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|

@@ -75,7 +75,7 @@ Module iter.
                 assert!(N != 0, "array in `Iterator::map_windows` must contain more than 0 elements");
         
                 // Only ZST arrays' length can be so large.
-                if mem::size_of::<I::Item>() == 0 {
+                if size_of::<I::Item>() == 0 {
                     assert!(
                         N.checked_mul(2).is_some(),
                         "array size of `Iterator::map_windows` is too large"
@@ -107,21 +107,20 @@ Module iter.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.ne,
-                                      [ N; Value.Integer IntegerKind.Usize 0 ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.ne,
+                                    [ N; Value.Integer IntegerKind.Usize 0 ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -133,30 +132,13 @@ Module iter.
                                   Ty.path "core::fmt::Arguments",
                                   M.get_associated_function (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
+                                    "from_str",
+                                    [],
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array
-                                              [
-                                                mk_str (|
-                                                  "array in `Iterator::map_windows` must contain more than 0 elements"
-                                                |)
-                                              ]
-                                          |)
-                                        |)
-                                      |)
+                                    mk_str (|
+                                      "array in `Iterator::map_windows` must contain more than 0 elements"
                                     |)
                                   ]
                                 |)
@@ -174,33 +156,32 @@ Module iter.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_function (|
-                                        "core::mem::size_of",
-                                        [],
-                                        [
-                                          Ty.associated_in_trait
-                                            "core::iter::traits::iterator::Iterator"
-                                            []
-                                            []
-                                            I
-                                            "Item"
-                                        ]
-                                      |),
-                                      []
-                                    |);
-                                    Value.Integer IntegerKind.Usize 0
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_function (|
+                                      "core::mem::size_of",
+                                      [],
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::iter::traits::iterator::Iterator"
+                                          []
+                                          []
+                                          I
+                                          "Item"
+                                      ]
+                                    |),
+                                    []
+                                  |);
+                                  Value.Integer IntegerKind.Usize 0
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -212,52 +193,51 @@ Module iter.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path "core::option::Option")
-                                                      []
-                                                      [ Ty.path "usize" ],
-                                                    "is_some",
-                                                    [],
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
                                                     []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
+                                                    [ Ty.path "usize" ],
+                                                  "is_some",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [ Ty.path "usize" ],
+                                                      M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "core::option::Option")
                                                           []
                                                           [ Ty.path "usize" ],
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "core::option::Option")
-                                                            []
-                                                            [ Ty.path "usize" ],
-                                                          M.get_associated_function (|
-                                                            Ty.path "usize",
-                                                            "checked_mul",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [ N; Value.Integer IntegerKind.Usize 2 ]
-                                                        |)
+                                                        M.get_associated_function (|
+                                                          Ty.path "usize",
+                                                          "checked_mul",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [ N; Value.Integer IntegerKind.Usize 2 ]
                                                       |)
                                                     |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -272,35 +252,13 @@ Module iter.
                                               Ty.path "core::fmt::Arguments",
                                               M.get_associated_function (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                "from_str",
+                                                [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [
-                                                            mk_str (|
-                                                              "array size of `Iterator::map_windows` is too large"
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
+                                                mk_str (|
+                                                  "array size of `Iterator::map_windows` is too large"
                                                 |)
                                               ]
                                             |)
@@ -1244,45 +1202,44 @@ Module iter.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path "core::option::Option")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "core::iter::adapters::map_windows::Buffer")
-                                                          [ N ]
-                                                          [
-                                                            Ty.associated_in_trait
-                                                              "core::iter::traits::iterator::Iterator"
-                                                              []
-                                                              []
-                                                              I
-                                                              "Item"
-                                                          ]
-                                                      ],
-                                                    "is_some",
-                                                    [],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
                                                     []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "core::iter::adapters::map_windows::MapWindowsInner",
-                                                        "buffer"
-                                                      |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::iter::adapters::map_windows::Buffer")
+                                                        [ N ]
+                                                        [
+                                                          Ty.associated_in_trait
+                                                            "core::iter::traits::iterator::Iterator"
+                                                            []
+                                                            []
+                                                            I
+                                                            "Item"
+                                                        ]
+                                                    ],
+                                                  "is_some",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::iter::adapters::map_windows::MapWindowsInner",
+                                                      "buffer"
                                                     |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -2023,7 +1980,7 @@ Module iter.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -2035,41 +1992,40 @@ Module iter.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.le,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.add,
-                                                      [
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "core::iter::adapters::map_windows::Buffer",
-                                                            "start"
-                                                          |)
-                                                        |);
-                                                        N
-                                                      ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.mul,
-                                                      [ Value.Integer IntegerKind.Usize 2; N ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.le,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.add,
+                                                    [
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::iter::adapters::map_windows::Buffer",
+                                                          "start"
+                                                        |)
+                                                      |);
+                                                      N
+                                                    ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.mul,
+                                                    [ Value.Integer IntegerKind.Usize 2; N ]
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -2230,7 +2186,7 @@ Module iter.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                              (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -2242,41 +2198,40 @@ Module iter.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.le,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.add,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "core::iter::adapters::map_windows::Buffer",
-                                                                "start"
-                                                              |)
-                                                            |);
-                                                            N
-                                                          ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.mul,
-                                                          [ Value.Integer IntegerKind.Usize 2; N ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.le,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.add,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| self |) |),
+                                                              "core::iter::adapters::map_windows::Buffer",
+                                                              "start"
+                                                            |)
+                                                          |);
+                                                          N
+                                                        ]
+                                                      |);
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.mul,
+                                                        [ Value.Integer IntegerKind.Usize 2; N ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -2486,7 +2441,7 @@ Module iter.
         
                 // SAFETY: the index is valid and this is element `a` in the
                 // diagram above and has not been dropped yet.
-                unsafe { ptr::drop_in_place(to_drop.cast::<T>()) };
+                unsafe { ptr::drop_in_place(to_drop.cast_init()) };
             }
         *)
         Definition push
@@ -2535,7 +2490,7 @@ Module iter.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -2547,41 +2502,40 @@ Module iter.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.le,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.add,
-                                                      [
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "core::iter::adapters::map_windows::Buffer",
-                                                            "start"
-                                                          |)
-                                                        |);
-                                                        N
-                                                      ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.mul,
-                                                      [ Value.Integer IntegerKind.Usize 2; N ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.le,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.add,
+                                                    [
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::iter::adapters::map_windows::Buffer",
+                                                          "start"
+                                                        |)
+                                                      |);
+                                                      N
+                                                    ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.mul,
+                                                    [ Value.Integer IntegerKind.Usize 2; N ]
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -2618,24 +2572,23 @@ Module iter.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::iter::adapters::map_windows::Buffer",
-                                        "start"
-                                      |)
-                                    |);
-                                    N
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::iter::adapters::map_windows::Buffer",
+                                      "start"
+                                    |)
+                                  |);
+                                  N
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -2654,7 +2607,7 @@ Module iter.
                                   M.call_closure (|
                                     Ty.tuple [],
                                     M.get_function (|
-                                      "core::intrinsics::copy_nonoverlapping",
+                                      "core::ptr::copy_nonoverlapping",
                                       [],
                                       [
                                         Ty.apply
@@ -3014,9 +2967,9 @@ Module iter.
                             (Ty.path "*mut")
                             []
                             [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                          "cast",
+                          "cast_init",
                           [],
-                          [ T ]
+                          []
                         |),
                         [ M.read (| to_drop |) ]
                       |)

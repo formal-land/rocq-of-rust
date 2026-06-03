@@ -15,7 +15,7 @@ Module ptr.
           ];
       } *)
     
-    Module Impl_core_marker_Send_where_core_marker_Send_T_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    Module Impl_core_marker_Send_where_core_marker_Send_T_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
       Axiom Implements :
@@ -26,9 +26,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_marker_Send_where_core_marker_Send_T_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    End Impl_core_marker_Send_where_core_marker_Send_T_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
     
-    Module Impl_core_marker_Sync_where_core_marker_Sync_T_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    Module Impl_core_marker_Sync_where_core_marker_Sync_T_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
       Axiom Implements :
@@ -39,7 +39,7 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_marker_Sync_where_core_marker_Sync_T_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    End Impl_core_marker_Sync_where_core_marker_Sync_T_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
     
     Module Impl_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
@@ -211,6 +211,40 @@ Module ptr.
         M.IsAssociatedFunction.C (Self T) "new" (new T).
       Admitted.
       Global Typeclasses Opaque new.
+      
+      (*
+          pub const fn from_non_null(pointer: NonNull<T>) -> Self {
+              Unique { pointer, _marker: PhantomData }
+          }
+      *)
+      Definition from_non_null
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ pointer ] =>
+          ltac:(M.monadic
+            (let pointer :=
+              M.alloc (| Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ], pointer |) in
+            Value.mkStructRecord
+              "core::ptr::unique::Unique"
+              []
+              [ T ]
+              [
+                ("pointer", M.read (| pointer |));
+                ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
+              ]))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_from_non_null :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "from_non_null" (from_non_null T).
+      Admitted.
+      Global Typeclasses Opaque from_non_null.
       
       (*
           pub const fn as_ptr(self) -> *mut T {
@@ -451,7 +485,7 @@ Module ptr.
     End Impl_core_ptr_unique_Unique_T.
     
     
-    Module Impl_core_clone_Clone_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    Module Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
       (*
@@ -484,9 +518,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
-    End Impl_core_clone_Clone_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    End Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
     
-    Module Impl_core_marker_Copy_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    Module Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
       Axiom Implements :
@@ -497,9 +531,22 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_marker_Copy_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    End Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_marker_Unsize_T_U_core_ptr_unique_Unique_U_for_core_ptr_unique_Unique_T.
+    Module Impl_core_clone_TrivialClone_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_marker_Unsize_T_U_core_ptr_unique_Unique_U_for_core_ptr_unique_Unique_T.
       Definition Self (T U : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
@@ -511,9 +558,9 @@ Module ptr.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_marker_Unsize_T_U_core_ptr_unique_Unique_U_for_core_ptr_unique_Unique_T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_marker_Unsize_T_U_core_ptr_unique_Unique_U_for_core_ptr_unique_Unique_T.
     
-    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_marker_Unsize_T_U_core_ptr_unique_Unique_U_for_core_ptr_unique_Unique_T.
+    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_marker_Unsize_T_U_core_ptr_unique_Unique_U_for_core_ptr_unique_Unique_T.
       Definition Self (T U : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
@@ -525,9 +572,9 @@ Module ptr.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_marker_Unsize_T_U_core_ptr_unique_Unique_U_for_core_ptr_unique_Unique_T.
+    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_marker_Unsize_T_U_core_ptr_unique_Unique_U_for_core_ptr_unique_Unique_T.
     
-    Module Impl_core_pin_PinCoerceUnsized_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    Module Impl_core_pin_PinCoerceUnsized_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
       Axiom Implements :
@@ -538,9 +585,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_pin_PinCoerceUnsized_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    End Impl_core_pin_PinCoerceUnsized_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
     
-    Module Impl_core_fmt_Debug_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    Module Impl_core_fmt_Debug_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
       (*
@@ -613,9 +660,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("fmt", InstanceField.Method (fmt T)) ].
-    End Impl_core_fmt_Debug_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    End Impl_core_fmt_Debug_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
     
-    Module Impl_core_fmt_Pointer_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    Module Impl_core_fmt_Pointer_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
       (*
@@ -688,9 +735,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("fmt", InstanceField.Method (fmt T)) ].
-    End Impl_core_fmt_Pointer_where_core_marker_Sized_T_for_core_ptr_unique_Unique_T.
+    End Impl_core_fmt_Pointer_where_core_marker_PointeeSized_T_for_core_ptr_unique_Unique_T.
     
-    Module Impl_core_convert_From_where_core_marker_Sized_T_ref_mut_T_for_core_ptr_unique_Unique_T.
+    Module Impl_core_convert_From_where_core_marker_PointeeSized_T_ref_mut_T_for_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
       (*
@@ -742,14 +789,14 @@ Module ptr.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&mut") [] [ T ] ]
           (Self T)
           (* Instance *) [ ("from", InstanceField.Method (from T)) ].
-    End Impl_core_convert_From_where_core_marker_Sized_T_ref_mut_T_for_core_ptr_unique_Unique_T.
+    End Impl_core_convert_From_where_core_marker_PointeeSized_T_ref_mut_T_for_core_ptr_unique_Unique_T.
     
-    Module Impl_core_convert_From_where_core_marker_Sized_T_core_ptr_non_null_NonNull_T_for_core_ptr_unique_Unique_T.
+    Module Impl_core_convert_From_where_core_marker_PointeeSized_T_core_ptr_non_null_NonNull_T_for_core_ptr_unique_Unique_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ].
       
       (*
           fn from(pointer: NonNull<T>) -> Self {
-              Unique { pointer, _marker: PhantomData }
+              Unique::from_non_null(pointer)
           }
       *)
       Definition from (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -759,14 +806,16 @@ Module ptr.
           ltac:(M.monadic
             (let pointer :=
               M.alloc (| Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ], pointer |) in
-            Value.mkStructRecord
-              "core::ptr::unique::Unique"
-              []
-              [ T ]
-              [
-                ("pointer", M.read (| pointer |));
-                ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-              ]))
+            M.call_closure (|
+              Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ],
+                "from_non_null",
+                [],
+                []
+              |),
+              [ M.read (| pointer |) ]
+            |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -779,6 +828,6 @@ Module ptr.
           [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ]
           (Self T)
           (* Instance *) [ ("from", InstanceField.Method (from T)) ].
-    End Impl_core_convert_From_where_core_marker_Sized_T_core_ptr_non_null_NonNull_T_for_core_ptr_unique_Unique_T.
+    End Impl_core_convert_From_where_core_marker_PointeeSized_T_core_ptr_non_null_NonNull_T_for_core_ptr_unique_Unique_T.
   End unique.
 End ptr.

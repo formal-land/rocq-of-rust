@@ -5,10 +5,993 @@ Module num.
   Module dec2flt.
     Module float.
       (* Trait *)
-      (* Empty module 'RawFloat' *)
+      (* Empty module 'CastInto' *)
+      
+      (* Trait *)
+      (* Empty module 'Integer' *)
+      
+      Module Impl_core_num_dec2flt_float_CastInto_i16_for_u16.
+        Definition Self : Ty.t := Ty.path "u16".
+        
+        (*
+                        fn cast(self) -> i16 {
+                            self as i16
+                        }
+        *)
+        Definition cast (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ self ] =>
+            ltac:(M.monadic
+              (let self := M.alloc (| Ty.path "u16", self |) in
+              M.cast (Ty.path "i16") (M.read (| self |))))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::num::dec2flt::float::CastInto"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.path "i16" ]
+            Self
+            (* Instance *) [ ("cast", InstanceField.Method cast) ].
+      End Impl_core_num_dec2flt_float_CastInto_i16_for_u16.
+      
+      Module Impl_core_num_dec2flt_float_Integer_for_u16.
+        Definition Self : Ty.t := Ty.path "u16".
+        
+        (*                 const ZERO: Self = 0; *)
+        (* Ty.path "u16" *)
+        Definition value_ZERO (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "u16", Value.Integer IntegerKind.U16 0 |))).
+        
+        (*                 const ONE: Self = 1; *)
+        (* Ty.path "u16" *)
+        Definition value_ONE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "u16", Value.Integer IntegerKind.U16 1 |))).
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::num::dec2flt::float::Integer"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            Self
+            (* Instance *)
+            [
+              ("value_ZERO", InstanceField.Method value_ZERO);
+              ("value_ONE", InstanceField.Method value_ONE)
+            ].
+      End Impl_core_num_dec2flt_float_Integer_for_u16.
+      
+      Module Impl_core_num_dec2flt_float_CastInto_i16_for_u32.
+        Definition Self : Ty.t := Ty.path "u32".
+        
+        (*
+                        fn cast(self) -> i16 {
+                            self as i16
+                        }
+        *)
+        Definition cast (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ self ] =>
+            ltac:(M.monadic
+              (let self := M.alloc (| Ty.path "u32", self |) in
+              M.cast (Ty.path "i16") (M.read (| self |))))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::num::dec2flt::float::CastInto"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.path "i16" ]
+            Self
+            (* Instance *) [ ("cast", InstanceField.Method cast) ].
+      End Impl_core_num_dec2flt_float_CastInto_i16_for_u32.
+      
+      Module Impl_core_num_dec2flt_float_Integer_for_u32.
+        Definition Self : Ty.t := Ty.path "u32".
+        
+        (*                 const ZERO: Self = 0; *)
+        (* Ty.path "u32" *)
+        Definition value_ZERO (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 0 |))).
+        
+        (*                 const ONE: Self = 1; *)
+        (* Ty.path "u32" *)
+        Definition value_ONE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 1 |))).
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::num::dec2flt::float::Integer"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            Self
+            (* Instance *)
+            [
+              ("value_ZERO", InstanceField.Method value_ZERO);
+              ("value_ONE", InstanceField.Method value_ONE)
+            ].
+      End Impl_core_num_dec2flt_float_Integer_for_u32.
+      
+      Module Impl_core_num_dec2flt_float_CastInto_i16_for_u64.
+        Definition Self : Ty.t := Ty.path "u64".
+        
+        (*
+                        fn cast(self) -> i16 {
+                            self as i16
+                        }
+        *)
+        Definition cast (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ self ] =>
+            ltac:(M.monadic
+              (let self := M.alloc (| Ty.path "u64", self |) in
+              M.cast (Ty.path "i16") (M.read (| self |))))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::num::dec2flt::float::CastInto"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.path "i16" ]
+            Self
+            (* Instance *) [ ("cast", InstanceField.Method cast) ].
+      End Impl_core_num_dec2flt_float_CastInto_i16_for_u64.
+      
+      Module Impl_core_num_dec2flt_float_Integer_for_u64.
+        Definition Self : Ty.t := Ty.path "u64".
+        
+        (*                 const ZERO: Self = 0; *)
+        (* Ty.path "u64" *)
+        Definition value_ZERO (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 0 |))).
+        
+        (*                 const ONE: Self = 1; *)
+        (* Ty.path "u64" *)
+        Definition value_ONE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 1 |))).
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::num::dec2flt::float::Integer"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            Self
+            (* Instance *)
+            [
+              ("value_ZERO", InstanceField.Method value_ZERO);
+              ("value_ONE", InstanceField.Method value_ONE)
+            ].
+      End Impl_core_num_dec2flt_float_Integer_for_u64.
+      
+      (* Trait *)
+      Module RawFloat.
+        Definition integer_decode
+            (Self : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          match ε, τ, α with
+          | [], [], [ self ] =>
+            ltac:(M.monadic
+              (let self := M.alloc (| Self, self |) in
+              M.read (|
+                let~ bits :
+                    Ty.associated_in_trait "core::num::dec2flt::float::RawFloat" [] [] Self "Int" :=
+                  M.call_closure (|
+                    Ty.associated_in_trait "core::num::dec2flt::float::RawFloat" [] [] Self "Int",
+                    M.get_trait_method (|
+                      "core::num::dec2flt::float::RawFloat",
+                      Self,
+                      [],
+                      [],
+                      "to_bits",
+                      [],
+                      []
+                    |),
+                    [ M.read (| self |) ]
+                  |) in
+                let~ sign : Ty.path "i8" :=
+                  M.match_operator (|
+                    Ty.path "i8",
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.associated_in_trait
+                                    "core::num::dec2flt::float::RawFloat"
+                                    []
+                                    []
+                                    Self
+                                    "Int",
+                                  [],
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::num::dec2flt::float::RawFloat"
+                                      []
+                                      []
+                                      Self
+                                      "Int"
+                                  ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.associated_in_trait
+                                        "core::num::dec2flt::float::RawFloat"
+                                        []
+                                        []
+                                        Self
+                                        "Int",
+                                      M.call_closure (|
+                                        Ty.associated_in_trait
+                                          "core::num::dec2flt::float::RawFloat"
+                                          []
+                                          []
+                                          Self
+                                          "Int",
+                                        M.get_trait_method (|
+                                          "core::ops::bit::Shr",
+                                          Ty.associated_in_trait
+                                            "core::num::dec2flt::float::RawFloat"
+                                            []
+                                            []
+                                            Self
+                                            "Int",
+                                          [],
+                                          [ Ty.path "u32" ],
+                                          "shr",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (| bits |);
+                                          M.call_closure (|
+                                            Ty.path "u32",
+                                            BinOp.Wrap.sub,
+                                            [
+                                              M.read (|
+                                                get_constant (|
+                                                  "core::num::dec2flt::float::RawFloat::BITS",
+                                                  Ty.path "u32"
+                                                |)
+                                              |);
+                                              Value.Integer IntegerKind.U32 1
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    get_constant (|
+                                      "core::num::dec2flt::float::Integer::ZERO",
+                                      Ty.associated_in_trait
+                                        "core::num::dec2flt::float::RawFloat"
+                                        []
+                                        []
+                                        Self
+                                        "Int"
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          Value.Integer IntegerKind.I8 1));
+                      fun γ => ltac:(M.monadic (Value.Integer IntegerKind.I8 (-1)))
+                    ]
+                  |) in
+                let~ exponent : Ty.path "i16" :=
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_trait_method (|
+                      "core::num::dec2flt::float::CastInto",
+                      Ty.associated_in_trait "core::num::dec2flt::float::RawFloat" [] [] Self "Int",
+                      [],
+                      [ Ty.path "i16" ],
+                      "cast",
+                      [],
+                      []
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.associated_in_trait
+                          "core::num::dec2flt::float::RawFloat"
+                          []
+                          []
+                          Self
+                          "Int",
+                        M.get_trait_method (|
+                          "core::ops::bit::Shr",
+                          Ty.associated_in_trait
+                            "core::num::dec2flt::float::RawFloat"
+                            []
+                            []
+                            Self
+                            "Int",
+                          [],
+                          [ Ty.path "u32" ],
+                          "shr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.associated_in_trait
+                              "core::num::dec2flt::float::RawFloat"
+                              []
+                              []
+                              Self
+                              "Int",
+                            M.get_trait_method (|
+                              "core::ops::bit::BitAnd",
+                              Ty.associated_in_trait
+                                "core::num::dec2flt::float::RawFloat"
+                                []
+                                []
+                                Self
+                                "Int",
+                              [],
+                              [
+                                Ty.associated_in_trait
+                                  "core::num::dec2flt::float::RawFloat"
+                                  []
+                                  []
+                                  Self
+                                  "Int"
+                              ],
+                              "bitand",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| bits |);
+                              M.read (|
+                                get_constant (|
+                                  "core::num::dec2flt::float::RawFloat::EXP_MASK",
+                                  Ty.associated_in_trait
+                                    "core::num::dec2flt::float::RawFloat"
+                                    []
+                                    []
+                                    Self
+                                    "Int"
+                                |)
+                              |)
+                            ]
+                          |);
+                          M.read (|
+                            get_constant (|
+                              "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                              Ty.path "u32"
+                            |)
+                          |)
+                        ]
+                      |)
+                    ]
+                  |) in
+                let~ mantissa :
+                    Ty.associated_in_trait "core::num::dec2flt::float::RawFloat" [] [] Self "Int" :=
+                  M.match_operator (|
+                    Ty.associated_in_trait "core::num::dec2flt::float::RawFloat" [] [] Self "Int",
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.eq,
+                                [ M.read (| exponent |); Value.Integer IntegerKind.I16 0 ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.call_closure (|
+                            Ty.associated_in_trait
+                              "core::num::dec2flt::float::RawFloat"
+                              []
+                              []
+                              Self
+                              "Int",
+                            M.get_trait_method (|
+                              "core::ops::bit::Shl",
+                              Ty.associated_in_trait
+                                "core::num::dec2flt::float::RawFloat"
+                                []
+                                []
+                                Self
+                                "Int",
+                              [],
+                              [ Ty.path "u32" ],
+                              "shl",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.associated_in_trait
+                                  "core::num::dec2flt::float::RawFloat"
+                                  []
+                                  []
+                                  Self
+                                  "Int",
+                                M.get_trait_method (|
+                                  "core::ops::bit::BitAnd",
+                                  Ty.associated_in_trait
+                                    "core::num::dec2flt::float::RawFloat"
+                                    []
+                                    []
+                                    Self
+                                    "Int",
+                                  [],
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::num::dec2flt::float::RawFloat"
+                                      []
+                                      []
+                                      Self
+                                      "Int"
+                                  ],
+                                  "bitand",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (| bits |);
+                                  M.read (|
+                                    get_constant (|
+                                      "core::num::dec2flt::float::RawFloat::SIG_MASK",
+                                      Ty.associated_in_trait
+                                        "core::num::dec2flt::float::RawFloat"
+                                        []
+                                        []
+                                        Self
+                                        "Int"
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              Value.Integer IntegerKind.U32 1
+                            ]
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (M.call_closure (|
+                            Ty.associated_in_trait
+                              "core::num::dec2flt::float::RawFloat"
+                              []
+                              []
+                              Self
+                              "Int",
+                            M.get_trait_method (|
+                              "core::ops::bit::BitOr",
+                              Ty.associated_in_trait
+                                "core::num::dec2flt::float::RawFloat"
+                                []
+                                []
+                                Self
+                                "Int",
+                              [],
+                              [
+                                Ty.associated_in_trait
+                                  "core::num::dec2flt::float::RawFloat"
+                                  []
+                                  []
+                                  Self
+                                  "Int"
+                              ],
+                              "bitor",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.associated_in_trait
+                                  "core::num::dec2flt::float::RawFloat"
+                                  []
+                                  []
+                                  Self
+                                  "Int",
+                                M.get_trait_method (|
+                                  "core::ops::bit::BitAnd",
+                                  Ty.associated_in_trait
+                                    "core::num::dec2flt::float::RawFloat"
+                                    []
+                                    []
+                                    Self
+                                    "Int",
+                                  [],
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::num::dec2flt::float::RawFloat"
+                                      []
+                                      []
+                                      Self
+                                      "Int"
+                                  ],
+                                  "bitand",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (| bits |);
+                                  M.read (|
+                                    get_constant (|
+                                      "core::num::dec2flt::float::RawFloat::SIG_MASK",
+                                      Ty.associated_in_trait
+                                        "core::num::dec2flt::float::RawFloat"
+                                        []
+                                        []
+                                        Self
+                                        "Int"
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              M.call_closure (|
+                                Ty.associated_in_trait
+                                  "core::num::dec2flt::float::RawFloat"
+                                  []
+                                  []
+                                  Self
+                                  "Int",
+                                M.get_trait_method (|
+                                  "core::ops::bit::Shl",
+                                  Ty.associated_in_trait
+                                    "core::num::dec2flt::float::RawFloat"
+                                    []
+                                    []
+                                    Self
+                                    "Int",
+                                  [],
+                                  [ Ty.path "u32" ],
+                                  "shl",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (|
+                                    get_constant (|
+                                      "core::num::dec2flt::float::Integer::ONE",
+                                      Ty.associated_in_trait
+                                        "core::num::dec2flt::float::RawFloat"
+                                        []
+                                        []
+                                        Self
+                                        "Int"
+                                    |)
+                                  |);
+                                  M.read (|
+                                    get_constant (|
+                                      "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                                      Ty.path "u32"
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |)))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  let β := exponent in
+                  M.write (|
+                    β,
+                    M.call_closure (|
+                      Ty.path "i16",
+                      BinOp.Wrap.sub,
+                      [
+                        M.read (| β |);
+                        M.cast
+                          (Ty.path "i16")
+                          (M.call_closure (|
+                            Ty.path "u32",
+                            BinOp.Wrap.add,
+                            [
+                              M.read (|
+                                get_constant (|
+                                  "core::num::dec2flt::float::RawFloat::EXP_BIAS",
+                                  Ty.path "u32"
+                                |)
+                              |);
+                              M.read (|
+                                get_constant (|
+                                  "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                                  Ty.path "u32"
+                                |)
+                              |)
+                            ]
+                          |))
+                      ]
+                    |)
+                  |) in
+                M.alloc (|
+                  Ty.tuple [ Ty.path "u64"; Ty.path "i16"; Ty.path "i8" ],
+                  Value.Tuple
+                    [
+                      M.call_closure (|
+                        Ty.path "u64",
+                        M.get_trait_method (|
+                          "core::convert::Into",
+                          Ty.associated_in_trait
+                            "core::num::dec2flt::float::RawFloat"
+                            []
+                            []
+                            Self
+                            "Int",
+                          [],
+                          [ Ty.path "u64" ],
+                          "into",
+                          [],
+                          []
+                        |),
+                        [ M.read (| mantissa |) ]
+                      |);
+                      M.read (| exponent |);
+                      M.read (| sign |)
+                    ]
+                |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom ProvidedMethod_integer_decode :
+          M.IsProvidedMethod "core::num::dec2flt::float::RawFloat" "integer_decode" integer_decode.
+      End RawFloat.
+      
+      (*
+      const fn pow2_to_pow10(a: i64) -> i64 {
+          let res = (a as f64) / f64::consts::LOG2_10;
+          res as i64
+      }
+      *)
+      Definition pow2_to_pow10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ a ] =>
+          ltac:(M.monadic
+            (let a := M.alloc (| Ty.path "i64", a |) in
+            M.read (|
+              let~ res : Ty.path "f64" :=
+                M.call_closure (|
+                  Ty.path "f64",
+                  BinOp.Wrap.div,
+                  [
+                    M.cast (Ty.path "f64") (M.read (| a |));
+                    M.read (| get_constant (| "core::f64::consts::LOG2_10", Ty.path "f64" |) |)
+                  ]
+                |) in
+              M.alloc (| Ty.path "i64", M.cast (Ty.path "i64") (M.read (| res |)) |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_pow2_to_pow10 :
+        M.IsFunction.C "core::num::dec2flt::float::pow2_to_pow10" pow2_to_pow10.
+      Admitted.
+      Global Typeclasses Opaque pow2_to_pow10.
+      
+      Module Impl_core_num_dec2flt_float_RawFloat_for_f16.
+        Definition Self : Ty.t := Ty.path "f16".
+        
+        (*     type Int = u16; *)
+        Definition _Int : Ty.t := Ty.path "u16".
+        
+        (*     const INFINITY: Self = Self::INFINITY; *)
+        (* Ty.path "f16" *)
+        Definition value_INFINITY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (get_associated_constant (| Ty.path "f16", "INFINITY", Ty.path "f16" |))).
+        
+        (*     const NEG_INFINITY: Self = Self::NEG_INFINITY; *)
+        (* Ty.path "f16" *)
+        Definition value_NEG_INFINITY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic
+            (get_associated_constant (| Ty.path "f16", "NEG_INFINITY", Ty.path "f16" |))).
+        
+        (*     const NAN: Self = Self::NAN; *)
+        (* Ty.path "f16" *)
+        Definition value_NAN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (get_associated_constant (| Ty.path "f16", "NAN", Ty.path "f16" |))).
+        
+        (*     const NEG_NAN: Self = -Self::NAN; *)
+        (* Ty.path "f16" *)
+        Definition value_NEG_NAN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic
+            (M.alloc (|
+              Ty.path "f16",
+              M.call_closure (|
+                Ty.path "f16",
+                UnOp.neg,
+                [ M.read (| get_associated_constant (| Ty.path "f16", "NAN", Ty.path "f16" |) |) ]
+              |)
+            |))).
+        
+        (*     const BITS: u32 = 16; *)
+        (* Ty.path "u32" *)
+        Definition value_BITS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 16 |))).
+        
+        (*     const SIG_TOTAL_BITS: u32 = Self::MANTISSA_DIGITS; *)
+        (* Ty.path "u32" *)
+        Definition value_SIG_TOTAL_BITS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic
+            (get_associated_constant (| Ty.path "f16", "MANTISSA_DIGITS", Ty.path "u32" |))).
+        
+        (*     const EXP_MASK: Self::Int = Self::EXP_MASK; *)
+        (* Ty.associated_in_trait
+          "core::num::dec2flt::float::RawFloat"
+          []
+          []
+          (Ty.path "f16")
+          "Int" *)
+        Definition value_EXP_MASK (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (get_associated_constant (| Ty.path "f16", "EXP_MASK", Ty.path "u16" |))).
+        
+        (*     const SIG_MASK: Self::Int = Self::MAN_MASK; *)
+        (* Ty.associated_in_trait
+          "core::num::dec2flt::float::RawFloat"
+          []
+          []
+          (Ty.path "f16")
+          "Int" *)
+        Definition value_SIG_MASK (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (get_associated_constant (| Ty.path "f16", "MAN_MASK", Ty.path "u16" |))).
+        
+        (*     const MIN_EXPONENT_ROUND_TO_EVEN: i32 = -22; *)
+        (* Ty.path "i32" *)
+        Definition value_MIN_EXPONENT_ROUND_TO_EVEN
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 (-22) |))).
+        
+        (*     const MAX_EXPONENT_ROUND_TO_EVEN: i32 = 5; *)
+        (* Ty.path "i32" *)
+        Definition value_MAX_EXPONENT_ROUND_TO_EVEN
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 5 |))).
+        
+        (*     const SMALLEST_POWER_OF_TEN: i32 = -27; *)
+        (* Ty.path "i32" *)
+        Definition value_SMALLEST_POWER_OF_TEN
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 (-27) |))).
+        
+        (*
+            fn from_u64(v: u64) -> Self {
+                debug_assert!(v <= Self::MAX_MANTISSA_FAST_PATH);
+                v as _
+            }
+        *)
+        Definition from_u64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ v ] =>
+            ltac:(M.monadic
+              (let v := M.alloc (| Ty.path "u64", v |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.read (|
+                            let~ _ : Ty.tuple [] :=
+                              M.match_operator (|
+                                Ty.tuple [],
+                                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ :=
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.le,
+                                                [
+                                                  M.read (| v |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
+                                                      Ty.path "u64"
+                                                    |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
+                                      let _ :=
+                                        is_constant_or_break_match (|
+                                          M.read (| γ |),
+                                          Value.Bool true
+                                        |) in
+                                      M.never_to_any (|
+                                        M.call_closure (|
+                                          Ty.path "never",
+                                          M.get_function (| "core::panicking::panic", [], [] |),
+                                          [
+                                            mk_str (|
+                                              "assertion failed: v <= Self::MAX_MANTISSA_FAST_PATH"
+                                            |)
+                                          ]
+                                        |)
+                                      |)));
+                                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                                ]
+                              |) in
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (| Ty.path "f16", M.cast (Ty.path "f16") (M.read (| v |)) |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+            fn from_u64_bits(v: u64) -> Self {
+                Self::from_bits((v & 0xFFFF) as u16)
+            }
+        *)
+        Definition from_u64_bits (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ v ] =>
+            ltac:(M.monadic
+              (let v := M.alloc (| Ty.path "u64", v |) in
+              M.call_closure (|
+                Ty.path "f16",
+                M.get_associated_function (| Ty.path "f16", "from_bits", [], [] |),
+                [
+                  M.cast
+                    (Ty.path "u16")
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.bit_and,
+                      [ M.read (| v |); Value.Integer IntegerKind.U64 65535 ]
+                    |))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+            fn pow10_fast_path(exponent: usize) -> Self {
+                #[allow(clippy::use_self)]
+                const TABLE: [f16; 8] = [1e0, 1e1, 1e2, 1e3, 1e4, 0.0, 0.0, 0.];
+                TABLE[exponent & 7]
+            }
+        *)
+        Definition pow10_fast_path (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ exponent ] =>
+            ltac:(M.monadic
+              (let exponent := M.alloc (| Ty.path "usize", exponent |) in
+              M.read (|
+                M.SubPointer.get_array_field (|
+                  get_constant (|
+                    "core::num::dec2flt::float::pow10_fast_path::TABLE",
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 8 ]
+                      [ Ty.path "f16" ]
+                  |),
+                  M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.bit_and,
+                    [ M.read (| exponent |); Value.Integer IntegerKind.Usize 7 ]
+                  |)
+                |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+            fn to_bits(self) -> Self::Int {
+                self.to_bits()
+            }
+        *)
+        Definition to_bits (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ self ] =>
+            ltac:(M.monadic
+              (let self := M.alloc (| Ty.path "f16", self |) in
+              M.call_closure (|
+                Ty.path "u16",
+                M.get_associated_function (| Ty.path "f16", "to_bits", [], [] |),
+                [ M.read (| self |) ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+            fn classify(self) -> FpCategory {
+                self.classify()
+            }
+        *)
+        Definition classify (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ self ] =>
+            ltac:(M.monadic
+              (let self := M.alloc (| Ty.path "f16", self |) in
+              M.call_closure (|
+                Ty.path "core::num::FpCategory",
+                M.get_associated_function (| Ty.path "f16", "classify", [], [] |),
+                [ M.read (| self |) ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::num::dec2flt::float::RawFloat"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            Self
+            (* Instance *)
+            [
+              ("Int", InstanceField.Ty _Int);
+              ("value_INFINITY", InstanceField.Method value_INFINITY);
+              ("value_NEG_INFINITY", InstanceField.Method value_NEG_INFINITY);
+              ("value_NAN", InstanceField.Method value_NAN);
+              ("value_NEG_NAN", InstanceField.Method value_NEG_NAN);
+              ("value_BITS", InstanceField.Method value_BITS);
+              ("value_SIG_TOTAL_BITS", InstanceField.Method value_SIG_TOTAL_BITS);
+              ("value_EXP_MASK", InstanceField.Method value_EXP_MASK);
+              ("value_SIG_MASK", InstanceField.Method value_SIG_MASK);
+              ("value_MIN_EXPONENT_ROUND_TO_EVEN",
+                InstanceField.Method value_MIN_EXPONENT_ROUND_TO_EVEN);
+              ("value_MAX_EXPONENT_ROUND_TO_EVEN",
+                InstanceField.Method value_MAX_EXPONENT_ROUND_TO_EVEN);
+              ("value_SMALLEST_POWER_OF_TEN", InstanceField.Method value_SMALLEST_POWER_OF_TEN);
+              ("from_u64", InstanceField.Method from_u64);
+              ("from_u64_bits", InstanceField.Method from_u64_bits);
+              ("pow10_fast_path", InstanceField.Method pow10_fast_path);
+              ("to_bits", InstanceField.Method to_bits);
+              ("classify", InstanceField.Method classify)
+            ].
+      End Impl_core_num_dec2flt_float_RawFloat_for_f16.
       
       Module Impl_core_num_dec2flt_float_RawFloat_for_f32.
         Definition Self : Ty.t := Ty.path "f32".
+        
+        (*     type Int = u32; *)
+        Definition _Int : Ty.t := Ty.path "u32".
         
         (*     const INFINITY: Self = f32::INFINITY; *)
         (* Ty.path "f32" *)
@@ -39,14 +1022,36 @@ Module num.
               |)
             |))).
         
-        (*     const MANTISSA_EXPLICIT_BITS: usize = 23; *)
-        (* Ty.path "usize" *)
-        Definition value_MANTISSA_EXPLICIT_BITS
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 23 |))).
+        (*     const BITS: u32 = 32; *)
+        (* Ty.path "u32" *)
+        Definition value_BITS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 32 |))).
+        
+        (*     const SIG_TOTAL_BITS: u32 = Self::MANTISSA_DIGITS; *)
+        (* Ty.path "u32" *)
+        Definition value_SIG_TOTAL_BITS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic
+            (get_associated_constant (| Ty.path "f32", "MANTISSA_DIGITS", Ty.path "u32" |))).
+        
+        (*     const EXP_MASK: Self::Int = Self::EXP_MASK; *)
+        (* Ty.associated_in_trait
+          "core::num::dec2flt::float::RawFloat"
+          []
+          []
+          (Ty.path "f32")
+          "Int" *)
+        Definition value_EXP_MASK (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (get_associated_constant (| Ty.path "f32", "EXP_MASK", Ty.path "u32" |))).
+        
+        (*     const SIG_MASK: Self::Int = Self::MAN_MASK; *)
+        (* Ty.associated_in_trait
+          "core::num::dec2flt::float::RawFloat"
+          []
+          []
+          (Ty.path "f32")
+          "Int" *)
+        Definition value_SIG_MASK (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (get_associated_constant (| Ty.path "f32", "MAN_MASK", Ty.path "u32" |))).
         
         (*     const MIN_EXPONENT_ROUND_TO_EVEN: i32 = -17; *)
         (* Ty.path "i32" *)
@@ -66,52 +1071,6 @@ Module num.
             : M :=
           ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 10 |))).
         
-        (*     const MIN_EXPONENT_FAST_PATH: i64 = -10; *)
-        (* Ty.path "i64" *)
-        Definition value_MIN_EXPONENT_FAST_PATH
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i64", Value.Integer IntegerKind.I64 (-10) |))).
-        
-        (*     const MAX_EXPONENT_FAST_PATH: i64 = 10; *)
-        (* Ty.path "i64" *)
-        Definition value_MAX_EXPONENT_FAST_PATH
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i64", Value.Integer IntegerKind.I64 10 |))).
-        
-        (*     const MAX_EXPONENT_DISGUISED_FAST_PATH: i64 = 17; *)
-        (* Ty.path "i64" *)
-        Definition value_MAX_EXPONENT_DISGUISED_FAST_PATH
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i64", Value.Integer IntegerKind.I64 17 |))).
-        
-        (*     const MINIMUM_EXPONENT: i32 = -127; *)
-        (* Ty.path "i32" *)
-        Definition value_MINIMUM_EXPONENT
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 (-127) |))).
-        
-        (*     const INFINITE_POWER: i32 = 0xFF; *)
-        (* Ty.path "i32" *)
-        Definition value_INFINITE_POWER (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 255 |))).
-        
-        (*     const SIGN_INDEX: usize = 31; *)
-        (* Ty.path "usize" *)
-        Definition value_SIGN_INDEX (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 31 |))).
-        
         (*     const SMALLEST_POWER_OF_TEN: i32 = -65; *)
         (* Ty.path "i32" *)
         Definition value_SMALLEST_POWER_OF_TEN
@@ -120,15 +1079,6 @@ Module num.
             (α : list Value.t)
             : M :=
           ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 (-65) |))).
-        
-        (*     const LARGEST_POWER_OF_TEN: i32 = 38; *)
-        (* Ty.path "i32" *)
-        Definition value_LARGEST_POWER_OF_TEN
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 38 |))).
         
         (*
             fn from_u64(v: u64) -> Self {
@@ -149,7 +1099,7 @@ Module num.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -161,29 +1111,28 @@ Module num.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.le,
-                                                  [
-                                                    M.read (| v |);
-                                                    M.read (|
-                                                      get_constant (|
-                                                        "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
-                                                        Ty.path "u64"
-                                                      |)
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.le,
+                                                [
+                                                  M.read (| v |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
+                                                      Ty.path "u64"
                                                     |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -272,147 +1221,19 @@ Module num.
           end.
         
         (*
-            fn integer_decode(self) -> (u64, i16, i8) {
-                let bits = self.to_bits();
-                let sign: i8 = if bits >> 31 == 0 { 1 } else { -1 };
-                let mut exponent: i16 = ((bits >> 23) & 0xff) as i16;
-                let mantissa =
-                    if exponent == 0 { (bits & 0x7fffff) << 1 } else { (bits & 0x7fffff) | 0x800000 };
-                // Exponent bias + mantissa shift
-                exponent -= 127 + 23;
-                (mantissa as u64, exponent, sign)
+            fn to_bits(self) -> Self::Int {
+                self.to_bits()
             }
         *)
-        Definition integer_decode (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        Definition to_bits (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
           | [], [], [ self ] =>
             ltac:(M.monadic
               (let self := M.alloc (| Ty.path "f32", self |) in
-              M.read (|
-                let~ bits : Ty.path "u32" :=
-                  M.call_closure (|
-                    Ty.path "u32",
-                    M.get_associated_function (| Ty.path "f32", "to_bits", [], [] |),
-                    [ M.read (| self |) ]
-                  |) in
-                let~ sign : Ty.path "i8" :=
-                  M.match_operator (|
-                    Ty.path "i8",
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "u32",
-                                      BinOp.Wrap.shr,
-                                      [ M.read (| bits |); Value.Integer IntegerKind.I32 31 ]
-                                    |);
-                                    Value.Integer IntegerKind.U32 0
-                                  ]
-                                |)
-                              |)) in
-                          let _ :=
-                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.Integer IntegerKind.I8 1));
-                      fun γ => ltac:(M.monadic (Value.Integer IntegerKind.I8 (-1)))
-                    ]
-                  |) in
-                let~ exponent : Ty.path "i16" :=
-                  M.cast
-                    (Ty.path "i16")
-                    (M.call_closure (|
-                      Ty.path "u32",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.call_closure (|
-                          Ty.path "u32",
-                          BinOp.Wrap.shr,
-                          [ M.read (| bits |); Value.Integer IntegerKind.I32 23 ]
-                        |);
-                        Value.Integer IntegerKind.U32 255
-                      ]
-                    |)) in
-                let~ mantissa : Ty.path "u32" :=
-                  M.match_operator (|
-                    Ty.path "u32",
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| exponent |); Value.Integer IntegerKind.I16 0 ]
-                                |)
-                              |)) in
-                          let _ :=
-                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          M.call_closure (|
-                            Ty.path "u32",
-                            BinOp.Wrap.shl,
-                            [
-                              M.call_closure (|
-                                Ty.path "u32",
-                                BinOp.Wrap.bit_and,
-                                [ M.read (| bits |); Value.Integer IntegerKind.U32 8388607 ]
-                              |);
-                              Value.Integer IntegerKind.I32 1
-                            ]
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.call_closure (|
-                            Ty.path "u32",
-                            BinOp.Wrap.bit_or,
-                            [
-                              M.call_closure (|
-                                Ty.path "u32",
-                                BinOp.Wrap.bit_and,
-                                [ M.read (| bits |); Value.Integer IntegerKind.U32 8388607 ]
-                              |);
-                              Value.Integer IntegerKind.U32 8388608
-                            ]
-                          |)))
-                    ]
-                  |) in
-                let~ _ : Ty.tuple [] :=
-                  let β := exponent in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "i16",
-                      BinOp.Wrap.sub,
-                      [
-                        M.read (| β |);
-                        M.call_closure (|
-                          Ty.path "i16",
-                          BinOp.Wrap.add,
-                          [ Value.Integer IntegerKind.I16 127; Value.Integer IntegerKind.I16 23 ]
-                        |)
-                      ]
-                    |)
-                  |) in
-                M.alloc (|
-                  Ty.tuple [ Ty.path "u64"; Ty.path "i16"; Ty.path "i8" ],
-                  Value.Tuple
-                    [
-                      M.cast (Ty.path "u64") (M.read (| mantissa |));
-                      M.read (| exponent |);
-                      M.read (| sign |)
-                    ]
-                |)
+              M.call_closure (|
+                Ty.path "u32",
+                M.get_associated_function (| Ty.path "f32", "to_bits", [], [] |),
+                [ M.read (| self |) ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -443,28 +1264,24 @@ Module num.
             Self
             (* Instance *)
             [
+              ("Int", InstanceField.Ty _Int);
               ("value_INFINITY", InstanceField.Method value_INFINITY);
               ("value_NEG_INFINITY", InstanceField.Method value_NEG_INFINITY);
               ("value_NAN", InstanceField.Method value_NAN);
               ("value_NEG_NAN", InstanceField.Method value_NEG_NAN);
-              ("value_MANTISSA_EXPLICIT_BITS", InstanceField.Method value_MANTISSA_EXPLICIT_BITS);
+              ("value_BITS", InstanceField.Method value_BITS);
+              ("value_SIG_TOTAL_BITS", InstanceField.Method value_SIG_TOTAL_BITS);
+              ("value_EXP_MASK", InstanceField.Method value_EXP_MASK);
+              ("value_SIG_MASK", InstanceField.Method value_SIG_MASK);
               ("value_MIN_EXPONENT_ROUND_TO_EVEN",
                 InstanceField.Method value_MIN_EXPONENT_ROUND_TO_EVEN);
               ("value_MAX_EXPONENT_ROUND_TO_EVEN",
                 InstanceField.Method value_MAX_EXPONENT_ROUND_TO_EVEN);
-              ("value_MIN_EXPONENT_FAST_PATH", InstanceField.Method value_MIN_EXPONENT_FAST_PATH);
-              ("value_MAX_EXPONENT_FAST_PATH", InstanceField.Method value_MAX_EXPONENT_FAST_PATH);
-              ("value_MAX_EXPONENT_DISGUISED_FAST_PATH",
-                InstanceField.Method value_MAX_EXPONENT_DISGUISED_FAST_PATH);
-              ("value_MINIMUM_EXPONENT", InstanceField.Method value_MINIMUM_EXPONENT);
-              ("value_INFINITE_POWER", InstanceField.Method value_INFINITE_POWER);
-              ("value_SIGN_INDEX", InstanceField.Method value_SIGN_INDEX);
               ("value_SMALLEST_POWER_OF_TEN", InstanceField.Method value_SMALLEST_POWER_OF_TEN);
-              ("value_LARGEST_POWER_OF_TEN", InstanceField.Method value_LARGEST_POWER_OF_TEN);
               ("from_u64", InstanceField.Method from_u64);
               ("from_u64_bits", InstanceField.Method from_u64_bits);
               ("pow10_fast_path", InstanceField.Method pow10_fast_path);
-              ("integer_decode", InstanceField.Method integer_decode);
+              ("to_bits", InstanceField.Method to_bits);
               ("classify", InstanceField.Method classify)
             ].
       End Impl_core_num_dec2flt_float_RawFloat_for_f32.
@@ -472,23 +1289,26 @@ Module num.
       Module Impl_core_num_dec2flt_float_RawFloat_for_f64.
         Definition Self : Ty.t := Ty.path "f64".
         
-        (*     const INFINITY: Self = f64::INFINITY; *)
+        (*     type Int = u64; *)
+        Definition _Int : Ty.t := Ty.path "u64".
+        
+        (*     const INFINITY: Self = Self::INFINITY; *)
         (* Ty.path "f64" *)
         Definition value_INFINITY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           ltac:(M.monadic (get_associated_constant (| Ty.path "f64", "INFINITY", Ty.path "f64" |))).
         
-        (*     const NEG_INFINITY: Self = f64::NEG_INFINITY; *)
+        (*     const NEG_INFINITY: Self = Self::NEG_INFINITY; *)
         (* Ty.path "f64" *)
         Definition value_NEG_INFINITY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           ltac:(M.monadic
             (get_associated_constant (| Ty.path "f64", "NEG_INFINITY", Ty.path "f64" |))).
         
-        (*     const NAN: Self = f64::NAN; *)
+        (*     const NAN: Self = Self::NAN; *)
         (* Ty.path "f64" *)
         Definition value_NAN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           ltac:(M.monadic (get_associated_constant (| Ty.path "f64", "NAN", Ty.path "f64" |))).
         
-        (*     const NEG_NAN: Self = -f64::NAN; *)
+        (*     const NEG_NAN: Self = -Self::NAN; *)
         (* Ty.path "f64" *)
         Definition value_NEG_NAN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           ltac:(M.monadic
@@ -501,14 +1321,36 @@ Module num.
               |)
             |))).
         
-        (*     const MANTISSA_EXPLICIT_BITS: usize = 52; *)
-        (* Ty.path "usize" *)
-        Definition value_MANTISSA_EXPLICIT_BITS
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 52 |))).
+        (*     const BITS: u32 = 64; *)
+        (* Ty.path "u32" *)
+        Definition value_BITS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 64 |))).
+        
+        (*     const SIG_TOTAL_BITS: u32 = Self::MANTISSA_DIGITS; *)
+        (* Ty.path "u32" *)
+        Definition value_SIG_TOTAL_BITS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic
+            (get_associated_constant (| Ty.path "f64", "MANTISSA_DIGITS", Ty.path "u32" |))).
+        
+        (*     const EXP_MASK: Self::Int = Self::EXP_MASK; *)
+        (* Ty.associated_in_trait
+          "core::num::dec2flt::float::RawFloat"
+          []
+          []
+          (Ty.path "f64")
+          "Int" *)
+        Definition value_EXP_MASK (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (get_associated_constant (| Ty.path "f64", "EXP_MASK", Ty.path "u64" |))).
+        
+        (*     const SIG_MASK: Self::Int = Self::MAN_MASK; *)
+        (* Ty.associated_in_trait
+          "core::num::dec2flt::float::RawFloat"
+          []
+          []
+          (Ty.path "f64")
+          "Int" *)
+        Definition value_SIG_MASK (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          ltac:(M.monadic (get_associated_constant (| Ty.path "f64", "MAN_MASK", Ty.path "u64" |))).
         
         (*     const MIN_EXPONENT_ROUND_TO_EVEN: i32 = -4; *)
         (* Ty.path "i32" *)
@@ -528,52 +1370,6 @@ Module num.
             : M :=
           ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 23 |))).
         
-        (*     const MIN_EXPONENT_FAST_PATH: i64 = -22; *)
-        (* Ty.path "i64" *)
-        Definition value_MIN_EXPONENT_FAST_PATH
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i64", Value.Integer IntegerKind.I64 (-22) |))).
-        
-        (*     const MAX_EXPONENT_FAST_PATH: i64 = 22; *)
-        (* Ty.path "i64" *)
-        Definition value_MAX_EXPONENT_FAST_PATH
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i64", Value.Integer IntegerKind.I64 22 |))).
-        
-        (*     const MAX_EXPONENT_DISGUISED_FAST_PATH: i64 = 37; *)
-        (* Ty.path "i64" *)
-        Definition value_MAX_EXPONENT_DISGUISED_FAST_PATH
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i64", Value.Integer IntegerKind.I64 37 |))).
-        
-        (*     const MINIMUM_EXPONENT: i32 = -1023; *)
-        (* Ty.path "i32" *)
-        Definition value_MINIMUM_EXPONENT
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 (-1023) |))).
-        
-        (*     const INFINITE_POWER: i32 = 0x7FF; *)
-        (* Ty.path "i32" *)
-        Definition value_INFINITE_POWER (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 2047 |))).
-        
-        (*     const SIGN_INDEX: usize = 63; *)
-        (* Ty.path "usize" *)
-        Definition value_SIGN_INDEX (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 63 |))).
-        
         (*     const SMALLEST_POWER_OF_TEN: i32 = -342; *)
         (* Ty.path "i32" *)
         Definition value_SMALLEST_POWER_OF_TEN
@@ -582,15 +1378,6 @@ Module num.
             (α : list Value.t)
             : M :=
           ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 (-342) |))).
-        
-        (*     const LARGEST_POWER_OF_TEN: i32 = 308; *)
-        (* Ty.path "i32" *)
-        Definition value_LARGEST_POWER_OF_TEN
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          ltac:(M.monadic (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 308 |))).
         
         (*
             fn from_u64(v: u64) -> Self {
@@ -611,7 +1398,7 @@ Module num.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -623,29 +1410,28 @@ Module num.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.le,
-                                                  [
-                                                    M.read (| v |);
-                                                    M.read (|
-                                                      get_constant (|
-                                                        "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
-                                                        Ty.path "u64"
-                                                      |)
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.le,
+                                                [
+                                                  M.read (| v |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
+                                                      Ty.path "u64"
                                                     |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -727,147 +1513,19 @@ Module num.
           end.
         
         (*
-            fn integer_decode(self) -> (u64, i16, i8) {
-                let bits = self.to_bits();
-                let sign: i8 = if bits >> 63 == 0 { 1 } else { -1 };
-                let mut exponent: i16 = ((bits >> 52) & 0x7ff) as i16;
-                let mantissa = if exponent == 0 {
-                    (bits & 0xfffffffffffff) << 1
-                } else {
-                    (bits & 0xfffffffffffff) | 0x10000000000000
-                };
-                // Exponent bias + mantissa shift
-                exponent -= 1023 + 52;
-                (mantissa, exponent, sign)
+            fn to_bits(self) -> Self::Int {
+                self.to_bits()
             }
         *)
-        Definition integer_decode (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        Definition to_bits (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
           | [], [], [ self ] =>
             ltac:(M.monadic
               (let self := M.alloc (| Ty.path "f64", self |) in
-              M.read (|
-                let~ bits : Ty.path "u64" :=
-                  M.call_closure (|
-                    Ty.path "u64",
-                    M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                    [ M.read (| self |) ]
-                  |) in
-                let~ sign : Ty.path "i8" :=
-                  M.match_operator (|
-                    Ty.path "i8",
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      BinOp.Wrap.shr,
-                                      [ M.read (| bits |); Value.Integer IntegerKind.I32 63 ]
-                                    |);
-                                    Value.Integer IntegerKind.U64 0
-                                  ]
-                                |)
-                              |)) in
-                          let _ :=
-                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.Integer IntegerKind.I8 1));
-                      fun γ => ltac:(M.monadic (Value.Integer IntegerKind.I8 (-1)))
-                    ]
-                  |) in
-                let~ exponent : Ty.path "i16" :=
-                  M.cast
-                    (Ty.path "i16")
-                    (M.call_closure (|
-                      Ty.path "u64",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.call_closure (|
-                          Ty.path "u64",
-                          BinOp.Wrap.shr,
-                          [ M.read (| bits |); Value.Integer IntegerKind.I32 52 ]
-                        |);
-                        Value.Integer IntegerKind.U64 2047
-                      ]
-                    |)) in
-                let~ mantissa : Ty.path "u64" :=
-                  M.match_operator (|
-                    Ty.path "u64",
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| exponent |); Value.Integer IntegerKind.I16 0 ]
-                                |)
-                              |)) in
-                          let _ :=
-                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          M.call_closure (|
-                            Ty.path "u64",
-                            BinOp.Wrap.shl,
-                            [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                BinOp.Wrap.bit_and,
-                                [ M.read (| bits |); Value.Integer IntegerKind.U64 4503599627370495
-                                ]
-                              |);
-                              Value.Integer IntegerKind.I32 1
-                            ]
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.call_closure (|
-                            Ty.path "u64",
-                            BinOp.Wrap.bit_or,
-                            [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                BinOp.Wrap.bit_and,
-                                [ M.read (| bits |); Value.Integer IntegerKind.U64 4503599627370495
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 4503599627370496
-                            ]
-                          |)))
-                    ]
-                  |) in
-                let~ _ : Ty.tuple [] :=
-                  let β := exponent in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "i16",
-                      BinOp.Wrap.sub,
-                      [
-                        M.read (| β |);
-                        M.call_closure (|
-                          Ty.path "i16",
-                          BinOp.Wrap.add,
-                          [ Value.Integer IntegerKind.I16 1023; Value.Integer IntegerKind.I16 52 ]
-                        |)
-                      ]
-                    |)
-                  |) in
-                M.alloc (|
-                  Ty.tuple [ Ty.path "u64"; Ty.path "i16"; Ty.path "i8" ],
-                  Value.Tuple [ M.read (| mantissa |); M.read (| exponent |); M.read (| sign |) ]
-                |)
+              M.call_closure (|
+                Ty.path "u64",
+                M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
+                [ M.read (| self |) ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -898,28 +1556,24 @@ Module num.
             Self
             (* Instance *)
             [
+              ("Int", InstanceField.Ty _Int);
               ("value_INFINITY", InstanceField.Method value_INFINITY);
               ("value_NEG_INFINITY", InstanceField.Method value_NEG_INFINITY);
               ("value_NAN", InstanceField.Method value_NAN);
               ("value_NEG_NAN", InstanceField.Method value_NEG_NAN);
-              ("value_MANTISSA_EXPLICIT_BITS", InstanceField.Method value_MANTISSA_EXPLICIT_BITS);
+              ("value_BITS", InstanceField.Method value_BITS);
+              ("value_SIG_TOTAL_BITS", InstanceField.Method value_SIG_TOTAL_BITS);
+              ("value_EXP_MASK", InstanceField.Method value_EXP_MASK);
+              ("value_SIG_MASK", InstanceField.Method value_SIG_MASK);
               ("value_MIN_EXPONENT_ROUND_TO_EVEN",
                 InstanceField.Method value_MIN_EXPONENT_ROUND_TO_EVEN);
               ("value_MAX_EXPONENT_ROUND_TO_EVEN",
                 InstanceField.Method value_MAX_EXPONENT_ROUND_TO_EVEN);
-              ("value_MIN_EXPONENT_FAST_PATH", InstanceField.Method value_MIN_EXPONENT_FAST_PATH);
-              ("value_MAX_EXPONENT_FAST_PATH", InstanceField.Method value_MAX_EXPONENT_FAST_PATH);
-              ("value_MAX_EXPONENT_DISGUISED_FAST_PATH",
-                InstanceField.Method value_MAX_EXPONENT_DISGUISED_FAST_PATH);
-              ("value_MINIMUM_EXPONENT", InstanceField.Method value_MINIMUM_EXPONENT);
-              ("value_INFINITE_POWER", InstanceField.Method value_INFINITE_POWER);
-              ("value_SIGN_INDEX", InstanceField.Method value_SIGN_INDEX);
               ("value_SMALLEST_POWER_OF_TEN", InstanceField.Method value_SMALLEST_POWER_OF_TEN);
-              ("value_LARGEST_POWER_OF_TEN", InstanceField.Method value_LARGEST_POWER_OF_TEN);
               ("from_u64", InstanceField.Method from_u64);
               ("from_u64_bits", InstanceField.Method from_u64_bits);
               ("pow10_fast_path", InstanceField.Method pow10_fast_path);
-              ("integer_decode", InstanceField.Method integer_decode);
+              ("to_bits", InstanceField.Method to_bits);
               ("classify", InstanceField.Method classify)
             ].
       End Impl_core_num_dec2flt_float_RawFloat_for_f64.

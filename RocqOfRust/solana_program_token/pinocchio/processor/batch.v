@@ -149,37 +149,36 @@ Module processor.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| instruction_data |) |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "pinocchio_token_program::processor::batch::IX_HEADER_SIZE",
-                                                Ty.path "usize"
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| instruction_data |) |)
                                               |)
+                                            ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "pinocchio_token_program::processor::batch::IX_HEADER_SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -290,48 +289,47 @@ Module processor.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
-                                        Ty.path "bool",
-                                        LogicalOp.or (|
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.lt,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                  "len",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| instruction_data |) |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| data_offset |)
-                                            ]
-                                          |),
-                                          ltac:(M.monadic
-                                            (M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.eq,
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      LogicalOp.or (|
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.lt,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                "len",
+                                                [],
+                                                []
+                                              |),
                                               [
-                                                M.read (| data_offset |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "pinocchio_token_program::processor::batch::IX_HEADER_SIZE",
-                                                    Ty.path "usize"
-                                                  |)
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| instruction_data |) |)
                                                 |)
                                               ]
-                                            |)))
-                                        |)
-                                      |)) in
+                                            |);
+                                            M.read (| data_offset |)
+                                          ]
+                                        |),
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "bool",
+                                            BinOp.eq,
+                                            [
+                                              M.read (| data_offset |);
+                                              M.read (|
+                                                get_constant (|
+                                                  "pinocchio_token_program::processor::batch::IX_HEADER_SIZE",
+                                                  Ty.path "usize"
+                                                |)
+                                              |)
+                                            ]
+                                          |)))
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -384,36 +382,34 @@ Module processor.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "slice")
-                                                  []
-                                                  [ Ty.path "pinocchio::account_info::AccountInfo"
-                                                  ],
-                                                "len",
-                                                [],
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "slice")
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| accounts |) |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.read (| expected_accounts |)
-                                          ]
-                                        |)
-                                      |)) in
+                                                [ Ty.path "pinocchio::account_info::AccountInfo" ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| accounts |) |)
+                                              |)
+                                            ]
+                                          |);
+                                          M.read (| expected_accounts |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1988,37 +1984,36 @@ Module processor.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.eq,
-                                                      [
-                                                        M.read (| data_offset |);
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          M.get_associated_function (|
-                                                            Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
-                                                              [ Ty.path "u8" ],
-                                                            "len",
-                                                            [],
+                                                    BinOp.eq,
+                                                    [
+                                                      M.read (| data_offset |);
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "slice")
                                                             []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.read (| instruction_data |)
-                                                              |)
+                                                            [ Ty.path "u8" ],
+                                                          "len",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.read (| instruction_data |)
                                                             |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),

@@ -358,7 +358,7 @@ Module iter.
         
         (*
             fn last(self) -> Option<A> {
-                loop {}
+                panic!("iterator is infinite");
             }
         *)
         Definition last (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -372,11 +372,21 @@ Module iter.
                   self
                 |) in
               M.never_to_any (|
-                M.read (|
-                  M.loop (|
-                    Ty.path "never",
-                    ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
-                  |)
+                M.call_closure (|
+                  Ty.path "never",
+                  M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "from_str",
+                        [],
+                        []
+                      |),
+                      [ mk_str (| "iterator is infinite" |) ]
+                    |)
+                  ]
                 |)
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -384,7 +394,7 @@ Module iter.
         
         (*
             fn count(self) -> usize {
-                loop {}
+                panic!("iterator is infinite");
             }
         *)
         Definition count (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -398,11 +408,21 @@ Module iter.
                   self
                 |) in
               M.never_to_any (|
-                M.read (|
-                  M.loop (|
-                    Ty.path "never",
-                    ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
-                  |)
+                M.call_closure (|
+                  Ty.path "never",
+                  M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "from_str",
+                        [],
+                        []
+                      |),
+                      [ mk_str (| "iterator is infinite" |) ]
+                    |)
+                  ]
                 |)
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"

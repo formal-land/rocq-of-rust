@@ -9,6 +9,7 @@ import os
 import subprocess
 import sys
 import multiprocessing as mp
+import shlex
 
 
 test_folder = "examples"
@@ -23,22 +24,33 @@ for root, _dirs, files in os.walk(test_folder):
 
 def compile_with_option(file: str, output_path: str, is_axiomatized: bool):
     base = os.path.splitext(file)[0]
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    error_path = os.path.join(output_path, base + ".err")
+    os.makedirs(os.path.dirname(error_path), exist_ok=True)
 
     # Translate the file, and save the error output if any
-    command = (
-        "cargo run --quiet --bin rocq-of-rust -- translate --path "
-        + file
-        + " "
-        + ("--axiomatize " if is_axiomatized else "")
-        + "--output-path " + output_path
+    command = [
+        os.environ.get("CARGO", "cargo"),
+        "run",
+        "--quiet",
+        "--bin",
+        "rocq-of-rust",
+        "--",
+        "translate",
+        "--path",
+        file,
+    ]
+    if is_axiomatized:
+        command.append("--axiomatize")
+    command += ["--output-path", output_path]
+    print(
+        " ".join(shlex.quote(arg) for arg in command)
         + " 2> "
-        + os.path.join(output_path, base + ".err")
+        + shlex.quote(error_path)
     )
-    print(command)
 
     try:
-        subprocess.run(command, shell=True, check=True)
+        with open(error_path, "w") as error_file:
+            subprocess.run(command, check=True, stderr=error_file)
     except subprocess.CalledProcessError as e:
         print(f"Error occurred: {e}")
         sys.exit(1)
@@ -54,7 +66,11 @@ def compile(index, file):
     compile_with_option(file, "RocqOfRust/examples/axiomatized/", True)
 
 
-# run in parallel
-pool = mp.Pool(processes=(1 if os.environ.get(
-    "RUN_TESTS_SINGLE_PROCESS") else None))
-pool.starmap(compile, enumerate(rs_files))
+if __name__ == "__main__":
+    if os.environ.get("RUN_TESTS_SINGLE_PROCESS"):
+        for index, file in enumerate(rs_files):
+            compile(index, file)
+    else:
+        # run in parallel
+        with mp.Pool() as pool:
+            pool.starmap(compile, enumerate(rs_files))

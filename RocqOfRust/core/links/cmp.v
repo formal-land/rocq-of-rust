@@ -56,6 +56,65 @@ Module Eq.
 End Eq.
 Export (hints) Eq.
 
+(*
+  pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
+    fn partial_cmp(&self, other: &Rhs) -> Option<Ordering>;
+    fn lt(&self, other: &Rhs) -> bool;
+    fn le(&self, other: &Rhs) -> bool;
+    fn gt(&self, other: &Rhs) -> bool;
+    fn ge(&self, other: &Rhs) -> bool;
+  }
+*)
+Module PartialOrd.
+  Definition trait (Self Rhs : Set) `{Link Self} `{Link Rhs} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::cmp::PartialOrd";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [ Φ Rhs ];
+      TraitHeader.self_ty := Φ Self;
+    |}.
+
+  Class Method_partial_cmp (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
+    partial_cmp : PolymorphicFunction.t;
+    partial_cmp_is_method :: IsTraitMethod.C (trait Self Rhs) "partial_cmp" partial_cmp;
+    run_partial_cmp (self : '& Self) (other : '& Rhs) ::
+      Run.Trait partial_cmp [] [] [ φ self; φ other ] (option Ordering.t);
+  }.
+
+  Class Method_lt (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
+    lt : PolymorphicFunction.t;
+    lt_is_method :: IsTraitMethod.C (trait Self Rhs) "lt" lt;
+    run_lt (self : '& Self) (other : '& Rhs) :: Run.Trait lt [] [] [ φ self; φ other ] bool;
+  }.
+
+  Class Method_le (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
+    le : PolymorphicFunction.t;
+    le_is_method :: IsTraitMethod.C (trait Self Rhs) "le" le;
+    run_le (self : '& Self) (other : '& Rhs) :: Run.Trait le [] [] [ φ self; φ other ] bool;
+  }.
+
+  Class Method_gt (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
+    gt : PolymorphicFunction.t;
+    gt_is_method :: IsTraitMethod.C (trait Self Rhs) "gt" gt;
+    run_gt (self : '& Self) (other : '& Rhs) :: Run.Trait gt [] [] [ φ self; φ other ] bool;
+  }.
+
+  Class Method_ge (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
+    ge : PolymorphicFunction.t;
+    ge_is_method :: IsTraitMethod.C (trait Self Rhs) "ge" ge;
+    run_ge (self : '& Self) (other : '& Rhs) :: Run.Trait ge [] [] [ φ self; φ other ] bool;
+  }.
+
+  Class Run (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
+    method_partial_cmp :: Method_partial_cmp Self Rhs;
+    method_lt :: Method_lt Self Rhs;
+    method_le :: Method_le Self Rhs;
+    method_gt :: Method_gt Self Rhs;
+    method_ge :: Method_ge Self Rhs;
+  }.
+End PartialOrd.
+Export (hints) PartialOrd.
+
 Instance run_min_by {T F : Set} `{Link T} `{Link F}
     `{run_FnOnce_for_F : !FnOnce.Run F ('& T * '& T) Ordering.t}
     (v1 v2 : T) (compare : F) :
@@ -85,6 +144,220 @@ Proof.
   run_symbolic.
 Defined.
 Global Opaque run_max_by.
+
+Module Impl_PartialOrd_for_u64.
+  Definition Self : Set := u64.
+
+  Instance run_partial_cmp (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.partial_cmp
+      [] [] [ φ self; φ other ] (option Ordering.t).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_partial_cmp.
+
+  Instance run_lt (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.lt
+      [] [] [ φ self; φ other ] bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_lt.
+
+  Instance run_le (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.le
+      [] [] [ φ self; φ other ] bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_le.
+
+  Instance run_gt (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.gt
+      [] [] [ φ self; φ other ] bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_gt.
+
+  Instance run_ge (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.ge
+      [] [] [ φ self; φ other ] bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_ge.
+
+  Instance method_partial_cmp : PartialOrd.Method_partial_cmp Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance method_lt : PartialOrd.Method_lt Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance method_le : PartialOrd.Method_le Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance method_gt : PartialOrd.Method_gt Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance method_ge : PartialOrd.Method_ge Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_u64_for_u64.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run : PartialOrd.Run Self Self := {}.
+End Impl_PartialOrd_for_u64.
+Export (hints) Impl_PartialOrd_for_u64.
+
+Module Impl_PartialOrd_for_usize.
+  Definition Self : Set := usize.
+
+  Instance run_partial_cmp (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.partial_cmp
+      [] [] [ φ self; φ other ] (option Ordering.t).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_partial_cmp.
+
+  Instance run_lt (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.lt
+      [] [] [ φ self; φ other ] bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_lt.
+
+  Instance run_le (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.le
+      [] [] [ φ self; φ other ] bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_le.
+
+  Instance run_gt (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.gt
+      [] [] [ φ self; φ other ] bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_gt.
+
+  Instance run_ge (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.ge
+      [] [] [ φ self; φ other ] bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_ge.
+
+  Instance method_partial_cmp : PartialOrd.Method_partial_cmp Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance method_lt : PartialOrd.Method_lt Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance method_le : PartialOrd.Method_le Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance method_gt : PartialOrd.Method_gt Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance method_ge : PartialOrd.Method_ge Self Self.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply cmp.impls.Impl_core_cmp_PartialOrd_usize_for_usize.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run : PartialOrd.Run Self Self := {}.
+End Impl_PartialOrd_for_usize.
+Export (hints) Impl_PartialOrd_for_usize.
 
 (*
     pub trait Ord: Eq + PartialOrd<Self> {
@@ -142,22 +415,20 @@ Module Ord.
 
   Module Provided.
     Instance run_min {Self : Set} `{Link Self} (self other : Self)
-        `{!Method_cmp Self} :
+        `{!PartialOrd.Method_lt Self Self} :
       Run.Trait (cmp.cmp.Ord.min (Φ Self)) [] [] [ φ self; φ other ] Self.
     Proof.
       constructor.
       run_symbolic.
-      exact (run_min_by value value0 (Function2.of_run _)).
     Defined.
     Global Opaque run_min.
 
     Instance run_max {Self : Set} `{Link Self} (self other : Self)
-        {H_Method_cmp : Method_cmp Self} :
+        `{!PartialOrd.Method_lt Self Self} :
       Run.Trait (cmp.cmp.Ord.max (Φ Self)) [] [] [ φ self; φ other ] Self.
     Proof.
       constructor.
       run_symbolic.
-      exact (run_max_by value value0 (Function2.of_run _)).
     Defined.
     Global Opaque run_max.
 
@@ -306,65 +577,6 @@ Module Impl_Ord_for_usize.
   Instance run : Ord.Run Self := {}.
 End Impl_Ord_for_usize.
 Export (hints) Impl_Ord_for_usize.
-
-(*
-  pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
-    fn partial_cmp(&self, other: &Rhs) -> Option<Ordering>;
-    fn lt(&self, other: &Rhs) -> bool;
-    fn le(&self, other: &Rhs) -> bool;
-    fn gt(&self, other: &Rhs) -> bool;
-    fn ge(&self, other: &Rhs) -> bool;
-  }
-*)
-Module PartialOrd.
-  Definition trait (Self Rhs : Set) `{Link Self} `{Link Rhs} : TraitHeader.t :=
-    {|
-      TraitHeader.trait_name := "core::cmp::PartialOrd";
-      TraitHeader.trait_consts := [];
-      TraitHeader.trait_tys := [ Φ Rhs ];
-      TraitHeader.self_ty := Φ Self;
-    |}.
-
-  Class Method_partial_cmp (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
-    partial_cmp : PolymorphicFunction.t;
-    partial_cmp_is_method :: IsTraitMethod.C (trait Self Rhs) "partial_cmp" partial_cmp;
-    run_partial_cmp (self : '& Self) (other : '& Rhs) ::
-      Run.Trait partial_cmp [] [] [ φ self; φ other ] (option Ordering.t);
-  }.
-
-  Class Method_lt (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
-    lt : PolymorphicFunction.t;
-    lt_is_method :: IsTraitMethod.C (trait Self Rhs) "lt" lt;
-    run_lt (self : '& Self) (other : '& Rhs) :: Run.Trait lt [] [] [ φ self; φ other ] bool;
-  }.
-
-  Class Method_le (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
-    le : PolymorphicFunction.t;
-    le_is_method :: IsTraitMethod.C (trait Self Rhs) "le" le;
-    run_le (self : '& Self) (other : '& Rhs) :: Run.Trait le [] [] [ φ self; φ other ] bool;
-  }.
-
-  Class Method_gt (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
-    gt : PolymorphicFunction.t;
-    gt_is_method :: IsTraitMethod.C (trait Self Rhs) "gt" gt;
-    run_gt (self : '& Self) (other : '& Rhs) :: Run.Trait gt [] [] [ φ self; φ other ] bool;
-  }.
-
-  Class Method_ge (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
-    ge : PolymorphicFunction.t;
-    ge_is_method :: IsTraitMethod.C (trait Self Rhs) "ge" ge;
-    run_ge (self : '& Self) (other : '& Rhs) :: Run.Trait ge [] [] [ φ self; φ other ] bool;
-  }.
-
-  Class Run (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
-    method_partial_cmp :: Method_partial_cmp Self Rhs;
-    method_lt :: Method_lt Self Rhs;
-    method_le :: Method_le Self Rhs;
-    method_gt :: Method_gt Self Rhs;
-    method_ge :: Method_ge Self Rhs;
-  }.
-End PartialOrd.
-Export (hints) PartialOrd.
 
 Module Impl_PartialEq_for_Ordering.
   Definition Self : Set := Ordering.t.

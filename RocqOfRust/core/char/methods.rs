@@ -4,6 +4,7 @@ use super::*;
 use crate::panic::const_panic;
 use crate::slice;
 use crate::str::from_utf8_unchecked_mut;
+use crate::ub_checks::assert_unsafe_precondition;
 use crate::unicode::printable::is_printable;
 use crate::unicode::{self, conversions};
 
@@ -71,6 +72,16 @@ impl char {
     #[stable(feature = "assoc_char_consts", since = "1.52.0")]
     pub const MAX: char = '\u{10FFFF}';
 
+    /// The maximum number of bytes required to [encode](char::encode_utf8) a `char` to
+    /// UTF-8 encoding.
+    #[stable(feature = "char_max_len_assoc", since = "CURRENT_RUSTC_VERSION")]
+    pub const MAX_LEN_UTF8: usize = 4;
+
+    /// The maximum number of two-byte units required to [encode](char::encode_utf16) a `char`
+    /// to UTF-16 encoding.
+    #[stable(feature = "char_max_len_assoc", since = "CURRENT_RUSTC_VERSION")]
+    pub const MAX_LEN_UTF16: usize = 2;
+
     /// `U+FFFD REPLACEMENT CHARACTER` (�) is used in Unicode to represent a
     /// decoding error.
     ///
@@ -92,7 +103,7 @@ impl char {
     #[stable(feature = "assoc_char_consts", since = "1.52.0")]
     pub const UNICODE_VERSION: (u8, u8, u8) = crate::unicode::UNICODE_VERSION;
 
-    /// Creates an iterator over the UTF-16 encoded code points in `iter`,
+    /// Creates an iterator over the native endian UTF-16 encoded code points in `iter`,
     /// returning unpaired surrogates as `Err`s.
     ///
     /// # Examples
@@ -327,7 +338,7 @@ impl char {
     /// '1'.is_digit(1);
     /// ```
     #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_char_classify", issue = "132241")]
+    #[rustc_const_stable(feature = "const_char_classify", since = "1.87.0")]
     #[inline]
     pub const fn is_digit(self, radix: u32) -> bool {
         self.to_digit(radix).is_some()
@@ -384,6 +395,7 @@ impl char {
     /// ```
     #[stable(feature = "rust1", since = "1.0.0")]
     #[rustc_const_stable(feature = "const_char_convert", since = "1.67.0")]
+    #[rustc_diagnostic_item = "char_to_digit"]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
@@ -394,17 +406,21 @@ impl char {
         );
         // check radix to remove letter handling code when radix is a known constant
         let value = if self > '9' && radix > 10 {
-            // convert ASCII letters to lowercase
-            let lower = self as u32 | 0x20;
-            // convert an ASCII letter to the corresponding value,
-            // non-letters convert to values > 36
-            lower.wrapping_sub('a' as u32) as u64 + 10
+            // mask to convert ASCII letters to uppercase
+            const TO_UPPERCASE_MASK: u32 = !0b0010_0000;
+            // Converts an ASCII letter to its corresponding integer value:
+            // A-Z => 10-35, a-z => 10-35. Other characters produce values >= 36.
+            //
+            // Add Overflow Safety:
+            // By applying the mask after the subtraction, the first addendum is
+            // constrained such that it never exceeds u32::MAX - 0x20.
+            ((self as u32).wrapping_sub('A' as u32) & TO_UPPERCASE_MASK) + 10
         } else {
             // convert digit to value, non-digits wrap to values > 36
-            (self as u32).wrapping_sub('0' as u32) as u64
+            (self as u32).wrapping_sub('0' as u32)
         };
         // FIXME(const-hack): once then_some is const fn, use it here
-        if value < radix as u64 { Some(value as u32) } else { None }
+        if value < radix { Some(value) } else { None }
     }
 
     /// Returns an iterator that yields the hexadecimal Unicode escape of a
@@ -700,7 +716,7 @@ impl char {
         unsafe { from_utf8_unchecked_mut(encode_utf8_raw(self as u32, dst)) }
     }
 
-    /// Encodes this character as UTF-16 into the provided `u16` buffer,
+    /// Encodes this character as native endian UTF-16 into the provided `u16` buffer,
     /// and then returns the subslice of the buffer that contains the encoded character.
     ///
     /// # Panics
@@ -872,7 +888,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_char_classify", issue = "132241")]
+    #[rustc_const_stable(feature = "const_char_classify", since = "1.87.0")]
     #[inline]
     pub const fn is_whitespace(self) -> bool {
         match self {
@@ -904,7 +920,11 @@ impl char {
     #[stable(feature = "rust1", since = "1.0.0")]
     #[inline]
     pub fn is_alphanumeric(self) -> bool {
-        self.is_alphabetic() || self.is_numeric()
+        if self.is_ascii() {
+            self.is_ascii_alphanumeric()
+        } else {
+            unicode::Alphabetic(self) || unicode::N(self)
+        }
     }
 
     /// Returns `true` if this `char` has the general category for control codes.
@@ -930,7 +950,11 @@ impl char {
     #[stable(feature = "rust1", since = "1.0.0")]
     #[inline]
     pub fn is_control(self) -> bool {
-        unicode::Cc(self)
+        // According to
+        // https://www.unicode.org/policies/stability_policy.html#Property_Value,
+        // the set of codepoints in `Cc` will never change.
+        // So we can just hard-code the patterns to match against instead of using a table.
+        matches!(self, '\0'..='\x1f' | '\x7f'..='\u{9f}')
     }
 
     /// Returns `true` if this `char` has the `Grapheme_Extend` property.
@@ -945,7 +969,43 @@ impl char {
     #[must_use]
     #[inline]
     pub(crate) fn is_grapheme_extended(self) -> bool {
-        unicode::Grapheme_Extend(self)
+        !self.is_ascii() && unicode::Grapheme_Extend(self)
+    }
+
+    /// Returns `true` if this `char` has the `Cased` property.
+    ///
+    /// `Cased` is described in Chapter 4 (Character Properties) of the [Unicode Standard] and
+    /// specified in the [Unicode Character Database][ucd] [`DerivedCoreProperties.txt`].
+    ///
+    /// [Unicode Standard]: https://www.unicode.org/versions/latest/
+    /// [ucd]: https://www.unicode.org/reports/tr44/
+    /// [`DerivedCoreProperties.txt`]: https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt
+    #[must_use]
+    #[inline]
+    #[doc(hidden)]
+    #[unstable(feature = "char_internals", reason = "exposed only for libstd", issue = "none")]
+    pub fn is_cased(self) -> bool {
+        if self.is_ascii() { self.is_ascii_alphabetic() } else { unicode::Cased(self) }
+    }
+
+    /// Returns `true` if this `char` has the `Case_Ignorable` property.
+    ///
+    /// `Case_Ignorable` is described in Chapter 4 (Character Properties) of the [Unicode Standard] and
+    /// specified in the [Unicode Character Database][ucd] [`DerivedCoreProperties.txt`].
+    ///
+    /// [Unicode Standard]: https://www.unicode.org/versions/latest/
+    /// [ucd]: https://www.unicode.org/reports/tr44/
+    /// [`DerivedCoreProperties.txt`]: https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt
+    #[must_use]
+    #[inline]
+    #[doc(hidden)]
+    #[unstable(feature = "char_internals", reason = "exposed only for libstd", issue = "none")]
+    pub fn is_case_ignorable(self) -> bool {
+        if self.is_ascii() {
+            matches!(self, '\'' | '.' | ':' | '^' | '`')
+        } else {
+            unicode::Case_Ignorable(self)
+        }
     }
 
     /// Returns `true` if this `char` has one of the general categories for numbers.
@@ -1164,6 +1224,7 @@ impl char {
     #[must_use]
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
     #[rustc_const_stable(feature = "const_char_is_ascii", since = "1.32.0")]
+    #[rustc_diagnostic_item = "char_is_ascii"]
     #[inline]
     pub const fn is_ascii(&self) -> bool {
         *self as u32 <= 0x7F
@@ -1185,6 +1246,26 @@ impl char {
         } else {
             None
         }
+    }
+
+    /// Converts this char into an [ASCII character](`ascii::Char`), without
+    /// checking whether it is valid.
+    ///
+    /// # Safety
+    ///
+    /// This char must be within the ASCII range, or else this is UB.
+    #[must_use]
+    #[unstable(feature = "ascii_char", issue = "110998")]
+    #[inline]
+    pub const unsafe fn as_ascii_unchecked(&self) -> ascii::Char {
+        assert_unsafe_precondition!(
+            check_library_ub,
+            "as_ascii_unchecked requires that the char is valid ASCII",
+            (it: &char = self) => it.is_ascii()
+        );
+
+        // SAFETY: the caller promised that this char is ASCII.
+        unsafe { ascii::Char::from_u8_unchecked(*self as u8) }
     }
 
     /// Makes a copy of the value in its ASCII upper case equivalent.
@@ -1791,40 +1872,77 @@ const fn len_utf16(code: u32) -> usize {
 #[inline]
 pub const fn encode_utf8_raw(code: u32, dst: &mut [u8]) -> &mut [u8] {
     let len = len_utf8(code);
-    match (len, &mut *dst) {
-        (1, [a, ..]) => {
-            *a = code as u8;
-        }
-        (2, [a, b, ..]) => {
-            *a = (code >> 6 & 0x1F) as u8 | TAG_TWO_B;
-            *b = (code & 0x3F) as u8 | TAG_CONT;
-        }
-        (3, [a, b, c, ..]) => {
-            *a = (code >> 12 & 0x0F) as u8 | TAG_THREE_B;
-            *b = (code >> 6 & 0x3F) as u8 | TAG_CONT;
-            *c = (code & 0x3F) as u8 | TAG_CONT;
-        }
-        (4, [a, b, c, d, ..]) => {
-            *a = (code >> 18 & 0x07) as u8 | TAG_FOUR_B;
-            *b = (code >> 12 & 0x3F) as u8 | TAG_CONT;
-            *c = (code >> 6 & 0x3F) as u8 | TAG_CONT;
-            *d = (code & 0x3F) as u8 | TAG_CONT;
-        }
-        _ => {
-            const_panic!(
-                "encode_utf8: buffer does not have enough bytes to encode code point",
-                "encode_utf8: need {len} bytes to encode U+{code:04X} but buffer has just {dst_len}",
-                code: u32 = code,
-                len: usize = len,
-                dst_len: usize = dst.len(),
-            )
-        }
-    };
+    if dst.len() < len {
+        const_panic!(
+            "encode_utf8: buffer does not have enough bytes to encode code point",
+            "encode_utf8: need {len} bytes to encode U+{code:04X} but buffer has just {dst_len}",
+            code: u32 = code,
+            len: usize = len,
+            dst_len: usize = dst.len(),
+        );
+    }
+
+    // SAFETY: `dst` is checked to be at least the length needed to encode the codepoint.
+    unsafe { encode_utf8_raw_unchecked(code, dst.as_mut_ptr()) };
+
     // SAFETY: `<&mut [u8]>::as_mut_ptr` is guaranteed to return a valid pointer and `len` has been tested to be within bounds.
     unsafe { slice::from_raw_parts_mut(dst.as_mut_ptr(), len) }
 }
 
-/// Encodes a raw `u32` value as UTF-16 into the provided `u16` buffer,
+/// Encodes a raw `u32` value as UTF-8 into the byte buffer pointed to by `dst`.
+///
+/// Unlike `char::encode_utf8`, this method also handles codepoints in the surrogate range.
+/// (Creating a `char` in the surrogate range is UB.)
+/// The result is valid [generalized UTF-8] but not valid UTF-8.
+///
+/// [generalized UTF-8]: https://simonsapin.github.io/wtf-8/#generalized-utf8
+///
+/// # Safety
+///
+/// The behavior is undefined if the buffer pointed to by `dst` is not
+/// large enough to hold the encoded codepoint. A buffer of length four
+/// is large enough to encode any `char`.
+///
+/// For a safe version of this function, see the [`encode_utf8_raw`] function.
+#[unstable(feature = "char_internals", reason = "exposed only for libstd", issue = "none")]
+#[doc(hidden)]
+#[inline]
+pub const unsafe fn encode_utf8_raw_unchecked(code: u32, dst: *mut u8) {
+    let len = len_utf8(code);
+    // SAFETY: The caller must guarantee that the buffer pointed to by `dst`
+    // is at least `len` bytes long.
+    unsafe {
+        if len == 1 {
+            *dst = code as u8;
+            return;
+        }
+
+        let last1 = (code >> 0 & 0x3F) as u8 | TAG_CONT;
+        let last2 = (code >> 6 & 0x3F) as u8 | TAG_CONT;
+        let last3 = (code >> 12 & 0x3F) as u8 | TAG_CONT;
+        let last4 = (code >> 18 & 0x3F) as u8 | TAG_FOUR_B;
+
+        if len == 2 {
+            *dst = last2 | TAG_TWO_B;
+            *dst.add(1) = last1;
+            return;
+        }
+
+        if len == 3 {
+            *dst = last3 | TAG_THREE_B;
+            *dst.add(1) = last2;
+            *dst.add(2) = last1;
+            return;
+        }
+
+        *dst = last4;
+        *dst.add(1) = last3;
+        *dst.add(2) = last2;
+        *dst.add(3) = last1;
+    }
+}
+
+/// Encodes a raw `u32` value as native endian UTF-16 into the provided `u16` buffer,
 /// and then returns the subslice of the buffer that contains the encoded character.
 ///
 /// Unlike `char::encode_utf16`, this method also handles codepoints in the surrogate range.

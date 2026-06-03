@@ -12,15 +12,15 @@ Global Instance Instance_IsFunction_bad_add : M.IsFunction.C "unit_testing::bad_
 Admitted.
 
 Module tests.
-  Parameter test_add : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+  Parameter test_add_1 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
-  Global Instance Instance_IsFunction_test_add :
-    M.IsFunction.C "unit_testing::tests::test_add'1" test_add.
+  Global Instance Instance_IsFunction_test_add_1 :
+    M.IsFunction.C "unit_testing::tests::test_add'1" test_add_1.
   Admitted.
   
-  Parameter test_bad_add : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+  Parameter test_bad_add_1 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
-  Global Instance Instance_IsFunction_test_bad_add :
-    M.IsFunction.C "unit_testing::tests::test_bad_add'1" test_bad_add.
+  Global Instance Instance_IsFunction_test_bad_add_1 :
+    M.IsFunction.C "unit_testing::tests::test_bad_add'1" test_bad_add_1.
   Admitted.
 End tests.

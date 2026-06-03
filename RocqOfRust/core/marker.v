@@ -5,7 +5,7 @@ Module marker.
   (* Trait *)
   (* Empty module 'Send' *)
   
-  Module Impl_core_marker_Send_where_core_marker_Sized_T_for_pointer_const_T.
+  Module Impl_core_marker_Send_where_core_marker_PointeeSized_T_for_pointer_const_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
     
     Axiom Implements :
@@ -16,9 +16,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Send_where_core_marker_Sized_T_for_pointer_const_T.
+  End Impl_core_marker_Send_where_core_marker_PointeeSized_T_for_pointer_const_T.
   
-  Module Impl_core_marker_Send_where_core_marker_Sized_T_for_pointer_mut_T.
+  Module Impl_core_marker_Send_where_core_marker_PointeeSized_T_for_pointer_mut_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
     
     Axiom Implements :
@@ -29,9 +29,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Send_where_core_marker_Sized_T_for_pointer_mut_T.
+  End Impl_core_marker_Send_where_core_marker_PointeeSized_T_for_pointer_mut_T.
   
-  Module Impl_core_marker_Send_where_core_marker_Sync_T_where_core_marker_Sized_T_for_ref__T.
+  Module Impl_core_marker_Send_where_core_marker_Sync_T_where_core_marker_PointeeSized_T_for_ref__T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
     
     Axiom Implements :
@@ -42,10 +42,16 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Send_where_core_marker_Sync_T_where_core_marker_Sized_T_for_ref__T.
+  End Impl_core_marker_Send_where_core_marker_Sync_T_where_core_marker_PointeeSized_T_for_ref__T.
   
   (* Trait *)
   (* Empty module 'Sized' *)
+  
+  (* Trait *)
+  (* Empty module 'MetaSized' *)
+  
+  (* Trait *)
+  (* Empty module 'PointeeSized' *)
   
   (* Trait *)
   (* Empty module 'Unsize' *)
@@ -271,7 +277,7 @@ Module marker.
         (* Instance *) [].
   End Impl_core_marker_StructuralPartialEq_for_slice_T.
   
-  Module Impl_core_marker_StructuralPartialEq_where_core_marker_Sized_T_for_ref__T.
+  Module Impl_core_marker_StructuralPartialEq_where_core_marker_PointeeSized_T_for_ref__T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
     
     Axiom Implements :
@@ -282,7 +288,7 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_StructuralPartialEq_where_core_marker_Sized_T_for_ref__T.
+  End Impl_core_marker_StructuralPartialEq_where_core_marker_PointeeSized_T_for_ref__T.
   
   (* Trait *)
   (* Empty module 'Copy' *)
@@ -503,7 +509,7 @@ Module marker.
         (* Instance *) [].
   End Impl_core_marker_Copy_for_char.
   
-  Module Impl_core_marker_Copy_where_core_marker_Sized_T_for_pointer_const_T.
+  Module Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_pointer_const_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
     
     Axiom Implements :
@@ -514,9 +520,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Copy_where_core_marker_Sized_T_for_pointer_const_T.
+  End Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_pointer_const_T.
   
-  Module Impl_core_marker_Copy_where_core_marker_Sized_T_for_pointer_mut_T.
+  Module Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_pointer_mut_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
     
     Axiom Implements :
@@ -527,7 +533,7 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Copy_where_core_marker_Sized_T_for_pointer_mut_T.
+  End Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_pointer_mut_T.
   
   Module Impl_core_marker_Copy_for_never.
     Definition Self : Ty.t := Ty.path "never".
@@ -541,7 +547,7 @@ Module marker.
         (* Instance *) [].
   End Impl_core_marker_Copy_for_never.
   
-  Module Impl_core_marker_Copy_where_core_marker_Sized_T_for_ref__T.
+  Module Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_ref__T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
     
     Axiom Implements :
@@ -552,12 +558,15 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Copy_where_core_marker_Sized_T_for_ref__T.
+  End Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_ref__T.
+  
+  (* Trait *)
+  (* Empty module 'BikeshedGuaranteedNoDrop' *)
   
   (* Trait *)
   (* Empty module 'Sync' *)
   
-  Module Impl_core_marker_Sync_where_core_marker_Sized_T_for_pointer_const_T.
+  Module Impl_core_marker_Sync_where_core_marker_PointeeSized_T_for_pointer_const_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
     
     Axiom Implements :
@@ -568,9 +577,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Sync_where_core_marker_Sized_T_for_pointer_const_T.
+  End Impl_core_marker_Sync_where_core_marker_PointeeSized_T_for_pointer_const_T.
   
-  Module Impl_core_marker_Sync_where_core_marker_Sized_T_for_pointer_mut_T.
+  Module Impl_core_marker_Sync_where_core_marker_PointeeSized_T_for_pointer_mut_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
     
     Axiom Implements :
@@ -581,7 +590,7 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Sync_where_core_marker_Sized_T_for_pointer_mut_T.
+  End Impl_core_marker_Sync_where_core_marker_PointeeSized_T_for_pointer_mut_T.
   
   (* StructTuple
     {
@@ -591,7 +600,7 @@ Module marker.
       fields := [];
     } *)
   
-  Module Impl_core_hash_Hash_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  Module Impl_core_hash_Hash_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     (*     fn hash<H: Hasher>(&self, _: &mut H) {} *)
@@ -618,9 +627,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [ ("hash", InstanceField.Method (hash T)) ].
-  End Impl_core_hash_Hash_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  End Impl_core_hash_Hash_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
   
-  Module Impl_core_cmp_PartialEq_where_core_marker_Sized_T_core_marker_PhantomData_T_for_core_marker_PhantomData_T.
+  Module Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_T_core_marker_PhantomData_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     (*
@@ -655,9 +664,9 @@ Module marker.
         (* Trait polymorphic types *) [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ]
         (Self T)
         (* Instance *) [ ("eq", InstanceField.Method (eq T)) ].
-  End Impl_core_cmp_PartialEq_where_core_marker_Sized_T_core_marker_PhantomData_T_for_core_marker_PhantomData_T.
+  End Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_T_core_marker_PhantomData_T_for_core_marker_PhantomData_T.
   
-  Module Impl_core_cmp_Eq_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  Module Impl_core_cmp_Eq_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     Axiom Implements :
@@ -668,9 +677,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_cmp_Eq_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  End Impl_core_cmp_Eq_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
   
-  Module Impl_core_cmp_PartialOrd_where_core_marker_Sized_T_core_marker_PhantomData_T_for_core_marker_PhantomData_T.
+  Module Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_T_core_marker_PhantomData_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     (*
@@ -709,9 +718,9 @@ Module marker.
         (* Trait polymorphic types *) [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ]
         (Self T)
         (* Instance *) [ ("partial_cmp", InstanceField.Method (partial_cmp T)) ].
-  End Impl_core_cmp_PartialOrd_where_core_marker_Sized_T_core_marker_PhantomData_T_for_core_marker_PhantomData_T.
+  End Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_T_core_marker_PhantomData_T_for_core_marker_PhantomData_T.
   
-  Module Impl_core_cmp_Ord_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  Module Impl_core_cmp_Ord_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     (*
@@ -746,9 +755,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [ ("cmp", InstanceField.Method (cmp T)) ].
-  End Impl_core_cmp_Ord_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  End Impl_core_cmp_Ord_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
   
-  Module Impl_core_marker_Copy_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  Module Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     Axiom Implements :
@@ -759,9 +768,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Copy_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  End Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
   
-  Module Impl_core_clone_Clone_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  Module Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     (*
@@ -791,9 +800,22 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
-  End Impl_core_clone_Clone_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  End Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
   
-  Module Impl_core_default_Default_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  Module Impl_core_clone_TrivialClone_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  
+  Module Impl_core_default_Default_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     (*
@@ -818,9 +840,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-  End Impl_core_default_Default_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  End Impl_core_default_Default_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
   
-  Module Impl_core_marker_StructuralPartialEq_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  Module Impl_core_marker_StructuralPartialEq_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     Axiom Implements :
@@ -831,7 +853,7 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_StructuralPartialEq_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  End Impl_core_marker_StructuralPartialEq_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
   
   (* Trait *)
   (* Empty module 'DiscriminantKind' *)
@@ -839,7 +861,7 @@ Module marker.
   (* Trait *)
   (* Empty module 'Freeze' *)
   
-  Module Impl_core_marker_Freeze_where_core_marker_Sized_T_for_core_cell_UnsafeCell_T.
+  Module Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_core_cell_UnsafeCell_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ].
     
     Axiom Implements :
@@ -850,9 +872,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Freeze_where_core_marker_Sized_T_for_core_cell_UnsafeCell_T.
+  End Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_core_cell_UnsafeCell_T.
   
-  Module Impl_core_marker_Freeze_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  Module Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
     
     Axiom Implements :
@@ -863,9 +885,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Freeze_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  End Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_core_marker_PhantomData_T.
   
-  Module Impl_core_marker_Freeze_where_core_marker_Sized_T_for_pointer_const_T.
+  Module Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_pointer_const_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
     
     Axiom Implements :
@@ -876,9 +898,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Freeze_where_core_marker_Sized_T_for_pointer_const_T.
+  End Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_pointer_const_T.
   
-  Module Impl_core_marker_Freeze_where_core_marker_Sized_T_for_pointer_mut_T.
+  Module Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_pointer_mut_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
     
     Axiom Implements :
@@ -889,9 +911,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Freeze_where_core_marker_Sized_T_for_pointer_mut_T.
+  End Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_pointer_mut_T.
   
-  Module Impl_core_marker_Freeze_where_core_marker_Sized_T_for_ref__T.
+  Module Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_ref__T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
     
     Axiom Implements :
@@ -902,9 +924,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Freeze_where_core_marker_Sized_T_for_ref__T.
+  End Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_ref__T.
   
-  Module Impl_core_marker_Freeze_where_core_marker_Sized_T_for_ref_mut_T.
+  Module Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_ref_mut_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
     
     Axiom Implements :
@@ -915,7 +937,89 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Freeze_where_core_marker_Sized_T_for_ref_mut_T.
+  End Impl_core_marker_Freeze_where_core_marker_PointeeSized_T_for_ref_mut_T.
+  
+  (* Trait *)
+  (* Empty module 'UnsafeUnpin' *)
+  
+  Module Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_core_pin_unsafe_pinned_UnsafePinned_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::pin::unsafe_pinned::UnsafePinned") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::marker::UnsafeUnpin"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_core_pin_unsafe_pinned_UnsafePinned_T.
+  
+  Module Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::marker::UnsafeUnpin"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_core_marker_PhantomData_T.
+  
+  Module Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_pointer_const_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::marker::UnsafeUnpin"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_pointer_const_T.
+  
+  Module Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_pointer_mut_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::marker::UnsafeUnpin"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_pointer_mut_T.
+  
+  Module Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_ref__T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::marker::UnsafeUnpin"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_ref__T.
+  
+  Module Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_ref_mut_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::marker::UnsafeUnpin"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_marker_UnsafeUnpin_where_core_marker_Sized_T_for_ref_mut_T.
   
   (* Trait *)
   (* Empty module 'Unpin' *)
@@ -996,6 +1100,18 @@ Module marker.
         Self
         (* Instance *) [].
   End Impl_core_marker_Copy_for_core_marker_PhantomPinned.
+  
+  Module Impl_core_clone_TrivialClone_for_core_marker_PhantomPinned.
+    Definition Self : Ty.t := Ty.path "core::marker::PhantomPinned".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_marker_PhantomPinned.
   
   Module Impl_core_clone_Clone_for_core_marker_PhantomPinned.
     Definition Self : Ty.t := Ty.path "core::marker::PhantomPinned".
@@ -1202,7 +1318,19 @@ Module marker.
         (* Instance *) [].
   End Impl_core_marker_Unpin_for_core_marker_PhantomPinned.
   
-  Module Impl_core_marker_Unpin_where_core_marker_Sized_T_for_ref__T.
+  Module Impl_core_marker_UnsafeUnpin_for_core_marker_PhantomPinned.
+    Definition Self : Ty.t := Ty.path "core::marker::PhantomPinned".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::UnsafeUnpin"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_UnsafeUnpin_for_core_marker_PhantomPinned.
+  
+  Module Impl_core_marker_Unpin_where_core_marker_PointeeSized_T_for_ref__T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
     
     Axiom Implements :
@@ -1213,9 +1341,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Unpin_where_core_marker_Sized_T_for_ref__T.
+  End Impl_core_marker_Unpin_where_core_marker_PointeeSized_T_for_ref__T.
   
-  Module Impl_core_marker_Unpin_where_core_marker_Sized_T_for_ref_mut_T.
+  Module Impl_core_marker_Unpin_where_core_marker_PointeeSized_T_for_ref_mut_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
     
     Axiom Implements :
@@ -1226,9 +1354,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Unpin_where_core_marker_Sized_T_for_ref_mut_T.
+  End Impl_core_marker_Unpin_where_core_marker_PointeeSized_T_for_ref_mut_T.
   
-  Module Impl_core_marker_Unpin_where_core_marker_Sized_T_for_pointer_const_T.
+  Module Impl_core_marker_Unpin_where_core_marker_PointeeSized_T_for_pointer_const_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
     
     Axiom Implements :
@@ -1239,9 +1367,9 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Unpin_where_core_marker_Sized_T_for_pointer_const_T.
+  End Impl_core_marker_Unpin_where_core_marker_PointeeSized_T_for_pointer_const_T.
   
-  Module Impl_core_marker_Unpin_where_core_marker_Sized_T_for_pointer_mut_T.
+  Module Impl_core_marker_Unpin_where_core_marker_PointeeSized_T_for_pointer_mut_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
     
     Axiom Implements :
@@ -1252,7 +1380,7 @@ Module marker.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_Unpin_where_core_marker_Sized_T_for_pointer_mut_T.
+  End Impl_core_marker_Unpin_where_core_marker_PointeeSized_T_for_pointer_mut_T.
   
   (* Trait *)
   (* Empty module 'Destruct' *)
@@ -1261,90 +1389,7 @@ Module marker.
   (* Empty module 'Tuple' *)
   
   (* Trait *)
-  (* Empty module 'PointerLike' *)
-  
-  Module Impl_core_marker_PointerLike_for_usize.
-    Definition Self : Ty.t := Ty.path "usize".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::PointerLike"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_PointerLike_for_usize.
-  
-  Module Impl_core_marker_PointerLike_for_ref__T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::marker::PointerLike"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [].
-  End Impl_core_marker_PointerLike_for_ref__T.
-  
-  Module Impl_core_marker_PointerLike_for_ref_mut_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::marker::PointerLike"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [].
-  End Impl_core_marker_PointerLike_for_ref_mut_T.
-  
-  Module Impl_core_marker_PointerLike_for_pointer_const_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::marker::PointerLike"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [].
-  End Impl_core_marker_PointerLike_for_pointer_const_T.
-  
-  Module Impl_core_marker_PointerLike_for_pointer_mut_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::marker::PointerLike"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [].
-  End Impl_core_marker_PointerLike_for_pointer_mut_T.
-  
-  Module Impl_core_marker_PointerLike_where_core_marker_PointerLike_T_for_core_pin_Pin_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::pin::Pin") [] [ T ].
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::marker::PointerLike"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [].
-  End Impl_core_marker_PointerLike_where_core_marker_PointerLike_T_for_core_pin_Pin_T.
-  
-  (* Trait *)
   (* Empty module 'ConstParamTy_' *)
-  
-  (* Trait *)
-  (* Empty module 'UnsizedConstParamTy' *)
   
   Module Impl_core_marker_ConstParamTy__for_usize.
     Definition Self : Ty.t := Ty.path "usize".
@@ -1539,237 +1584,47 @@ Module marker.
         (* Instance *) [].
   End Impl_core_marker_ConstParamTy__where_core_marker_ConstParamTy__T_for_array_N_T.
   
-  Module Impl_core_marker_UnsizedConstParamTy_for_usize.
-    Definition Self : Ty.t := Ty.path "usize".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_usize.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_u8.
-    Definition Self : Ty.t := Ty.path "u8".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_u8.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_u16.
-    Definition Self : Ty.t := Ty.path "u16".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_u16.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_u32.
-    Definition Self : Ty.t := Ty.path "u32".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_u32.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_u64.
-    Definition Self : Ty.t := Ty.path "u64".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_u64.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_u128.
-    Definition Self : Ty.t := Ty.path "u128".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_u128.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_isize.
-    Definition Self : Ty.t := Ty.path "isize".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_isize.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_i8.
-    Definition Self : Ty.t := Ty.path "i8".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_i8.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_i16.
-    Definition Self : Ty.t := Ty.path "i16".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_i16.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_i32.
-    Definition Self : Ty.t := Ty.path "i32".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_i32.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_i64.
-    Definition Self : Ty.t := Ty.path "i64".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_i64.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_i128.
-    Definition Self : Ty.t := Ty.path "i128".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_i128.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_bool.
-    Definition Self : Ty.t := Ty.path "bool".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_bool.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_char.
-    Definition Self : Ty.t := Ty.path "char".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_char.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_Tuple_.
-    Definition Self : Ty.t := Ty.tuple [].
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_Tuple_.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_where_core_marker_UnsizedConstParamTy_T_for_array_N_T.
-    Definition Self (N : Value.t) (T : Ty.t) : Ty.t := Ty.apply (Ty.path "array") [ N ] [ T ].
-    
-    Axiom Implements :
-      forall (N : Value.t) (T : Ty.t),
-      M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self N T)
-        (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_where_core_marker_UnsizedConstParamTy_T_for_array_N_T.
-  
-  Module Impl_core_marker_UnsizedConstParamTy_for_str.
+  Module Impl_core_marker_ConstParamTy__for_str.
     Definition Self : Ty.t := Ty.path "str".
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
+        "core::marker::ConstParamTy_"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         Self
         (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_for_str.
+  End Impl_core_marker_ConstParamTy__for_str.
   
-  Module Impl_core_marker_UnsizedConstParamTy_where_core_marker_UnsizedConstParamTy_T_for_slice_T.
+  Module Impl_core_marker_ConstParamTy__where_core_marker_ConstParamTy__T_for_slice_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "slice") [] [ T ].
     
     Axiom Implements :
       forall (T : Ty.t),
       M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
+        "core::marker::ConstParamTy_"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_where_core_marker_UnsizedConstParamTy_T_for_slice_T.
+  End Impl_core_marker_ConstParamTy__where_core_marker_ConstParamTy__T_for_slice_T.
   
-  Module Impl_core_marker_UnsizedConstParamTy_where_core_marker_UnsizedConstParamTy_T_where_core_marker_Sized_T_for_ref__T.
+  Module Impl_core_marker_ConstParamTy__where_core_marker_ConstParamTy__T_where_core_marker_Sized_T_for_ref__T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
     
     Axiom Implements :
       forall (T : Ty.t),
       M.IsTraitInstance
-        "core::marker::UnsizedConstParamTy"
+        "core::marker::ConstParamTy_"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [].
-  End Impl_core_marker_UnsizedConstParamTy_where_core_marker_UnsizedConstParamTy_T_where_core_marker_Sized_T_for_ref__T.
+  End Impl_core_marker_ConstParamTy__where_core_marker_ConstParamTy__T_where_core_marker_Sized_T_for_ref__T.
   
   (* Trait *)
   (* Empty module 'FnPtr' *)
+  
+  (* Trait *)
+  (* Empty module 'CoercePointeeValidated' *)
 End marker.

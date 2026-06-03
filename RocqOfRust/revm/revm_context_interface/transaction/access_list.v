@@ -30,7 +30,7 @@ Module transaction.
                           []
                           []
                           Self
-                          "{{synthetic}}";
+                          "{{anon_assoc}}";
                         Ty.function
                           [
                             Ty.tuple
@@ -41,7 +41,7 @@ Module transaction.
                                   []
                                   []
                                   Self
-                                  "{{synthetic}}'1"
+                                  "{{anon_assoc}}'1"
                               ]
                           ]
                           (Ty.path "usize")
@@ -63,7 +63,7 @@ Module transaction.
                             []
                             []
                             Self
-                            "{{synthetic}}";
+                            "{{anon_assoc}}";
                           Ty.function
                             [
                               Ty.tuple
@@ -74,7 +74,7 @@ Module transaction.
                                     []
                                     []
                                     Self
-                                    "{{synthetic}}'1"
+                                    "{{anon_assoc}}'1"
                                 ]
                             ]
                             (Ty.path "usize")
@@ -86,7 +86,7 @@ Module transaction.
                           []
                           []
                           Self
-                          "{{synthetic}}",
+                          "{{anon_assoc}}",
                         [],
                         [],
                         "map",
@@ -103,7 +103,7 @@ Module transaction.
                                     []
                                     []
                                     Self
-                                    "{{synthetic}}'1"
+                                    "{{anon_assoc}}'1"
                                 ]
                             ]
                             (Ty.path "usize")
@@ -116,7 +116,7 @@ Module transaction.
                             []
                             []
                             Self
-                            "{{synthetic}}",
+                            "{{anon_assoc}}",
                           M.get_trait_method (|
                             "revm_context_interface::transaction::access_list::AccessListTrait",
                             Self,
@@ -145,7 +145,7 @@ Module transaction.
                                             []
                                             []
                                             Self
-                                            "{{synthetic}}'1"
+                                            "{{anon_assoc}}'1"
                                         ],
                                       α0
                                     |),
@@ -163,7 +163,7 @@ Module transaction.
                                                     []
                                                     []
                                                     Self
-                                                    "{{synthetic}}'1"
+                                                    "{{anon_assoc}}'1"
                                                 ],
                                               γ
                                             |) in
@@ -176,7 +176,7 @@ Module transaction.
                                                 []
                                                 []
                                                 Self
-                                                "{{synthetic}}'1",
+                                                "{{anon_assoc}}'1",
                                               [],
                                               [],
                                               "count",
@@ -203,7 +203,7 @@ Module transaction.
                       []
                       []
                       Self
-                      "{{synthetic}}",
+                      "{{anon_assoc}}",
                     [],
                     [],
                     "count",
@@ -217,7 +217,7 @@ Module transaction.
                         []
                         []
                         Self
-                        "{{synthetic}}",
+                        "{{anon_assoc}}",
                       M.get_trait_method (|
                         "revm_context_interface::transaction::access_list::AccessListTrait",
                         Self,
@@ -264,7 +264,7 @@ Module transaction.
                   []
                   []
                   T
-                  "{{synthetic}}",
+                  "{{anon_assoc}}",
                 M.get_trait_method (|
                   "revm_context_interface::transaction::access_list::AccessListTrait",
                   T,
@@ -331,6 +331,9 @@ Module transaction.
               ("num_account_storages", InstanceField.Method (num_account_storages T))
             ].
       End Impl_revm_context_interface_transaction_access_list_AccessListTrait_where_revm_context_interface_transaction_access_list_AccessListTrait_T_where_core_marker_Sized_T_where_core_clone_Clone_ref__T_for_ref__T.
+    End underscore.
+    
+    Module underscore_1.
       Module Impl_revm_context_interface_transaction_access_list_AccessListTrait_where_revm_context_interface_transaction_access_list_AccessListTrait_T_where_core_marker_Sized_T_where_core_clone_Clone_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -360,7 +363,7 @@ Module transaction.
                   []
                   []
                   T
-                  "{{synthetic}}",
+                  "{{anon_assoc}}",
                 M.get_trait_method (|
                   "revm_context_interface::transaction::access_list::AccessListTrait",
                   T,
@@ -438,6 +441,9 @@ Module transaction.
               ("num_account_storages", InstanceField.Method (num_account_storages T))
             ].
       End Impl_revm_context_interface_transaction_access_list_AccessListTrait_where_revm_context_interface_transaction_access_list_AccessListTrait_T_where_core_marker_Sized_T_where_core_clone_Clone_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
+    End underscore_1.
+    
+    Module underscore_2.
       Module Impl_revm_context_interface_transaction_access_list_AccessListTrait_where_revm_context_interface_transaction_access_list_AccessListTrait_T_where_core_marker_Sized_T_where_core_clone_Clone_alloc_sync_Arc_T_alloc_alloc_Global_for_alloc_sync_Arc_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -463,7 +469,7 @@ Module transaction.
                   []
                   []
                   T
-                  "{{synthetic}}",
+                  "{{anon_assoc}}",
                 M.get_trait_method (|
                   "revm_context_interface::transaction::access_list::AccessListTrait",
                   T,
@@ -571,6 +577,9 @@ Module transaction.
               ("num_account_storages", InstanceField.Method (num_account_storages T))
             ].
       End Impl_revm_context_interface_transaction_access_list_AccessListTrait_where_revm_context_interface_transaction_access_list_AccessListTrait_T_where_core_marker_Sized_T_where_core_clone_Clone_alloc_sync_Arc_T_alloc_alloc_Global_for_alloc_sync_Arc_T_alloc_alloc_Global.
+    End underscore_2.
+    
+    Module underscore_3.
       Module Impl_revm_context_interface_transaction_access_list_AccessListTrait_where_revm_context_interface_transaction_access_list_AccessListTrait_T_where_core_marker_Sized_T_where_core_clone_Clone_alloc_rc_Rc_T_alloc_alloc_Global_for_alloc_rc_Rc_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -595,7 +604,7 @@ Module transaction.
                   []
                   []
                   T
-                  "{{synthetic}}",
+                  "{{anon_assoc}}",
                 M.get_trait_method (|
                   "revm_context_interface::transaction::access_list::AccessListTrait",
                   T,
@@ -702,10 +711,7 @@ Module transaction.
               ("num_account_storages", InstanceField.Method (num_account_storages T))
             ].
       End Impl_revm_context_interface_transaction_access_list_AccessListTrait_where_revm_context_interface_transaction_access_list_AccessListTrait_T_where_core_marker_Sized_T_where_core_clone_Clone_alloc_rc_Rc_T_alloc_alloc_Global_for_alloc_rc_Rc_T_alloc_alloc_Global.
-    End underscore.
-    
-    
-    
+    End underscore_3.
     
     Module Impl_revm_context_interface_transaction_access_list_AccessListTrait_for_alloy_eip2930_AccessList.
       Definition Self : Ty.t := Ty.path "alloy_eip2930::AccessList".

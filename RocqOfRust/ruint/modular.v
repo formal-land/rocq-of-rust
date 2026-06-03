@@ -41,33 +41,32 @@ Module modular.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialEq",
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    [],
-                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                    "eq",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, modulus |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      get_associated_constant (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "ZERO",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                      |)
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  [],
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, modulus |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    get_associated_constant (|
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      "ZERO",
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -94,26 +93,25 @@ Module modular.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialOrd",
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    [],
-                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                    "ge",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, self |);
-                                    M.borrow (| Pointer.Kind.Ref, modulus |)
-                                  ]
-                                |)
-                              |)) in
+                                M.get_trait_method (|
+                                  "core::cmp::PartialOrd",
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  [],
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                  "ge",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, self |);
+                                  M.borrow (| Pointer.Kind.Ref, modulus |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -234,35 +232,30 @@ Module modular.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
-                                        Ty.path "bool",
-                                        LogicalOp.or (|
-                                          M.read (| overflow |),
-                                          ltac:(M.monadic
-                                            (M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_trait_method (|
-                                                "core::cmp::PartialOrd",
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    []
-                                                ],
-                                                "ge",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (| Pointer.Kind.Ref, result |);
-                                                M.borrow (| Pointer.Kind.Ref, modulus |)
-                                              ]
-                                            |)))
-                                        |)
-                                      |)) in
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      LogicalOp.or (|
+                                        M.read (| overflow |),
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_trait_method (|
+                                              "core::cmp::PartialOrd",
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              [],
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ],
+                                              "ge",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (| Pointer.Kind.Ref, result |);
+                                              M.borrow (| Pointer.Kind.Ref, modulus |)
+                                            ]
+                                          |)))
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -358,33 +351,32 @@ Module modular.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialEq",
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    [],
-                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                    "eq",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, modulus |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      get_associated_constant (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "ZERO",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                      |)
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  [],
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, modulus |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    get_associated_constant (|
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      "ZERO",
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -439,7 +431,7 @@ Module modular.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -451,28 +443,27 @@ Module modular.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.ge,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.mul,
-                                                      [ Value.Integer IntegerKind.Usize 2; LIMBS ]
-                                                    |);
-                                                    M.read (| product_len |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.ge,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.mul,
+                                                    [ Value.Integer IntegerKind.Usize 2; LIMBS ]
+                                                  |);
+                                                  M.read (| product_len |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -701,7 +692,7 @@ Module modular.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -713,21 +704,20 @@ Module modular.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [ M.read (| overflow |) ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                UnOp.not,
+                                                [ M.read (| overflow |) ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -846,18 +836,41 @@ Module modular.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    [],
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                    "eq",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (| Pointer.Kind.Ref, modulus |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      get_associated_constant (|
+                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                        "ZERO",
+                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                      |)
+                                    |)
+                                  ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
                                     M.get_trait_method (|
-                                      "core::cmp::PartialEq",
+                                      "core::cmp::PartialOrd",
                                       Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
                                       [],
                                       [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                      "eq",
+                                      "le",
                                       [],
                                       []
                                     |),
@@ -865,48 +878,24 @@ Module modular.
                                       M.borrow (| Pointer.Kind.Ref, modulus |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        get_associated_constant (|
+                                        M.alloc (|
                                           Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          "ZERO",
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              "from",
+                                              [],
+                                              [ Ty.path "i32" ]
+                                            |),
+                                            [ Value.Integer IntegerKind.I32 1 ]
+                                          |)
                                         |)
                                       |)
                                     ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialOrd",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        [],
-                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                        "le",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, modulus |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              M.get_associated_function (|
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                "from",
-                                                [],
-                                                [ Ty.path "i32" ]
-                                              |),
-                                              [ Value.Integer IntegerKind.I32 1 ]
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -950,33 +939,32 @@ Module modular.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialOrd",
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            [],
-                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                            "gt",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (| Pointer.Kind.Ref, exp |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              get_associated_constant (|
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                "ZERO",
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              |)
+                                        M.get_trait_method (|
+                                          "core::cmp::PartialOrd",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          [],
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                          "gt",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (| Pointer.Kind.Ref, exp |);
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            get_associated_constant (|
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              "ZERO",
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -991,34 +979,33 @@ Module modular.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.eq,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u64",
-                                                          BinOp.Wrap.bit_and,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  exp,
-                                                                  "ruint::Uint",
-                                                                  "limbs"
-                                                                |),
-                                                                Value.Integer IntegerKind.Usize 0
-                                                              |)
-                                                            |);
-                                                            Value.Integer IntegerKind.U64 1
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.U64 1
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                    BinOp.eq,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "u64",
+                                                        BinOp.Wrap.bit_and,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_array_field (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                exp,
+                                                                "ruint::Uint",
+                                                                "limbs"
+                                                              |),
+                                                              Value.Integer IntegerKind.Usize 0
+                                                            |)
+                                                          |);
+                                                          Value.Integer IntegerKind.U64 1
+                                                        ]
+                                                      |);
+                                                      Value.Integer IntegerKind.U64 1
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -1196,15 +1183,14 @@ Module modular.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1284,24 +1270,23 @@ Module modular.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.eq,
-                                              [
-                                                M.read (| M.deref (| M.read (| left_val |) |) |);
-                                                M.read (| M.deref (| M.read (| right_val |) |) |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            BinOp.eq,
+                                            [
+                                              M.read (| M.deref (| M.read (| left_val |) |) |);
+                                              M.read (| M.deref (| M.read (| right_val |) |) |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1521,7 +1506,7 @@ Module modular.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1533,40 +1518,39 @@ Module modular.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_trait_method (|
-                                                    "core::cmp::PartialOrd",
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_trait_method (|
+                                                  "core::cmp::PartialOrd",
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [],
+                                                  [],
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "ruint::Uint")
                                                       [ BITS; LIMBS ]
-                                                      [],
-                                                    [],
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [ BITS; LIMBS ]
-                                                        []
-                                                    ],
-                                                    "lt",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (| Pointer.Kind.Ref, result |);
-                                                    M.borrow (| Pointer.Kind.Ref, modulus |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                      []
+                                                  ],
+                                                  "lt",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (| Pointer.Kind.Ref, result |);
+                                                  M.borrow (| Pointer.Kind.Ref, modulus |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),

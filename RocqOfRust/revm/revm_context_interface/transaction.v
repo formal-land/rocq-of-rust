@@ -21,54 +21,11 @@ Module transaction.
                   Ty.path "core::fmt::Arguments",
                   M.get_associated_function (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                    "from_str_nonconst",
+                    [],
                     []
                   |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: legacy tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
+                  [ mk_str (| "not implemented: legacy tx not supported" |) ]
                 |)
               ]
             |)
@@ -92,54 +49,11 @@ Module transaction.
                   Ty.path "core::fmt::Arguments",
                   M.get_associated_function (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                    "from_str_nonconst",
+                    [],
                     []
                   |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: Eip2930 tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
+                  [ mk_str (| "not implemented: Eip2930 tx not supported" |) ]
                 |)
               ]
             |)
@@ -163,54 +77,11 @@ Module transaction.
                   Ty.path "core::fmt::Arguments",
                   M.get_associated_function (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                    "from_str_nonconst",
+                    [],
                     []
                   |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: Eip1559 tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
+                  [ mk_str (| "not implemented: Eip1559 tx not supported" |) ]
                 |)
               ]
             |)
@@ -234,54 +105,11 @@ Module transaction.
                   Ty.path "core::fmt::Arguments",
                   M.get_associated_function (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                    "from_str_nonconst",
+                    [],
                     []
                   |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: Eip4844 tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
+                  [ mk_str (| "not implemented: Eip4844 tx not supported" |) ]
                 |)
               ]
             |)
@@ -305,54 +133,11 @@ Module transaction.
                   Ty.path "core::fmt::Arguments",
                   M.get_associated_function (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                    "from_str_nonconst",
+                    [],
                     []
                   |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: Eip7702 tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
+                  [ mk_str (| "not implemented: Eip7702 tx not supported" |) ]
                 |)
               ]
             |)
@@ -900,62 +685,11 @@ Module transaction.
                                           Ty.path "core::fmt::Arguments",
                                           M.get_associated_function (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_v1",
-                                            [
-                                              Value.Integer IntegerKind.Usize 1;
-                                              Value.Integer IntegerKind.Usize 0
-                                            ],
+                                            "from_str_nonconst",
+                                            [],
                                             []
                                           |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "not implemented: Custom tx not supported"
-                                                        |)
-                                                      ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 0 ]
-                                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        "none",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      []
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
+                                          [ mk_str (| "not implemented: Custom tx not supported" |)
                                           ]
                                         |)
                                       ]
@@ -1314,56 +1048,11 @@ Module transaction.
                           Ty.path "core::fmt::Arguments",
                           M.get_associated_function (|
                             Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0
-                            ],
+                            "from_str_nonconst",
+                            [],
                             []
                           |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "not implemented: Custom tx not supported" |) ]
-                                  |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 0 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "none",
-                                        [],
-                                        []
-                                      |),
-                                      []
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
+                          [ mk_str (| "not implemented: Custom tx not supported" |) ]
                         |)
                       ]
                     |)
@@ -1931,62 +1620,11 @@ Module transaction.
                                       Ty.path "core::fmt::Arguments",
                                       M.get_associated_function (|
                                         Ty.path "core::fmt::Arguments",
-                                        "new_v1",
-                                        [
-                                          Value.Integer IntegerKind.Usize 1;
-                                          Value.Integer IntegerKind.Usize 0
-                                        ],
+                                        "from_str_nonconst",
+                                        [],
                                         []
                                       |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                Value.Array
-                                                  [
-                                                    mk_str (|
-                                                      "not implemented: Custom tx not supported"
-                                                    |)
-                                                  ]
-                                              |)
-                                            |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 0 ]
-                                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 0 ]
-                                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                                  M.get_associated_function (|
-                                                    Ty.path "core::fmt::rt::Argument",
-                                                    "none",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  []
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
+                                      [ mk_str (| "not implemented: Custom tx not supported" |) ]
                                     |)
                                   ]
                                 |)
@@ -2391,59 +2029,11 @@ Module transaction.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_v1",
-                                [
-                                  Value.Integer IntegerKind.Usize 1;
-                                  Value.Integer IntegerKind.Usize 0
-                                ],
+                                "from_str_nonconst",
+                                [],
                                 []
                               |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [ mk_str (| "not implemented: Custom tx not supported" |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 0 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 0 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "none",
-                                            [],
-                                            []
-                                          |),
-                                          []
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
+                              [ mk_str (| "not implemented: Custom tx not supported" |) ]
                             |)
                           ]
                         |)
@@ -2952,59 +2542,11 @@ Module transaction.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_v1",
-                                [
-                                  Value.Integer IntegerKind.Usize 1;
-                                  Value.Integer IntegerKind.Usize 0
-                                ],
+                                "from_str_nonconst",
+                                [],
                                 []
                               |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [ mk_str (| "not implemented: Custom tx not supported" |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 0 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 0 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "none",
-                                            [],
-                                            []
-                                          |),
-                                          []
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
+                              [ mk_str (| "not implemented: Custom tx not supported" |) ]
                             |)
                           ]
                         |)
@@ -3612,6 +3154,9 @@ Module transaction.
             ("access_list", InstanceField.Method (access_list T))
           ].
     End Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_ref__T.
+  End underscore.
+  
+  Module underscore_1.
     Module Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -4278,6 +3823,9 @@ Module transaction.
             ("access_list", InstanceField.Method (access_list T))
           ].
     End Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+  End underscore_1.
+  
+  Module underscore_2.
     Module Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -5136,6 +4684,9 @@ Module transaction.
             ("access_list", InstanceField.Method (access_list T))
           ].
     End Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
+  End underscore_2.
+  
+  Module underscore_3.
     Module Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_alloc_rc_Rc_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -5968,6 +5519,12 @@ Module transaction.
             ("access_list", InstanceField.Method (access_list T))
           ].
     End Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_alloc_rc_Rc_T_alloc_alloc_Global.
+  End underscore_3.
+  
+  (* Trait *)
+  (* Empty module 'TransactionGetter' *)
+  
+  Module underscore_4.
     Module Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_ref__T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
       
@@ -6035,6 +5592,9 @@ Module transaction.
           [ ("Transaction", InstanceField.Ty (_Transaction T)); ("tx", InstanceField.Method (tx T))
           ].
     End Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_ref__T.
+  End underscore_4.
+  
+  Module underscore_5.
     Module Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
@@ -6105,6 +5665,9 @@ Module transaction.
           [ ("Transaction", InstanceField.Ty (_Transaction T)); ("tx", InstanceField.Method (tx T))
           ].
     End Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
+  End underscore_5.
+  
+  Module underscore_6.
     Module Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -6180,6 +5743,9 @@ Module transaction.
           [ ("Transaction", InstanceField.Ty (_Transaction T)); ("tx", InstanceField.Method (tx T))
           ].
     End Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+  End underscore_6.
+  
+  Module underscore_7.
     Module Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -6272,17 +5838,7 @@ Module transaction.
           [ ("Transaction", InstanceField.Ty (_Transaction T)); ("tx", InstanceField.Method (tx T))
           ].
     End Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-  End underscore.
-  
-  
-  
-  
-  (* Trait *)
-  (* Empty module 'TransactionGetter' *)
-  
-  
-  
-  
+  End underscore_7.
   
   (* Trait *)
   (* Empty module 'TransactionSetter' *)

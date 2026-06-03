@@ -185,6 +185,18 @@ Module Impl_core_default_Default_for_mother_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_mother_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_mother_AccountId.
+  Definition Self : Ty.t := Ty.path "mother::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_mother_AccountId.
+
 Module Impl_core_clone_Clone_for_mother_AccountId.
   Definition Self : Ty.t := Ty.path "mother::AccountId".
   
@@ -1235,30 +1247,20 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                   LogicalOp.and (|
                     M.call_closure (|
                       Ty.path "bool",
-                      M.get_trait_method (|
-                        "core::cmp::PartialEq",
-                        Ty.path "alloc::string::String",
-                        [],
-                        [ Ty.path "alloc::string::String" ],
-                        "eq",
-                        [],
-                        []
-                      |),
+                      BinOp.eq,
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
+                        M.read (|
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "mother::Auction",
-                            "name"
+                            "finalized"
                           |)
                         |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
+                        M.read (|
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| other |) |),
                             "mother::Auction",
-                            "name"
+                            "finalized"
                           |)
                         |)
                       ]
@@ -1268,17 +1270,9 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                         Ty.path "bool",
                         M.get_trait_method (|
                           "core::cmp::PartialEq",
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 32 ]
-                            [ Ty.path "u8" ],
+                          Ty.path "alloc::string::String",
                           [],
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 32 ]
-                              [ Ty.path "u8" ]
-                          ],
+                          [ Ty.path "alloc::string::String" ],
                           "eq",
                           [],
                           []
@@ -1289,7 +1283,7 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "mother::Auction",
-                              "subject"
+                              "name"
                             |)
                           |);
                           M.borrow (|
@@ -1297,7 +1291,7 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| other |) |),
                               "mother::Auction",
-                              "subject"
+                              "name"
                             |)
                           |)
                         ]
@@ -1308,9 +1302,17 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                       Ty.path "bool",
                       M.get_trait_method (|
                         "core::cmp::PartialEq",
-                        Ty.path "mother::Bids",
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [ Ty.path "u8" ],
                         [],
-                        [ Ty.path "mother::Bids" ],
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [ Ty.path "u8" ]
+                        ],
                         "eq",
                         [],
                         []
@@ -1321,7 +1323,7 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "mother::Auction",
-                            "bids"
+                            "subject"
                           |)
                         |);
                         M.borrow (|
@@ -1329,7 +1331,7 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| other |) |),
                             "mother::Auction",
-                            "bids"
+                            "subject"
                           |)
                         |)
                       ]
@@ -1340,17 +1342,9 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                     Ty.path "bool",
                     M.get_trait_method (|
                       "core::cmp::PartialEq",
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 3 ]
-                        [ Ty.path "u32" ],
+                      Ty.path "mother::Bids",
                       [],
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 3 ]
-                          [ Ty.path "u32" ]
-                      ],
+                      [ Ty.path "mother::Bids" ],
                       "eq",
                       [],
                       []
@@ -1361,7 +1355,7 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "mother::Auction",
-                          "terms"
+                          "bids"
                         |)
                       |);
                       M.borrow (|
@@ -1369,7 +1363,7 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| other |) |),
                           "mother::Auction",
-                          "terms"
+                          "bids"
                         |)
                       |)
                     ]
@@ -1380,9 +1374,17 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                   Ty.path "bool",
                   M.get_trait_method (|
                     "core::cmp::PartialEq",
-                    Ty.path "mother::Status",
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "u32" ],
                     [],
-                    [ Ty.path "mother::Status" ],
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 3 ]
+                        [ Ty.path "u32" ]
+                    ],
                     "eq",
                     [],
                     []
@@ -1393,7 +1395,7 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "mother::Auction",
-                        "status"
+                        "terms"
                       |)
                     |);
                     M.borrow (|
@@ -1401,7 +1403,7 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| other |) |),
                         "mother::Auction",
-                        "status"
+                        "terms"
                       |)
                     |)
                   ]
@@ -1410,20 +1412,30 @@ Module Impl_core_cmp_PartialEq_mother_Auction_for_mother_Auction.
             ltac:(M.monadic
               (M.call_closure (|
                 Ty.path "bool",
-                BinOp.eq,
+                M.get_trait_method (|
+                  "core::cmp::PartialEq",
+                  Ty.path "mother::Status",
+                  [],
+                  [ Ty.path "mother::Status" ],
+                  "eq",
+                  [],
+                  []
+                |),
                 [
-                  M.read (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "mother::Auction",
-                      "finalized"
+                      "status"
                     |)
                   |);
-                  M.read (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| other |) |),
                       "mother::Auction",
-                      "finalized"
+                      "status"
                     |)
                   |)
                 ]
@@ -2398,7 +2410,7 @@ Module Impl_mother_Mother.
           [
             fun γ =>
               ltac:(M.monadic
-                (let γ := M.use fail in
+                (let γ := fail in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::result::Result::Err"
@@ -2649,64 +2661,80 @@ Module Impl_mother_Mother.
                   Ty.tuple [],
                   M.get_function (| "std::io::stdio::_print", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Arguments",
-                        "new_v1",
-                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "debug_log: " |); mk_str (| "
-" |) ]
-                              |)
+                    M.read (|
+                      let~ args :
+                          Ty.tuple
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ] :=
+                        Value.Tuple [ M.borrow (| Pointer.Kind.Ref, _message |) ] in
+                      let~ args :
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [ Ty.path "core::fmt::rt::Argument" ] :=
+                        Value.Array
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::rt::Argument",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::rt::Argument",
+                                "new_display",
+                                [],
+                                [ Ty.path "alloc::string::String" ]
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                  |)
+                                |)
+                              ]
                             |)
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
+                          ] in
+                      M.alloc (|
+                        Ty.path "core::fmt::Arguments",
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new",
+                            [ Value.Integer IntegerKind.Usize 16; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  16
                                   [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_display",
-                                        [],
-                                        [ Ty.path "alloc::string::String" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.borrow (| Pointer.Kind.Ref, _message |) |)
-                                        |)
-                                      ]
-                                    |)
+                                    11;
+                                    100;
+                                    101;
+                                    98;
+                                    117;
+                                    103;
+                                    95;
+                                    108;
+                                    111;
+                                    103;
+                                    58;
+                                    32;
+                                    192;
+                                    1;
+                                    10;
+                                    0
                                   ]
                               |)
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                             |)
-                          |)
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   ]
                 |) in

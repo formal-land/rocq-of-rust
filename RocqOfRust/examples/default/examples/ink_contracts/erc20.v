@@ -185,6 +185,18 @@ Module Impl_core_default_Default_for_erc20_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_erc20_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_erc20_AccountId.
+  Definition Self : Ty.t := Ty.path "erc20::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_erc20_AccountId.
+
 Module Impl_core_clone_Clone_for_erc20_AccountId.
   Definition Self : Ty.t := Ty.path "erc20::AccountId".
   
@@ -939,15 +951,14 @@ Module Impl_erc20_Erc20.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [ M.read (| from_balance |); M.read (| value |) ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [ M.read (| from_balance |); M.read (| value |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -1331,15 +1342,14 @@ Module Impl_erc20_Erc20.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [ M.read (| allowance |); M.read (| value |) ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [ M.read (| allowance |); M.read (| value |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|

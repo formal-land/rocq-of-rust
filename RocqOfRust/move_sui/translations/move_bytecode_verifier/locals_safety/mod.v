@@ -1369,68 +1369,65 @@ Module locals_safety.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "alloc::vec::Vec")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                                                          Ty.path "alloc::alloc::Global"
-                                                        ],
-                                                      "len",
-                                                      [],
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.eq,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
                                                       []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| local_states |) |)
-                                                      |)
-                                                    ]
-                                                  |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "alloc::vec::Vec")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "move_binary_format::file_format::AbilitySet";
-                                                          Ty.path "alloc::alloc::Global"
-                                                        ],
-                                                      "len",
-                                                      [],
+                                                      [
+                                                        Ty.path
+                                                          "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| local_states |) |)
+                                                    |)
+                                                  ]
+                                                |);
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
                                                       []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.read (| all_local_abilities |)
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                                      [
+                                                        Ty.path
+                                                          "move_binary_format::file_format::AbilitySet";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| all_local_abilities |) |)
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),

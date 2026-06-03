@@ -910,77 +910,6 @@ Module interpreter_action.
                             LogicalOp.and (|
                               M.call_closure (|
                                 Ty.path "bool",
-                                M.get_trait_method (|
-                                  "core::cmp::PartialEq",
-                                  Ty.path "alloy_primitives::bytes_::Bytes",
-                                  [],
-                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                  "eq",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                      "input"
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| other |) |),
-                                      "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                      "input"
-                                    |)
-                                  |)
-                                ]
-                              |),
-                              ltac:(M.monadic
-                                (M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialEq",
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::Range")
-                                      []
-                                      [ Ty.path "usize" ],
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::Range")
-                                        []
-                                        [ Ty.path "usize" ]
-                                    ],
-                                    "eq",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                        "return_memory_offset"
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| other |) |),
-                                        "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                        "return_memory_offset"
-                                      |)
-                                    |)
-                                  ]
-                                |)))
-                            |),
-                            ltac:(M.monadic
-                              (M.call_closure (|
-                                Ty.path "bool",
                                 BinOp.eq,
                                 [
                                   M.read (|
@@ -998,6 +927,49 @@ Module interpreter_action.
                                     |)
                                   |)
                                 ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "revm_interpreter::interpreter_action::call_inputs::CallInputs",
+                                        "is_static"
+                                      |)
+                                    |);
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| other |) |),
+                                        "revm_interpreter::interpreter_action::call_inputs::CallInputs",
+                                        "is_static"
+                                      |)
+                                    |)
+                                  ]
+                                |)))
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.eq,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "revm_interpreter::interpreter_action::call_inputs::CallInputs",
+                                      "is_eof"
+                                    |)
+                                  |);
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| other |) |),
+                                      "revm_interpreter::interpreter_action::call_inputs::CallInputs",
+                                      "is_eof"
+                                    |)
+                                  |)
+                                ]
                               |)))
                           |),
                           ltac:(M.monadic
@@ -1005,9 +977,9 @@ Module interpreter_action.
                               Ty.path "bool",
                               M.get_trait_method (|
                                 "core::cmp::PartialEq",
-                                Ty.path "alloy_primitives::bits::address::Address",
+                                Ty.path "alloy_primitives::bytes_::Bytes",
                                 [],
-                                [ Ty.path "alloy_primitives::bits::address::Address" ],
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ],
                                 "eq",
                                 [],
                                 []
@@ -1018,7 +990,7 @@ Module interpreter_action.
                                   M.SubPointer.get_struct_record_field (|
                                     M.deref (| M.read (| self |) |),
                                     "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                    "bytecode_address"
+                                    "input"
                                   |)
                                 |);
                                 M.borrow (|
@@ -1026,7 +998,7 @@ Module interpreter_action.
                                   M.SubPointer.get_struct_record_field (|
                                     M.deref (| M.read (| other |) |),
                                     "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                    "bytecode_address"
+                                    "input"
                                   |)
                                 |)
                               ]
@@ -1037,9 +1009,10 @@ Module interpreter_action.
                             Ty.path "bool",
                             M.get_trait_method (|
                               "core::cmp::PartialEq",
-                              Ty.path "alloy_primitives::bits::address::Address",
+                              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
                               [],
-                              [ Ty.path "alloy_primitives::bits::address::Address" ],
+                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
+                              ],
                               "eq",
                               [],
                               []
@@ -1050,7 +1023,7 @@ Module interpreter_action.
                                 M.SubPointer.get_struct_record_field (|
                                   M.deref (| M.read (| self |) |),
                                   "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                  "target_address"
+                                  "return_memory_offset"
                                 |)
                               |);
                               M.borrow (|
@@ -1058,7 +1031,7 @@ Module interpreter_action.
                                 M.SubPointer.get_struct_record_field (|
                                   M.deref (| M.read (| other |) |),
                                   "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                  "target_address"
+                                  "return_memory_offset"
                                 |)
                               |)
                             ]
@@ -1082,7 +1055,7 @@ Module interpreter_action.
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
                                 "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                "caller"
+                                "bytecode_address"
                               |)
                             |);
                             M.borrow (|
@@ -1090,7 +1063,7 @@ Module interpreter_action.
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| other |) |),
                                 "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                "caller"
+                                "bytecode_address"
                               |)
                             |)
                           ]
@@ -1101,10 +1074,9 @@ Module interpreter_action.
                         Ty.path "bool",
                         M.get_trait_method (|
                           "core::cmp::PartialEq",
-                          Ty.path "revm_interpreter::interpreter_action::call_inputs::CallValue",
+                          Ty.path "alloy_primitives::bits::address::Address",
                           [],
-                          [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallValue"
-                          ],
+                          [ Ty.path "alloy_primitives::bits::address::Address" ],
                           "eq",
                           [],
                           []
@@ -1115,7 +1087,7 @@ Module interpreter_action.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                              "value"
+                              "target_address"
                             |)
                           |);
                           M.borrow (|
@@ -1123,7 +1095,7 @@ Module interpreter_action.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| other |) |),
                               "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                              "value"
+                              "target_address"
                             |)
                           |)
                         ]
@@ -1134,9 +1106,9 @@ Module interpreter_action.
                       Ty.path "bool",
                       M.get_trait_method (|
                         "core::cmp::PartialEq",
-                        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme",
+                        Ty.path "alloy_primitives::bits::address::Address",
                         [],
-                        [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme" ],
+                        [ Ty.path "alloy_primitives::bits::address::Address" ],
                         "eq",
                         [],
                         []
@@ -1147,7 +1119,7 @@ Module interpreter_action.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "scheme"
+                            "caller"
                           |)
                         |);
                         M.borrow (|
@@ -1155,7 +1127,7 @@ Module interpreter_action.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| other |) |),
                             "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "scheme"
+                            "caller"
                           |)
                         |)
                       ]
@@ -1164,20 +1136,30 @@ Module interpreter_action.
                 ltac:(M.monadic
                   (M.call_closure (|
                     Ty.path "bool",
-                    BinOp.eq,
+                    M.get_trait_method (|
+                      "core::cmp::PartialEq",
+                      Ty.path "revm_interpreter::interpreter_action::call_inputs::CallValue",
+                      [],
+                      [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallValue" ],
+                      "eq",
+                      [],
+                      []
+                    |),
                     [
-                      M.read (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                          "is_static"
+                          "value"
                         |)
                       |);
-                      M.read (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| other |) |),
                           "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                          "is_static"
+                          "value"
                         |)
                       |)
                     ]
@@ -1186,20 +1168,30 @@ Module interpreter_action.
               ltac:(M.monadic
                 (M.call_closure (|
                   Ty.path "bool",
-                  BinOp.eq,
+                  M.get_trait_method (|
+                    "core::cmp::PartialEq",
+                    Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme",
+                    [],
+                    [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme" ],
+                    "eq",
+                    [],
+                    []
+                  |),
                   [
-                    M.read (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                        "is_eof"
+                        "scheme"
                       |)
                     |);
-                    M.read (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| other |) |),
                         "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                        "is_eof"
+                        "scheme"
                       |)
                     |)
                   ]
@@ -2078,6 +2070,19 @@ Module interpreter_action.
       M.IsDiscriminant
         "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall"
         6.
+    
+    Module Impl_core_clone_TrivialClone_for_revm_interpreter_interpreter_action_call_inputs_CallScheme.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_revm_interpreter_interpreter_action_call_inputs_CallScheme.
     
     Module Impl_core_clone_Clone_for_revm_interpreter_interpreter_action_call_inputs_CallScheme.
       Definition Self : Ty.t :=

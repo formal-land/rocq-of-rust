@@ -120,6 +120,20 @@ Module sync.
         (* Instance *) [].
   End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_alloc_sync_Arc_U_alloc_alloc_Global_for_alloc_sync_Arc_T_alloc_alloc_Global.
   
+  Module Impl_core_cell_CloneFromCell_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::cell::CloneFromCell"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_cell_CloneFromCell_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
+  
   Module Impl_alloc_sync_Arc_T_alloc_alloc_Global.
     Definition Self (T : Ty.t) : Ty.t :=
       Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -2289,6 +2303,1319 @@ Module sync.
       M.IsAssociatedFunction.C (Self T) "try_new_zeroed" (try_new_zeroed T).
     Admitted.
     Global Typeclasses Opaque try_new_zeroed.
+    
+    (*
+        pub fn map<U>(this: Self, f: impl FnOnce(&T) -> U) -> Arc<U> {
+            if size_of::<T>() == size_of::<U>()
+                && align_of::<T>() == align_of::<U>()
+                && Arc::is_unique(&this)
+            {
+                unsafe {
+                    let ptr = Arc::into_raw(this);
+                    let value = ptr.read();
+                    let mut allocation = Arc::from_raw(ptr.cast::<mem::MaybeUninit<U>>());
+    
+                    Arc::get_mut_unchecked(&mut allocation).write(f(&value));
+                    allocation.assume_init()
+                }
+            } else {
+                Arc::new(f(&*this))
+            }
+        }
+    *)
+    Definition map (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [ U; impl_FnOnce__T__arrow_U ], [ this; f ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              this
+            |) in
+          let f := M.alloc (| impl_FnOnce__T__arrow_U, f |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "alloc::sync::Arc") [] [ U; Ty.path "alloc::alloc::Global" ],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.eq,
+                        [
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_function (| "core::mem::size_of", [], [ T ] |),
+                            []
+                          |);
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_function (| "core::mem::size_of", [], [ U ] |),
+                            []
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.eq,
+                        [
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_function (| "core::mem::align_of", [], [ T ] |),
+                            []
+                          |);
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_function (| "core::mem::align_of", [], [ U ] |),
+                            []
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          "is_unique",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, this |) |)
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.read (|
+                    let~ ptr : Ty.apply (Ty.path "*const") [] [ T ] :=
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*const") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          "into_raw",
+                          [],
+                          []
+                        |),
+                        [ M.read (| this |) ]
+                      |) in
+                    let~ value : T :=
+                      M.call_closure (|
+                        T,
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "*const") [] [ T ],
+                          "read",
+                          [],
+                          []
+                        |),
+                        [ M.read (| ptr |) ]
+                      |) in
+                    let~ allocation :
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [
+                            Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ];
+                            Ty.path "alloc::alloc::Global"
+                          ] :=
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [
+                            Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [
+                              Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          "from_raw",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "*const")
+                              []
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ]
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "*const") [] [ T ],
+                              "cast",
+                              [],
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ] ]
+                            |),
+                            [ M.read (| ptr |) ]
+                          |)
+                        ]
+                      |) in
+                    let~ _ : Ty.apply (Ty.path "&mut") [] [ U ] :=
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ U ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ],
+                          "write",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ U ]
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::Arc")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ U ];
+                                      Ty.path "alloc::alloc::Global"
+                                    ],
+                                  "get_mut_unchecked",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.borrow (| Pointer.Kind.MutRef, allocation |) |)
+                                  |)
+                                ]
+                              |)
+                            |)
+                          |);
+                          M.call_closure (|
+                            U,
+                            M.get_trait_method (|
+                              "core::ops::function::FnOnce",
+                              impl_FnOnce__T__arrow_U,
+                              [],
+                              [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                              "call_once",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| f |);
+                              Value.Tuple
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.borrow (| Pointer.Kind.Ref, value |) |)
+                                  |)
+                                ]
+                            ]
+                          |)
+                        ]
+                      |) in
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "alloc::sync::Arc")
+                        []
+                        [ U; Ty.path "alloc::alloc::Global" ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ U; Ty.path "alloc::alloc::Global" ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [
+                              Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          "assume_init",
+                          [],
+                          []
+                        |),
+                        [ M.read (| allocation |) ]
+                      |)
+                    |)
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "alloc::sync::Arc") [] [ U; Ty.path "alloc::alloc::Global" ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::sync::Arc")
+                        []
+                        [ U; Ty.path "alloc::alloc::Global" ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.call_closure (|
+                        U,
+                        M.get_trait_method (|
+                          "core::ops::function::FnOnce",
+                          impl_FnOnce__T__arrow_U,
+                          [],
+                          [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                          "call_once",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (| f |);
+                          Value.Tuple
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "&") [] [ T ],
+                                        M.get_trait_method (|
+                                          "core::ops::deref::Deref",
+                                          Ty.apply
+                                            (Ty.path "alloc::sync::Arc")
+                                            []
+                                            [ T; Ty.path "alloc::alloc::Global" ],
+                                          [],
+                                          [],
+                                          "deref",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            ]
+                        ]
+                      |)
+                    ]
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_map :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "map" (map T).
+    Admitted.
+    Global Typeclasses Opaque map.
+    
+    (*
+        pub fn try_map<R>(
+            this: Self,
+            f: impl FnOnce(&T) -> R,
+        ) -> <R::Residual as Residual<Arc<R::Output>>>::TryType
+        where
+            R: Try,
+            R::Residual: Residual<Arc<R::Output>>,
+        {
+            if size_of::<T>() == size_of::<R::Output>()
+                && align_of::<T>() == align_of::<R::Output>()
+                && Arc::is_unique(&this)
+            {
+                unsafe {
+                    let ptr = Arc::into_raw(this);
+                    let value = ptr.read();
+                    let mut allocation = Arc::from_raw(ptr.cast::<mem::MaybeUninit<R::Output>>());
+    
+                    Arc::get_mut_unchecked(&mut allocation).write(f(&value)?);
+                    try { allocation.assume_init() }
+                }
+            } else {
+                try { Arc::new(f(&*this)?) }
+            }
+        }
+    *)
+    Definition try_map (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [ R; impl_FnOnce__T__arrow_R ], [ this; f ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              this
+            |) in
+          let f := M.alloc (| impl_FnOnce__T__arrow_R, f |) in
+          M.catch_return
+            (Ty.associated_in_trait
+              "core::ops::try_trait::Residual"
+              []
+              [
+                Ty.apply
+                  (Ty.path "alloc::sync::Arc")
+                  []
+                  [
+                    Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output";
+                    Ty.path "alloc::alloc::Global"
+                  ]
+              ]
+              (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+              "TryType") (|
+            ltac:(M.monadic
+              (M.match_operator (|
+                Ty.associated_in_trait
+                  "core::ops::try_trait::Residual"
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::sync::Arc")
+                      []
+                      [
+                        Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output";
+                        Ty.path "alloc::alloc::Global"
+                      ]
+                  ]
+                  (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+                  "TryType",
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.eq,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::size_of", [], [ T ] |),
+                                []
+                              |);
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (|
+                                  "core::mem::size_of",
+                                  [],
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output"
+                                  ]
+                                |),
+                                []
+                              |)
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.eq,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |);
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (|
+                                  "core::mem::align_of",
+                                  [],
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output"
+                                  ]
+                                |),
+                                []
+                              |)
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              "is_unique",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, this |) |)
+                              |)
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.read (|
+                        let~ ptr : Ty.apply (Ty.path "*const") [] [ T ] :=
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*const") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              "into_raw",
+                              [],
+                              []
+                            |),
+                            [ M.read (| this |) ]
+                          |) in
+                        let~ value : T :=
+                          M.call_closure (|
+                            T,
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "*const") [] [ T ],
+                              "read",
+                              [],
+                              []
+                            |),
+                            [ M.read (| ptr |) ]
+                          |) in
+                        let~ allocation :
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ] :=
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output"
+                                    ];
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              "from_raw",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "*const")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Output"
+                                      ]
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "*const") [] [ T ],
+                                  "cast",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Output"
+                                      ]
+                                  ]
+                                |),
+                                [ M.read (| ptr |) ]
+                              |)
+                            ]
+                          |) in
+                        let~ _ :
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output"
+                              ] :=
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ops::try_trait::Try"
+                                    []
+                                    []
+                                    R
+                                    "Output"
+                                ],
+                              "write",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "core::ops::try_trait::Try"
+                                              []
+                                              []
+                                              R
+                                              "Output"
+                                          ]
+                                      ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "alloc::sync::Arc")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [
+                                              Ty.associated_in_trait
+                                                "core::ops::try_trait::Try"
+                                                []
+                                                []
+                                                R
+                                                "Output"
+                                            ];
+                                          Ty.path "alloc::alloc::Global"
+                                        ],
+                                      "get_mut_unchecked",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.borrow (| Pointer.Kind.MutRef, allocation |) |)
+                                      |)
+                                    ]
+                                  |)
+                                |)
+                              |);
+                              M.match_operator (|
+                                Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output",
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Residual";
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output"
+                                    ],
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Residual";
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Output"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::Try",
+                                      R,
+                                      [],
+                                      [],
+                                      "branch",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        R,
+                                        M.get_trait_method (|
+                                          "core::ops::function::FnOnce",
+                                          impl_FnOnce__T__arrow_R,
+                                          [],
+                                          [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                          "call_once",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (| f |);
+                                          Value.Tuple
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.borrow (| Pointer.Kind.Ref, value |) |)
+                                              |)
+                                            ]
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Break",
+                                          0
+                                        |) in
+                                      let residual :=
+                                        M.copy (|
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Residual",
+                                          γ0_0
+                                        |) in
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.return_ (|
+                                            M.call_closure (|
+                                              Ty.associated_in_trait
+                                                "core::ops::try_trait::Residual"
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::sync::Arc")
+                                                    []
+                                                    [
+                                                      Ty.associated_in_trait
+                                                        "core::ops::try_trait::Try"
+                                                        []
+                                                        []
+                                                        R
+                                                        "Output";
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ]
+                                                ]
+                                                (Ty.associated_in_trait
+                                                  "core::ops::try_trait::Try"
+                                                  []
+                                                  []
+                                                  R
+                                                  "Residual")
+                                                "TryType",
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::FromResidual",
+                                                Ty.associated_in_trait
+                                                  "core::ops::try_trait::Residual"
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::sync::Arc")
+                                                      []
+                                                      [
+                                                        Ty.associated_in_trait
+                                                          "core::ops::try_trait::Try"
+                                                          []
+                                                          []
+                                                          R
+                                                          "Output";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ]
+                                                  (Ty.associated_in_trait
+                                                    "core::ops::try_trait::Try"
+                                                    []
+                                                    []
+                                                    R
+                                                    "Residual")
+                                                  "TryType",
+                                                [],
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "core::ops::try_trait::Try"
+                                                    []
+                                                    []
+                                                    R
+                                                    "Residual"
+                                                ],
+                                                "from_residual",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| residual |) ]
+                                            |)
+                                          |)
+                                        |)
+                                      |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Continue",
+                                          0
+                                        |) in
+                                      let val :=
+                                        M.copy (|
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Output",
+                                          γ0_0
+                                        |) in
+                                      M.read (| val |)))
+                                ]
+                              |)
+                            ]
+                          |) in
+                        M.alloc (|
+                          Ty.associated_in_trait
+                            "core::ops::try_trait::Residual"
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ops::try_trait::Try"
+                                    []
+                                    []
+                                    R
+                                    "Output";
+                                  Ty.path "alloc::alloc::Global"
+                                ]
+                            ]
+                            (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+                            "TryType",
+                          M.call_closure (|
+                            Ty.associated_in_trait
+                              "core::ops::try_trait::Residual"
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Arc")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output";
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
+                              ]
+                              (Ty.associated_in_trait
+                                "core::ops::try_trait::Try"
+                                []
+                                []
+                                R
+                                "Residual")
+                              "TryType",
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.associated_in_trait
+                                "core::ops::try_trait::Residual"
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::Arc")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output";
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ]
+                                (Ty.associated_in_trait
+                                  "core::ops::try_trait::Try"
+                                  []
+                                  []
+                                  R
+                                  "Residual")
+                                "TryType",
+                              [],
+                              [],
+                              "from_output",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Arc")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output";
+                                    Ty.path "alloc::alloc::Global"
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::Arc")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Output"
+                                        ];
+                                      Ty.path "alloc::alloc::Global"
+                                    ],
+                                  "assume_init",
+                                  [],
+                                  []
+                                |),
+                                [ M.read (| allocation |) ]
+                              |)
+                            ]
+                          |)
+                        |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.associated_in_trait
+                          "core::ops::try_trait::Residual"
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [
+                                Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output";
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ]
+                          (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+                          "TryType",
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.associated_in_trait
+                            "core::ops::try_trait::Residual"
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ops::try_trait::Try"
+                                    []
+                                    []
+                                    R
+                                    "Output";
+                                  Ty.path "alloc::alloc::Global"
+                                ]
+                            ]
+                            (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+                            "TryType",
+                          [],
+                          [],
+                          "from_output",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [
+                                Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output";
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ops::try_trait::Try"
+                                    []
+                                    []
+                                    R
+                                    "Output";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              "new",
+                              [],
+                              []
+                            |),
+                            [
+                              M.match_operator (|
+                                Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output",
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Residual";
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output"
+                                    ],
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Residual";
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Output"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::Try",
+                                      R,
+                                      [],
+                                      [],
+                                      "branch",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        R,
+                                        M.get_trait_method (|
+                                          "core::ops::function::FnOnce",
+                                          impl_FnOnce__T__arrow_R,
+                                          [],
+                                          [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                          "call_once",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (| f |);
+                                          Value.Tuple
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.call_closure (|
+                                                        Ty.apply (Ty.path "&") [] [ T ],
+                                                        M.get_trait_method (|
+                                                          "core::ops::deref::Deref",
+                                                          Ty.apply
+                                                            (Ty.path "alloc::sync::Arc")
+                                                            []
+                                                            [ T; Ty.path "alloc::alloc::Global" ],
+                                                          [],
+                                                          [],
+                                                          "deref",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              |)
+                                            ]
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Break",
+                                          0
+                                        |) in
+                                      let residual :=
+                                        M.copy (|
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Residual",
+                                          γ0_0
+                                        |) in
+                                      M.never_to_any (| M.read (| M.break (||) |) |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Continue",
+                                          0
+                                        |) in
+                                      let val :=
+                                        M.copy (|
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Output",
+                                          γ0_0
+                                        |) in
+                                      M.read (| val |)))
+                                ]
+                              |)
+                            ]
+                          |)
+                        ]
+                      |)))
+                ]
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_try_map :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "try_map" (try_map T).
+    Admitted.
+    Global Typeclasses Opaque try_map.
+    (*
+        pub fn clone_from_ref(value: &T) -> Arc<T> {
+            Arc::clone_from_ref_in(value, Global)
+        }
+    *)
+    Definition clone_from_ref
+        (T : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ value ] =>
+        ltac:(M.monadic
+          (let value := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], value |) in
+          M.call_closure (|
+            Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ],
+            M.get_associated_function (|
+              Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              "clone_from_ref_in",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |);
+              Value.StructTuple "alloc::alloc::Global" [] [] []
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_clone_from_ref :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "clone_from_ref" (clone_from_ref T).
+    Admitted.
+    Global Typeclasses Opaque clone_from_ref.
+    
+    (*
+        pub fn try_clone_from_ref(value: &T) -> Result<Arc<T>, AllocError> {
+            Arc::try_clone_from_ref_in(value, Global)
+        }
+    *)
+    Definition try_clone_from_ref
+        (T : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ value ] =>
+        ltac:(M.monadic
+          (let value := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], value |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_associated_function (|
+              Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              "try_clone_from_ref_in",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |);
+              Value.StructTuple "alloc::alloc::Global" [] [] []
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_try_clone_from_ref :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "try_clone_from_ref" (try_clone_from_ref T).
+    Admitted.
+    Global Typeclasses Opaque try_clone_from_ref.
     (*
         pub unsafe fn from_raw(ptr: *const T) -> Self {
             unsafe { Arc::from_raw_in(ptr, Global) }
@@ -2318,6 +3645,110 @@ Module sync.
       M.IsAssociatedFunction.C (Self T) "from_raw" (from_raw T).
     Admitted.
     Global Typeclasses Opaque from_raw.
+    
+    (*
+        pub fn into_raw(this: Self) -> *const T {
+            let this = ManuallyDrop::new(this);
+            Self::as_ptr(&*this)
+        }
+    *)
+    Definition into_raw (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ this ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              this
+            |) in
+          M.read (|
+            let~ this :
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ] :=
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                    []
+                    [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                    ],
+                  "new",
+                  [],
+                  []
+                |),
+                [ M.read (| this |) ]
+              |) in
+            M.alloc (|
+              Ty.apply (Ty.path "*const") [] [ T ],
+              M.call_closure (|
+                Ty.apply (Ty.path "*const") [] [ T ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                  "as_ptr",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Arc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::Arc")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ],
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_into_raw :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "into_raw" (into_raw T).
+    Admitted.
+    Global Typeclasses Opaque into_raw.
     
     (*
         pub unsafe fn increment_strong_count(ptr: *const T) {
@@ -2916,7 +4347,7 @@ Module sync.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -3012,38 +4443,37 @@ Module sync.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_trait_method (|
-                                                        "core::cmp::PartialEq",
-                                                        Ty.path "core::alloc::layout::Layout",
-                                                        [],
-                                                        [ Ty.path "core::alloc::layout::Layout" ],
-                                                        "eq",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| left_val |) |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| right_val |) |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    M.get_trait_method (|
+                                                      "core::cmp::PartialEq",
+                                                      Ty.path "core::alloc::layout::Layout",
+                                                      [],
+                                                      [ Ty.path "core::alloc::layout::Layout" ],
+                                                      "eq",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| left_val |) |)
+                                                      |);
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| right_val |) |)
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -3953,7 +5383,7 @@ Module sync.
             let uninit_ptr: NonNull<_> = (unsafe { &mut *uninit_raw_ptr }).into();
             let init_ptr: NonNull<ArcInner<T>> = uninit_ptr.cast();
     
-            let weak = Weak { ptr: init_ptr, alloc: alloc };
+            let weak = Weak { ptr: init_ptr, alloc };
     
             // It's important we don't give up ownership of the weak pointer, or
             // else the memory might be freed by the time `data_fn` returns. If
@@ -4343,7 +5773,7 @@ Module sync.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                  (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -4394,32 +5824,31 @@ Module sync.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              UnOp.not,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.eq,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.deref (|
-                                                                        M.read (| left_val |)
-                                                                      |)
-                                                                    |);
-                                                                    M.read (|
-                                                                      M.deref (|
-                                                                        M.read (| right_val |)
-                                                                      |)
+                                                            UnOp.not,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.eq,
+                                                                [
+                                                                  M.read (|
+                                                                    M.deref (|
+                                                                      M.read (| left_val |)
                                                                     |)
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                                  |);
+                                                                  M.read (|
+                                                                    M.deref (|
+                                                                      M.read (| right_val |)
+                                                                    |)
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -4479,46 +5908,13 @@ Module sync.
                                                                       M.get_associated_function (|
                                                                         Ty.path
                                                                           "core::fmt::Arguments",
-                                                                        "new_const",
-                                                                        [
-                                                                          Value.Integer
-                                                                            IntegerKind.Usize
-                                                                            1
-                                                                        ],
+                                                                        "from_str",
+                                                                        [],
                                                                         []
                                                                       |),
                                                                       [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.alloc (|
-                                                                                Ty.apply
-                                                                                  (Ty.path "array")
-                                                                                  [
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      1
-                                                                                  ]
-                                                                                  [
-                                                                                    Ty.apply
-                                                                                      (Ty.path "&")
-                                                                                      []
-                                                                                      [
-                                                                                        Ty.path
-                                                                                          "str"
-                                                                                      ]
-                                                                                  ],
-                                                                                Value.Array
-                                                                                  [
-                                                                                    mk_str (|
-                                                                                      "No prior strong references should exist"
-                                                                                    |)
-                                                                                  ]
-                                                                              |)
-                                                                            |)
-                                                                          |)
+                                                                        mk_str (|
+                                                                          "No prior strong references should exist"
                                                                         |)
                                                                       ]
                                                                     |)
@@ -6105,89 +7501,88 @@ Module sync.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [ Ty.path "usize"; Ty.path "usize" ],
-                                    "is_err",
-                                    [],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
                                     []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
+                                    [ Ty.path "usize"; Ty.path "usize" ],
+                                  "is_err",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "usize"; Ty.path "usize" ],
+                                      M.call_closure (|
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [ Ty.path "usize"; Ty.path "usize" ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "usize"; Ty.path "usize" ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::sync::atomic::AtomicUsize",
-                                            "compare_exchange",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "alloc::sync::ArcInner")
-                                                          []
-                                                          [ T ]
-                                                      ],
-                                                    M.get_associated_function (|
+                                        M.get_associated_function (|
+                                          Ty.path "core::sync::atomic::AtomicUsize",
+                                          "compare_exchange",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
                                                       Ty.apply
-                                                        (Ty.path "alloc::sync::Arc")
+                                                        (Ty.path "alloc::sync::ArcInner")
                                                         []
-                                                        [ T; A ],
-                                                      "inner",
-                                                      [],
+                                                        [ T ]
+                                                    ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "alloc::sync::Arc")
                                                       []
-                                                    |),
-                                                    [ M.borrow (| Pointer.Kind.Ref, this |) ]
-                                                  |)
-                                                |),
-                                                "alloc::sync::ArcInner",
-                                                "strong"
-                                              |)
-                                            |);
-                                            Value.Integer IntegerKind.Usize 1;
-                                            Value.Integer IntegerKind.Usize 0;
-                                            Value.StructTuple
-                                              "core::sync::atomic::Ordering::Relaxed"
-                                              []
-                                              []
-                                              [];
-                                            Value.StructTuple
-                                              "core::sync::atomic::Ordering::Relaxed"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |)
+                                                      [ T; A ],
+                                                    "inner",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                                |)
+                                              |),
+                                              "alloc::sync::ArcInner",
+                                              "strong"
+                                            |)
+                                          |);
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0;
+                                          Value.StructTuple
+                                            "core::sync::atomic::Ordering::Relaxed"
+                                            []
+                                            []
+                                            [];
+                                          Value.StructTuple
+                                            "core::sync::atomic::Ordering::Relaxed"
+                                            []
+                                            []
+                                            []
+                                        ]
                                       |)
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6462,49 +7857,60 @@ Module sync.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ne,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.path "core::sync::atomic::AtomicUsize",
-                                        "fetch_sub",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "alloc::sync::ArcInner")
-                                                      []
-                                                      [ T ]
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                                  "inner",
-                                                  [],
-                                                  []
-                                                |),
+                                BinOp.ne,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.path "core::sync::atomic::AtomicUsize",
+                                      "fetch_sub",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "alloc::sync::ArcInner")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                                "inner",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "alloc::sync::Arc")
+                                                            []
+                                                            [ T; A ]
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::ops::deref::Deref",
                                                         Ty.apply
-                                                          (Ty.path "&")
+                                                          (Ty.path
+                                                            "core::mem::manually_drop::ManuallyDrop")
                                                           []
                                                           [
                                                             Ty.apply
@@ -6512,47 +7918,35 @@ Module sync.
                                                               []
                                                               [ T; A ]
                                                           ],
-                                                        M.get_trait_method (|
-                                                          "core::ops::deref::Deref",
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::manually_drop::ManuallyDrop")
-                                                            []
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "alloc::sync::Arc")
-                                                                []
-                                                                [ T; A ]
-                                                            ],
-                                                          [],
-                                                          [],
-                                                          "deref",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.borrow (| Pointer.Kind.Ref, this |) ]
-                                                      |)
+                                                        [],
+                                                        [],
+                                                        "deref",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [ M.borrow (| Pointer.Kind.Ref, this |) ]
                                                     |)
                                                   |)
-                                                ]
-                                              |)
-                                            |),
-                                            "alloc::sync::ArcInner",
-                                            "strong"
-                                          |)
-                                        |);
-                                        Value.Integer IntegerKind.Usize 1;
-                                        Value.StructTuple
-                                          "core::sync::atomic::Ordering::Release"
-                                          []
-                                          []
-                                          []
-                                      ]
-                                    |);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |)
-                              |)) in
+                                                |)
+                                              ]
+                                            |)
+                                          |),
+                                          "alloc::sync::ArcInner",
+                                          "strong"
+                                        |)
+                                      |);
+                                      Value.Integer IntegerKind.Usize 1;
+                                      Value.StructTuple
+                                        "core::sync::atomic::Ordering::Release"
+                                        []
+                                        []
+                                        []
+                                    ]
+                                  |);
+                                  Value.Integer IntegerKind.Usize 1
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6724,6 +8118,371 @@ Module sync.
     Admitted.
     Global Typeclasses Opaque into_inner.
     (*
+        pub fn clone_from_ref_in(value: &T, alloc: A) -> Arc<T, A> {
+            // `in_progress` drops the allocation if we panic before finishing initializing it.
+            let mut in_progress: UniqueArcUninit<T, A> = UniqueArcUninit::new(value, alloc);
+    
+            // Initialize with clone of value.
+            let initialized_clone = unsafe {
+                // Clone. If the clone panics, `in_progress` will be dropped and clean up.
+                value.clone_to_uninit(in_progress.data_ptr().cast());
+                // Cast type of pointer, now that it is initialized.
+                in_progress.into_arc()
+            };
+    
+            initialized_clone
+        }
+    *)
+    Definition clone_from_ref_in
+        (T A : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ value; alloc ] =>
+        ltac:(M.monadic
+          (let value := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], value |) in
+          let alloc := M.alloc (| A, alloc |) in
+          M.read (|
+            let~ in_progress : Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ] :=
+              M.call_closure (|
+                Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |);
+                  M.read (| alloc |)
+                ]
+              |) in
+            let~ initialized_clone : Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] :=
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::clone::CloneToUninit",
+                      T,
+                      [],
+                      [],
+                      "clone_to_uninit",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "*mut") [] [ T ],
+                          "cast",
+                          [],
+                          [ Ty.path "u8" ]
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*mut") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                              "data_ptr",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.MutRef, in_progress |) ]
+                          |)
+                        ]
+                      |)
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                  M.call_closure (|
+                    Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                      "into_arc",
+                      [],
+                      []
+                    |),
+                    [ M.read (| in_progress |) ]
+                  |)
+                |)
+              |) in
+            initialized_clone
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_clone_from_ref_in :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "clone_from_ref_in" (clone_from_ref_in T A).
+    Admitted.
+    Global Typeclasses Opaque clone_from_ref_in.
+    
+    (*
+        pub fn try_clone_from_ref_in(value: &T, alloc: A) -> Result<Arc<T, A>, AllocError> {
+            // `in_progress` drops the allocation if we panic before finishing initializing it.
+            let mut in_progress: UniqueArcUninit<T, A> = UniqueArcUninit::try_new(value, alloc)?;
+    
+            // Initialize with clone of value.
+            let initialized_clone = unsafe {
+                // Clone. If the clone panics, `in_progress` will be dropped and clean up.
+                value.clone_to_uninit(in_progress.data_ptr().cast());
+                // Cast type of pointer, now that it is initialized.
+                in_progress.into_arc()
+            };
+    
+            Ok(initialized_clone)
+        }
+    *)
+    Definition try_clone_from_ref_in
+        (T A : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ value; alloc ] =>
+        ltac:(M.monadic
+          (let value := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], value |) in
+          let alloc := M.alloc (| A, alloc |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ]; Ty.path "core::alloc::AllocError"
+              ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ in_progress : Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ] :=
+                  M.match_operator (|
+                    Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "core::convert::Infallible"; Ty.path "core::alloc::AllocError"
+                            ];
+                          Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ]
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "core::convert::Infallible";
+                                Ty.path "core::alloc::AllocError"
+                              ];
+                            Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ]
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ];
+                              Ty.path "core::alloc::AllocError"
+                            ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ];
+                                Ty.path "core::alloc::AllocError"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                              "try_new",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |);
+                              M.read (| alloc |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::convert::Infallible";
+                                  Ty.path "core::alloc::AllocError"
+                                ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ];
+                                      Ty.path "core::alloc::AllocError"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ];
+                                        Ty.path "core::alloc::AllocError"
+                                      ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::alloc::AllocError"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val :=
+                            M.copy (|
+                              Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                              γ0_0
+                            |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ initialized_clone : Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] :=
+                  M.read (|
+                    let~ _ : Ty.tuple [] :=
+                      M.call_closure (|
+                        Ty.tuple [],
+                        M.get_trait_method (|
+                          "core::clone::CloneToUninit",
+                          T,
+                          [],
+                          [],
+                          "clone_to_uninit",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |);
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "*mut") [] [ T ],
+                              "cast",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                                  "data_ptr",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.MutRef, in_progress |) ]
+                              |)
+                            ]
+                          |)
+                        ]
+                      |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                      M.call_closure (|
+                        Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                          "into_arc",
+                          [],
+                          []
+                        |),
+                        [ M.read (| in_progress |) ]
+                      |)
+                    |)
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ];
+                      Ty.path "core::alloc::AllocError"
+                    ],
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [
+                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ];
+                      Ty.path "core::alloc::AllocError"
+                    ]
+                    [ M.read (| initialized_clone |) ]
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_try_clone_from_ref_in :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "try_clone_from_ref_in" (try_clone_from_ref_in T A).
+    Admitted.
+    Global Typeclasses Opaque try_clone_from_ref_in.
+    (*
         pub fn allocator(this: &Self) -> &A {
             &this.alloc
         }
@@ -6759,93 +8518,6 @@ Module sync.
       M.IsAssociatedFunction.C (Self T A) "allocator" (allocator T A).
     Admitted.
     Global Typeclasses Opaque allocator.
-    
-    (*
-        pub fn into_raw(this: Self) -> *const T {
-            let this = ManuallyDrop::new(this);
-            Self::as_ptr(&*this)
-        }
-    *)
-    Definition into_raw (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T A in
-      match ε, τ, α with
-      | [], [], [ this ] =>
-        ltac:(M.monadic
-          (let this := M.alloc (| Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ], this |) in
-          M.read (|
-            let~ this :
-                Ty.apply
-                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                  []
-                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ] :=
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                  []
-                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
-                M.get_associated_function (|
-                  Ty.apply
-                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                    []
-                    [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
-                  "new",
-                  [],
-                  []
-                |),
-                [ M.read (| this |) ]
-              |) in
-            M.alloc (|
-              Ty.apply (Ty.path "*const") [] [ T ],
-              M.call_closure (|
-                Ty.apply (Ty.path "*const") [] [ T ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                  "as_ptr",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.apply
-                                (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                []
-                                [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, this |) ]
-                          |)
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_into_raw :
-      forall (T A : Ty.t),
-      M.IsAssociatedFunction.C (Self T A) "into_raw" (into_raw T A).
-    Admitted.
-    Global Typeclasses Opaque into_raw.
     
     (*
         pub fn into_raw_with_allocator(this: Self) -> ( *const T, A) {
@@ -6988,9 +8660,9 @@ Module sync.
         pub fn as_ptr(this: &Self) -> *const T {
             let ptr: *mut ArcInner<T> = NonNull::as_ptr(this.ptr);
     
-            // SAFETY: This cannot go through Deref::deref or RcInnerPtr::inner because
+            // SAFETY: This cannot go through Deref::deref or ArcInnerPtr::inner because
             // this is required to retain raw/mut provenance such that e.g. `get_mut` can
-            // write through the pointer after the Rc is recovered through `from_raw`.
+            // write through the pointer after the Arc is recovered through `from_raw`.
             unsafe { &raw mut ( *ptr).data }
         }
     *)
@@ -7234,24 +8906,23 @@ Module sync.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [
-                                              M.read (| cur |);
-                                              M.read (|
-                                                get_associated_constant (|
-                                                  Ty.path "usize",
-                                                  "MAX",
-                                                  Ty.path "usize"
-                                                |)
+                                          BinOp.eq,
+                                          [
+                                            M.read (| cur |);
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "usize",
+                                                "MAX",
+                                                Ty.path "usize"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -7334,29 +9005,28 @@ Module sync.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.le,
-                                                [
-                                                  M.read (| cur |);
-                                                  M.read (|
-                                                    get_constant (|
-                                                      "alloc::sync::MAX_REFCOUNT",
-                                                      Ty.path "usize"
-                                                    |)
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.le,
+                                              [
+                                                M.read (| cur |);
+                                                M.read (|
+                                                  get_constant (|
+                                                    "alloc::sync::MAX_REFCOUNT",
+                                                    Ty.path "usize"
                                                   |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -7365,11 +9035,10 @@ Module sync.
                                     M.never_to_any (|
                                       M.call_closure (|
                                         Ty.path "never",
-                                        M.get_associated_function (|
-                                          Self,
-                                          "panic_cold_display.downgrade",
+                                        M.get_function (|
+                                          "core::panicking::panic_display",
                                           [],
-                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
                                         |),
                                         [
                                           M.borrow (|
@@ -7477,11 +9146,7 @@ Module sync.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
-                                                        Ty.path "bool",
-                                                        Value.Bool true
-                                                      |)) in
+                                                    M.alloc (| Ty.path "bool", Value.Bool true |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -7496,33 +9161,54 @@ Module sync.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      UnOp.not,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          UnOp.not,
-                                                                          [
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              M.get_function (|
-                                                                                "alloc::rc::is_dangling",
-                                                                                [],
-                                                                                [
-                                                                                  Ty.apply
-                                                                                    (Ty.path
-                                                                                      "alloc::sync::ArcInner")
-                                                                                    []
-                                                                                    [ T ]
-                                                                                ]
-                                                                              |),
+                                                                    UnOp.not,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        UnOp.not,
+                                                                        [
+                                                                          M.call_closure (|
+                                                                            Ty.path "bool",
+                                                                            M.get_function (|
+                                                                              "alloc::rc::is_dangling",
+                                                                              [],
                                                                               [
-                                                                                M.call_closure (|
-                                                                                  Ty.apply
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "alloc::sync::ArcInner")
+                                                                                  []
+                                                                                  [ T ]
+                                                                              ]
+                                                                            |),
+                                                                            [
+                                                                              M.call_closure (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "*const")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "alloc::sync::ArcInner")
+                                                                                      []
+                                                                                      [ T ]
+                                                                                  ],
+                                                                                M.pointer_coercion
+                                                                                  M.PointerCoercion.MutToConstPointer
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "*mut")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "alloc::sync::ArcInner")
+                                                                                        []
+                                                                                        [ T ]
+                                                                                    ])
+                                                                                  (Ty.apply
                                                                                     (Ty.path
                                                                                       "*const")
                                                                                     []
@@ -7532,10 +9218,10 @@ Module sync.
                                                                                           "alloc::sync::ArcInner")
                                                                                         []
                                                                                         [ T ]
-                                                                                    ],
-                                                                                  M.pointer_coercion
-                                                                                    M.PointerCoercion.MutToConstPointer
-                                                                                    (Ty.apply
+                                                                                    ]),
+                                                                                [
+                                                                                  M.call_closure (|
+                                                                                    Ty.apply
                                                                                       (Ty.path
                                                                                         "*mut")
                                                                                       []
@@ -7545,23 +9231,11 @@ Module sync.
                                                                                             "alloc::sync::ArcInner")
                                                                                           []
                                                                                           [ T ]
-                                                                                      ])
-                                                                                    (Ty.apply
-                                                                                      (Ty.path
-                                                                                        "*const")
-                                                                                      []
-                                                                                      [
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "alloc::sync::ArcInner")
-                                                                                          []
-                                                                                          [ T ]
-                                                                                      ]),
-                                                                                  [
-                                                                                    M.call_closure (|
+                                                                                      ],
+                                                                                    M.get_associated_function (|
                                                                                       Ty.apply
                                                                                         (Ty.path
-                                                                                          "*mut")
+                                                                                          "core::ptr::non_null::NonNull")
                                                                                         []
                                                                                         [
                                                                                           Ty.apply
@@ -7570,45 +9244,33 @@ Module sync.
                                                                                             []
                                                                                             [ T ]
                                                                                         ],
-                                                                                      M.get_associated_function (|
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "core::ptr::non_null::NonNull")
-                                                                                          []
-                                                                                          [
-                                                                                            Ty.apply
-                                                                                              (Ty.path
-                                                                                                "alloc::sync::ArcInner")
-                                                                                              []
-                                                                                              [ T ]
-                                                                                          ],
-                                                                                        "as_ptr",
-                                                                                        [],
-                                                                                        []
-                                                                                      |),
-                                                                                      [
-                                                                                        M.read (|
-                                                                                          M.SubPointer.get_struct_record_field (|
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                this
-                                                                                              |)
-                                                                                            |),
-                                                                                            "alloc::sync::Arc",
-                                                                                            "ptr"
-                                                                                          |)
+                                                                                      "as_ptr",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        M.SubPointer.get_struct_record_field (|
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              this
+                                                                                            |)
+                                                                                          |),
+                                                                                          "alloc::sync::Arc",
+                                                                                          "ptr"
                                                                                         |)
-                                                                                      ]
-                                                                                    |)
-                                                                                  ]
-                                                                                |)
-                                                                              ]
-                                                                            |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                                      |)
+                                                                                    ]
+                                                                                  |)
+                                                                                ]
+                                                                              |)
+                                                                            ]
+                                                                          |)
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -7769,24 +9431,23 @@ Module sync.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.eq,
-                              [
-                                M.read (| cnt |);
-                                M.read (|
-                                  get_associated_constant (|
-                                    Ty.path "usize",
-                                    "MAX",
-                                    Ty.path "usize"
-                                  |)
+                            BinOp.eq,
+                            [
+                              M.read (| cnt |);
+                              M.read (|
+                                get_associated_constant (|
+                                  Ty.path "usize",
+                                  "MAX",
+                                  Ty.path "usize"
                                 |)
-                              ]
-                            |)
-                          |)) in
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Integer IntegerKind.Usize 0));
                   fun γ =>
@@ -8563,7 +10224,7 @@ Module sync.
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
-                M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
+                M.get_function (| "core::ptr::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
                 [
                   M.cast
                     (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ])
@@ -8719,7 +10380,7 @@ Module sync.
     Global Typeclasses Opaque from_box_in.
     (*
         pub fn make_mut(this: &mut Self) -> &mut T {
-            let size_of_val = mem::size_of_val::<T>(&**this);
+            let size_of_val = size_of_val::<T>(&**this);
     
             // Note that we hold both a strong reference and a weak reference.
             // Thus, releasing our strong reference only will not, by itself, cause
@@ -8731,19 +10392,7 @@ Module sync.
             // deallocated.
             if this.inner().strong.compare_exchange(1, 0, Acquire, Relaxed).is_err() {
                 // Another strong pointer exists, so we must clone.
-    
-                let this_data_ref: &T = &**this;
-                // `in_progress` drops the allocation if we panic before finishing initializing it.
-                let mut in_progress: UniqueArcUninit<T, A> =
-                    UniqueArcUninit::new(this_data_ref, this.alloc.clone());
-    
-                let initialized_clone = unsafe {
-                    // Clone. If the clone panics, `in_progress` will be dropped and clean up.
-                    this_data_ref.clone_to_uninit(in_progress.data_ptr().cast());
-                    // Cast type of pointer, now that it is initialized.
-                    in_progress.into_arc()
-                };
-                *this = initialized_clone;
+                *this = Arc::clone_from_ref_in(&**this, this.alloc.clone());
             } else if this.inner().weak.load(Relaxed) != 1 {
                 // Relaxed suffices in the above because this is fundamentally an
                 // optimization: we are always racing with weak pointers being
@@ -8842,229 +10491,160 @@ Module sync.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [ Ty.path "usize"; Ty.path "usize" ],
-                                    "is_err",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [ Ty.path "usize"; Ty.path "usize" ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "usize"; Ty.path "usize" ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::sync::atomic::AtomicUsize",
-                                            "compare_exchange",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "alloc::sync::ArcInner")
-                                                          []
-                                                          [ T ]
-                                                      ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "alloc::sync::Arc")
-                                                        []
-                                                        [ T; A ],
-                                                      "inner",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| this |) |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |),
-                                                "alloc::sync::ArcInner",
-                                                "strong"
-                                              |)
-                                            |);
-                                            Value.Integer IntegerKind.Usize 1;
-                                            Value.Integer IntegerKind.Usize 0;
-                                            Value.StructTuple
-                                              "core::sync::atomic::Ordering::Acquire"
-                                              []
-                                              []
-                                              [];
-                                            Value.StructTuple
-                                              "core::sync::atomic::Ordering::Relaxed"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
-                              |)) in
-                          let _ :=
-                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          M.read (|
-                            let~ this_data_ref : Ty.apply (Ty.path "&") [] [ T ] :=
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "&") [] [ T ],
-                                        M.get_trait_method (|
-                                          "core::ops::deref::Deref",
-                                          Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                          [],
-                                          [],
-                                          "deref",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| this |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              |) in
-                            let~ in_progress :
-                                Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ] :=
+                            M.alloc (|
+                              Ty.path "bool",
                               M.call_closure (|
-                                Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
+                                Ty.path "bool",
                                 M.get_associated_function (|
-                                  Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
-                                  "new",
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.path "usize"; Ty.path "usize" ],
+                                  "is_err",
                                   [],
                                   []
                                 |),
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| this_data_ref |) |)
-                                  |);
-                                  M.call_closure (|
-                                    A,
-                                    M.get_trait_method (|
-                                      "core::clone::Clone",
-                                      A,
-                                      [],
-                                      [],
-                                      "clone",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| this |) |),
-                                          "alloc::sync::Arc",
-                                          "alloc"
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |) in
-                            let~ initialized_clone :
-                                Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] :=
-                              M.read (|
-                                let~ _ : Ty.tuple [] :=
-                                  M.call_closure (|
-                                    Ty.tuple [],
-                                    M.get_trait_method (|
-                                      "core::clone::CloneToUninit",
-                                      T,
-                                      [],
-                                      [],
-                                      "clone_to_uninit",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| this_data_ref |) |)
-                                      |);
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "usize"; Ty.path "usize" ],
                                       M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [ Ty.path "usize"; Ty.path "usize" ],
                                         M.get_associated_function (|
-                                          Ty.apply (Ty.path "*mut") [] [ T ],
-                                          "cast",
+                                          Ty.path "core::sync::atomic::AtomicUsize",
+                                          "compare_exchange",
                                           [],
-                                          [ Ty.path "u8" ]
+                                          []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*mut") [] [ T ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "alloc::sync::UniqueArcUninit")
-                                                []
-                                                [ T; A ],
-                                              "data_ptr",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.borrow (| Pointer.Kind.MutRef, in_progress |) ]
-                                          |)
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::sync::ArcInner")
+                                                        []
+                                                        [ T ]
+                                                    ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "alloc::sync::Arc")
+                                                      []
+                                                      [ T; A ],
+                                                    "inner",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| this |) |)
+                                                    |)
+                                                  ]
+                                                |)
+                                              |),
+                                              "alloc::sync::ArcInner",
+                                              "strong"
+                                            |)
+                                          |);
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0;
+                                          Value.StructTuple
+                                            "core::sync::atomic::Ordering::Acquire"
+                                            []
+                                            []
+                                            [];
+                                          Value.StructTuple
+                                            "core::sync::atomic::Ordering::Relaxed"
+                                            []
+                                            []
+                                            []
                                         ]
                                       |)
-                                    ]
-                                  |) in
-                                M.alloc (|
-                                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ],
-                                      "into_arc",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| in_progress |) ]
+                                    |)
                                   |)
-                                |)
-                              |) in
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.read (|
                             let~ _ : Ty.tuple [] :=
                               M.write (|
                                 M.deref (| M.read (| this |) |),
-                                M.read (| initialized_clone |)
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                    "clone_from_ref_in",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply (Ty.path "&") [] [ T ],
+                                              M.get_trait_method (|
+                                                "core::ops::deref::Deref",
+                                                Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                                [],
+                                                [],
+                                                "deref",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| this |) |)
+                                                |)
+                                              ]
+                                            |)
+                                          |)
+                                        |)
+                                      |)
+                                    |);
+                                    M.call_closure (|
+                                      A,
+                                      M.get_trait_method (|
+                                        "core::clone::Clone",
+                                        A,
+                                        [],
+                                        [],
+                                        "clone",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| this |) |),
+                                            "alloc::sync::Arc",
+                                            "alloc"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -9077,68 +10657,67 @@ Module sync.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.ne,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path "core::sync::atomic::AtomicUsize",
-                                                "load",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "alloc::sync::ArcInner")
-                                                              []
-                                                              [ T ]
-                                                          ],
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path "alloc::sync::Arc")
-                                                            []
-                                                            [ T; A ],
-                                                          "inner",
-                                                          [],
-                                                          []
-                                                        |),
+                                        BinOp.ne,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.path "core::sync::atomic::AtomicUsize",
+                                              "load",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| this |) |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |),
-                                                    "alloc::sync::ArcInner",
-                                                    "weak"
-                                                  |)
-                                                |);
-                                                Value.StructTuple
-                                                  "core::sync::atomic::Ordering::Relaxed"
-                                                  []
-                                                  []
-                                                  []
-                                              ]
-                                            |);
-                                            Value.Integer IntegerKind.Usize 1
-                                          ]
-                                        |)
-                                      |)) in
+                                                          Ty.apply
+                                                            (Ty.path "alloc::sync::ArcInner")
+                                                            []
+                                                            [ T ]
+                                                        ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "alloc::sync::Arc")
+                                                          []
+                                                          [ T; A ],
+                                                        "inner",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| this |) |)
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  |),
+                                                  "alloc::sync::ArcInner",
+                                                  "weak"
+                                                |)
+                                              |);
+                                              Value.StructTuple
+                                                "core::sync::atomic::Ordering::Relaxed"
+                                                []
+                                                []
+                                                []
+                                            ]
+                                          |);
+                                          Value.Integer IntegerKind.Usize 1
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -9263,7 +10842,7 @@ Module sync.
                                       M.call_closure (|
                                         Ty.tuple [],
                                         M.get_function (|
-                                          "core::intrinsics::copy_nonoverlapping",
+                                          "core::ptr::copy_nonoverlapping",
                                           [],
                                           [ Ty.path "u8" ]
                                         |),
@@ -9579,7 +11158,7 @@ Module sync.
     Global Typeclasses Opaque unwrap_or_clone.
     (*
         pub fn get_mut(this: &mut Self) -> Option<&mut T> {
-            if this.is_unique() {
+            if Self::is_unique(this) {
                 // This unsafety is ok because we're guaranteed that the pointer
                 // returned is the *only* pointer that will ever be returned to T. Our
                 // reference count is guaranteed to be 1 at this point, and we required
@@ -9608,20 +11187,19 @@ Module sync.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                            "is_unique",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |) ]
-                        |)
-                      |)) in
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                          "is_unique",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| this |) |) |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -9742,7 +11320,7 @@ Module sync.
     Global Typeclasses Opaque get_mut_unchecked.
     
     (*
-        fn is_unique(&mut self) -> bool {
+        pub fn is_unique(this: &Self) -> bool {
             // lock the weak pointer count if we appear to be the sole weak pointer
             // holder.
             //
@@ -9750,16 +11328,16 @@ Module sync.
             // writes to `strong` (in particular in `Weak::upgrade`) prior to decrements
             // of the `weak` count (via `Weak::drop`, which uses release). If the upgraded
             // weak ref was never dropped, the CAS here will fail so we do not care to synchronize.
-            if self.inner().weak.compare_exchange(1, usize::MAX, Acquire, Relaxed).is_ok() {
+            if this.inner().weak.compare_exchange(1, usize::MAX, Acquire, Relaxed).is_ok() {
                 // This needs to be an `Acquire` to synchronize with the decrement of the `strong`
                 // counter in `drop` -- the only access that happens when any but the last reference
                 // is being dropped.
-                let unique = self.inner().strong.load(Acquire) == 1;
+                let unique = this.inner().strong.load(Acquire) == 1;
     
                 // The release write here synchronizes with a read in `downgrade`,
                 // effectively preventing the above read of `strong` from happening
                 // after the write.
-                self.inner().weak.store(1, Release); // release the lock
+                this.inner().weak.store(1, Release); // release the lock
                 unique
             } else {
                 false
@@ -9769,12 +11347,12 @@ Module sync.
     Definition is_unique (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self T A in
       match ε, τ, α with
-      | [], [], [ self ] =>
+      | [], [], [ this ] =>
         ltac:(M.monadic
-          (let self :=
+          (let this :=
             M.alloc (|
-              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
-              self
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
+              this
             |) in
           M.match_operator (|
             Ty.path "bool",
@@ -9783,93 +11361,87 @@ Module sync.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.path "usize"; Ty.path "usize" ],
-                            "is_ok",
-                            [],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
                             []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
+                            [ Ty.path "usize"; Ty.path "usize" ],
+                          "is_ok",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "usize"; Ty.path "usize" ],
+                              M.call_closure (|
                                 Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
                                   [ Ty.path "usize"; Ty.path "usize" ],
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
+                                M.get_associated_function (|
+                                  Ty.path "core::sync::atomic::AtomicUsize",
+                                  "compare_exchange",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                            "inner",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| this |) |)
+                                            |)
+                                          ]
+                                        |)
+                                      |),
+                                      "alloc::sync::ArcInner",
+                                      "weak"
+                                    |)
+                                  |);
+                                  Value.Integer IntegerKind.Usize 1;
+                                  M.read (|
+                                    get_associated_constant (|
+                                      Ty.path "usize",
+                                      "MAX",
+                                      Ty.path "usize"
+                                    |)
+                                  |);
+                                  Value.StructTuple
+                                    "core::sync::atomic::Ordering::Acquire"
                                     []
-                                    [ Ty.path "usize"; Ty.path "usize" ],
-                                  M.get_associated_function (|
-                                    Ty.path "core::sync::atomic::AtomicUsize",
-                                    "compare_exchange",
-                                    [],
                                     []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ]
-                                              ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                              "inner",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |),
-                                        "alloc::sync::ArcInner",
-                                        "weak"
-                                      |)
-                                    |);
-                                    Value.Integer IntegerKind.Usize 1;
-                                    M.read (|
-                                      get_associated_constant (|
-                                        Ty.path "usize",
-                                        "MAX",
-                                        Ty.path "usize"
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::sync::atomic::Ordering::Acquire"
-                                      []
-                                      []
-                                      [];
-                                    Value.StructTuple
-                                      "core::sync::atomic::Ordering::Relaxed"
-                                      []
-                                      []
-                                      []
-                                  ]
-                                |)
+                                    [];
+                                  Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
+                                ]
                               |)
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (|
                     let~ unique : Ty.path "bool" :=
@@ -9904,7 +11476,7 @@ Module sync.
                                       [
                                         M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
+                                          M.deref (| M.read (| this |) |)
                                         |)
                                       ]
                                     |)
@@ -9944,7 +11516,7 @@ Module sync.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| this |) |) |)
                                   ]
                                 |)
                               |),
@@ -10041,6 +11613,20 @@ Module sync.
         (* Instance *) [].
   End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_alloc_sync_Weak_U_alloc_alloc_Global_for_alloc_sync_Weak_T_alloc_alloc_Global.
   
+  Module Impl_core_cell_CloneFromCell_where_core_marker_Sized_T_for_alloc_sync_Weak_T_alloc_alloc_Global.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; Ty.path "alloc::alloc::Global" ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::cell::CloneFromCell"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_cell_CloneFromCell_where_core_marker_Sized_T_for_alloc_sync_Weak_T_alloc_alloc_Global.
+  
   Module Impl_core_fmt_Debug_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_Weak_T_A.
     Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ].
     
@@ -10071,29 +11657,8 @@ Module sync.
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "(Weak)" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "(Weak)" |) ]
               |)
             ]
           |)))
@@ -10117,8 +11682,20 @@ Module sync.
       ty_params := [ "T" ];
       fields :=
         [
-          ("strong", Ty.path "core::sync::atomic::AtomicUsize");
-          ("weak", Ty.path "core::sync::atomic::AtomicUsize");
+          ("strong",
+            Ty.associated_in_trait
+              "core::sync::atomic::AtomicPrimitive"
+              []
+              []
+              (Ty.path "usize")
+              "AtomicInner");
+          ("weak",
+            Ty.associated_in_trait
+              "core::sync::atomic::AtomicPrimitive"
+              []
+              []
+              (Ty.path "usize")
+              "AtomicInner");
           ("data", T)
         ];
     } *)
@@ -10633,6 +12210,186 @@ Module sync.
       M.IsAssociatedFunction.C (Self T) "new_zeroed_slice" (new_zeroed_slice T).
     Admitted.
     Global Typeclasses Opaque new_zeroed_slice.
+    
+    (*
+        pub fn into_array<const N: usize>(self) -> Option<Arc<[T; N]>> {
+            if self.len() == N {
+                let ptr = Self::into_raw(self) as *const [T; N];
+    
+                // SAFETY: The underlying array of a slice has the exact same layout as an actual array `[T; N]` if `N` is equal to the slice's length.
+                let me = unsafe { Arc::from_raw(ptr) };
+                Some(me)
+            } else {
+                None
+            }
+        }
+    *)
+    Definition into_array (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [ N ], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "alloc::sync::Arc")
+                []
+                [ Ty.apply (Ty.path "slice") [] [ T ]; Ty.path "alloc::alloc::Global" ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [
+                Ty.apply
+                  (Ty.path "alloc::sync::Arc")
+                  []
+                  [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global" ]
+              ],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.eq,
+                        [
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "slice") [] [ T ],
+                              "len",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::Deref",
+                                      Ty.apply
+                                        (Ty.path "alloc::sync::Arc")
+                                        []
+                                        [
+                                          Ty.apply (Ty.path "slice") [] [ T ];
+                                          Ty.path "alloc::alloc::Global"
+                                        ],
+                                      [],
+                                      [],
+                                      "deref",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |);
+                          N
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.read (|
+                    let~ ptr :
+                        Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] :=
+                      M.cast
+                        (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ T ]; Ty.path "alloc::alloc::Global"
+                              ],
+                            "into_raw",
+                            [],
+                            []
+                          |),
+                          [ M.read (| self |) ]
+                        |)) in
+                    let~ me :
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
+                          ] :=
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
+                            ],
+                          "from_raw",
+                          [],
+                          []
+                        |),
+                        [ M.read (| ptr |) ]
+                      |) in
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
+                            ]
+                        ],
+                      Value.StructTuple
+                        "core::option::Option::Some"
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
+                            ]
+                        ]
+                        [ M.read (| me |) ]
+                    |)
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::None"
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::sync::Arc")
+                        []
+                        [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global" ]
+                    ]
+                    []))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_into_array :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "into_array" (into_array T).
+    Admitted.
+    Global Typeclasses Opaque into_array.
     (*
         unsafe fn allocate_for_slice(len: usize) -> *mut ArcInner<[T]> {
             unsafe {
@@ -10930,7 +12687,7 @@ Module sync.
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
-                M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+                M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                 [
                   M.call_closure (|
                     Ty.apply (Ty.path "*const") [] [ T ],
@@ -12148,6 +13905,8 @@ Module sync.
     Global Typeclasses Opaque assume_init.
   End Impl_alloc_sync_Arc_core_mem_maybe_uninit_MaybeUninit_T_A.
   
+  
+  
   Module Impl_alloc_sync_Arc_slice_core_mem_maybe_uninit_MaybeUninit_T_A.
     Definition Self (T A : Ty.t) : Ty.t :=
       Ty.apply
@@ -12450,7 +14209,7 @@ Module sync.
         (* Instance *) [ ("from_slice", InstanceField.Method (from_slice T)) ].
   End Impl_alloc_sync_ArcFromSlice_where_core_clone_Clone_T_T_for_alloc_sync_Arc_slice_T_alloc_alloc_Global.
   
-  Module Impl_alloc_sync_ArcFromSlice_where_core_marker_Copy_T_T_for_alloc_sync_Arc_slice_T_alloc_alloc_Global.
+  Module Impl_alloc_sync_ArcFromSlice_where_core_clone_TrivialClone_T_T_for_alloc_sync_Arc_slice_T_alloc_alloc_Global.
     Definition Self (T : Ty.t) : Ty.t :=
       Ty.apply
         (Ty.path "alloc::sync::Arc")
@@ -12459,6 +14218,8 @@ Module sync.
     
     (*
         fn from_slice(v: &[T]) -> Self {
+            // SAFETY: `T` implements `TrivialClone`, so this is sound and equivalent
+            // to the above.
             unsafe { Arc::copy_from_slice(v) }
         }
     *)
@@ -12496,7 +14257,7 @@ Module sync.
         (* Trait polymorphic types *) [ T ]
         (Self T)
         (* Instance *) [ ("from_slice", InstanceField.Method (from_slice T)) ].
-  End Impl_alloc_sync_ArcFromSlice_where_core_marker_Copy_T_T_for_alloc_sync_Arc_slice_T_alloc_alloc_Global.
+  End Impl_alloc_sync_ArcFromSlice_where_core_clone_TrivialClone_T_T_for_alloc_sync_Arc_slice_T_alloc_alloc_Global.
   
   Module Impl_core_clone_Clone_where_core_marker_Sized_T_where_core_alloc_Allocator_A_where_core_clone_Clone_A_for_alloc_sync_Arc_T_A.
     Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ].
@@ -12593,20 +14354,19 @@ Module sync.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| old_size |);
-                                M.read (|
-                                  get_constant (| "alloc::sync::MAX_REFCOUNT", Ty.path "usize" |)
-                                |)
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| old_size |);
+                              M.read (|
+                                get_constant (| "alloc::sync::MAX_REFCOUNT", Ty.path "usize" |)
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -12666,6 +14426,19 @@ Module sync.
         (Self T A)
         (* Instance *) [ ("clone", InstanceField.Method (clone T A)) ].
   End Impl_core_clone_Clone_where_core_marker_Sized_T_where_core_alloc_Allocator_A_where_core_clone_Clone_A_for_alloc_sync_Arc_T_A.
+  
+  Module Impl_core_clone_UseCloned_where_core_marker_Sized_T_where_core_alloc_Allocator_A_where_core_clone_Clone_A_for_alloc_sync_Arc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ].
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_where_core_marker_Sized_T_where_core_alloc_Allocator_A_where_core_clone_Clone_A_for_alloc_sync_Arc_T_A.
   
   Module Impl_core_ops_deref_Deref_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_Arc_T_A.
     Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ].
@@ -12861,66 +14634,65 @@ Module sync.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ne,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.path "core::sync::atomic::AtomicUsize",
-                                        "fetch_sub",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "alloc::sync::ArcInner")
-                                                      []
-                                                      [ T ]
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                                  "inner",
-                                                  [],
-                                                  []
-                                                |),
+                                BinOp.ne,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.path "core::sync::atomic::AtomicUsize",
+                                      "fetch_sub",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |),
-                                            "alloc::sync::ArcInner",
-                                            "strong"
-                                          |)
-                                        |);
-                                        Value.Integer IntegerKind.Usize 1;
-                                        Value.StructTuple
-                                          "core::sync::atomic::Ordering::Release"
-                                          []
-                                          []
-                                          []
-                                      ]
-                                    |);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |)
-                              |)) in
+                                                  Ty.apply
+                                                    (Ty.path "alloc::sync::ArcInner")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                                "inner",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |)
+                                              ]
+                                            |)
+                                          |),
+                                          "alloc::sync::ArcInner",
+                                          "strong"
+                                        |)
+                                      |);
+                                      Value.Integer IntegerKind.Usize 1;
+                                      Value.StructTuple
+                                        "core::sync::atomic::Ordering::Release"
+                                        []
+                                        []
+                                        []
+                                    ]
+                                  |);
+                                  Value.Integer IntegerKind.Usize 1
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -12940,7 +14712,7 @@ Module sync.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -12952,42 +14724,60 @@ Module sync.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  UnOp.not,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_function (|
-                                                        "core::ptr::addr_eq",
-                                                        [],
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "alloc::sync::ArcInner")
-                                                            []
-                                                            [ T ];
-                                                          Ty.apply
-                                                            (Ty.path "alloc::sync::ArcInner")
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    M.get_function (|
+                                                      "core::ptr::addr_eq",
+                                                      [],
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloc::sync::ArcInner")
+                                                          []
+                                                          [ T ];
+                                                        Ty.apply
+                                                          (Ty.path "alloc::sync::ArcInner")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                                              [ Ty.path "u8" ]
+                                                          ]
+                                                      ]
+                                                    |),
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "*const")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::sync::ArcInner")
+                                                              []
+                                                              [ T ]
+                                                          ],
+                                                        M.pointer_coercion
+                                                          M.PointerCoercion.MutToConstPointer
+                                                          (Ty.apply
+                                                            (Ty.path "*mut")
                                                             []
                                                             [
                                                               Ty.apply
-                                                                (Ty.path "array")
-                                                                [ Value.Integer IntegerKind.Usize 1
-                                                                ]
-                                                                [ Ty.path "u8" ]
-                                                            ]
-                                                        ]
-                                                      |),
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.apply
+                                                                (Ty.path "alloc::sync::ArcInner")
+                                                                []
+                                                                [ T ]
+                                                            ])
+                                                          (Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [
@@ -12995,10 +14785,10 @@ Module sync.
                                                                 (Ty.path "alloc::sync::ArcInner")
                                                                 []
                                                                 [ T ]
-                                                            ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.MutToConstPointer
-                                                            (Ty.apply
+                                                            ]),
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.apply
                                                               (Ty.path "*mut")
                                                               []
                                                               [
@@ -13006,20 +14796,11 @@ Module sync.
                                                                   (Ty.path "alloc::sync::ArcInner")
                                                                   []
                                                                   [ T ]
-                                                              ])
-                                                            (Ty.apply
-                                                              (Ty.path "*const")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "alloc::sync::ArcInner")
-                                                                  []
-                                                                  [ T ]
-                                                              ]),
-                                                          [
-                                                            M.call_closure (|
+                                                              ],
+                                                            M.get_associated_function (|
                                                               Ty.apply
-                                                                (Ty.path "*mut")
+                                                                (Ty.path
+                                                                  "core::ptr::non_null::NonNull")
                                                                 []
                                                                 [
                                                                   Ty.apply
@@ -13028,67 +14809,55 @@ Module sync.
                                                                     []
                                                                     [ T ]
                                                                 ],
-                                                              M.get_associated_function (|
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "core::ptr::non_null::NonNull")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "alloc::sync::ArcInner")
-                                                                      []
-                                                                      [ T ]
-                                                                  ],
-                                                                "as_ptr",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
+                                                              "as_ptr",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.read (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "alloc::sync::Arc",
+                                                                  "ptr"
+                                                                |)
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |);
+                                                      M.borrow (|
+                                                        Pointer.Kind.ConstPointer,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (|
                                                                 M.read (|
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    M.deref (| M.read (| self |) |),
-                                                                    "alloc::sync::Arc",
-                                                                    "ptr"
+                                                                  get_constant (|
+                                                                    "alloc::sync::STATIC_INNER_SLICE",
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "alloc::sync::SliceArcInnerForStatic"
+                                                                      ]
                                                                   |)
                                                                 |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.ConstPointer,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (|
-                                                                  M.read (|
-                                                                    get_constant (|
-                                                                      "alloc::sync::STATIC_INNER_SLICE",
-                                                                      Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [
-                                                                          Ty.path
-                                                                            "alloc::sync::SliceArcInnerForStatic"
-                                                                        ]
-                                                                    |)
-                                                                  |)
-                                                                |),
-                                                                "alloc::sync::SliceArcInnerForStatic",
-                                                                "inner"
-                                                              |)
+                                                              |),
+                                                              "alloc::sync::SliceArcInnerForStatic",
+                                                              "inner"
                                                             |)
                                                           |)
                                                         |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -13103,35 +14872,13 @@ Module sync.
                                               Ty.path "core::fmt::Arguments",
                                               M.get_associated_function (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                "from_str",
+                                                [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [
-                                                            mk_str (|
-                                                              "Arcs backed by a static should never reach a strong count of 0. Likely decrement_strong_count or from_raw were called too many times."
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
+                                                mk_str (|
+                                                  "Arcs backed by a static should never reach a strong count of 0. Likely decrement_strong_count or from_raw were called too many times."
                                                 |)
                                               ]
                                             |)
@@ -13248,29 +14995,41 @@ Module sync.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.dyn
-                              [
-                                ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
-                              ],
-                            "is",
-                            [],
-                            [ T ]
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
+                        M.get_associated_function (|
+                          Ty.dyn
+                            [
+                              ("core::any::Any::Trait", []);
+                              ("core::marker::Sync::AutoTrait", []);
+                              ("core::marker::Send::AutoTrait", [])
+                            ],
+                          "is",
+                          [],
+                          [ T ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.dyn
+                                      [
+                                        ("core::any::Any::Trait", []);
+                                        ("core::marker::Sync::AutoTrait", []);
+                                        ("core::marker::Send::AutoTrait", [])
+                                      ]
+                                  ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
                                   Ty.apply
-                                    (Ty.path "&")
+                                    (Ty.path "alloc::sync::Arc")
                                     []
                                     [
                                       Ty.dyn
@@ -13278,35 +15037,22 @@ Module sync.
                                           ("core::any::Any::Trait", []);
                                           ("core::marker::Sync::AutoTrait", []);
                                           ("core::marker::Send::AutoTrait", [])
-                                        ]
+                                        ];
+                                      A
                                     ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::Deref",
-                                    Ty.apply
-                                      (Ty.path "alloc::sync::Arc")
-                                      []
-                                      [
-                                        Ty.dyn
-                                          [
-                                            ("core::any::Any::Trait", []);
-                                            ("core::marker::Sync::AutoTrait", []);
-                                            ("core::marker::Send::AutoTrait", [])
-                                          ];
-                                        A
-                                      ],
-                                    [],
-                                    [],
-                                    "deref",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                |)
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, self |) ]
                               |)
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.match_operator (|
                     Ty.apply
@@ -13736,12 +15482,7 @@ Module sync.
     
     (*
         pub const fn new() -> Weak<T> {
-            Weak {
-                ptr: unsafe {
-                    NonNull::new_unchecked(ptr::without_provenance_mut::<ArcInner<T>>(usize::MAX))
-                },
-                alloc: Global,
-            }
+            Weak { ptr: NonNull::without_provenance(NonZeroUsize::MAX), alloc: Global }
         }
     *)
     Definition new (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -13765,26 +15506,17 @@ Module sync.
                       (Ty.path "core::ptr::non_null::NonNull")
                       []
                       [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
-                    "new_unchecked",
+                    "without_provenance",
                     [],
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "*mut")
-                        []
-                        [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
-                      M.get_function (|
-                        "core::ptr::without_provenance_mut",
-                        [],
-                        [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
-                      |),
-                      [
-                        M.read (|
-                          get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |)
-                        |)
-                      ]
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "MAX",
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                      |)
                     |)
                   ]
                 |));
@@ -13827,6 +15559,116 @@ Module sync.
       M.IsAssociatedFunction.C (Self T) "from_raw" (from_raw T).
     Admitted.
     Global Typeclasses Opaque from_raw.
+    
+    (*
+        pub fn into_raw(self) -> *const T {
+            ManuallyDrop::new(self).as_ptr()
+        }
+    *)
+    Definition into_raw (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; Ty.path "alloc::alloc::Global" ],
+              self
+            |) in
+          M.call_closure (|
+            Ty.apply (Ty.path "*const") [] [ T ],
+            M.get_associated_function (|
+              Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; Ty.path "alloc::alloc::Global" ],
+              "as_ptr",
+              [],
+              []
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::sync::Weak")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ]
+                      ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply
+                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::sync::Weak")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ]
+                        ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::sync::Weak")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ]
+                            ],
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Weak")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::Weak")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ],
+                              "new",
+                              [],
+                              []
+                            |),
+                            [ M.read (| self |) ]
+                          |)
+                        |)
+                      |)
+                    ]
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_into_raw :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "into_raw" (into_raw T).
+    Admitted.
+    Global Typeclasses Opaque into_raw.
   End Impl_alloc_sync_Weak_T_alloc_alloc_Global.
   
   Module Impl_alloc_sync_Weak_T_A.
@@ -13834,12 +15676,7 @@ Module sync.
     
     (*
         pub fn new_in(alloc: A) -> Weak<T, A> {
-            Weak {
-                ptr: unsafe {
-                    NonNull::new_unchecked(ptr::without_provenance_mut::<ArcInner<T>>(usize::MAX))
-                },
-                alloc,
-            }
+            Weak { ptr: NonNull::without_provenance(NonZeroUsize::MAX), alloc }
         }
     *)
     Definition new_in (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -13864,26 +15701,17 @@ Module sync.
                       (Ty.path "core::ptr::non_null::NonNull")
                       []
                       [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
-                    "new_unchecked",
+                    "without_provenance",
                     [],
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "*mut")
-                        []
-                        [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
-                      M.get_function (|
-                        "core::ptr::without_provenance_mut",
-                        [],
-                        [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
-                      |),
-                      [
-                        M.read (|
-                          get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |)
-                        |)
-                      ]
+                    M.read (|
+                      get_associated_constant (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "MAX",
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                      |)
                     |)
                   ]
                 |));
@@ -13999,37 +15827,36 @@ Module sync.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (|
-                                "alloc::rc::is_dangling",
-                                [],
-                                [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
-                              |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply
+                            M.get_function (|
+                              "alloc::rc::is_dangling",
+                              [],
+                              [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "*const")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.MutToConstPointer
+                                  (Ty.apply
+                                    (Ty.path "*mut")
+                                    []
+                                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ])
+                                  (Ty.apply
                                     (Ty.path "*const")
                                     []
-                                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.MutToConstPointer
-                                    (Ty.apply
-                                      (Ty.path "*mut")
-                                      []
-                                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ])
-                                    (Ty.apply
-                                      (Ty.path "*const")
-                                      []
-                                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]),
-                                  [ M.read (| ptr |) ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]),
+                                [ M.read (| ptr |) ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.cast (Ty.apply (Ty.path "*const") [] [ T ]) (M.read (| ptr |))));
                   fun γ =>
@@ -14063,87 +15890,6 @@ Module sync.
       M.IsAssociatedFunction.C (Self T A) "as_ptr" (as_ptr T A).
     Admitted.
     Global Typeclasses Opaque as_ptr.
-    
-    (*
-        pub fn into_raw(self) -> *const T {
-            ManuallyDrop::new(self).as_ptr()
-        }
-    *)
-    Definition into_raw (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T A in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self := M.alloc (| Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ], self |) in
-          M.call_closure (|
-            Ty.apply (Ty.path "*const") [] [ T ],
-            M.get_associated_function (|
-              Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ],
-              "as_ptr",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ] ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply
-                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                        []
-                        [ Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ] ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                            []
-                            [ Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ] ],
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                              []
-                              [ Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ] ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                []
-                                [ Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ] ],
-                              "new",
-                              [],
-                              []
-                            |),
-                            [ M.read (| self |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                |)
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_into_raw :
-      forall (T A : Ty.t),
-      M.IsAssociatedFunction.C (Self T A) "into_raw" (into_raw T A).
-    Admitted.
-    Global Typeclasses Opaque into_raw.
     
     (*
         pub fn into_raw_with_allocator(self) -> ( *const T, A) {
@@ -14288,7 +16034,7 @@ Module sync.
                 // Otherwise, we're guaranteed the pointer came from a nondangling Weak.
                 // SAFETY: data_offset is safe to call, as ptr references a real (potentially dropped) T.
                 let offset = unsafe { data_offset(ptr) };
-                // Thus, we reverse the offset to get the whole RcInner.
+                // Thus, we reverse the offset to get the whole ArcInner.
                 // SAFETY: the pointer originated from a Weak, so this offset is safe.
                 unsafe { ptr.byte_sub(offset) as *mut ArcInner<T> }
             };
@@ -14320,15 +16066,14 @@ Module sync.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (| "alloc::rc::is_dangling", [], [ T ] |),
-                              [ M.read (| ptr |) ]
-                            |)
-                          |)) in
+                            M.get_function (| "alloc::rc::is_dangling", [], [ T ] |),
+                            [ M.read (| ptr |) ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.cast
                         (Ty.apply
@@ -14463,57 +16208,68 @@ Module sync.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "core::result::Result")
-                                  []
-                                  [ Ty.path "usize"; Ty.path "usize" ],
-                                "is_ok",
-                                [],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
                                 []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                                [ Ty.path "usize"; Ty.path "usize" ],
+                              "is_ok",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.path "usize"; Ty.path "usize" ],
+                                  M.call_closure (|
                                     Ty.apply
                                       (Ty.path "core::result::Result")
                                       []
                                       [ Ty.path "usize"; Ty.path "usize" ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [ Ty.path "usize"; Ty.path "usize" ],
-                                      M.get_associated_function (|
-                                        Ty.path "core::sync::atomic::AtomicUsize",
-                                        "fetch_update",
-                                        [],
-                                        [
-                                          Ty.function
-                                            [ Ty.path "usize" ]
-                                            (Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "usize" ])
-                                        ]
-                                      |),
+                                    M.get_associated_function (|
+                                      Ty.path "core::sync::atomic::AtomicUsize",
+                                      "fetch_update",
+                                      [],
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.alloc (|
+                                        Ty.function
+                                          [ Ty.path "usize" ]
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.alloc (|
+                                                Ty.path "alloc::sync::WeakInner",
+                                                M.match_operator (|
                                                   Ty.path "alloc::sync::WeakInner",
-                                                  M.match_operator (|
-                                                    Ty.path "alloc::sync::WeakInner",
-                                                    M.alloc (|
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::ops::control_flow::ControlFlow")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [ Ty.path "core::convert::Infallible" ];
+                                                        Ty.path "alloc::sync::WeakInner"
+                                                      ],
+                                                    M.call_closure (|
                                                       Ty.apply
                                                         (Ty.path
                                                           "core::ops::control_flow::ControlFlow")
@@ -14525,80 +16281,76 @@ Module sync.
                                                             [ Ty.path "core::convert::Infallible" ];
                                                           Ty.path "alloc::sync::WeakInner"
                                                         ],
-                                                      M.call_closure (|
+                                                      M.get_trait_method (|
+                                                        "core::ops::try_trait::Try",
                                                         Ty.apply
-                                                          (Ty.path
-                                                            "core::ops::control_flow::ControlFlow")
+                                                          (Ty.path "core::option::Option")
                                                           []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "core::option::Option")
-                                                              []
-                                                              [ Ty.path "core::convert::Infallible"
-                                                              ];
-                                                            Ty.path "alloc::sync::WeakInner"
-                                                          ],
-                                                        M.get_trait_method (|
-                                                          "core::ops::try_trait::Try",
+                                                          [ Ty.path "alloc::sync::WeakInner" ],
+                                                        [],
+                                                        [],
+                                                        "branch",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "core::option::Option")
                                                             []
                                                             [ Ty.path "alloc::sync::WeakInner" ],
-                                                          [],
-                                                          [],
-                                                          "branch",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.call_closure (|
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "alloc::sync::Weak")
+                                                              []
+                                                              [ T; A ],
+                                                            "inner",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| self |) |)
+                                                            |)
+                                                          ]
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  |),
+                                                  [
+                                                    fun γ =>
+                                                      ltac:(M.monadic
+                                                        (let γ0_0 :=
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            γ,
+                                                            "core::ops::control_flow::ControlFlow::Break",
+                                                            0
+                                                          |) in
+                                                        let residual :=
+                                                          M.copy (|
                                                             Ty.apply
                                                               (Ty.path "core::option::Option")
                                                               []
-                                                              [ Ty.path "alloc::sync::WeakInner" ],
-                                                            M.get_associated_function (|
-                                                              Ty.apply
-                                                                (Ty.path "alloc::sync::Weak")
-                                                                []
-                                                                [ T; A ],
-                                                              "inner",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (| M.read (| self |) |)
-                                                              |)
-                                                            ]
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |),
-                                                    [
-                                                      fun γ =>
-                                                        ltac:(M.monadic
-                                                          (let γ0_0 :=
-                                                            M.SubPointer.get_struct_tuple_field (|
-                                                              γ,
-                                                              "core::ops::control_flow::ControlFlow::Break",
-                                                              0
-                                                            |) in
-                                                          let residual :=
-                                                            M.copy (|
-                                                              Ty.apply
-                                                                (Ty.path "core::option::Option")
-                                                                []
-                                                                [
-                                                                  Ty.path
-                                                                    "core::convert::Infallible"
-                                                                ],
-                                                              γ0_0
-                                                            |) in
-                                                          M.never_to_any (|
-                                                            M.read (|
-                                                              M.return_ (|
-                                                                M.call_closure (|
+                                                              [ Ty.path "core::convert::Infallible"
+                                                              ],
+                                                            γ0_0
+                                                          |) in
+                                                        M.never_to_any (|
+                                                          M.read (|
+                                                            M.return_ (|
+                                                              M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::option::Option")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::sync::Arc")
+                                                                      []
+                                                                      [ T; A ]
+                                                                  ],
+                                                                M.get_trait_method (|
+                                                                  "core::ops::try_trait::FromResidual",
                                                                   Ty.apply
                                                                     (Ty.path "core::option::Option")
                                                                     []
@@ -14608,85 +16360,72 @@ Module sync.
                                                                         []
                                                                         [ T; A ]
                                                                     ],
-                                                                  M.get_trait_method (|
-                                                                    "core::ops::try_trait::FromResidual",
+                                                                  [],
+                                                                  [
                                                                     Ty.apply
                                                                       (Ty.path
                                                                         "core::option::Option")
                                                                       []
                                                                       [
-                                                                        Ty.apply
-                                                                          (Ty.path
-                                                                            "alloc::sync::Arc")
-                                                                          []
-                                                                          [ T; A ]
-                                                                      ],
-                                                                    [],
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::option::Option")
-                                                                        []
-                                                                        [
-                                                                          Ty.path
-                                                                            "core::convert::Infallible"
-                                                                        ]
-                                                                    ],
-                                                                    "from_residual",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [ M.read (| residual |) ]
-                                                                |)
+                                                                        Ty.path
+                                                                          "core::convert::Infallible"
+                                                                      ]
+                                                                  ],
+                                                                  "from_residual",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [ M.read (| residual |) ]
                                                               |)
                                                             |)
-                                                          |)));
-                                                      fun γ =>
-                                                        ltac:(M.monadic
-                                                          (let γ0_0 :=
-                                                            M.SubPointer.get_struct_tuple_field (|
-                                                              γ,
-                                                              "core::ops::control_flow::ControlFlow::Continue",
-                                                              0
-                                                            |) in
-                                                          let val :=
-                                                            M.copy (|
-                                                              Ty.path "alloc::sync::WeakInner",
-                                                              γ0_0
-                                                            |) in
-                                                          M.read (| val |)))
-                                                    ]
-                                                  |)
-                                                |),
-                                                "alloc::sync::WeakInner",
-                                                "strong"
-                                              |)
+                                                          |)
+                                                        |)));
+                                                    fun γ =>
+                                                      ltac:(M.monadic
+                                                        (let γ0_0 :=
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            γ,
+                                                            "core::ops::control_flow::ControlFlow::Continue",
+                                                            0
+                                                          |) in
+                                                        let val :=
+                                                          M.copy (|
+                                                            Ty.path "alloc::sync::WeakInner",
+                                                            γ0_0
+                                                          |) in
+                                                        M.read (| val |)))
+                                                  ]
+                                                |)
+                                              |),
+                                              "alloc::sync::WeakInner",
+                                              "strong"
                                             |)
                                           |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::sync::atomic::Ordering::Acquire"
-                                          []
-                                          []
-                                          [];
-                                        Value.StructTuple
-                                          "core::sync::atomic::Ordering::Relaxed"
-                                          []
-                                          []
-                                          [];
-                                        M.get_associated_function (|
-                                          Self,
-                                          "checked_increment.upgrade",
-                                          [],
-                                          []
                                         |)
-                                      ]
-                                    |)
+                                      |);
+                                      Value.StructTuple
+                                        "core::sync::atomic::Ordering::Acquire"
+                                        []
+                                        []
+                                        [];
+                                      Value.StructTuple
+                                        "core::sync::atomic::Ordering::Relaxed"
+                                        []
+                                        []
+                                        [];
+                                      M.get_associated_function (|
+                                        Self,
+                                        "checked_increment.upgrade",
+                                        [],
+                                        []
+                                      |)
+                                    ]
                                   |)
                                 |)
-                              ]
-                            |)
-                          |)) in
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::option::Option::Some"
@@ -14957,15 +16696,14 @@ Module sync.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [ M.read (| strong |); Value.Integer IntegerKind.Usize 0 ]
-                                    |)
-                                  |)) in
+                                    BinOp.eq,
+                                    [ M.read (| strong |); Value.Integer IntegerKind.Usize 0 ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               Value.Integer IntegerKind.Usize 0));
@@ -15054,37 +16792,36 @@ Module sync.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (|
-                                "alloc::rc::is_dangling",
-                                [],
-                                [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
-                              |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply
+                            M.get_function (|
+                              "alloc::rc::is_dangling",
+                              [],
+                              [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "*const")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.MutToConstPointer
+                                  (Ty.apply
+                                    (Ty.path "*mut")
+                                    []
+                                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ])
+                                  (Ty.apply
                                     (Ty.path "*const")
                                     []
-                                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.MutToConstPointer
-                                    (Ty.apply
-                                      (Ty.path "*mut")
-                                      []
-                                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ])
-                                    (Ty.apply
-                                      (Ty.path "*const")
-                                      []
-                                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]),
-                                  [ M.read (| ptr |) ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]),
+                                [ M.read (| ptr |) ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::option::Option::None"
@@ -15280,8 +17017,30 @@ Module sync.
       ty_params := [];
       fields :=
         [
-          ("weak", Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicUsize" ]);
-          ("strong", Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicUsize" ])
+          ("weak",
+            Ty.apply
+              (Ty.path "&")
+              []
+              [
+                Ty.associated_in_trait
+                  "core::sync::atomic::AtomicPrimitive"
+                  []
+                  []
+                  (Ty.path "usize")
+                  "AtomicInner"
+              ]);
+          ("strong",
+            Ty.apply
+              (Ty.path "&")
+              []
+              [
+                Ty.associated_in_trait
+                  "core::sync::atomic::AtomicPrimitive"
+                  []
+                  []
+                  (Ty.path "usize")
+                  "AtomicInner"
+              ])
         ];
     } *)
   
@@ -15390,23 +17149,22 @@ Module sync.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
-                                          [
-                                            M.read (| old_size |);
-                                            M.read (|
-                                              get_constant (|
-                                                "alloc::sync::MAX_REFCOUNT",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.gt,
+                                        [
+                                          M.read (| old_size |);
+                                          M.read (|
+                                            get_constant (|
+                                              "alloc::sync::MAX_REFCOUNT",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -15472,6 +17230,19 @@ Module sync.
         (Self T A)
         (* Instance *) [ ("clone", InstanceField.Method (clone T A)) ].
   End Impl_core_clone_Clone_where_core_marker_Sized_T_where_core_alloc_Allocator_A_where_core_clone_Clone_A_for_alloc_sync_Weak_T_A.
+  
+  Module Impl_core_clone_UseCloned_where_core_marker_Sized_T_where_core_alloc_Allocator_A_where_core_clone_Clone_A_for_alloc_sync_Weak_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ].
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_where_core_marker_Sized_T_where_core_alloc_Allocator_A_where_core_clone_Clone_A_for_alloc_sync_Weak_T_A.
   
   Module Impl_core_default_Default_for_alloc_sync_Weak_T_alloc_alloc_Global.
     Definition Self (T : Ty.t) : Ty.t :=
@@ -15604,46 +17375,45 @@ Module sync.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.path "core::sync::atomic::AtomicUsize",
-                                        "fetch_sub",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                inner,
-                                                "alloc::sync::WeakInner",
-                                                "weak"
-                                              |)
+                                BinOp.eq,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.path "core::sync::atomic::AtomicUsize",
+                                      "fetch_sub",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              inner,
+                                              "alloc::sync::WeakInner",
+                                              "weak"
                                             |)
                                           |)
-                                        |);
-                                        Value.Integer IntegerKind.Usize 1;
-                                        Value.StructTuple
-                                          "core::sync::atomic::Ordering::Release"
-                                          []
-                                          []
-                                          []
-                                      ]
-                                    |);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |)
-                              |)) in
+                                        |)
+                                      |);
+                                      Value.Integer IntegerKind.Usize 1;
+                                      Value.StructTuple
+                                        "core::sync::atomic::Ordering::Release"
+                                        []
+                                        []
+                                        []
+                                    ]
+                                  |);
+                                  Value.Integer IntegerKind.Usize 1
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -15661,8 +17431,7 @@ Module sync.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let γ :=
-                                        M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -15677,47 +17446,68 @@ Module sync.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          UnOp.not,
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              UnOp.not,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  M.get_function (|
-                                                                    "core::ptr::addr_eq",
-                                                                    [],
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "alloc::sync::ArcInner")
-                                                                        []
-                                                                        [ T ];
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "alloc::sync::ArcInner")
+                                                        UnOp.not,
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            UnOp.not,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                M.get_function (|
+                                                                  "core::ptr::addr_eq",
+                                                                  [],
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "alloc::sync::ArcInner")
+                                                                      []
+                                                                      [ T ];
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "alloc::sync::ArcInner")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
+                                                                          [ Ty.path "u8" ]
+                                                                      ]
+                                                                  ]
+                                                                |),
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "*const")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloc::sync::ArcInner")
+                                                                          []
+                                                                          [ T ]
+                                                                      ],
+                                                                    M.pointer_coercion
+                                                                      M.PointerCoercion.MutToConstPointer
+                                                                      (Ty.apply
+                                                                        (Ty.path "*mut")
                                                                         []
                                                                         [
                                                                           Ty.apply
-                                                                            (Ty.path "array")
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1
-                                                                            ]
-                                                                            [ Ty.path "u8" ]
-                                                                        ]
-                                                                    ]
-                                                                  |),
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.apply
+                                                                            (Ty.path
+                                                                              "alloc::sync::ArcInner")
+                                                                            []
+                                                                            [ T ]
+                                                                        ])
+                                                                      (Ty.apply
                                                                         (Ty.path "*const")
                                                                         []
                                                                         [
@@ -15726,10 +17516,10 @@ Module sync.
                                                                               "alloc::sync::ArcInner")
                                                                             []
                                                                             [ T ]
-                                                                        ],
-                                                                      M.pointer_coercion
-                                                                        M.PointerCoercion.MutToConstPointer
-                                                                        (Ty.apply
+                                                                        ]),
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.apply
                                                                           (Ty.path "*mut")
                                                                           []
                                                                           [
@@ -15738,21 +17528,11 @@ Module sync.
                                                                                 "alloc::sync::ArcInner")
                                                                               []
                                                                               [ T ]
-                                                                          ])
-                                                                        (Ty.apply
-                                                                          (Ty.path "*const")
-                                                                          []
-                                                                          [
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "alloc::sync::ArcInner")
-                                                                              []
-                                                                              [ T ]
-                                                                          ]),
-                                                                      [
-                                                                        M.call_closure (|
+                                                                          ],
+                                                                        M.get_associated_function (|
                                                                           Ty.apply
-                                                                            (Ty.path "*mut")
+                                                                            (Ty.path
+                                                                              "core::ptr::non_null::NonNull")
                                                                             []
                                                                             [
                                                                               Ty.apply
@@ -15761,69 +17541,57 @@ Module sync.
                                                                                 []
                                                                                 [ T ]
                                                                             ],
-                                                                          M.get_associated_function (|
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::ptr::non_null::NonNull")
-                                                                              []
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path
-                                                                                    "alloc::sync::ArcInner")
-                                                                                  []
-                                                                                  [ T ]
-                                                                              ],
-                                                                            "as_ptr",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
+                                                                          "as_ptr",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.read (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              M.deref (|
+                                                                                M.read (| self |)
+                                                                              |),
+                                                                              "alloc::sync::Weak",
+                                                                              "ptr"
+                                                                            |)
+                                                                          |)
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |);
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.ConstPointer,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.SubPointer.get_struct_record_field (|
+                                                                          M.deref (|
                                                                             M.read (|
-                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                M.deref (|
-                                                                                  M.read (| self |)
-                                                                                |),
-                                                                                "alloc::sync::Weak",
-                                                                                "ptr"
+                                                                              get_constant (|
+                                                                                "alloc::sync::STATIC_INNER_SLICE",
+                                                                                Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "alloc::sync::SliceArcInnerForStatic"
+                                                                                  ]
                                                                               |)
                                                                             |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |);
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.ConstPointer,
-                                                                      M.deref (|
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.SubPointer.get_struct_record_field (|
-                                                                            M.deref (|
-                                                                              M.read (|
-                                                                                get_constant (|
-                                                                                  "alloc::sync::STATIC_INNER_SLICE",
-                                                                                  Ty.apply
-                                                                                    (Ty.path "&")
-                                                                                    []
-                                                                                    [
-                                                                                      Ty.path
-                                                                                        "alloc::sync::SliceArcInnerForStatic"
-                                                                                    ]
-                                                                                |)
-                                                                              |)
-                                                                            |),
-                                                                            "alloc::sync::SliceArcInnerForStatic",
-                                                                            "inner"
-                                                                          |)
+                                                                          |),
+                                                                          "alloc::sync::SliceArcInnerForStatic",
+                                                                          "inner"
                                                                         |)
                                                                       |)
                                                                     |)
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      |)) in
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -15842,39 +17610,13 @@ Module sync.
                                                           Ty.path "core::fmt::Arguments",
                                                           M.get_associated_function (|
                                                             Ty.path "core::fmt::Arguments",
-                                                            "new_const",
-                                                            [ Value.Integer IntegerKind.Usize 1 ],
+                                                            "from_str",
+                                                            [],
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.alloc (|
-                                                                    Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          1
-                                                                      ]
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path "&")
-                                                                          []
-                                                                          [ Ty.path "str" ]
-                                                                      ],
-                                                                    Value.Array
-                                                                      [
-                                                                        mk_str (|
-                                                                          "Arc/Weaks backed by a static should never be deallocated. Likely decrement_strong_count or from_raw were called too many times."
-                                                                        |)
-                                                                      ]
-                                                                  |)
-                                                                |)
-                                                              |)
+                                                            mk_str (|
+                                                              "Arc/Weaks backed by a static should never be deallocated. Likely decrement_strong_count or from_raw were called too many times."
                                                             |)
                                                           ]
                                                         |)
@@ -17105,11 +18847,14 @@ Module sync.
         fn default() -> Arc<T> {
             unsafe {
                 Self::from_inner(
-                    Box::leak(Box::write(Box::new_uninit(), ArcInner {
-                        strong: atomic::AtomicUsize::new(1),
-                        weak: atomic::AtomicUsize::new(1),
-                        data: T::default(),
-                    }))
+                    Box::leak(Box::write(
+                        Box::new_uninit(),
+                        ArcInner {
+                            strong: atomic::AtomicUsize::new(1),
+                            weak: atomic::AtomicUsize::new(1),
+                            data: T::default(),
+                        },
+                    ))
                     .into(),
                 )
             }
@@ -17422,7 +19167,7 @@ Module sync.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -17433,31 +19178,38 @@ Module sync.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [
-                                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                                                    Ty.path "core::str::error::Utf8Error"
-                                                  ],
-                                                "is_ok",
-                                                [],
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                [
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                                  Ty.path "core::str::error::Utf8Error"
+                                                ],
+                                              "is_ok",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                                      Ty.path "core::str::error::Utf8Error"
+                                                    ],
+                                                  M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
@@ -17465,78 +19217,66 @@ Module sync.
                                                         Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
                                                         Ty.path "core::str::error::Utf8Error"
                                                       ],
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "core::result::Result")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ];
-                                                          Ty.path "core::str::error::Utf8Error"
-                                                        ],
-                                                      M.get_function (|
-                                                        "core::str::converts::from_utf8",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.call_closure (|
+                                                    M.get_function (|
+                                                      "core::str::converts::from_utf8",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [ Ty.path "u8" ]
+                                                                  ],
+                                                                M.get_trait_method (|
+                                                                  "core::ops::deref::Deref",
                                                                   Ty.apply
-                                                                    (Ty.path "&")
+                                                                    (Ty.path "alloc::sync::Arc")
                                                                     []
                                                                     [
                                                                       Ty.apply
                                                                         (Ty.path "slice")
                                                                         []
-                                                                        [ Ty.path "u8" ]
+                                                                        [ Ty.path "u8" ];
+                                                                      Ty.path "alloc::alloc::Global"
                                                                     ],
-                                                                  M.get_trait_method (|
-                                                                    "core::ops::deref::Deref",
-                                                                    Ty.apply
-                                                                      (Ty.path "alloc::sync::Arc")
-                                                                      []
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path "slice")
-                                                                          []
-                                                                          [ Ty.path "u8" ];
-                                                                        Ty.path
-                                                                          "alloc::alloc::Global"
-                                                                      ],
-                                                                    [],
-                                                                    [],
-                                                                    "deref",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      arc
-                                                                    |)
-                                                                  ]
-                                                                |)
+                                                                  [],
+                                                                  [],
+                                                                  "deref",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    arc
+                                                                  |)
+                                                                ]
                                                               |)
                                                             |)
                                                           |)
                                                         |)
-                                                      ]
-                                                    |)
+                                                      |)
+                                                    ]
                                                   |)
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -18088,7 +19828,7 @@ Module sync.
     
     (*
         fn default() -> Self {
-            if mem::align_of::<T>() <= MAX_STATIC_INNER_SLICE_ALIGNMENT {
+            if align_of::<T>() <= MAX_STATIC_INNER_SLICE_ALIGNMENT {
                 // We take a reference to the whole struct instead of the ArcInner<[u8; 1]> inside it so
                 // we don't shrink the range of bytes the ptr is allowed to access under Stacked Borrows.
                 // (Miri complains on 32-bit targets with Arc<[Align16]> otherwise.)
@@ -18126,27 +19866,26 @@ Module sync.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.le,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_function (| "core::mem::align_of", [], [ T ] |),
-                                      []
-                                    |);
-                                    M.read (|
-                                      get_constant (|
-                                        "alloc::sync::MAX_STATIC_INNER_SLICE_ALIGNMENT",
-                                        Ty.path "usize"
-                                      |)
+                                BinOp.le,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                    []
+                                  |);
+                                  M.read (|
+                                    get_constant (|
+                                      "alloc::sync::MAX_STATIC_INNER_SLICE_ALIGNMENT",
+                                      Ty.path "usize"
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -18485,6 +20224,66 @@ Module sync.
         (Self T)
         (* Instance *) [ ("default", InstanceField.Method (default T)) ].
   End Impl_core_default_Default_for_alloc_sync_Arc_slice_T_alloc_alloc_Global.
+  
+  Module Impl_core_default_Default_where_core_marker_Sized_T_where_core_default_Default_alloc_sync_Arc_T_alloc_alloc_Global_for_core_pin_Pin_alloc_sync_Arc_T_alloc_alloc_Global.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "core::pin::Pin")
+        []
+        [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ] ].
+    
+    (*
+        fn default() -> Self {
+            unsafe { Pin::new_unchecked(Arc::<T>::default()) }
+        }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.call_closure (|
+            Ty.apply
+              (Ty.path "core::pin::Pin")
+              []
+              [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::pin::Pin")
+                []
+                [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+              "new_unchecked",
+              [],
+              []
+            |),
+            [
+              M.call_closure (|
+                Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
+                []
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_marker_Sized_T_where_core_default_Default_alloc_sync_Arc_T_alloc_alloc_Global_for_core_pin_Pin_alloc_sync_Arc_T_alloc_alloc_Global.
   
   Module Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_hash_Hash_T_where_core_alloc_Allocator_A_for_alloc_sync_Arc_T_A.
     Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ].
@@ -19108,7 +20907,7 @@ Module sync.
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
                         Ty.tuple [],
-                        M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+                        M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                         [
                           M.call_closure (|
                             Ty.apply (Ty.path "*const") [] [ T ],
@@ -19414,52 +21213,51 @@ Module sync.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.eq,
-                          [
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "slice") [] [ T ],
-                                "len",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
+                        BinOp.eq,
+                        [
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "slice") [] [ T ],
+                              "len",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::Deref",
                                       Ty.apply
-                                        (Ty.path "&")
+                                        (Ty.path "alloc::sync::Arc")
                                         []
-                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply
-                                          (Ty.path "alloc::sync::Arc")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, boxed_slice |) ]
-                                    |)
+                                        [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
+                                      [],
+                                      [],
+                                      "deref",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.borrow (| Pointer.Kind.Ref, boxed_slice |) ]
                                   |)
                                 |)
-                              ]
-                            |);
-                            N
-                          ]
-                        |)
-                      |)) in
+                              |)
+                            ]
+                          |);
+                          N
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.match_operator (|
                     Ty.apply
@@ -19874,8 +21672,7 @@ Module sync.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let γ :=
-                                        M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -19921,32 +21718,31 @@ Module sync.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
                                                                 Ty.path "bool",
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  UnOp.not,
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.deref (|
-                                                                            M.read (| left_val |)
-                                                                          |)
-                                                                        |);
-                                                                        M.read (|
-                                                                          M.deref (|
-                                                                            M.read (| right_val |)
-                                                                          |)
+                                                                UnOp.not,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.eq,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.deref (|
+                                                                          M.read (| left_val |)
                                                                         |)
-                                                                      ]
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)) in
+                                                                      |);
+                                                                      M.read (|
+                                                                        M.deref (|
+                                                                          M.read (| right_val |)
+                                                                        |)
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -20006,131 +21802,185 @@ Module sync.
                                                                           "core::fmt::Arguments"
                                                                       ]
                                                                       [
-                                                                        M.call_closure (|
-                                                                          Ty.path
-                                                                            "core::fmt::Arguments",
-                                                                          M.get_associated_function (|
-                                                                            Ty.path
-                                                                              "core::fmt::Arguments",
-                                                                            "new_v1",
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1;
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1
-                                                                            ],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
+                                                                        M.read (|
+                                                                          let~ args :
+                                                                              Ty.tuple
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.tuple
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "usize";
+                                                                                          Ty.path
+                                                                                            "usize"
+                                                                                        ]
+                                                                                    ]
+                                                                                ] :=
+                                                                            Value.Tuple
+                                                                              [
                                                                                 M.borrow (|
                                                                                   Pointer.Kind.Ref,
                                                                                   M.alloc (|
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "array")
-                                                                                      [
-                                                                                        Value.Integer
-                                                                                          IntegerKind.Usize
-                                                                                          1
-                                                                                      ]
-                                                                                      [
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "&")
-                                                                                          []
-                                                                                          [
-                                                                                            Ty.path
-                                                                                              "str"
-                                                                                          ]
-                                                                                      ],
-                                                                                    Value.Array
-                                                                                      [
-                                                                                        mk_str (|
-                                                                                          "TrustedLen iterator's size hint is not exact: "
-                                                                                        |)
-                                                                                      ]
-                                                                                  |)
-                                                                                |)
-                                                                              |)
-                                                                            |);
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.alloc (|
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "array")
-                                                                                      [
-                                                                                        Value.Integer
-                                                                                          IntegerKind.Usize
-                                                                                          1
-                                                                                      ]
+                                                                                    Ty.tuple
                                                                                       [
                                                                                         Ty.path
-                                                                                          "core::fmt::rt::Argument"
+                                                                                          "usize";
+                                                                                        Ty.path
+                                                                                          "usize"
                                                                                       ],
-                                                                                    Value.Array
+                                                                                    Value.Tuple
                                                                                       [
-                                                                                        M.call_closure (|
-                                                                                          Ty.path
-                                                                                            "core::fmt::rt::Argument",
-                                                                                          M.get_associated_function (|
-                                                                                            Ty.path
-                                                                                              "core::fmt::rt::Argument",
-                                                                                            "new_debug",
-                                                                                            [],
-                                                                                            [
-                                                                                              Ty.tuple
-                                                                                                [
-                                                                                                  Ty.path
-                                                                                                    "usize";
-                                                                                                  Ty.path
-                                                                                                    "usize"
-                                                                                                ]
-                                                                                            ]
-                                                                                          |),
-                                                                                          [
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.alloc (|
-                                                                                                    Ty.tuple
-                                                                                                      [
-                                                                                                        Ty.path
-                                                                                                          "usize";
-                                                                                                        Ty.path
-                                                                                                          "usize"
-                                                                                                      ],
-                                                                                                    Value.Tuple
-                                                                                                      [
-                                                                                                        M.read (|
-                                                                                                          low
-                                                                                                        |);
-                                                                                                        M.read (|
-                                                                                                          high
-                                                                                                        |)
-                                                                                                      ]
-                                                                                                  |)
-                                                                                                |)
-                                                                                              |)
-                                                                                            |)
-                                                                                          ]
+                                                                                        M.read (|
+                                                                                          low
+                                                                                        |);
+                                                                                        M.read (|
+                                                                                          high
                                                                                         |)
                                                                                       ]
                                                                                   |)
                                                                                 |)
-                                                                              |)
+                                                                              ] in
+                                                                          let~ args :
+                                                                              Ty.apply
+                                                                                (Ty.path "array")
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    1
+                                                                                ]
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "core::fmt::rt::Argument"
+                                                                                ] :=
+                                                                            Value.Array
+                                                                              [
+                                                                                M.call_closure (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::rt::Argument",
+                                                                                  M.get_associated_function (|
+                                                                                    Ty.path
+                                                                                      "core::fmt::rt::Argument",
+                                                                                    "new_debug",
+                                                                                    [],
+                                                                                    [
+                                                                                      Ty.tuple
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "usize";
+                                                                                          Ty.path
+                                                                                            "usize"
+                                                                                        ]
+                                                                                    ]
+                                                                                  |),
+                                                                                  [
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          M.SubPointer.get_tuple_field (|
+                                                                                            args,
+                                                                                            0
+                                                                                          |)
+                                                                                        |)
+                                                                                      |)
+                                                                                    |)
+                                                                                  ]
+                                                                                |)
+                                                                              ] in
+                                                                          M.alloc (|
+                                                                            Ty.path
+                                                                              "core::fmt::Arguments",
+                                                                            M.call_closure (|
+                                                                              Ty.path
+                                                                                "core::fmt::Arguments",
+                                                                              M.get_associated_function (|
+                                                                                Ty.path
+                                                                                  "core::fmt::Arguments",
+                                                                                "new",
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    49;
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    1
+                                                                                ],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.deref (|
+                                                                                    M.mk_byte_str_ref
+                                                                                      49
+                                                                                      [
+                                                                                        46;
+                                                                                        84;
+                                                                                        114;
+                                                                                        117;
+                                                                                        115;
+                                                                                        116;
+                                                                                        101;
+                                                                                        100;
+                                                                                        76;
+                                                                                        101;
+                                                                                        110;
+                                                                                        32;
+                                                                                        105;
+                                                                                        116;
+                                                                                        101;
+                                                                                        114;
+                                                                                        97;
+                                                                                        116;
+                                                                                        111;
+                                                                                        114;
+                                                                                        39;
+                                                                                        115;
+                                                                                        32;
+                                                                                        115;
+                                                                                        105;
+                                                                                        122;
+                                                                                        101;
+                                                                                        32;
+                                                                                        104;
+                                                                                        105;
+                                                                                        110;
+                                                                                        116;
+                                                                                        32;
+                                                                                        105;
+                                                                                        115;
+                                                                                        32;
+                                                                                        110;
+                                                                                        111;
+                                                                                        116;
+                                                                                        32;
+                                                                                        101;
+                                                                                        120;
+                                                                                        97;
+                                                                                        99;
+                                                                                        116;
+                                                                                        58;
+                                                                                        32;
+                                                                                        192;
+                                                                                        0
+                                                                                      ]
+                                                                                  |)
+                                                                                |);
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.deref (|
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      args
+                                                                                    |)
+                                                                                  |)
+                                                                                |)
+                                                                              ]
                                                                             |)
-                                                                          ]
+                                                                          |)
                                                                         |)
                                                                       ]
                                                                   ]
@@ -20191,27 +22041,11 @@ Module sync.
                                   Ty.path "core::fmt::Arguments",
                                   M.get_associated_function (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
+                                    "from_str",
+                                    [],
                                     []
                                   |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array [ mk_str (| "capacity overflow" |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
+                                  [ mk_str (| "capacity overflow" |) ]
                                 |)
                               ]
                             |)
@@ -20357,7 +22191,7 @@ Module sync.
   (*
   unsafe fn data_offset<T: ?Sized>(ptr: *const T) -> usize {
       // Align the unsized value to the end of the ArcInner.
-      // Because RcInner is repr(C), it will always be the last field in memory.
+      // Because ArcInner is repr(C), it will always be the last field in memory.
       // SAFETY: since the only unsized types possible are slices, trait objects,
       // and extern types, the input safety requirement is currently enough to
       // satisfy the requirements of align_of_val_raw; this is an implementation
@@ -20713,6 +22547,457 @@ Module sync.
       M.IsAssociatedFunction.C (Self T A) "new" (new T A).
     Admitted.
     Global Typeclasses Opaque new.
+    
+    (*
+        fn try_new(for_value: &T, alloc: A) -> Result<UniqueArcUninit<T, A>, AllocError> {
+            let layout = Layout::for_value(for_value);
+            let ptr = unsafe {
+                Arc::try_allocate_for_layout(
+                    layout,
+                    |layout_for_arcinner| alloc.allocate(layout_for_arcinner),
+                    |mem| mem.with_metadata_of(ptr::from_ref(for_value) as *const ArcInner<T>),
+                )?
+            };
+            Ok(Self { ptr: NonNull::new(ptr).unwrap(), layout_for_value: layout, alloc: Some(alloc) })
+        }
+    *)
+    Definition try_new (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ for_value; alloc ] =>
+        ltac:(M.monadic
+          (let for_value := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], for_value |) in
+          let alloc := M.alloc (| A, alloc |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ];
+                Ty.path "core::alloc::AllocError"
+              ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ layout : Ty.path "core::alloc::layout::Layout" :=
+                  M.call_closure (|
+                    Ty.path "core::alloc::layout::Layout",
+                    M.get_associated_function (|
+                      Ty.path "core::alloc::layout::Layout",
+                      "for_value",
+                      [],
+                      [ T ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| for_value |) |) |) ]
+                  |) in
+                let~ ptr :
+                    Ty.apply
+                      (Ty.path "*mut")
+                      []
+                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ] :=
+                  M.match_operator (|
+                    Ty.apply
+                      (Ty.path "*mut")
+                      []
+                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "core::convert::Infallible"; Ty.path "core::alloc::AllocError"
+                            ];
+                          Ty.apply
+                            (Ty.path "*mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "core::convert::Infallible";
+                                Ty.path "core::alloc::AllocError"
+                              ];
+                            Ty.apply
+                              (Ty.path "*mut")
+                              []
+                              [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "*mut")
+                                []
+                                [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ];
+                              Ty.path "core::alloc::AllocError"
+                            ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ];
+                                Ty.path "core::alloc::AllocError"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              "try_allocate_for_layout",
+                              [],
+                              [
+                                Ty.function
+                                  [ Ty.path "core::alloc::layout::Layout" ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                                      Ty.path "core::alloc::AllocError"
+                                    ]);
+                                Ty.function
+                                  [ Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] ]
+                                  (Ty.apply
+                                    (Ty.path "*mut")
+                                    []
+                                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ])
+                              ]
+                            |),
+                            [
+                              M.read (| layout |);
+                              M.closure
+                                (fun γ =>
+                                  ltac:(M.monadic
+                                    match γ with
+                                    | [ α0 ] =>
+                                      ltac:(M.monadic
+                                        (M.match_operator (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                                              Ty.path "core::alloc::AllocError"
+                                            ],
+                                          M.alloc (| Ty.path "core::alloc::layout::Layout", α0 |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let layout_for_arcinner :=
+                                                  M.copy (|
+                                                    Ty.path "core::alloc::layout::Layout",
+                                                    γ
+                                                  |) in
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::ptr::non_null::NonNull")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ];
+                                                      Ty.path "core::alloc::AllocError"
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::alloc::Allocator",
+                                                    A,
+                                                    [],
+                                                    [],
+                                                    "allocate",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (| Pointer.Kind.Ref, alloc |);
+                                                    M.read (| layout_for_arcinner |)
+                                                  ]
+                                                |)))
+                                          ]
+                                        |)))
+                                    | _ => M.impossible "wrong number of arguments"
+                                    end));
+                              M.closure
+                                (fun γ =>
+                                  ltac:(M.monadic
+                                    match γ with
+                                    | [ α0 ] =>
+                                      ltac:(M.monadic
+                                        (M.match_operator (|
+                                          Ty.apply
+                                            (Ty.path "*mut")
+                                            []
+                                            [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            α0
+                                          |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let mem :=
+                                                  M.copy (|
+                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                    γ
+                                                  |) in
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "*mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::sync::ArcInner")
+                                                        []
+                                                        [ T ]
+                                                    ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                    "with_metadata_of",
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::sync::ArcInner")
+                                                        []
+                                                        [ T ]
+                                                    ]
+                                                  |),
+                                                  [
+                                                    M.read (| mem |);
+                                                    M.cast
+                                                      (Ty.apply
+                                                        (Ty.path "*const")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "alloc::sync::ArcInner")
+                                                            []
+                                                            [ T ]
+                                                        ])
+                                                      (M.call_closure (|
+                                                        Ty.apply (Ty.path "*const") [] [ T ],
+                                                        M.get_function (|
+                                                          "core::ptr::from_ref",
+                                                          [],
+                                                          [ T ]
+                                                        |),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| for_value |) |)
+                                                          |)
+                                                        ]
+                                                      |))
+                                                  ]
+                                                |)))
+                                          ]
+                                        |)))
+                                    | _ => M.impossible "wrong number of arguments"
+                                    end))
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::convert::Infallible";
+                                  Ty.path "core::alloc::AllocError"
+                                ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ];
+                                      Ty.path "core::alloc::AllocError"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::sync::UniqueArcUninit")
+                                          []
+                                          [ T; A ];
+                                        Ty.path "core::alloc::AllocError"
+                                      ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::alloc::AllocError"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "*mut")
+                                []
+                                [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                              γ0_0
+                            |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ];
+                      Ty.path "core::alloc::AllocError"
+                    ],
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [
+                      Ty.apply (Ty.path "alloc::sync::UniqueArcUninit") [] [ T; A ];
+                      Ty.path "core::alloc::AllocError"
+                    ]
+                    [
+                      Value.mkStructRecord
+                        "alloc::sync::UniqueArcUninit"
+                        []
+                        [ T; A ]
+                        [
+                          ("ptr",
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                                  ],
+                                "unwrap",
+                                [],
+                                []
+                              |),
+                              [
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                                    "new",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| ptr |) ]
+                                |)
+                              ]
+                            |));
+                          ("layout_for_value", M.read (| layout |));
+                          ("alloc",
+                            Value.StructTuple
+                              "core::option::Option::Some"
+                              []
+                              [ A ]
+                              [ M.read (| alloc |) ])
+                        ]
+                    ]
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_try_new :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "try_new" (try_new T A).
+    Admitted.
+    Global Typeclasses Opaque try_new.
     
     (*
         fn data_ptr(&mut self) -> *mut T {
@@ -21109,64 +23394,6 @@ Module sync.
       Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
     
     (*
-        fn description(&self) -> &str {
-            core::error::Error::description(&**self)
-        }
-    *)
-    Definition description (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (|
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                M.get_trait_method (| "core::error::Error", T, [], [], "description", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ T ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.apply
-                                (Ty.path "alloc::sync::Arc")
-                                []
-                                [ T; Ty.path "alloc::alloc::Global" ],
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    (*
         fn cause(&self) -> Option<&dyn core::error::Error> {
             core::error::Error::cause(&**self)
         }
@@ -21347,10 +23574,4510 @@ Module sync.
         (Self T)
         (* Instance *)
         [
-          ("description", InstanceField.Method (description T));
           ("cause", InstanceField.Method (cause T));
           ("source", InstanceField.Method (source T));
           ("provide", InstanceField.Method (provide T))
         ].
   End Impl_core_error_Error_where_core_error_Error_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
+  
+  (* StructRecord
+    {
+      name := "UniqueArc";
+      const_params := [];
+      ty_params := [ "T"; "A" ];
+      fields :=
+        [
+          ("ptr",
+            Ty.apply
+              (Ty.path "core::ptr::non_null::NonNull")
+              []
+              [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]);
+          ("_marker",
+            Ty.apply
+              (Ty.path "core::marker::PhantomData")
+              []
+              [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]);
+          ("_marker2",
+            Ty.apply
+              (Ty.path "core::marker::PhantomData")
+              []
+              [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+          ("alloc", A)
+        ];
+    } *)
+  
+  Module Impl_core_marker_Send_where_core_marker_Sized_T_where_core_marker_Sync_T_where_core_marker_Send_T_where_core_alloc_Allocator_A_where_core_marker_Send_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Send"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [].
+  End Impl_core_marker_Send_where_core_marker_Sized_T_where_core_marker_Sync_T_where_core_marker_Send_T_where_core_alloc_Allocator_A_where_core_marker_Send_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_marker_Sync_where_core_marker_Sized_T_where_core_marker_Sync_T_where_core_marker_Send_T_where_core_alloc_Allocator_A_where_core_marker_Sync_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Sync"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [].
+  End Impl_core_marker_Sync_where_core_marker_Sized_T_where_core_marker_Sync_T_where_core_marker_Send_T_where_core_alloc_Allocator_A_where_core_marker_Sync_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_where_core_alloc_Allocator_A_alloc_sync_UniqueArc_U_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T U A : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    Axiom Implements :
+      forall (T U A : Ty.t),
+      M.IsTraitInstance
+        "core::ops::unsize::CoerceUnsized"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ U; A ] ]
+        (Self T U A)
+        (* Instance *) [].
+  End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_where_core_alloc_Allocator_A_alloc_sync_UniqueArc_U_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_alloc_sync_UniqueArc_U_alloc_alloc_Global_for_alloc_sync_UniqueArc_T_alloc_alloc_Global.
+    Definition Self (T U : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ].
+    
+    Axiom Implements :
+      forall (T U : Ty.t),
+      M.IsTraitInstance
+        "core::ops::unsize::DispatchFromDyn"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *)
+        [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ U; Ty.path "alloc::alloc::Global" ] ]
+        (Self T U)
+        (* Instance *) [].
+  End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_alloc_sync_UniqueArc_U_alloc_alloc_Global_for_alloc_sync_UniqueArc_T_alloc_alloc_Global.
+  
+  Module Impl_core_fmt_Display_where_core_marker_Sized_T_where_core_fmt_Display_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            fmt::Display::fmt(&**self, f)
+        }
+    *)
+    Definition fmt (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_trait_method (| "core::fmt::Display", T, [], [], "fmt", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |)
+                  |)
+                |)
+              |);
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::fmt::Display"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt T A)) ].
+  End Impl_core_fmt_Display_where_core_marker_Sized_T_where_core_fmt_Display_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_fmt_Debug_where_core_marker_Sized_T_where_core_fmt_Debug_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            fmt::Debug::fmt(&**self, f)
+        }
+    *)
+    Definition fmt (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_trait_method (| "core::fmt::Debug", T, [], [], "fmt", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |)
+                  |)
+                |)
+              |);
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt T A)) ].
+  End Impl_core_fmt_Debug_where_core_marker_Sized_T_where_core_fmt_Debug_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_fmt_Pointer_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            fmt::Pointer::fmt(&(&raw const **self), f)
+        }
+    *)
+    Definition fmt (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_trait_method (|
+              "core::fmt::Pointer",
+              Ty.apply (Ty.path "*const") [] [ T ],
+              [],
+              [],
+              "fmt",
+              [],
+              []
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.apply (Ty.path "*const") [] [ T ],
+                      M.borrow (|
+                        Pointer.Kind.ConstPointer,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                |)
+              |);
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::fmt::Pointer"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt T A)) ].
+  End Impl_core_fmt_Pointer_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_borrow_Borrow_where_core_marker_Sized_T_where_core_alloc_Allocator_A_T_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn borrow(&self) -> &T {
+            &**self
+        }
+    *)
+    Definition borrow (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          M.borrow (|
+            Pointer.Kind.Ref,
+            M.deref (|
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::borrow::Borrow"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ T ]
+        (Self T A)
+        (* Instance *) [ ("borrow", InstanceField.Method (borrow T A)) ].
+  End Impl_core_borrow_Borrow_where_core_marker_Sized_T_where_core_alloc_Allocator_A_T_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_borrow_BorrowMut_where_core_marker_Sized_T_where_core_alloc_Allocator_A_T_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn borrow_mut(&mut self) -> &mut T {
+            &mut **self
+        }
+    *)
+    Definition borrow_mut (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          M.borrow (|
+            Pointer.Kind.MutRef,
+            M.deref (|
+              M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::DerefMut",
+                          Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                          [],
+                          [],
+                          "deref_mut",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |)
+                  |)
+                |)
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::borrow::BorrowMut"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ T ]
+        (Self T A)
+        (* Instance *) [ ("borrow_mut", InstanceField.Method (borrow_mut T A)) ].
+  End Impl_core_borrow_BorrowMut_where_core_marker_Sized_T_where_core_alloc_Allocator_A_T_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_alloc_Allocator_A_T_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn as_ref(&self) -> &T {
+            &**self
+        }
+    *)
+    Definition as_ref (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          M.borrow (|
+            Pointer.Kind.Ref,
+            M.deref (|
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::convert::AsRef"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ T ]
+        (Self T A)
+        (* Instance *) [ ("as_ref", InstanceField.Method (as_ref T A)) ].
+  End Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_alloc_Allocator_A_T_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_convert_AsMut_where_core_marker_Sized_T_where_core_alloc_Allocator_A_T_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn as_mut(&mut self) -> &mut T {
+            &mut **self
+        }
+    *)
+    Definition as_mut (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          M.borrow (|
+            Pointer.Kind.MutRef,
+            M.deref (|
+              M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::DerefMut",
+                          Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                          [],
+                          [],
+                          "deref_mut",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |)
+                  |)
+                |)
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::convert::AsMut"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ T ]
+        (Self T A)
+        (* Instance *) [ ("as_mut", InstanceField.Method (as_mut T A)) ].
+  End Impl_core_convert_AsMut_where_core_marker_Sized_T_where_core_alloc_Allocator_A_T_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_marker_Unpin_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Unpin"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [].
+  End Impl_core_marker_Unpin_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_cmp_PartialEq_where_core_marker_Sized_T_where_core_cmp_PartialEq_T_where_core_alloc_Allocator_A_alloc_sync_UniqueArc_T_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn eq(&self, other: &Self) -> bool {
+            PartialEq::eq(&**self, &**other)
+        }
+    *)
+    Definition eq (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              other
+            |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |)
+                  |)
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                      |)
+                    |)
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::PartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ]
+        (Self T A)
+        (* Instance *) [ ("eq", InstanceField.Method (eq T A)) ].
+  End Impl_core_cmp_PartialEq_where_core_marker_Sized_T_where_core_cmp_PartialEq_T_where_core_alloc_Allocator_A_alloc_sync_UniqueArc_T_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_cmp_PartialOrd_where_core_marker_Sized_T_where_core_cmp_PartialOrd_T_where_core_alloc_Allocator_A_alloc_sync_UniqueArc_T_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn partial_cmp(&self, other: &UniqueArc<T, A>) -> Option<Ordering> {
+            ( **self).partial_cmp(&**other)
+        }
+    *)
+    Definition partial_cmp (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              other
+            |) in
+          M.call_closure (|
+            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+            M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "partial_cmp", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                      |)
+                    |)
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn lt(&self, other: &UniqueArc<T, A>) -> bool {
+            **self < **other
+        }
+    *)
+    Definition lt (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              other
+            |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "lt", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn le(&self, other: &UniqueArc<T, A>) -> bool {
+            **self <= **other
+        }
+    *)
+    Definition le (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              other
+            |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "le", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn gt(&self, other: &UniqueArc<T, A>) -> bool {
+            **self > **other
+        }
+    *)
+    Definition gt (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              other
+            |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "gt", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn ge(&self, other: &UniqueArc<T, A>) -> bool {
+            **self >= **other
+        }
+    *)
+    Definition ge (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              other
+            |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "ge", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::PartialOrd"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ]
+        (Self T A)
+        (* Instance *)
+        [
+          ("partial_cmp", InstanceField.Method (partial_cmp T A));
+          ("lt", InstanceField.Method (lt T A));
+          ("le", InstanceField.Method (le T A));
+          ("gt", InstanceField.Method (gt T A));
+          ("ge", InstanceField.Method (ge T A))
+        ].
+  End Impl_core_cmp_PartialOrd_where_core_marker_Sized_T_where_core_cmp_PartialOrd_T_where_core_alloc_Allocator_A_alloc_sync_UniqueArc_T_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_cmp_Ord_where_core_marker_Sized_T_where_core_cmp_Ord_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn cmp(&self, other: &UniqueArc<T, A>) -> Ordering {
+            ( **self).cmp(&**other)
+        }
+    *)
+    Definition cmp (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              other
+            |) in
+          M.call_closure (|
+            Ty.path "core::cmp::Ordering",
+            M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                      |)
+                    |)
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::Ord"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [ ("cmp", InstanceField.Method (cmp T A)) ].
+  End Impl_core_cmp_Ord_where_core_marker_Sized_T_where_core_cmp_Ord_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_cmp_Eq_where_core_marker_Sized_T_where_core_cmp_Eq_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::Eq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [].
+  End Impl_core_cmp_Eq_where_core_marker_Sized_T_where_core_cmp_Eq_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_hash_Hash_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn hash<H: Hasher>(&self, state: &mut H) {
+            ( **self).hash(state);
+        }
+    *)
+    Definition hash (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [ H ], [ self; state ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], state |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ H ] |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |)
+                  |);
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::hash::Hash"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [ ("hash", InstanceField.Method (hash T A)) ].
+  End Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_hash_Hash_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_alloc_sync_UniqueArc_T_alloc_alloc_Global.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ].
+    
+    (*
+        pub fn new(value: T) -> Self {
+            Self::new_in(value, Global)
+        }
+    *)
+    Definition new (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ value ] =>
+        ltac:(M.monadic
+          (let value := M.alloc (| T, value |) in
+          M.call_closure (|
+            Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ],
+            M.get_associated_function (|
+              Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              "new_in",
+              [],
+              []
+            |),
+            [ M.read (| value |); Value.StructTuple "alloc::alloc::Global" [] [] [] ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Admitted.
+    Global Typeclasses Opaque new.
+    
+    (*
+        pub fn map<U>(this: Self, f: impl FnOnce(T) -> U) -> UniqueArc<U> {
+            if size_of::<T>() == size_of::<U>()
+                && align_of::<T>() == align_of::<U>()
+                && UniqueArc::weak_count(&this) == 0
+            {
+                unsafe {
+                    let ptr = UniqueArc::into_raw(this);
+                    let value = ptr.read();
+                    let mut allocation = UniqueArc::from_raw(ptr.cast::<mem::MaybeUninit<U>>());
+    
+                    allocation.write(f(value));
+                    allocation.assume_init()
+                }
+            } else {
+                UniqueArc::new(f(UniqueArc::unwrap(this)))
+            }
+        }
+    *)
+    Definition map (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [ U; impl_FnOnce_T__arrow_U ], [ this; f ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              this
+            |) in
+          let f := M.alloc (| impl_FnOnce_T__arrow_U, f |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ U; Ty.path "alloc::alloc::Global" ],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.eq,
+                        [
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_function (| "core::mem::size_of", [], [ T ] |),
+                            []
+                          |);
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_function (| "core::mem::size_of", [], [ U ] |),
+                            []
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.eq,
+                        [
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_function (| "core::mem::align_of", [], [ T ] |),
+                            []
+                          |);
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_function (| "core::mem::align_of", [], [ U ] |),
+                            []
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.eq,
+                        [
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::UniqueArc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              "weak_count",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, this |) |)
+                              |)
+                            ]
+                          |);
+                          Value.Integer IntegerKind.Usize 0
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.read (|
+                    let~ ptr : Ty.apply (Ty.path "*const") [] [ T ] :=
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*const") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::sync::UniqueArc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          "into_raw",
+                          [],
+                          []
+                        |),
+                        [ M.read (| this |) ]
+                      |) in
+                    let~ value : T :=
+                      M.call_closure (|
+                        T,
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "*const") [] [ T ],
+                          "read",
+                          [],
+                          []
+                        |),
+                        [ M.read (| ptr |) ]
+                      |) in
+                    let~ allocation :
+                        Ty.apply
+                          (Ty.path "alloc::sync::UniqueArc")
+                          []
+                          [
+                            Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ];
+                            Ty.path "alloc::alloc::Global"
+                          ] :=
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::sync::UniqueArc")
+                          []
+                          [
+                            Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::sync::UniqueArc")
+                            []
+                            [
+                              Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          "from_raw",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "*const")
+                              []
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ]
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "*const") [] [ T ],
+                              "cast",
+                              [],
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ] ]
+                            |),
+                            [ M.read (| ptr |) ]
+                          |)
+                        ]
+                      |) in
+                    let~ _ : Ty.apply (Ty.path "&mut") [] [ U ] :=
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ U ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ],
+                          "write",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ U ]
+                                  ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::DerefMut",
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::UniqueArc")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ U ];
+                                      Ty.path "alloc::alloc::Global"
+                                    ],
+                                  [],
+                                  [],
+                                  "deref_mut",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.MutRef, allocation |) ]
+                              |)
+                            |)
+                          |);
+                          M.call_closure (|
+                            U,
+                            M.get_trait_method (|
+                              "core::ops::function::FnOnce",
+                              impl_FnOnce_T__arrow_U,
+                              [],
+                              [ Ty.tuple [ T ] ],
+                              "call_once",
+                              [],
+                              []
+                            |),
+                            [ M.read (| f |); Value.Tuple [ M.read (| value |) ] ]
+                          |)
+                        ]
+                      |) in
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "alloc::sync::UniqueArc")
+                        []
+                        [ U; Ty.path "alloc::alloc::Global" ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::sync::UniqueArc")
+                          []
+                          [ U; Ty.path "alloc::alloc::Global" ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::sync::UniqueArc")
+                            []
+                            [
+                              Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ U ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          "assume_init",
+                          [],
+                          []
+                        |),
+                        [ M.read (| allocation |) ]
+                      |)
+                    |)
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::sync::UniqueArc")
+                      []
+                      [ U; Ty.path "alloc::alloc::Global" ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::sync::UniqueArc")
+                        []
+                        [ U; Ty.path "alloc::alloc::Global" ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.call_closure (|
+                        U,
+                        M.get_trait_method (|
+                          "core::ops::function::FnOnce",
+                          impl_FnOnce_T__arrow_U,
+                          [],
+                          [ Ty.tuple [ T ] ],
+                          "call_once",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (| f |);
+                          Value.Tuple
+                            [
+                              M.call_closure (|
+                                T,
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::UniqueArc")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ],
+                                  "unwrap",
+                                  [],
+                                  []
+                                |),
+                                [ M.read (| this |) ]
+                              |)
+                            ]
+                        ]
+                      |)
+                    ]
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_map :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "map" (map T).
+    Admitted.
+    Global Typeclasses Opaque map.
+    
+    (*
+        pub fn try_map<R>(
+            this: Self,
+            f: impl FnOnce(T) -> R,
+        ) -> <R::Residual as Residual<UniqueArc<R::Output>>>::TryType
+        where
+            R: Try,
+            R::Residual: Residual<UniqueArc<R::Output>>,
+        {
+            if size_of::<T>() == size_of::<R::Output>()
+                && align_of::<T>() == align_of::<R::Output>()
+                && UniqueArc::weak_count(&this) == 0
+            {
+                unsafe {
+                    let ptr = UniqueArc::into_raw(this);
+                    let value = ptr.read();
+                    let mut allocation = UniqueArc::from_raw(ptr.cast::<mem::MaybeUninit<R::Output>>());
+    
+                    allocation.write(f(value)?);
+                    try { allocation.assume_init() }
+                }
+            } else {
+                try { UniqueArc::new(f(UniqueArc::unwrap(this))?) }
+            }
+        }
+    *)
+    Definition try_map (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [ R; impl_FnOnce_T__arrow_R ], [ this; f ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              this
+            |) in
+          let f := M.alloc (| impl_FnOnce_T__arrow_R, f |) in
+          M.catch_return
+            (Ty.associated_in_trait
+              "core::ops::try_trait::Residual"
+              []
+              [
+                Ty.apply
+                  (Ty.path "alloc::sync::UniqueArc")
+                  []
+                  [
+                    Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output";
+                    Ty.path "alloc::alloc::Global"
+                  ]
+              ]
+              (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+              "TryType") (|
+            ltac:(M.monadic
+              (M.match_operator (|
+                Ty.associated_in_trait
+                  "core::ops::try_trait::Residual"
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::sync::UniqueArc")
+                      []
+                      [
+                        Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output";
+                        Ty.path "alloc::alloc::Global"
+                      ]
+                  ]
+                  (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+                  "TryType",
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.eq,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::size_of", [], [ T ] |),
+                                []
+                              |);
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (|
+                                  "core::mem::size_of",
+                                  [],
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output"
+                                  ]
+                                |),
+                                []
+                              |)
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.eq,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |);
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (|
+                                  "core::mem::align_of",
+                                  [],
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output"
+                                  ]
+                                |),
+                                []
+                              |)
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.eq,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::UniqueArc")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ],
+                                  "weak_count",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.borrow (| Pointer.Kind.Ref, this |) |)
+                                  |)
+                                ]
+                              |);
+                              Value.Integer IntegerKind.Usize 0
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.read (|
+                        let~ ptr : Ty.apply (Ty.path "*const") [] [ T ] :=
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*const") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::UniqueArc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              "into_raw",
+                              [],
+                              []
+                            |),
+                            [ M.read (| this |) ]
+                          |) in
+                        let~ value : T :=
+                          M.call_closure (|
+                            T,
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "*const") [] [ T ],
+                              "read",
+                              [],
+                              []
+                            |),
+                            [ M.read (| ptr |) ]
+                          |) in
+                        let~ allocation :
+                            Ty.apply
+                              (Ty.path "alloc::sync::UniqueArc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ] :=
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::sync::UniqueArc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::UniqueArc")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output"
+                                    ];
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              "from_raw",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "*const")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Output"
+                                      ]
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "*const") [] [ T ],
+                                  "cast",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Output"
+                                      ]
+                                  ]
+                                |),
+                                [ M.read (| ptr |) ]
+                              |)
+                            ]
+                          |) in
+                        let~ _ :
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output"
+                              ] :=
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ops::try_trait::Try"
+                                    []
+                                    []
+                                    R
+                                    "Output"
+                                ],
+                              "write",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "core::ops::try_trait::Try"
+                                              []
+                                              []
+                                              R
+                                              "Output"
+                                          ]
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::DerefMut",
+                                      Ty.apply
+                                        (Ty.path "alloc::sync::UniqueArc")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [
+                                              Ty.associated_in_trait
+                                                "core::ops::try_trait::Try"
+                                                []
+                                                []
+                                                R
+                                                "Output"
+                                            ];
+                                          Ty.path "alloc::alloc::Global"
+                                        ],
+                                      [],
+                                      [],
+                                      "deref_mut",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.borrow (| Pointer.Kind.MutRef, allocation |) ]
+                                  |)
+                                |)
+                              |);
+                              M.match_operator (|
+                                Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output",
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Residual";
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output"
+                                    ],
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Residual";
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Output"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::Try",
+                                      R,
+                                      [],
+                                      [],
+                                      "branch",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        R,
+                                        M.get_trait_method (|
+                                          "core::ops::function::FnOnce",
+                                          impl_FnOnce_T__arrow_R,
+                                          [],
+                                          [ Ty.tuple [ T ] ],
+                                          "call_once",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.read (| f |); Value.Tuple [ M.read (| value |) ] ]
+                                      |)
+                                    ]
+                                  |)
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Break",
+                                          0
+                                        |) in
+                                      let residual :=
+                                        M.copy (|
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Residual",
+                                          γ0_0
+                                        |) in
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.return_ (|
+                                            M.call_closure (|
+                                              Ty.associated_in_trait
+                                                "core::ops::try_trait::Residual"
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::sync::UniqueArc")
+                                                    []
+                                                    [
+                                                      Ty.associated_in_trait
+                                                        "core::ops::try_trait::Try"
+                                                        []
+                                                        []
+                                                        R
+                                                        "Output";
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ]
+                                                ]
+                                                (Ty.associated_in_trait
+                                                  "core::ops::try_trait::Try"
+                                                  []
+                                                  []
+                                                  R
+                                                  "Residual")
+                                                "TryType",
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::FromResidual",
+                                                Ty.associated_in_trait
+                                                  "core::ops::try_trait::Residual"
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::sync::UniqueArc")
+                                                      []
+                                                      [
+                                                        Ty.associated_in_trait
+                                                          "core::ops::try_trait::Try"
+                                                          []
+                                                          []
+                                                          R
+                                                          "Output";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ]
+                                                  (Ty.associated_in_trait
+                                                    "core::ops::try_trait::Try"
+                                                    []
+                                                    []
+                                                    R
+                                                    "Residual")
+                                                  "TryType",
+                                                [],
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "core::ops::try_trait::Try"
+                                                    []
+                                                    []
+                                                    R
+                                                    "Residual"
+                                                ],
+                                                "from_residual",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| residual |) ]
+                                            |)
+                                          |)
+                                        |)
+                                      |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Continue",
+                                          0
+                                        |) in
+                                      let val :=
+                                        M.copy (|
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Output",
+                                          γ0_0
+                                        |) in
+                                      M.read (| val |)))
+                                ]
+                              |)
+                            ]
+                          |) in
+                        M.alloc (|
+                          Ty.associated_in_trait
+                            "core::ops::try_trait::Residual"
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::sync::UniqueArc")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ops::try_trait::Try"
+                                    []
+                                    []
+                                    R
+                                    "Output";
+                                  Ty.path "alloc::alloc::Global"
+                                ]
+                            ]
+                            (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+                            "TryType",
+                          M.call_closure (|
+                            Ty.associated_in_trait
+                              "core::ops::try_trait::Residual"
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::UniqueArc")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output";
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
+                              ]
+                              (Ty.associated_in_trait
+                                "core::ops::try_trait::Try"
+                                []
+                                []
+                                R
+                                "Residual")
+                              "TryType",
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.associated_in_trait
+                                "core::ops::try_trait::Residual"
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::UniqueArc")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output";
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ]
+                                (Ty.associated_in_trait
+                                  "core::ops::try_trait::Try"
+                                  []
+                                  []
+                                  R
+                                  "Residual")
+                                "TryType",
+                              [],
+                              [],
+                              "from_output",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "alloc::sync::UniqueArc")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::ops::try_trait::Try"
+                                      []
+                                      []
+                                      R
+                                      "Output";
+                                    Ty.path "alloc::alloc::Global"
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::UniqueArc")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Output"
+                                        ];
+                                      Ty.path "alloc::alloc::Global"
+                                    ],
+                                  "assume_init",
+                                  [],
+                                  []
+                                |),
+                                [ M.read (| allocation |) ]
+                              |)
+                            ]
+                          |)
+                        |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.associated_in_trait
+                          "core::ops::try_trait::Residual"
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::sync::UniqueArc")
+                              []
+                              [
+                                Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output";
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ]
+                          (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+                          "TryType",
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.associated_in_trait
+                            "core::ops::try_trait::Residual"
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::sync::UniqueArc")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ops::try_trait::Try"
+                                    []
+                                    []
+                                    R
+                                    "Output";
+                                  Ty.path "alloc::alloc::Global"
+                                ]
+                            ]
+                            (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+                            "TryType",
+                          [],
+                          [],
+                          "from_output",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::sync::UniqueArc")
+                              []
+                              [
+                                Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output";
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::UniqueArc")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ops::try_trait::Try"
+                                    []
+                                    []
+                                    R
+                                    "Output";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              "new",
+                              [],
+                              []
+                            |),
+                            [
+                              M.match_operator (|
+                                Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output",
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Residual";
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output"
+                                    ],
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Residual";
+                                        Ty.associated_in_trait
+                                          "core::ops::try_trait::Try"
+                                          []
+                                          []
+                                          R
+                                          "Output"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::Try",
+                                      R,
+                                      [],
+                                      [],
+                                      "branch",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        R,
+                                        M.get_trait_method (|
+                                          "core::ops::function::FnOnce",
+                                          impl_FnOnce_T__arrow_R,
+                                          [],
+                                          [ Ty.tuple [ T ] ],
+                                          "call_once",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (| f |);
+                                          Value.Tuple
+                                            [
+                                              M.call_closure (|
+                                                T,
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "alloc::sync::UniqueArc")
+                                                    []
+                                                    [ T; Ty.path "alloc::alloc::Global" ],
+                                                  "unwrap",
+                                                  [],
+                                                  []
+                                                |),
+                                                [ M.read (| this |) ]
+                                              |)
+                                            ]
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Break",
+                                          0
+                                        |) in
+                                      let residual :=
+                                        M.copy (|
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Residual",
+                                          γ0_0
+                                        |) in
+                                      M.never_to_any (| M.read (| M.break (||) |) |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Continue",
+                                          0
+                                        |) in
+                                      let val :=
+                                        M.copy (|
+                                          Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Output",
+                                          γ0_0
+                                        |) in
+                                      M.read (| val |)))
+                                ]
+                              |)
+                            ]
+                          |)
+                        ]
+                      |)))
+                ]
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_try_map :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "try_map" (try_map T).
+    Admitted.
+    Global Typeclasses Opaque try_map.
+    
+    (*
+        fn unwrap(this: Self) -> T {
+            let this = ManuallyDrop::new(this);
+            let val: T = unsafe { ptr::read(&**this) };
+    
+            let _weak = Weak { ptr: this.ptr, alloc: Global };
+    
+            val
+        }
+    *)
+    Definition unwrap (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ this ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              this
+            |) in
+          M.read (|
+            let~ this :
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::sync::UniqueArc")
+                      []
+                      [ T; Ty.path "alloc::alloc::Global" ]
+                  ] :=
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::sync::UniqueArc")
+                      []
+                      [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::sync::UniqueArc")
+                        []
+                        [ T; Ty.path "alloc::alloc::Global" ]
+                    ],
+                  "new",
+                  [],
+                  []
+                |),
+                [ M.read (| this |) ]
+              |) in
+            let~ val : T :=
+              M.call_closure (|
+                T,
+                M.get_function (| "core::ptr::read", [], [ T ] |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.ConstPointer,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::sync::UniqueArc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::sync::UniqueArc")
+                                          []
+                                          [ T; Ty.path "alloc::alloc::Global" ]
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::Deref",
+                                      Ty.apply
+                                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::sync::UniqueArc")
+                                            []
+                                            [ T; Ty.path "alloc::alloc::Global" ]
+                                        ],
+                                      [],
+                                      [],
+                                      "deref",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |) in
+            let~ _weak :
+                Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; Ty.path "alloc::alloc::Global" ] :=
+              Value.mkStructRecord
+                "alloc::sync::Weak"
+                []
+                [ T; Ty.path "alloc::alloc::Global" ]
+                [
+                  ("ptr",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::UniqueArc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::UniqueArc")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ],
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                          |)
+                        |),
+                        "alloc::sync::UniqueArc",
+                        "ptr"
+                      |)
+                    |));
+                  ("alloc", Value.StructTuple "alloc::alloc::Global" [] [] [])
+                ] in
+            val
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_unwrap :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "unwrap" (unwrap T).
+    Admitted.
+    Global Typeclasses Opaque unwrap.
+    (*
+        unsafe fn from_raw(ptr: *const T) -> Self {
+            let offset = unsafe { data_offset(ptr) };
+    
+            // Reverse the offset to find the original ArcInner.
+            let rc_ptr = unsafe { ptr.byte_sub(offset) as *mut ArcInner<T> };
+    
+            Self {
+                ptr: unsafe { NonNull::new_unchecked(rc_ptr) },
+                _marker: PhantomData,
+                _marker2: PhantomData,
+                alloc: Global,
+            }
+        }
+    *)
+    Definition from_raw (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ ptr ] =>
+        ltac:(M.monadic
+          (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], ptr |) in
+          M.read (|
+            let~ offset : Ty.path "usize" :=
+              M.call_closure (|
+                Ty.path "usize",
+                M.get_function (| "alloc::sync::data_offset", [], [ T ] |),
+                [ M.read (| ptr |) ]
+              |) in
+            let~ rc_ptr :
+                Ty.apply
+                  (Ty.path "*mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ] :=
+              M.cast
+                (Ty.apply
+                  (Ty.path "*mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ])
+                (M.call_closure (|
+                  Ty.apply (Ty.path "*const") [] [ T ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "*const") [] [ T ],
+                    "byte_sub",
+                    [],
+                    []
+                  |),
+                  [ M.read (| ptr |); M.read (| offset |) ]
+                |)) in
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              Value.mkStructRecord
+                "alloc::sync::UniqueArc"
+                []
+                [ T; Ty.path "alloc::alloc::Global" ]
+                [
+                  ("ptr",
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                        "new_unchecked",
+                        [],
+                        []
+                      |),
+                      [ M.read (| rc_ptr |) ]
+                    |));
+                  ("_marker",
+                    Value.StructTuple
+                      "core::marker::PhantomData"
+                      []
+                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                      []);
+                  ("_marker2",
+                    Value.StructTuple
+                      "core::marker::PhantomData"
+                      []
+                      [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                      []);
+                  ("alloc", Value.StructTuple "alloc::alloc::Global" [] [] [])
+                ]
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_from_raw :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "from_raw" (from_raw T).
+    Admitted.
+    Global Typeclasses Opaque from_raw.
+    
+    (*
+        fn into_raw(this: Self) -> *const T {
+            let this = ManuallyDrop::new(this);
+            Self::as_ptr(&*this)
+        }
+    *)
+    Definition into_raw (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [ this ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ],
+              this
+            |) in
+          M.read (|
+            let~ this :
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::sync::UniqueArc")
+                      []
+                      [ T; Ty.path "alloc::alloc::Global" ]
+                  ] :=
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::sync::UniqueArc")
+                      []
+                      [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::sync::UniqueArc")
+                        []
+                        [ T; Ty.path "alloc::alloc::Global" ]
+                    ],
+                  "new",
+                  [],
+                  []
+                |),
+                [ M.read (| this |) ]
+              |) in
+            M.alloc (|
+              Ty.apply (Ty.path "*const") [] [ T ],
+              M.call_closure (|
+                Ty.apply (Ty.path "*const") [] [ T ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "alloc::sync::UniqueArc")
+                    []
+                    [ T; Ty.path "alloc::alloc::Global" ],
+                  "as_ptr",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::UniqueArc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::UniqueArc")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ],
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_into_raw :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "into_raw" (into_raw T).
+    Admitted.
+    Global Typeclasses Opaque into_raw.
+  End Impl_alloc_sync_UniqueArc_T_alloc_alloc_Global.
+  
+  
+  Module Impl_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        pub fn new_in(data: T, alloc: A) -> Self {
+            let (ptr, alloc) = Box::into_unique(Box::new_in(
+                ArcInner {
+                    strong: atomic::AtomicUsize::new(0),
+                    // keep one weak reference so if all the weak pointers that are created are dropped
+                    // the UniqueArc still stays valid.
+                    weak: atomic::AtomicUsize::new(1),
+                    data,
+                },
+                alloc,
+            ));
+            Self { ptr: ptr.into(), _marker: PhantomData, _marker2: PhantomData, alloc }
+        }
+    *)
+    Definition new_in (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ data; alloc ] =>
+        ltac:(M.monadic
+          (let data := M.alloc (| T, data |) in
+          let alloc := M.alloc (| A, alloc |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+            M.alloc (|
+              Ty.tuple
+                [
+                  Ty.apply
+                    (Ty.path "core::ptr::unique::Unique")
+                    []
+                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ];
+                  A
+                ],
+              M.call_closure (|
+                Ty.tuple
+                  [
+                    Ty.apply
+                      (Ty.path "core::ptr::unique::Unique")
+                      []
+                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ];
+                    A
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "alloc::boxed::Box")
+                    []
+                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ]; A ],
+                  "into_unique",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ]; A ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ]; A ],
+                      "new_in",
+                      [],
+                      []
+                    |),
+                    [
+                      Value.mkStructRecord
+                        "alloc::sync::ArcInner"
+                        []
+                        [ T ]
+                        [
+                          ("strong",
+                            M.call_closure (|
+                              Ty.path "core::sync::atomic::AtomicUsize",
+                              M.get_associated_function (|
+                                Ty.path "core::sync::atomic::AtomicUsize",
+                                "new",
+                                [],
+                                []
+                              |),
+                              [ Value.Integer IntegerKind.Usize 0 ]
+                            |));
+                          ("weak",
+                            M.call_closure (|
+                              Ty.path "core::sync::atomic::AtomicUsize",
+                              M.get_associated_function (|
+                                Ty.path "core::sync::atomic::AtomicUsize",
+                                "new",
+                                [],
+                                []
+                              |),
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                            |));
+                          ("data", M.read (| data |))
+                        ];
+                      M.read (| alloc |)
+                    ]
+                  |)
+                ]
+              |)
+            |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                  let ptr :=
+                    M.copy (|
+                      Ty.apply
+                        (Ty.path "core::ptr::unique::Unique")
+                        []
+                        [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                      γ0_0
+                    |) in
+                  let alloc := M.copy (| A, γ0_1 |) in
+                  Value.mkStructRecord
+                    "alloc::sync::UniqueArc"
+                    []
+                    [ T; A ]
+                    [
+                      ("ptr",
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.apply
+                              (Ty.path "core::ptr::unique::Unique")
+                              []
+                              [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                            [],
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                            ],
+                            "into",
+                            [],
+                            []
+                          |),
+                          [ M.read (| ptr |) ]
+                        |));
+                      ("_marker",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                          []);
+                      ("_marker2",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                          []);
+                      ("alloc", M.read (| alloc |))
+                    ]))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new_in :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "new_in" (new_in T A).
+    Admitted.
+    Global Typeclasses Opaque new_in.
+    (*
+        pub fn into_arc(this: Self) -> Arc<T, A> {
+            let this = ManuallyDrop::new(this);
+    
+            // Move the allocator out.
+            // SAFETY: `this.alloc` will not be accessed again, nor dropped because it is in
+            // a `ManuallyDrop`.
+            let alloc: A = unsafe { ptr::read(&this.alloc) };
+    
+            // SAFETY: This pointer was allocated at creation time so we know it is valid.
+            unsafe {
+                // Convert our weak reference into a strong reference
+                ( *this.ptr.as_ptr()).strong.store(1, Release);
+                Arc::from_inner_in(this.ptr, alloc)
+            }
+        }
+    *)
+    Definition into_arc (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ this ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (| Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ], this |) in
+          M.read (|
+            let~ this :
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ] :=
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                    []
+                    [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                  "new",
+                  [],
+                  []
+                |),
+                [ M.read (| this |) ]
+              |) in
+            let~ alloc : A :=
+              M.call_closure (|
+                A,
+                M.get_function (| "core::ptr::read", [], [ A ] |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.ConstPointer,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                              M.get_trait_method (|
+                                "core::ops::deref::Deref",
+                                Ty.apply
+                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                                [],
+                                [],
+                                "deref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                            |)
+                          |),
+                          "alloc::sync::UniqueArc",
+                          "alloc"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |) in
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (|
+                  Ty.path "core::sync::atomic::AtomicUsize",
+                  "store",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "*mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::Deref",
+                                      Ty.apply
+                                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                        []
+                                        [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                                      [],
+                                      [],
+                                      "deref",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                  |)
+                                |),
+                                "alloc::sync::UniqueArc",
+                                "ptr"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      "alloc::sync::ArcInner",
+                      "strong"
+                    |)
+                  |);
+                  Value.Integer IntegerKind.Usize 1;
+                  Value.StructTuple "core::sync::atomic::Ordering::Release" [] [] []
+                ]
+              |) in
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+              M.call_closure (|
+                Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                  "from_inner_in",
+                  [],
+                  []
+                |),
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                              []
+                              [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                        |)
+                      |),
+                      "alloc::sync::UniqueArc",
+                      "ptr"
+                    |)
+                  |);
+                  M.read (| alloc |)
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_into_arc :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "into_arc" (into_arc T A).
+    Admitted.
+    Global Typeclasses Opaque into_arc.
+    
+    (*
+        fn weak_count(this: &Self) -> usize {
+            this.inner().weak.load(Acquire) - 1
+        }
+    *)
+    Definition weak_count (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ this ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              this
+            |) in
+          M.call_closure (|
+            Ty.path "usize",
+            BinOp.Wrap.sub,
+            [
+              M.call_closure (|
+                Ty.path "usize",
+                M.get_associated_function (|
+                  Ty.path "core::sync::atomic::AtomicUsize",
+                  "load",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                            "inner",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| this |) |) |) ]
+                        |)
+                      |),
+                      "alloc::sync::ArcInner",
+                      "weak"
+                    |)
+                  |);
+                  Value.StructTuple "core::sync::atomic::Ordering::Acquire" [] [] []
+                ]
+              |);
+              Value.Integer IntegerKind.Usize 1
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_weak_count :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "weak_count" (weak_count T A).
+    Admitted.
+    Global Typeclasses Opaque weak_count.
+    
+    (*
+        fn inner(&self) -> &ArcInner<T> {
+            // SAFETY: while this UniqueArc is alive we're guaranteed that the inner pointer is valid.
+            unsafe { self.ptr.as_ref() }
+        }
+    *)
+    Definition inner (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          M.borrow (|
+            Pointer.Kind.Ref,
+            M.deref (|
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::ptr::non_null::NonNull")
+                    []
+                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                  "as_ref",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloc::sync::UniqueArc",
+                      "ptr"
+                    |)
+                  |)
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_inner :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "inner" (inner T A).
+    Admitted.
+    Global Typeclasses Opaque inner.
+    
+    (*
+        fn as_ptr(this: &Self) -> *const T {
+            let ptr: *mut ArcInner<T> = NonNull::as_ptr(this.ptr);
+    
+            // SAFETY: This cannot go through Deref::deref or UniqueArc::inner because
+            // this is required to retain raw/mut provenance such that e.g. `get_mut` can
+            // write through the pointer after the Rc is recovered through `from_raw`.
+            unsafe { &raw mut ( *ptr).data }
+        }
+    *)
+    Definition as_ptr (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ this ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              this
+            |) in
+          M.read (|
+            let~ ptr :
+                Ty.apply
+                  (Ty.path "*mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ] :=
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "*mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::ptr::non_null::NonNull")
+                    []
+                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                  "as_ptr",
+                  [],
+                  []
+                |),
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| this |) |),
+                      "alloc::sync::UniqueArc",
+                      "ptr"
+                    |)
+                  |)
+                ]
+              |) in
+            M.alloc (|
+              Ty.apply (Ty.path "*const") [] [ T ],
+              M.call_closure (|
+                Ty.apply (Ty.path "*const") [] [ T ],
+                M.pointer_coercion
+                  M.PointerCoercion.MutToConstPointer
+                  (Ty.apply (Ty.path "*mut") [] [ T ])
+                  (Ty.apply (Ty.path "*const") [] [ T ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutPointer,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| ptr |) |),
+                      "alloc::sync::ArcInner",
+                      "data"
+                    |)
+                  |)
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_as_ptr :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "as_ptr" (as_ptr T A).
+    Admitted.
+    Global Typeclasses Opaque as_ptr.
+    
+    (*
+        fn into_inner_with_allocator(this: Self) -> (NonNull<ArcInner<T>>, A) {
+            let this = mem::ManuallyDrop::new(this);
+            (this.ptr, unsafe { ptr::read(&this.alloc) })
+        }
+    *)
+    Definition into_inner_with_allocator
+        (T A : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ this ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (| Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ], this |) in
+          M.read (|
+            let~ this :
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ] :=
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                    []
+                    [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                  "new",
+                  [],
+                  []
+                |),
+                [ M.read (| this |) ]
+              |) in
+            M.alloc (|
+              Ty.tuple
+                [
+                  Ty.apply
+                    (Ty.path "core::ptr::non_null::NonNull")
+                    []
+                    [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ];
+                  A
+                ],
+              Value.Tuple
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                              []
+                              [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                        |)
+                      |),
+                      "alloc::sync::UniqueArc",
+                      "ptr"
+                    |)
+                  |);
+                  M.call_closure (|
+                    A,
+                    M.get_function (| "core::ptr::read", [], [ A ] |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.ConstPointer,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
+                                    Ty.apply
+                                      (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                      []
+                                      [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                |)
+                              |),
+                              "alloc::sync::UniqueArc",
+                              "alloc"
+                            |)
+                          |)
+                        |)
+                      |)
+                    ]
+                  |)
+                ]
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_into_inner_with_allocator :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C
+        (Self T A)
+        "into_inner_with_allocator"
+        (into_inner_with_allocator T A).
+    Admitted.
+    Global Typeclasses Opaque into_inner_with_allocator.
+    
+    (*
+        unsafe fn from_inner_in(ptr: NonNull<ArcInner<T>>, alloc: A) -> Self {
+            Self { ptr, _marker: PhantomData, _marker2: PhantomData, alloc }
+        }
+    *)
+    Definition from_inner_in
+        (T A : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ ptr; alloc ] =>
+        ltac:(M.monadic
+          (let ptr :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "core::ptr::non_null::NonNull")
+                []
+                [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+              ptr
+            |) in
+          let alloc := M.alloc (| A, alloc |) in
+          Value.mkStructRecord
+            "alloc::sync::UniqueArc"
+            []
+            [ T; A ]
+            [
+              ("ptr", M.read (| ptr |));
+              ("_marker",
+                Value.StructTuple
+                  "core::marker::PhantomData"
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                  []);
+              ("_marker2",
+                Value.StructTuple
+                  "core::marker::PhantomData"
+                  []
+                  [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                  []);
+              ("alloc", M.read (| alloc |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_from_inner_in :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "from_inner_in" (from_inner_in T A).
+    Admitted.
+    Global Typeclasses Opaque from_inner_in.
+    (*
+        pub fn downgrade(this: &Self) -> Weak<T, A> {
+            // Using a relaxed ordering is alright here, as knowledge of the
+            // original reference prevents other threads from erroneously deleting
+            // the object or converting the object to a normal `Arc<T, A>`.
+            //
+            // Note that we don't need to test if the weak counter is locked because there
+            // are no such operations like `Arc::get_mut` or `Arc::make_mut` that will lock
+            // the weak counter.
+            //
+            // SAFETY: This pointer was allocated at creation time so we know it is valid.
+            let old_size = unsafe { ( *this.ptr.as_ptr()).weak.fetch_add(1, Relaxed) };
+    
+            // See comments in Arc::clone() for why we do this (for mem::forget).
+            if old_size > MAX_REFCOUNT {
+                abort();
+            }
+    
+            Weak { ptr: this.ptr, alloc: this.alloc.clone() }
+        }
+    *)
+    Definition downgrade (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ this ] =>
+        ltac:(M.monadic
+          (let this :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              this
+            |) in
+          M.read (|
+            let~ old_size : Ty.path "usize" :=
+              M.call_closure (|
+                Ty.path "usize",
+                M.get_associated_function (|
+                  Ty.path "core::sync::atomic::AtomicUsize",
+                  "fetch_add",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "*mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| this |) |),
+                                "alloc::sync::UniqueArc",
+                                "ptr"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      "alloc::sync::ArcInner",
+                      "weak"
+                    |)
+                  |);
+                  Value.Integer IntegerKind.Usize 1;
+                  Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
+                ]
+              |) in
+            let~ _ : Ty.tuple [] :=
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.gt,
+                            [
+                              M.read (| old_size |);
+                              M.read (|
+                                get_constant (| "alloc::sync::MAX_REFCOUNT", Ty.path "usize" |)
+                              |)
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.never_to_any (|
+                        M.call_closure (|
+                          Ty.path "never",
+                          M.get_function (| "core::intrinsics::abort", [], [] |),
+                          []
+                        |)
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |) in
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; A ],
+              Value.mkStructRecord
+                "alloc::sync::Weak"
+                []
+                [ T; A ]
+                [
+                  ("ptr",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| this |) |),
+                        "alloc::sync::UniqueArc",
+                        "ptr"
+                      |)
+                    |));
+                  ("alloc",
+                    M.call_closure (|
+                      A,
+                      M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| this |) |),
+                            "alloc::sync::UniqueArc",
+                            "alloc"
+                          |)
+                        |)
+                      ]
+                    |))
+                ]
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_downgrade :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "downgrade" (downgrade T A).
+    Admitted.
+    Global Typeclasses Opaque downgrade.
+  End Impl_alloc_sync_UniqueArc_T_A.
+  
+  
+  
+  Module Impl_alloc_sync_UniqueArc_core_mem_maybe_uninit_MaybeUninit_T_A.
+    Definition Self (T A : Ty.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "alloc::sync::UniqueArc")
+        []
+        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]; A ].
+    
+    (*
+        unsafe fn assume_init(self) -> UniqueArc<T, A> {
+            let (ptr, alloc) = UniqueArc::into_inner_with_allocator(self);
+            unsafe { UniqueArc::from_inner_in(ptr.cast(), alloc) }
+        }
+    *)
+    Definition assume_init (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "alloc::sync::UniqueArc")
+                []
+                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]; A ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+            M.alloc (|
+              Ty.tuple
+                [
+                  Ty.apply
+                    (Ty.path "core::ptr::non_null::NonNull")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::sync::ArcInner")
+                        []
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ];
+                  A
+                ],
+              M.call_closure (|
+                Ty.tuple
+                  [
+                    Ty.apply
+                      (Ty.path "core::ptr::non_null::NonNull")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::sync::ArcInner")
+                          []
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                      ];
+                    A
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "alloc::sync::UniqueArc")
+                    []
+                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]; A ],
+                  "into_inner_with_allocator",
+                  [],
+                  []
+                |),
+                [ M.read (| self |) ]
+              |)
+            |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                  let ptr :=
+                    M.copy (|
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::sync::ArcInner")
+                            []
+                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                        ],
+                      γ0_0
+                    |) in
+                  let alloc := M.copy (| A, γ0_1 |) in
+                  M.call_closure (|
+                    Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ],
+                      "from_inner_in",
+                      [],
+                      []
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::sync::ArcInner")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
+                            ],
+                          "cast",
+                          [],
+                          [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ]
+                        |),
+                        [ M.read (| ptr |) ]
+                      |);
+                      M.read (| alloc |)
+                    ]
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_assume_init :
+      forall (T A : Ty.t),
+      M.IsAssociatedFunction.C (Self T A) "assume_init" (assume_init T A).
+    Admitted.
+    Global Typeclasses Opaque assume_init.
+  End Impl_alloc_sync_UniqueArc_core_mem_maybe_uninit_MaybeUninit_T_A.
+  
+  Module Impl_core_ops_deref_Deref_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*     type Target = T; *)
+    Definition _Target (T A : Ty.t) : Ty.t := T.
+    
+    (*
+        fn deref(&self) -> &T {
+            // SAFETY: This pointer was allocated at creation time so we know it is valid.
+            unsafe { &self.ptr.as_ref().data }
+        }
+    *)
+    Definition deref (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          M.borrow (|
+            Pointer.Kind.Ref,
+            M.deref (|
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                        "as_ref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::sync::UniqueArc",
+                            "ptr"
+                          |)
+                        |)
+                      ]
+                    |)
+                  |),
+                  "alloc::sync::ArcInner",
+                  "data"
+                |)
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::ops::deref::Deref"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *)
+        [ ("Target", InstanceField.Ty (_Target T A)); ("deref", InstanceField.Method (deref T A)) ].
+  End Impl_core_ops_deref_Deref_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_pin_PinCoerceUnsized_where_core_marker_Sized_T_for_alloc_sync_UniqueArc_T_alloc_alloc_Global.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; Ty.path "alloc::alloc::Global" ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::pin::PinCoerceUnsized"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_pin_PinCoerceUnsized_where_core_marker_Sized_T_for_alloc_sync_UniqueArc_T_alloc_alloc_Global.
+  
+  Module Impl_core_ops_deref_DerefMut_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn deref_mut(&mut self) -> &mut T {
+            // SAFETY: This pointer was allocated at creation time so we know it is valid. We know we
+            // have unique ownership and therefore it's safe to make a mutable reference because
+            // `UniqueArc` owns the only strong reference to itself.
+            // We also need to be careful to only create a mutable reference to the `data` field,
+            // as a mutable reference to the entire `ArcInner` would assert uniqueness over the
+            // ref count fields too, invalidating any attempt by `Weak`s to access the ref count.
+            unsafe { &mut ( *self.ptr.as_ptr()).data }
+        }
+    *)
+    Definition deref_mut (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          M.borrow (|
+            Pointer.Kind.MutRef,
+            M.deref (|
+              M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "*mut")
+                                []
+                                [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                                "as_ptr",
+                                [],
+                                []
+                              |),
+                              [
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::sync::UniqueArc",
+                                    "ptr"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |),
+                          "alloc::sync::ArcInner",
+                          "data"
+                        |)
+                      |)
+                    |)
+                  |)
+                |)
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::ops::deref::DerefMut"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [ ("deref_mut", InstanceField.Method (deref_mut T A)) ].
+  End Impl_core_ops_deref_DerefMut_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_ops_deref_DerefPure_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::ops::deref::DerefPure"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [].
+  End Impl_core_ops_deref_DerefPure_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_ops_drop_Drop_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ].
+    
+    (*
+        fn drop(&mut self) {
+            // See `Arc::drop_slow` which drops an `Arc` with a strong count of 0.
+            // SAFETY: This pointer was allocated at creation time so we know it is valid.
+            let _weak = Weak { ptr: self.ptr, alloc: &self.alloc };
+    
+            unsafe { ptr::drop_in_place(&mut ( *self.ptr.as_ptr()).data) };
+        }
+    *)
+    Definition drop (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "alloc::sync::UniqueArc") [] [ T; A ] ],
+              self
+            |) in
+          M.read (|
+            let~ _weak :
+                Ty.apply (Ty.path "alloc::sync::Weak") [] [ T; Ty.apply (Ty.path "&") [] [ A ] ] :=
+              Value.mkStructRecord
+                "alloc::sync::Weak"
+                []
+                [ T; Ty.apply (Ty.path "&") [] [ A ] ]
+                [
+                  ("ptr",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::sync::UniqueArc",
+                        "ptr"
+                      |)
+                    |));
+                  ("alloc",
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::sync::UniqueArc",
+                        "alloc"
+                      |)
+                    |))
+                ] in
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (| "core::ptr::drop_in_place", [], [ T ] |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutPointer,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "*mut")
+                                []
+                                [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::sync::ArcInner") [] [ T ] ],
+                                "as_ptr",
+                                [],
+                                []
+                              |),
+                              [
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::sync::UniqueArc",
+                                    "ptr"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |),
+                          "alloc::sync::ArcInner",
+                          "data"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::ops::drop::Drop"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *) [ ("drop", InstanceField.Method (drop T A)) ].
+  End Impl_core_ops_drop_Drop_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_UniqueArc_T_A.
+  
+  Module Impl_core_alloc_Allocator_where_core_marker_Sized_T_where_core_alloc_Allocator_T_where_core_alloc_Allocator_A_for_alloc_sync_Arc_T_A.
+    Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ].
+    
+    (*
+        fn allocate(&self, layout: Layout) -> Result<NonNull<[u8]>, AllocError> {
+            ( **self).allocate(layout)
+        }
+    *)
+    Definition allocate (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
+              self
+            |) in
+          let layout := M.alloc (| Ty.path "core::alloc::layout::Layout", layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", T, [], [], "allocate", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.read (| layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn allocate_zeroed(&self, layout: Layout) -> Result<NonNull<[u8]>, AllocError> {
+            ( **self).allocate_zeroed(layout)
+        }
+    *)
+    Definition allocate_zeroed
+        (T A : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
+              self
+            |) in
+          let layout := M.alloc (| Ty.path "core::alloc::layout::Layout", layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", T, [], [], "allocate_zeroed", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.read (| layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        unsafe fn deallocate(&self, ptr: NonNull<u8>, layout: Layout) {
+            // SAFETY: the safety contract must be upheld by the caller
+            unsafe { ( **self).deallocate(ptr, layout) }
+        }
+    *)
+    Definition deallocate (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; ptr; layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
+              self
+            |) in
+          let ptr :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+              ptr
+            |) in
+          let layout := M.alloc (| Ty.path "core::alloc::layout::Layout", layout |) in
+          M.call_closure (|
+            Ty.tuple [],
+            M.get_trait_method (| "core::alloc::Allocator", T, [], [], "deallocate", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.read (| ptr |);
+              M.read (| layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        unsafe fn grow(
+            &self,
+            ptr: NonNull<u8>,
+            old_layout: Layout,
+            new_layout: Layout,
+        ) -> Result<NonNull<[u8]>, AllocError> {
+            // SAFETY: the safety contract must be upheld by the caller
+            unsafe { ( **self).grow(ptr, old_layout, new_layout) }
+        }
+    *)
+    Definition grow (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; ptr; old_layout; new_layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
+              self
+            |) in
+          let ptr :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+              ptr
+            |) in
+          let old_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", old_layout |) in
+          let new_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", new_layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", T, [], [], "grow", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.read (| ptr |);
+              M.read (| old_layout |);
+              M.read (| new_layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        unsafe fn grow_zeroed(
+            &self,
+            ptr: NonNull<u8>,
+            old_layout: Layout,
+            new_layout: Layout,
+        ) -> Result<NonNull<[u8]>, AllocError> {
+            // SAFETY: the safety contract must be upheld by the caller
+            unsafe { ( **self).grow_zeroed(ptr, old_layout, new_layout) }
+        }
+    *)
+    Definition grow_zeroed (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; ptr; old_layout; new_layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
+              self
+            |) in
+          let ptr :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+              ptr
+            |) in
+          let old_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", old_layout |) in
+          let new_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", new_layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", T, [], [], "grow_zeroed", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.read (| ptr |);
+              M.read (| old_layout |);
+              M.read (| new_layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        unsafe fn shrink(
+            &self,
+            ptr: NonNull<u8>,
+            old_layout: Layout,
+            new_layout: Layout,
+        ) -> Result<NonNull<[u8]>, AllocError> {
+            // SAFETY: the safety contract must be upheld by the caller
+            unsafe { ( **self).shrink(ptr, old_layout, new_layout) }
+        }
+    *)
+    Definition shrink (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T A in
+      match ε, τ, α with
+      | [], [], [ self; ptr; old_layout; new_layout ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ] ],
+              self
+            |) in
+          let ptr :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+              ptr
+            |) in
+          let old_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", old_layout |) in
+          let new_layout := M.alloc (| Ty.path "core::alloc::layout::Layout", new_layout |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                Ty.path "core::alloc::AllocError"
+              ],
+            M.get_trait_method (| "core::alloc::Allocator", T, [], [], "shrink", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.get_trait_method (|
+                      "core::ops::deref::Deref",
+                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                      [],
+                      [],
+                      "deref",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.read (| ptr |);
+              M.read (| old_layout |);
+              M.read (| new_layout |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T A : Ty.t),
+      M.IsTraitInstance
+        "core::alloc::Allocator"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T A)
+        (* Instance *)
+        [
+          ("allocate", InstanceField.Method (allocate T A));
+          ("allocate_zeroed", InstanceField.Method (allocate_zeroed T A));
+          ("deallocate", InstanceField.Method (deallocate T A));
+          ("grow", InstanceField.Method (grow T A));
+          ("grow_zeroed", InstanceField.Method (grow_zeroed T A));
+          ("shrink", InstanceField.Method (shrink T A))
+        ].
+  End Impl_core_alloc_Allocator_where_core_marker_Sized_T_where_core_alloc_Allocator_T_where_core_alloc_Allocator_A_for_alloc_sync_Arc_T_A.
 End sync.

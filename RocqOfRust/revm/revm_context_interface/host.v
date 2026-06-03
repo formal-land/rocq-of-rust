@@ -565,6 +565,9 @@ Module host.
             ("selfdestruct", InstanceField.Method (selfdestruct T))
           ].
     End Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_TransactionGetter_ref_mut_T_where_revm_context_interface_block_BlockGetter_ref_mut_T_where_revm_context_interface_cfg_CfgGetter_ref_mut_T_for_ref_mut_T.
+  End underscore.
+  
+  Module underscore_1.
     Module Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_TransactionGetter_alloc_boxed_Box_T_alloc_alloc_Global_where_revm_context_interface_block_BlockGetter_alloc_boxed_Box_T_alloc_alloc_Global_where_revm_context_interface_cfg_CfgGetter_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -1169,8 +1172,7 @@ Module host.
             ("selfdestruct", InstanceField.Method (selfdestruct T))
           ].
     End Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_TransactionGetter_alloc_boxed_Box_T_alloc_alloc_Global_where_revm_context_interface_block_BlockGetter_alloc_boxed_Box_T_alloc_alloc_Global_where_revm_context_interface_cfg_CfgGetter_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
-  End underscore.
-  
+  End underscore_1.
   
   (* StructRecord
     {

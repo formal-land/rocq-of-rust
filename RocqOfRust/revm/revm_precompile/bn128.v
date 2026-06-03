@@ -1933,75 +1933,76 @@ Module bn128.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      LogicalOp.and (|
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialEq",
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.path "substrate_bn::Fq",
+                        [],
+                        [ Ty.path "substrate_bn::Fq" ],
+                        "eq",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.Ref, px |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.path "substrate_bn::Fq",
-                            [],
-                            [ Ty.path "substrate_bn::Fq" ],
-                            "eq",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, px |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "substrate_bn::Fq",
-                                M.call_closure (|
-                                  Ty.path "substrate_bn::Fq",
-                                  M.get_associated_function (|
-                                    Ty.path "substrate_bn::Fq",
-                                    "zero",
-                                    [],
-                                    []
-                                  |),
-                                  []
-                                |)
-                              |)
-                            |)
-                          ]
-                        |),
-                        ltac:(M.monadic
-                          (M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialEq",
+                            M.call_closure (|
                               Ty.path "substrate_bn::Fq",
-                              [],
-                              [ Ty.path "substrate_bn::Fq" ],
-                              "eq",
-                              [],
+                              M.get_associated_function (|
+                                Ty.path "substrate_bn::Fq",
+                                "zero",
+                                [],
+                                []
+                              |),
                               []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, py |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.path "substrate_bn::Fq",
-                                  M.call_closure (|
-                                    Ty.path "substrate_bn::Fq",
-                                    M.get_associated_function (|
-                                      Ty.path "substrate_bn::Fq",
-                                      "zero",
-                                      [],
-                                      []
-                                    |),
-                                    []
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)))
-                      |)
-                    |)) in
+                            |)
+                          |)
+                        |)
+                      ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.path "substrate_bn::Fq",
+                        [],
+                        [ Ty.path "substrate_bn::Fq" ],
+                        "eq",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.Ref, py |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.path "substrate_bn::Fq",
+                            M.call_closure (|
+                              Ty.path "substrate_bn::Fq",
+                              M.get_associated_function (|
+                                Ty.path "substrate_bn::Fq",
+                                "zero",
+                                [],
+                                []
+                              |),
+                              []
+                            |)
+                          |)
+                        |)
+                      ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::result::Result::Ok"
@@ -2179,15 +2180,14 @@ Module bn128.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [ M.read (| gas_cost |); M.read (| gas_limit |) ]
-                              |)
-                            |)) in
+                              BinOp.gt,
+                              [ M.read (| gas_cost |); M.read (| gas_limit |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -3008,15 +3008,14 @@ Module bn128.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [ M.read (| gas_cost |); M.read (| gas_limit |) ]
-                              |)
-                            |)) in
+                              BinOp.gt,
+                              [ M.read (| gas_cost |); M.read (| gas_limit |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -3821,15 +3820,14 @@ Module bn128.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [ M.read (| gas_used |); M.read (| gas_limit |) ]
-                              |)
-                            |)) in
+                              BinOp.gt,
+                              [ M.read (| gas_used |); M.read (| gas_limit |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -3876,44 +3874,43 @@ Module bn128.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ne,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.rem,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                          "len",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| input |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_precompile::bn128::PAIR_ELEMENT_LEN",
-                                          Ty.path "usize"
+                              BinOp.ne,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.rem,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| input |) |)
                                         |)
+                                      ]
+                                    |);
+                                    M.read (|
+                                      get_constant (|
+                                        "revm_precompile::bn128::PAIR_ELEMENT_LEN",
+                                        Ty.path "usize"
                                       |)
-                                    ]
-                                  |);
-                                  Value.Integer IntegerKind.Usize 0
-                                ]
-                              |)
-                            |)) in
+                                    |)
+                                  ]
+                                |);
+                                Value.Integer IntegerKind.Usize 0
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -3960,21 +3957,19 @@ Module bn128.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                  "is_empty",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |)
-                                ]
-                              |)
-                            |)) in
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                "is_empty",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.Bool true));
                     fun γ =>
@@ -4210,13 +4205,12 @@ Module bn128.
                                                                                           ltac:(M.monadic
                                                                                             (let
                                                                                                   γ :=
-                                                                                              M.use
-                                                                                                (M.alloc (|
-                                                                                                  Ty.path
-                                                                                                    "bool",
-                                                                                                  Value.Bool
-                                                                                                    true
-                                                                                                |)) in
+                                                                                              M.alloc (|
+                                                                                                Ty.path
+                                                                                                  "bool",
+                                                                                                Value.Bool
+                                                                                                  true
+                                                                                              |) in
                                                                                             let _ :=
                                                                                               is_constant_or_break_match (|
                                                                                                 M.read (|
@@ -4245,45 +4239,44 @@ Module bn128.
                                                                                                       ltac:(M.monadic
                                                                                                         (let
                                                                                                               γ :=
-                                                                                                          M.use
-                                                                                                            (M.alloc (|
+                                                                                                          M.alloc (|
+                                                                                                            Ty.path
+                                                                                                              "bool",
+                                                                                                            M.call_closure (|
                                                                                                               Ty.path
                                                                                                                 "bool",
-                                                                                                              M.call_closure (|
-                                                                                                                Ty.path
-                                                                                                                  "bool",
-                                                                                                                UnOp.not,
-                                                                                                                [
-                                                                                                                  M.call_closure (|
-                                                                                                                    Ty.path
-                                                                                                                      "bool",
-                                                                                                                    BinOp.lt,
-                                                                                                                    [
-                                                                                                                      M.read (|
-                                                                                                                        n
-                                                                                                                      |);
-                                                                                                                      M.call_closure (|
-                                                                                                                        Ty.path
-                                                                                                                          "usize",
-                                                                                                                        BinOp.Wrap.div,
-                                                                                                                        [
-                                                                                                                          M.read (|
-                                                                                                                            get_constant (|
-                                                                                                                              "revm_precompile::bn128::PAIR_ELEMENT_LEN",
-                                                                                                                              Ty.path
-                                                                                                                                "usize"
-                                                                                                                            |)
-                                                                                                                          |);
-                                                                                                                          Value.Integer
-                                                                                                                            IntegerKind.Usize
-                                                                                                                            32
-                                                                                                                        ]
-                                                                                                                      |)
-                                                                                                                    ]
-                                                                                                                  |)
-                                                                                                                ]
-                                                                                                              |)
-                                                                                                            |)) in
+                                                                                                              UnOp.not,
+                                                                                                              [
+                                                                                                                M.call_closure (|
+                                                                                                                  Ty.path
+                                                                                                                    "bool",
+                                                                                                                  BinOp.lt,
+                                                                                                                  [
+                                                                                                                    M.read (|
+                                                                                                                      n
+                                                                                                                    |);
+                                                                                                                    M.call_closure (|
+                                                                                                                      Ty.path
+                                                                                                                        "usize",
+                                                                                                                      BinOp.Wrap.div,
+                                                                                                                      [
+                                                                                                                        M.read (|
+                                                                                                                          get_constant (|
+                                                                                                                            "revm_precompile::bn128::PAIR_ELEMENT_LEN",
+                                                                                                                            Ty.path
+                                                                                                                              "usize"
+                                                                                                                          |)
+                                                                                                                        |);
+                                                                                                                        Value.Integer
+                                                                                                                          IntegerKind.Usize
+                                                                                                                          32
+                                                                                                                      ]
+                                                                                                                    |)
+                                                                                                                  ]
+                                                                                                                |)
+                                                                                                              ]
+                                                                                                            |)
+                                                                                                          |) in
                                                                                                         let
                                                                                                               _ :=
                                                                                                           is_constant_or_break_match (|
@@ -5996,46 +5989,50 @@ Module bn128.
                                                                       fun γ =>
                                                                         ltac:(M.monadic
                                                                           (let γ :=
-                                                                            M.use
-                                                                              (M.alloc (|
+                                                                            M.alloc (|
+                                                                              Ty.path "bool",
+                                                                              M.call_closure (|
                                                                                 Ty.path "bool",
-                                                                                LogicalOp.and (|
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "bool",
-                                                                                    M.get_associated_function (|
-                                                                                      Ty.path
-                                                                                        "substrate_bn::Fq2",
-                                                                                      "is_zero",
-                                                                                      [],
-                                                                                      []
-                                                                                    |),
-                                                                                    [
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        ba
-                                                                                      |)
-                                                                                    ]
-                                                                                  |),
-                                                                                  ltac:(M.monadic
-                                                                                    (M.call_closure (|
-                                                                                      Ty.path
-                                                                                        "bool",
-                                                                                      M.get_associated_function (|
-                                                                                        Ty.path
-                                                                                          "substrate_bn::Fq2",
-                                                                                        "is_zero",
-                                                                                        [],
-                                                                                        []
-                                                                                      |),
-                                                                                      [
-                                                                                        M.borrow (|
-                                                                                          Pointer.Kind.Ref,
-                                                                                          bb
-                                                                                        |)
-                                                                                      ]
-                                                                                    |)))
-                                                                                |)
-                                                                              |)) in
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "substrate_bn::Fq2",
+                                                                                  "is_zero",
+                                                                                  [],
+                                                                                  []
+                                                                                |),
+                                                                                [
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    ba
+                                                                                  |)
+                                                                                ]
+                                                                              |)
+                                                                            |) in
+                                                                          let _ :=
+                                                                            is_constant_or_break_match (|
+                                                                              M.read (| γ |),
+                                                                              Value.Bool true
+                                                                            |) in
+                                                                          let γ :=
+                                                                            M.alloc (|
+                                                                              Ty.path "bool",
+                                                                              M.call_closure (|
+                                                                                Ty.path "bool",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "substrate_bn::Fq2",
+                                                                                  "is_zero",
+                                                                                  [],
+                                                                                  []
+                                                                                |),
+                                                                                [
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    bb
+                                                                                  |)
+                                                                                ]
+                                                                              |)
+                                                                            |) in
                                                                           let _ :=
                                                                             is_constant_or_break_match (|
                                                                               M.read (| γ |),

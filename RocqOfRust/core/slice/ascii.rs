@@ -3,12 +3,17 @@
 use core::ascii::EscapeDefault;
 
 use crate::fmt::{self, Write};
+#[cfg(not(any(
+    all(target_arch = "x86_64", target_feature = "sse2"),
+    all(target_arch = "loongarch64", target_feature = "lsx")
+)))]
 use crate::intrinsics::const_eval_select;
-use crate::{ascii, iter, mem, ops};
+use crate::{ascii, iter, ops};
 
-#[cfg(not(test))]
 impl [u8] {
     /// Checks if all bytes in this slice are within the ASCII range.
+    ///
+    /// An empty slice returns `true`.
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
     #[rustc_const_stable(feature = "const_slice_is_ascii", since = "1.74.0")]
     #[must_use]
@@ -52,7 +57,7 @@ impl [u8] {
     /// Same as `to_ascii_lowercase(a) == to_ascii_lowercase(b)`,
     /// but without allocating and copying temporaries.
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
-    #[rustc_const_unstable(feature = "const_eq_ignore_ascii_case", issue = "131719")]
+    #[rustc_const_stable(feature = "const_eq_ignore_ascii_case", since = "1.89.0")]
     #[must_use]
     #[inline]
     pub const fn eq_ignore_ascii_case(&self, other: &[u8]) -> bool {
@@ -128,7 +133,6 @@ impl [u8] {
     /// # Examples
     ///
     /// ```
-    ///
     /// let s = b"0\t\r\n'\"\\\x9d";
     /// let escaped = s.escape_ascii().to_string();
     /// assert_eq!(escaped, "0\\t\\r\\n\\'\\\"\\\\\\x9d");
@@ -309,7 +313,7 @@ impl<'a> fmt::Display for EscapeAscii<'a> {
 
             if let Some(&b) = bytes.first() {
                 // guaranteed to be non-empty, better to write it as a str
-                f.write_str(ascii::escape_default(b).as_str())?;
+                fmt::Display::fmt(&ascii::escape_default(b), f)?;
                 bytes = &bytes[1..];
             }
         }
@@ -326,14 +330,6 @@ impl<'a> fmt::Debug for EscapeAscii<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("EscapeAscii").finish_non_exhaustive()
     }
-}
-
-/// Returns `true` if any byte in the word `v` is nonascii (>= 128). Snarfed
-/// from `../str/mod.rs`, which does something similar for utf8 validation.
-#[inline]
-const fn contains_nonascii(v: usize) -> bool {
-    const NONASCII_MASK: usize = usize::repeat_u8(0x80);
-    (NONASCII_MASK & v) != 0
 }
 
 /// ASCII test *without* the chunk-at-a-time optimizations.
@@ -366,6 +362,10 @@ pub const fn is_ascii_simple(mut bytes: &[u8]) -> bool {
 ///
 /// If any of these loads produces something for which `contains_nonascii`
 /// (above) returns true, then we know the answer is false.
+#[cfg(not(any(
+    all(target_arch = "x86_64", target_feature = "sse2"),
+    all(target_arch = "loongarch64", target_feature = "lsx")
+)))]
 #[inline]
 #[rustc_allow_const_fn_unstable(const_eval_select)] // fallback impl has same behavior
 const fn is_ascii(s: &[u8]) -> bool {
@@ -376,7 +376,14 @@ const fn is_ascii(s: &[u8]) -> bool {
         if const {
             is_ascii_simple(s)
         } else {
-            const USIZE_SIZE: usize = mem::size_of::<usize>();
+            /// Returns `true` if any byte in the word `v` is nonascii (>= 128). Snarfed
+            /// from `../str/mod.rs`, which does something similar for utf8 validation.
+            const fn contains_nonascii(v: usize) -> bool {
+                const NONASCII_MASK: usize = usize::repeat_u8(0x80);
+                (NONASCII_MASK & v) != 0
+            }
+
+            const USIZE_SIZE: usize = size_of::<usize>();
 
             let len = s.len();
             let align_offset = s.as_ptr().align_offset(USIZE_SIZE);
@@ -386,7 +393,7 @@ const fn is_ascii(s: &[u8]) -> bool {
             //
             // We also do this for architectures where `size_of::<usize>()` isn't
             // sufficient alignment for `usize`, because it's a weird edge case.
-            if len < USIZE_SIZE || len < align_offset || USIZE_SIZE < mem::align_of::<usize>() {
+            if len < USIZE_SIZE || len < align_offset || USIZE_SIZE < align_of::<usize>() {
                 return is_ascii_simple(s);
             }
 
@@ -420,7 +427,7 @@ const fn is_ascii(s: &[u8]) -> bool {
             // have alignment information it should have given a `usize::MAX` for
             // `align_offset` earlier, sending things through the scalar path instead of
             // this one, so this check should pass if it's reachable.
-            debug_assert!(word_ptr.is_aligned_to(mem::align_of::<usize>()));
+            debug_assert!(word_ptr.is_aligned_to(align_of::<usize>()));
 
             // Read subsequent words until the last aligned word, excluding the last
             // aligned word by itself to be done in tail check later, to ensure that
@@ -454,4 +461,52 @@ const fn is_ascii(s: &[u8]) -> bool {
             !contains_nonascii(last_word)
         }
     )
+}
+
+/// ASCII test optimized to use the `pmovmskb` instruction on `x86-64` and the
+/// `vmskltz.b` instruction on `loongarch64`.
+///
+/// Other platforms are not likely to benefit from this code structure, so they
+/// use SWAR techniques to test for ASCII in `usize`-sized chunks.
+#[cfg(any(
+    all(target_arch = "x86_64", target_feature = "sse2"),
+    all(target_arch = "loongarch64", target_feature = "lsx")
+))]
+#[inline]
+const fn is_ascii(bytes: &[u8]) -> bool {
+    // Process chunks of 32 bytes at a time in the fast path to enable
+    // auto-vectorization and use of `pmovmskb`. Two 128-bit vector registers
+    // can be OR'd together and then the resulting vector can be tested for
+    // non-ASCII bytes.
+    const CHUNK_SIZE: usize = 32;
+
+    let mut i = 0;
+
+    while i + CHUNK_SIZE <= bytes.len() {
+        let chunk_end = i + CHUNK_SIZE;
+
+        // Get LLVM to produce a `pmovmskb` instruction on x86-64 which
+        // creates a mask from the most significant bit of each byte.
+        // ASCII bytes are less than 128 (0x80), so their most significant
+        // bit is unset.
+        let mut count = 0;
+        while i < chunk_end {
+            count += bytes[i].is_ascii() as u8;
+            i += 1;
+        }
+
+        // All bytes should be <= 127 so count is equal to chunk size.
+        if count != CHUNK_SIZE as u8 {
+            return false;
+        }
+    }
+
+    // Process the remaining `bytes.len() % N` bytes.
+    let mut is_ascii = true;
+    while i < bytes.len() {
+        is_ascii &= bytes[i].is_ascii();
+        i += 1;
+    }
+
+    is_ascii
 }

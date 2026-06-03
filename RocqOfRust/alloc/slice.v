@@ -2,723 +2,6 @@
 Require Import RocqOfRust.RocqOfRust.
 
 Module slice.
-  Module hack.
-    (*
-        pub fn into_vec<T, A: Allocator>(b: Box<[T], A>) -> Vec<T, A> {
-            unsafe {
-                let len = b.len();
-                let (b, alloc) = Box::into_raw_with_allocator(b);
-                Vec::from_raw_parts_in(b as *mut T, len, len, alloc)
-            }
-        }
-    *)
-    Definition into_vec (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ T; A ], [ b ] =>
-        ltac:(M.monadic
-          (let b :=
-            M.alloc (|
-              Ty.apply (Ty.path "alloc::boxed::Box") [] [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
-              b
-            |) in
-          M.read (|
-            let~ len : Ty.path "usize" :=
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_associated_function (| Ty.apply (Ty.path "slice") [] [ T ], "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |) ]
-              |) in
-            M.alloc (|
-              Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-              M.match_operator (|
-                Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                M.alloc (|
-                  Ty.tuple
-                    [ Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]; A ],
-                  M.call_closure (|
-                    Ty.tuple
-                      [ Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]; A ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "alloc::boxed::Box")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
-                      "into_raw_with_allocator",
-                      [],
-                      []
-                    |),
-                    [ M.read (| b |) ]
-                  |)
-                |),
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                      let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                      let b :=
-                        M.copy (|
-                          Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                          γ0_0
-                        |) in
-                      let alloc := M.copy (| A, γ0_1 |) in
-                      M.call_closure (|
-                        Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                          "from_raw_parts_in",
-                          [],
-                          []
-                        |),
-                        [
-                          M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| b |));
-                          M.read (| len |);
-                          M.read (| len |);
-                          M.read (| alloc |)
-                        ]
-                      |)))
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_into_vec :
-      M.IsFunction.C "alloc::slice::hack::into_vec" into_vec.
-    Admitted.
-    Global Typeclasses Opaque into_vec.
-    
-    (*
-        pub fn to_vec<T: ConvertVec, A: Allocator>(s: &[T], alloc: A) -> Vec<T, A> {
-            T::to_vec(s, alloc)
-        }
-    *)
-    Definition to_vec (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ T; A ], [ s; alloc ] =>
-        ltac:(M.monadic
-          (let s :=
-            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ], s |) in
-          let alloc := M.alloc (| A, alloc |) in
-          M.call_closure (|
-            Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-            M.get_trait_method (|
-              "alloc::slice::hack::ConvertVec",
-              T,
-              [],
-              [],
-              "to_vec",
-              [],
-              [ A ]
-            |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |); M.read (| alloc |) ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_to_vec : M.IsFunction.C "alloc::slice::hack::to_vec" to_vec.
-    Admitted.
-    Global Typeclasses Opaque to_vec.
-    
-    (* Trait *)
-    (* Empty module 'ConvertVec' *)
-    
-    Module Impl_alloc_slice_hack_ConvertVec_where_core_clone_Clone_T_for_T.
-      Definition Self (T : Ty.t) : Ty.t := T.
-      
-      (*
-              default fn to_vec<A: Allocator>(s: &[Self], alloc: A) -> Vec<Self, A> {
-                  struct DropGuard<'a, T, A: Allocator> {
-                      vec: &'a mut Vec<T, A>,
-                      num_init: usize,
-                  }
-                  impl<'a, T, A: Allocator> Drop for DropGuard<'a, T, A> {
-                      #[inline]
-                      fn drop(&mut self) {
-                          // SAFETY:
-                          // items were marked initialized in the loop below
-                          unsafe {
-                              self.vec.set_len(self.num_init);
-                          }
-                      }
-                  }
-                  let mut vec = Vec::with_capacity_in(s.len(), alloc);
-                  let mut guard = DropGuard { vec: &mut vec, num_init: 0 };
-                  let slots = guard.vec.spare_capacity_mut();
-                  // .take(slots.len()) is necessary for LLVM to remove bounds checks
-                  // and has better codegen than zip.
-                  for (i, b) in s.iter().enumerate().take(slots.len()) {
-                      guard.num_init = i;
-                      slots[i].write(b.clone());
-                  }
-                  core::mem::forget(guard);
-                  // SAFETY:
-                  // the vec was allocated and initialized above to at least this length.
-                  unsafe {
-                      vec.set_len(s.len());
-                  }
-                  vec
-              }
-      *)
-      Definition to_vec (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [ A ], [ s; alloc ] =>
-          ltac:(M.monadic
-            (let s :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ], s |) in
-            let alloc := M.alloc (| A, alloc |) in
-            M.read (|
-              let~ vec : Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ] :=
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                    "with_capacity_in",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ T ],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                    |);
-                    M.read (| alloc |)
-                  ]
-                |) in
-              let~ guard : Ty.apply (Ty.path "alloc::slice::hack::to_vec::DropGuard") [] [ T; A ] :=
-                Value.mkStructRecord
-                  "alloc::slice::hack::to_vec::DropGuard"
-                  []
-                  [ T; A ]
-                  [
-                    ("vec",
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, vec |) |)
-                      |));
-                    ("num_init", Value.Integer IntegerKind.Usize 0)
-                  ] in
-              let~ slots :
-                  Ty.apply
-                    (Ty.path "&mut")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "slice")
-                        []
-                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                    ] :=
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&mut")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "slice")
-                        []
-                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                    "spare_capacity_mut",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            guard,
-                            "alloc::slice::hack::to_vec::DropGuard",
-                            "vec"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.read (|
-                  M.use
-                    (M.alloc (|
-                      Ty.tuple [],
-                      M.match_operator (|
-                        Ty.tuple [],
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "core::iter::adapters::take::Take")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                []
-                                [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
-                            ],
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::iter::adapters::take::Take")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                  []
-                                  [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
-                              ],
-                            M.get_trait_method (|
-                              "core::iter::traits::collect::IntoIterator",
-                              Ty.apply
-                                (Ty.path "core::iter::adapters::take::Take")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                    []
-                                    [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
-                                ],
-                              [],
-                              [],
-                              "into_iter",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::iter::adapters::take::Take")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                      []
-                                      [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::iter::traits::iterator::Iterator",
-                                  Ty.apply
-                                    (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                    []
-                                    [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ],
-                                  [],
-                                  [],
-                                  "take",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                      []
-                                      [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::iter::traits::iterator::Iterator",
-                                      Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                                      [],
-                                      [],
-                                      "enumerate",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          "iter",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| s |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ T ]
-                                        ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| slots |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let~ iter :
-                                  Ty.apply
-                                    (Ty.path "core::iter::adapters::take::Take")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                        []
-                                        [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
-                                    ] :=
-                                M.read (| γ |) in
-                              M.read (|
-                                M.loop (|
-                                  Ty.tuple [],
-                                  ltac:(M.monadic
-                                    (let~ _ : Ty.tuple [] :=
-                                      M.match_operator (|
-                                        Ty.tuple [],
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [
-                                              Ty.tuple
-                                                [ Ty.path "usize"; Ty.apply (Ty.path "&") [] [ T ] ]
-                                            ],
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [
-                                                Ty.tuple
-                                                  [ Ty.path "usize"; Ty.apply (Ty.path "&") [] [ T ]
-                                                  ]
-                                              ],
-                                            M.get_trait_method (|
-                                              "core::iter::traits::iterator::Iterator",
-                                              Ty.apply
-                                                (Ty.path "core::iter::adapters::take::Take")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "core::iter::adapters::enumerate::Enumerate")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "core::slice::iter::Iter")
-                                                        []
-                                                        [ T ]
-                                                    ]
-                                                ],
-                                              [],
-                                              [],
-                                              "next",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let _ :=
-                                                M.is_struct_tuple (|
-                                                  γ,
-                                                  "core::option::Option::None"
-                                                |) in
-                                              M.never_to_any (| M.read (| M.break (||) |) |)));
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let γ0_0 :=
-                                                M.SubPointer.get_struct_tuple_field (|
-                                                  γ,
-                                                  "core::option::Option::Some",
-                                                  0
-                                                |) in
-                                              let γ1_0 :=
-                                                M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                                              let γ1_1 :=
-                                                M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                                              let i := M.copy (| Ty.path "usize", γ1_0 |) in
-                                              let b :=
-                                                M.copy (|
-                                                  Ty.apply (Ty.path "&") [] [ T ],
-                                                  γ1_1
-                                                |) in
-                                              M.read (|
-                                                let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      guard,
-                                                      "alloc::slice::hack::to_vec::DropGuard",
-                                                      "num_init"
-                                                    |),
-                                                    M.read (| i |)
-                                                  |) in
-                                                let~ _ : Ty.apply (Ty.path "&mut") [] [ T ] :=
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "&mut") [] [ T ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "core::mem::maybe_uninit::MaybeUninit")
-                                                        []
-                                                        [ T ],
-                                                      "write",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.SubPointer.get_array_field (|
-                                                          M.deref (| M.read (| slots |) |),
-                                                          M.read (| i |)
-                                                        |)
-                                                      |);
-                                                      M.call_closure (|
-                                                        T,
-                                                        M.get_trait_method (|
-                                                          "core::clone::Clone",
-                                                          T,
-                                                          [],
-                                                          [],
-                                                          "clone",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| b |) |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |) in
-                                                M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                              |)))
-                                        ]
-                                      |) in
-                                    M.alloc (| Ty.tuple [], Value.Tuple [] |)))
-                                |)
-                              |)))
-                        ]
-                      |)
-                    |))
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_function (|
-                    "core::mem::forget",
-                    [],
-                    [ Ty.apply (Ty.path "alloc::slice::hack::to_vec::DropGuard") [] [ T; A ] ]
-                  |),
-                  [ M.read (| guard |) ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.read (|
-                  let~ _ : Ty.tuple [] :=
-                    M.call_closure (|
-                      Ty.tuple [],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                        "set_len",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, vec |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ T ],
-                            "len",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                        |)
-                      ]
-                    |) in
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                |) in
-              vec
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "alloc::slice::hack::ConvertVec"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *) [ ("to_vec", InstanceField.Method (to_vec T)) ].
-    End Impl_alloc_slice_hack_ConvertVec_where_core_clone_Clone_T_for_T.
-    
-    Module Impl_alloc_slice_hack_ConvertVec_where_core_marker_Copy_T_for_T.
-      Definition Self (T : Ty.t) : Ty.t := T.
-      
-      (*
-              fn to_vec<A: Allocator>(s: &[Self], alloc: A) -> Vec<Self, A> {
-                  let mut v = Vec::with_capacity_in(s.len(), alloc);
-                  // SAFETY:
-                  // allocated above with the capacity of `s`, and initialize to `s.len()` in
-                  // ptr::copy_to_non_overlapping below.
-                  unsafe {
-                      s.as_ptr().copy_to_nonoverlapping(v.as_mut_ptr(), s.len());
-                      v.set_len(s.len());
-                  }
-                  v
-              }
-      *)
-      Definition to_vec (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [ A ], [ s; alloc ] =>
-          ltac:(M.monadic
-            (let s :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ], s |) in
-            let alloc := M.alloc (| A, alloc |) in
-            M.read (|
-              let~ v : Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ] :=
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                    "with_capacity_in",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ T ],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                    |);
-                    M.read (| alloc |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.read (|
-                  let~ _ : Ty.tuple [] :=
-                    M.call_closure (|
-                      Ty.tuple [],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "*const") [] [ T ],
-                        "copy_to_nonoverlapping",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*const") [] [ T ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ T ],
-                            "as_ptr",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*mut") [] [ T ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                            "as_mut_ptr",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.MutRef, v |) ]
-                        |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ T ],
-                            "len",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                        |)
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.call_closure (|
-                      Ty.tuple [],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                        "set_len",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, v |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ T ],
-                            "len",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                        |)
-                      ]
-                    |) in
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                |) in
-              v
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "alloc::slice::hack::ConvertVec"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *) [ ("to_vec", InstanceField.Method (to_vec T)) ].
-    End Impl_alloc_slice_hack_ConvertVec_where_core_marker_Copy_T_for_T.
-  End hack.
-  
   Module Impl_slice_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "slice") [] [ T ].
     
@@ -1099,7 +382,7 @@ Module slice.
             // Avoids binary-size usage in cases where the alignment doesn't work out to make this
             // beneficial or on 32-bit platforms.
             let is_using_u32_as_idx_type_helpful =
-                const { mem::size_of::<(K, u32)>() < mem::size_of::<(K, usize)>() };
+                const { size_of::<(K, u32)>() < size_of::<(K, usize)>() };
     
             // It's possible to instantiate this for u8 and u16 but, doing so is very wasteful in terms
             // of compile-times and binary-size, the peak saved heap memory for u16 is (u8 + u16) -> 4
@@ -1150,15 +433,14 @@ Module slice.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
-                                |)
-                              |)) in
+                                BinOp.lt,
+                                [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -1179,31 +461,29 @@ Module slice.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ :=
-                            M.use
-                              (M.alloc (|
+                          (let γ := is_using_u32_as_idx_type_helpful in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
-                                  M.read (| is_using_u32_as_idx_type_helpful |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.le,
-                                      [
-                                        M.read (| len |);
-                                        M.cast
-                                          (Ty.path "usize")
-                                          (M.read (|
-                                            get_associated_constant (|
-                                              Ty.path "u32",
-                                              "MAX",
-                                              Ty.path "u32"
-                                            |)
-                                          |))
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                BinOp.le,
+                                [
+                                  M.read (| len |);
+                                  M.cast
+                                    (Ty.path "usize")
+                                    (M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "u32",
+                                        "MAX",
+                                        Ty.path "u32"
+                                      |)
+                                    |))
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1686,27 +966,26 @@ Module slice.
                                                                               fun γ =>
                                                                                 ltac:(M.monadic
                                                                                   (let γ :=
-                                                                                    M.use
-                                                                                      (M.alloc (|
+                                                                                    M.alloc (|
+                                                                                      Ty.path
+                                                                                        "bool",
+                                                                                      M.call_closure (|
                                                                                         Ty.path
                                                                                           "bool",
-                                                                                        M.call_closure (|
-                                                                                          Ty.path
-                                                                                            "bool",
-                                                                                          BinOp.lt,
-                                                                                          [
-                                                                                            M.cast
-                                                                                              (Ty.path
-                                                                                                "usize")
-                                                                                              (M.read (|
-                                                                                                index
-                                                                                              |));
-                                                                                            M.read (|
-                                                                                              i
-                                                                                            |)
-                                                                                          ]
-                                                                                        |)
-                                                                                      |)) in
+                                                                                        BinOp.lt,
+                                                                                        [
+                                                                                          M.cast
+                                                                                            (Ty.path
+                                                                                              "usize")
+                                                                                            (M.read (|
+                                                                                              index
+                                                                                            |));
+                                                                                          M.read (|
+                                                                                            i
+                                                                                          |)
+                                                                                        ]
+                                                                                      |)
+                                                                                    |) in
                                                                                   let _ :=
                                                                                     is_constant_or_break_match (|
                                                                                       M.read (|
@@ -2256,18 +1535,17 @@ Module slice.
                                                             fun γ =>
                                                               ltac:(M.monadic
                                                                 (let γ :=
-                                                                  M.use
-                                                                    (M.alloc (|
+                                                                  M.alloc (|
+                                                                    Ty.path "bool",
+                                                                    M.call_closure (|
                                                                       Ty.path "bool",
-                                                                      M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        BinOp.lt,
-                                                                        [
-                                                                          M.read (| M.use index |);
-                                                                          M.read (| i |)
-                                                                        ]
-                                                                      |)
-                                                                    |)) in
+                                                                      BinOp.lt,
+                                                                      [
+                                                                        M.read (| M.use index |);
+                                                                        M.read (| i |)
+                                                                      ]
+                                                                    |)
+                                                                  |) in
                                                                 let _ :=
                                                                   is_constant_or_break_match (|
                                                                     M.read (| γ |),
@@ -2471,8 +1749,64 @@ Module slice.
         where
             T: Clone,
         {
-            // N.B., see the `hack` module in this file for more details.
-            hack::to_vec(self, alloc)
+            return T::to_vec(self, alloc);
+    
+            trait ConvertVec {
+                fn to_vec<A: Allocator>(s: &[Self], alloc: A) -> Vec<Self, A>
+                where
+                    Self: Sized;
+            }
+    
+            impl<T: Clone> ConvertVec for T {
+                #[inline]
+                default fn to_vec<A: Allocator>(s: &[Self], alloc: A) -> Vec<Self, A> {
+                    struct DropGuard<'a, T, A: Allocator> {
+                        vec: &'a mut Vec<T, A>,
+                        num_init: usize,
+                    }
+                    impl<'a, T, A: Allocator> Drop for DropGuard<'a, T, A> {
+                        #[inline]
+                        fn drop(&mut self) {
+                            // SAFETY:
+                            // items were marked initialized in the loop below
+                            unsafe {
+                                self.vec.set_len(self.num_init);
+                            }
+                        }
+                    }
+                    let mut vec = Vec::with_capacity_in(s.len(), alloc);
+                    let mut guard = DropGuard { vec: &mut vec, num_init: 0 };
+                    let slots = guard.vec.spare_capacity_mut();
+                    // .take(slots.len()) is necessary for LLVM to remove bounds checks
+                    // and has better codegen than zip.
+                    for (i, b) in s.iter().enumerate().take(slots.len()) {
+                        guard.num_init = i;
+                        slots[i].write(b.clone());
+                    }
+                    core::mem::forget(guard);
+                    // SAFETY:
+                    // the vec was allocated and initialized above to at least this length.
+                    unsafe {
+                        vec.set_len(s.len());
+                    }
+                    vec
+                }
+            }
+    
+            impl<T: TrivialClone> ConvertVec for T {
+                #[inline]
+                fn to_vec<A: Allocator>(s: &[Self], alloc: A) -> Vec<Self, A> {
+                    let mut v = Vec::with_capacity_in(s.len(), alloc);
+                    // SAFETY:
+                    // allocated above with the capacity of `s`, and initialize to `s.len()` in
+                    // ptr::copy_to_non_overlapping below.
+                    unsafe {
+                        s.as_ptr().copy_to_nonoverlapping(v.as_mut_ptr(), s.len());
+                        v.set_len(s.len());
+                    }
+                    v
+                }
+            }
         }
     *)
     Definition to_vec_in (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2483,10 +1817,30 @@ Module slice.
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ], self |) in
           let alloc := M.alloc (| A, alloc |) in
-          M.call_closure (|
-            Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-            M.get_function (| "alloc::slice::hack::to_vec", [], [ T; A ] |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| alloc |) ]
+          M.catch_return (Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ]) (|
+            ltac:(M.monadic
+              (M.never_to_any (|
+                M.read (|
+                  M.return_ (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
+                      M.get_trait_method (|
+                        "alloc::slice::to_vec_in::ConvertVec",
+                        T,
+                        [],
+                        [],
+                        "to_vec",
+                        [],
+                        [ A ]
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                        M.read (| alloc |)
+                      ]
+                    |)
+                  |)
+                |)
+              |)))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2499,8 +1853,11 @@ Module slice.
     
     (*
         pub fn into_vec<A: Allocator>(self: Box<Self, A>) -> Vec<T, A> {
-            // N.B., see the `hack` module in this file for more details.
-            hack::into_vec(self)
+            unsafe {
+                let len = self.len();
+                let (b, alloc) = Box::into_raw_with_allocator(self);
+                Vec::from_raw_parts_in(b as *mut T, len, len, alloc)
+            }
         }
     *)
     Definition into_vec (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2513,10 +1870,64 @@ Module slice.
               Ty.apply (Ty.path "alloc::boxed::Box") [] [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
               self
             |) in
-          M.call_closure (|
-            Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-            M.get_function (| "alloc::slice::hack::into_vec", [], [ T; A ] |),
-            [ M.read (| self |) ]
+          M.read (|
+            let~ len : Ty.path "usize" :=
+              M.call_closure (|
+                Ty.path "usize",
+                M.get_associated_function (| Ty.apply (Ty.path "slice") [] [ T ], "len", [], [] |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              |) in
+            M.alloc (|
+              Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
+              M.match_operator (|
+                Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
+                M.alloc (|
+                  Ty.tuple
+                    [ Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]; A ],
+                  M.call_closure (|
+                    Ty.tuple
+                      [ Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]; A ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
+                      "into_raw_with_allocator",
+                      [],
+                      []
+                    |),
+                    [ M.read (| self |) ]
+                  |)
+                |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                      let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                      let b :=
+                        M.copy (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                          γ0_0
+                        |) in
+                      let alloc := M.copy (| A, γ0_1 |) in
+                      M.call_closure (|
+                        Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
+                          "from_raw_parts_in",
+                          [],
+                          []
+                        |),
+                        [
+                          M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| b |));
+                          M.read (| len |);
+                          M.read (| len |);
+                          M.read (| alloc |)
+                        ]
+                      |)))
+                ]
+              |)
+            |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2606,15 +2017,14 @@ Module slice.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| n |); Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ M.read (| n |); Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -2721,15 +2131,14 @@ Module slice.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
-                                          [ M.read (| m |); Value.Integer IntegerKind.Usize 0 ]
-                                        |)
-                                      |)) in
+                                        BinOp.gt,
+                                        [ M.read (| m |); Value.Integer IntegerKind.Usize 0 ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2742,7 +2151,7 @@ Module slice.
                                           M.call_closure (|
                                             Ty.tuple [],
                                             M.get_function (|
-                                              "core::intrinsics::copy_nonoverlapping",
+                                              "core::ptr::copy_nonoverlapping",
                                               [],
                                               [ T ]
                                             |),
@@ -2907,26 +2316,21 @@ Module slice.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.gt,
-                                  [ M.read (| rem_len |); Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.gt,
+                                [ M.read (| rem_len |); Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
                               M.call_closure (|
                                 Ty.tuple [],
-                                M.get_function (|
-                                  "core::intrinsics::copy_nonoverlapping",
-                                  [],
-                                  [ T ]
-                                |),
+                                M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                                 [
                                   M.call_closure (|
                                     Ty.apply (Ty.path "*const") [] [ T ],
@@ -4929,7 +4333,7 @@ Module slice.
         (* Instance *) [ ("clone_into", InstanceField.Method (clone_into T A)) ].
   End Impl_alloc_slice_SpecCloneIntoVec_where_core_clone_Clone_T_where_core_alloc_Allocator_A_T_A_for_slice_T.
   
-  Module Impl_alloc_slice_SpecCloneIntoVec_where_core_marker_Copy_T_where_core_alloc_Allocator_A_T_A_for_slice_T.
+  Module Impl_alloc_slice_SpecCloneIntoVec_where_core_clone_TrivialClone_T_where_core_alloc_Allocator_A_T_A_for_slice_T.
     Definition Self (T A : Ty.t) : Ty.t := Ty.apply (Ty.path "slice") [] [ T ].
     
     (*
@@ -4989,7 +4393,7 @@ Module slice.
         (* Trait polymorphic types *) [ T; A ]
         (Self T A)
         (* Instance *) [ ("clone_into", InstanceField.Method (clone_into T A)) ].
-  End Impl_alloc_slice_SpecCloneIntoVec_where_core_marker_Copy_T_where_core_alloc_Allocator_A_T_A_for_slice_T.
+  End Impl_alloc_slice_SpecCloneIntoVec_where_core_clone_TrivialClone_T_where_core_alloc_Allocator_A_T_A_for_slice_T.
   
   Module Impl_alloc_borrow_ToOwned_where_core_clone_Clone_T_for_slice_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "slice") [] [ T ].

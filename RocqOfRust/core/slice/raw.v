@@ -38,15 +38,14 @@ Module slice.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                              []
-                            |)
-                          |)) in
+                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                            []
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -147,19 +146,18 @@ Module slice.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_function (|
-                                        "core::ub_checks::check_language_ub",
-                                        [],
-                                        []
-                                      |),
+                                    M.get_function (|
+                                      "core::ub_checks::check_language_ub",
+                                      [],
                                       []
-                                    |)
-                                  |)) in
+                                    |),
+                                    []
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -326,7 +324,7 @@ Module slice.
     (*
     pub const unsafe fn from_ptr_range<'a, T>(range: Range<*const T>) -> &'a [T] {
         // SAFETY: the caller must uphold the safety contract for `from_ptr_range`.
-        unsafe { from_raw_parts(range.start, range.end.sub_ptr(range.start)) }
+        unsafe { from_raw_parts(range.start, range.end.offset_from_unsigned(range.start)) }
     }
     *)
     Definition from_ptr_range (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -359,7 +357,7 @@ Module slice.
                     Ty.path "usize",
                     M.get_associated_function (|
                       Ty.apply (Ty.path "*const") [] [ T ],
-                      "sub_ptr",
+                      "offset_from_unsigned",
                       [],
                       []
                     |),
@@ -395,7 +393,7 @@ Module slice.
     (*
     pub const unsafe fn from_mut_ptr_range<'a, T>(range: Range<*mut T>) -> &'a mut [T] {
         // SAFETY: the caller must uphold the safety contract for `from_mut_ptr_range`.
-        unsafe { from_raw_parts_mut(range.start, range.end.sub_ptr(range.start)) }
+        unsafe { from_raw_parts_mut(range.start, range.end.offset_from_unsigned(range.start)) }
     }
     *)
     Definition from_mut_ptr_range (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -434,7 +432,7 @@ Module slice.
                             Ty.path "usize",
                             M.get_associated_function (|
                               Ty.apply (Ty.path "*mut") [] [ T ],
-                              "sub_ptr",
+                              "offset_from_unsigned",
                               [],
                               []
                             |),

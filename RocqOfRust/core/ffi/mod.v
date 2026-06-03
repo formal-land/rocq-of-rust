@@ -2,54 +2,6 @@
 Require Import RocqOfRust.RocqOfRust.
 
 Module ffi.
-  Axiom c_char : (Ty.path "core::ffi::c_char") = (Ty.path "i8").
-  
-  Axiom c_schar : (Ty.path "core::ffi::c_schar") = (Ty.path "i8").
-  
-  Axiom c_uchar : (Ty.path "core::ffi::c_uchar") = (Ty.path "u8").
-  
-  Axiom c_short : (Ty.path "core::ffi::c_short") = (Ty.path "i16").
-  
-  Axiom c_ushort : (Ty.path "core::ffi::c_ushort") = (Ty.path "u16").
-  
-  Axiom c_int : (Ty.path "core::ffi::c_int") = (Ty.path "i32").
-  
-  Axiom c_uint : (Ty.path "core::ffi::c_uint") = (Ty.path "u32").
-  
-  Axiom c_long : (Ty.path "core::ffi::c_long") = (Ty.path "i64").
-  
-  Axiom c_ulong : (Ty.path "core::ffi::c_ulong") = (Ty.path "u64").
-  
-  Axiom c_longlong : (Ty.path "core::ffi::c_longlong") = (Ty.path "i64").
-  
-  Axiom c_ulonglong : (Ty.path "core::ffi::c_ulonglong") = (Ty.path "u64").
-  
-  Axiom c_float : (Ty.path "core::ffi::c_float") = (Ty.path "f32").
-  
-  Axiom c_double : (Ty.path "core::ffi::c_double") = (Ty.path "f64").
-  
-  Axiom c_size_t : (Ty.path "core::ffi::c_size_t") = (Ty.path "usize").
-  
-  Axiom c_ptrdiff_t : (Ty.path "core::ffi::c_ptrdiff_t") = (Ty.path "isize").
-  
-  Axiom c_ssize_t : (Ty.path "core::ffi::c_ssize_t") = (Ty.path "isize").
-  
-  Module c_char_definition.
-    Axiom c_char : (Ty.path "core::ffi::c_char_definition::c_char") = (Ty.path "i8").
-  End c_char_definition.
-  
-  Module c_int_definition.
-    Axiom c_int : (Ty.path "core::ffi::c_int_definition::c_int") = (Ty.path "i32").
-    
-    Axiom c_uint : (Ty.path "core::ffi::c_int_definition::c_uint") = (Ty.path "u32").
-  End c_int_definition.
-  
-  Module c_long_definition.
-    Axiom c_long : (Ty.path "core::ffi::c_long_definition::c_long") = (Ty.path "i64").
-    
-    Axiom c_ulong : (Ty.path "core::ffi::c_long_definition::c_ulong") = (Ty.path "u64").
-  End c_long_definition.
-  
   (*
   Enum c_void
   {

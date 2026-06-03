@@ -9,6 +9,18 @@ Require Import RocqOfRust.RocqOfRust.
     fields := [ ("x", Ty.path "i32"); ("y", Ty.path "i32") ];
   } *)
 
+Module Impl_core_clone_TrivialClone_for_scoping_rules_borrowing_the_ref_pattern_Point.
+  Definition Self : Ty.t := Ty.path "scoping_rules_borrowing_the_ref_pattern::Point".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_scoping_rules_borrowing_the_ref_pattern_Point.
+
 Module Impl_core_clone_Clone_for_scoping_rules_borrowing_the_ref_pattern_Point.
   Definition Self : Ty.t := Ty.path "scoping_rules_borrowing_the_ref_pattern::Point".
   

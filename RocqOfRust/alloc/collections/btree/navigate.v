@@ -307,7 +307,7 @@ Module collections.
             [ BorrowType; K; V ].
         
         (*
-            pub fn none() -> Self {
+            pub(super) fn none() -> Self {
                 LeafRange { front: None, back: None }
             }
         *)
@@ -488,7 +488,7 @@ Module collections.
         Global Typeclasses Opaque is_empty.
         
         (*
-            pub fn reborrow(&self) -> LeafRange<marker::Immut<'_>, K, V> {
+            pub(super) fn reborrow(&self) -> LeafRange<marker::Immut<'_>, K, V> {
                 LeafRange {
                     front: self.front.as_ref().map(|f| f.reborrow()),
                     back: self.back.as_ref().map(|b| b.reborrow()),
@@ -1187,23 +1187,22 @@ Module collections.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "alloc::collections::btree::navigate::LeafRange")
-                                  []
-                                  [ BorrowType; K; V ],
-                                "is_empty",
-                                [],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::collections::btree::navigate::LeafRange")
                                 []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                            |)
-                          |)) in
+                                [ BorrowType; K; V ],
+                              "is_empty",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple "core::option::Option::None" [] [ R ] []));
                   fun γ =>
@@ -1877,23 +1876,22 @@ Module collections.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "alloc::collections::btree::navigate::LeafRange")
-                                  []
-                                  [ BorrowType; K; V ],
-                                "is_empty",
-                                [],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::collections::btree::navigate::LeafRange")
                                 []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                            |)
-                          |)) in
+                                [ BorrowType; K; V ],
+                              "is_empty",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple "core::option::Option::None" [] [ R ] []));
                   fun γ =>
@@ -2529,7 +2527,7 @@ Module collections.
             [ Ty.path "alloc::collections::btree::node::marker::Immut"; K; V ].
         
         (*
-            pub fn next_checked(&mut self) -> Option<(&'a K, &'a V)> {
+            pub(super) fn next_checked(&mut self) -> Option<(&'a K, &'a V)> {
                 self.perform_next_checked(|kv| kv.into_kv())
             }
         *)
@@ -2712,7 +2710,7 @@ Module collections.
         Global Typeclasses Opaque next_checked.
         
         (*
-            pub fn next_back_checked(&mut self) -> Option<(&'a K, &'a V)> {
+            pub(super) fn next_back_checked(&mut self) -> Option<(&'a K, &'a V)> {
                 self.perform_next_back_checked(|kv| kv.into_kv())
             }
         *)
@@ -2903,7 +2901,7 @@ Module collections.
             [ Ty.path "alloc::collections::btree::node::marker::ValMut"; K; V ].
         
         (*
-            pub fn next_checked(&mut self) -> Option<(&'a K, &'a mut V)> {
+            pub(super) fn next_checked(&mut self) -> Option<(&'a K, &'a mut V)> {
                 self.perform_next_checked(|kv| unsafe { ptr::read(kv) }.into_kv_valmut())
             }
         *)
@@ -3140,7 +3138,7 @@ Module collections.
         Global Typeclasses Opaque next_checked.
         
         (*
-            pub fn next_back_checked(&mut self) -> Option<(&'a K, &'a mut V)> {
+            pub(super) fn next_back_checked(&mut self) -> Option<(&'a K, &'a mut V)> {
                 self.perform_next_back_checked(|kv| unsafe { ptr::read(kv) }.into_kv_valmut())
             }
         *)
@@ -3975,7 +3973,7 @@ Module collections.
             [ BorrowType; K; V ].
         
         (*
-            pub fn none() -> Self {
+            pub(super) fn none() -> Self {
                 LazyLeafRange { front: None, back: None }
             }
         *)
@@ -4027,7 +4025,7 @@ Module collections.
         Global Typeclasses Opaque none.
         
         (*
-            pub fn reborrow(&self) -> LazyLeafRange<marker::Immut<'_>, K, V> {
+            pub(super) fn reborrow(&self) -> LazyLeafRange<marker::Immut<'_>, K, V> {
                 LazyLeafRange {
                     front: self.front.as_ref().map(|f| f.reborrow()),
                     back: self.back.as_ref().map(|b| b.reborrow()),
@@ -5254,7 +5252,7 @@ Module collections.
             [ Ty.path "alloc::collections::btree::node::marker::Immut"; K; V ].
         
         (*
-            pub unsafe fn next_unchecked(&mut self) -> (&'a K, &'a V) {
+            pub(super) unsafe fn next_unchecked(&mut self) -> (&'a K, &'a V) {
                 unsafe { self.init_front().unwrap().next_unchecked() }
             }
         *)
@@ -5413,7 +5411,7 @@ Module collections.
         Global Typeclasses Opaque next_unchecked.
         
         (*
-            pub unsafe fn next_back_unchecked(&mut self) -> (&'a K, &'a V) {
+            pub(super) unsafe fn next_back_unchecked(&mut self) -> (&'a K, &'a V) {
                 unsafe { self.init_back().unwrap().next_back_unchecked() }
             }
         *)
@@ -5580,7 +5578,7 @@ Module collections.
             [ Ty.path "alloc::collections::btree::node::marker::ValMut"; K; V ].
         
         (*
-            pub unsafe fn next_unchecked(&mut self) -> (&'a K, &'a mut V) {
+            pub(super) unsafe fn next_unchecked(&mut self) -> (&'a K, &'a mut V) {
                 unsafe { self.init_front().unwrap().next_unchecked() }
             }
         *)
@@ -5739,7 +5737,7 @@ Module collections.
         Global Typeclasses Opaque next_unchecked.
         
         (*
-            pub unsafe fn next_back_unchecked(&mut self) -> (&'a K, &'a mut V) {
+            pub(super) unsafe fn next_back_unchecked(&mut self) -> (&'a K, &'a mut V) {
                 unsafe { self.init_back().unwrap().next_back_unchecked() }
             }
         *)
@@ -6331,7 +6329,7 @@ Module collections.
         Global Typeclasses Opaque take_front.
         
         (*
-            pub unsafe fn deallocating_next_unchecked<A: Allocator + Clone>(
+            pub(super) unsafe fn deallocating_next_unchecked<A: Allocator + Clone>(
                 &mut self,
                 alloc: A,
             ) -> Handle<NodeRef<marker::Dying, K, V, marker::LeafOrInternal>, marker::KV> {
@@ -6372,7 +6370,7 @@ Module collections.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -6384,49 +6382,48 @@ Module collections.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path "core::option::Option")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "alloc::collections::btree::navigate::LazyLeafHandle")
-                                                          []
-                                                          [
-                                                            Ty.path
-                                                              "alloc::collections::btree::node::marker::Dying";
-                                                            K;
-                                                            V
-                                                          ]
-                                                      ],
-                                                    "is_some",
-                                                    [],
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
                                                     []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "alloc::collections::btree::navigate::LazyLeafRange",
-                                                        "front"
-                                                      |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::btree::navigate::LazyLeafHandle")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "alloc::collections::btree::node::marker::Dying";
+                                                          K;
+                                                          V
+                                                        ]
+                                                    ],
+                                                  "is_some",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "alloc::collections::btree::navigate::LazyLeafRange",
+                                                      "front"
                                                     |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -6631,7 +6628,7 @@ Module collections.
         Global Typeclasses Opaque deallocating_next_unchecked.
         
         (*
-            pub unsafe fn deallocating_next_back_unchecked<A: Allocator + Clone>(
+            pub(super) unsafe fn deallocating_next_back_unchecked<A: Allocator + Clone>(
                 &mut self,
                 alloc: A,
             ) -> Handle<NodeRef<marker::Dying, K, V, marker::LeafOrInternal>, marker::KV> {
@@ -6672,7 +6669,7 @@ Module collections.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -6684,49 +6681,48 @@ Module collections.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path "core::option::Option")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "alloc::collections::btree::navigate::LazyLeafHandle")
-                                                          []
-                                                          [
-                                                            Ty.path
-                                                              "alloc::collections::btree::node::marker::Dying";
-                                                            K;
-                                                            V
-                                                          ]
-                                                      ],
-                                                    "is_some",
-                                                    [],
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
                                                     []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "alloc::collections::btree::navigate::LazyLeafRange",
-                                                        "back"
-                                                      |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::btree::navigate::LazyLeafHandle")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "alloc::collections::btree::node::marker::Dying";
+                                                          K;
+                                                          V
+                                                        ]
+                                                    ],
+                                                  "is_some",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "alloc::collections::btree::navigate::LazyLeafRange",
+                                                      "back"
                                                     |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -6931,7 +6927,7 @@ Module collections.
         Global Typeclasses Opaque deallocating_next_back_unchecked.
         
         (*
-            pub fn deallocating_end<A: Allocator + Clone>(&mut self, alloc: A) {
+            pub(super) fn deallocating_end<A: Allocator + Clone>(&mut self, alloc: A) {
                 if let Some(front) = self.take_front() {
                     front.deallocating_end(alloc)
                 }
@@ -8317,84 +8313,13 @@ Module collections.
                                                         Ty.path "core::fmt::Arguments",
                                                         M.get_associated_function (|
                                                           Ty.path "core::fmt::Arguments",
-                                                          "new_v1",
-                                                          [
-                                                            Value.Integer IntegerKind.Usize 1;
-                                                            Value.Integer IntegerKind.Usize 0
-                                                          ],
+                                                          "from_str_nonconst",
+                                                          [],
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.alloc (|
-                                                                  Ty.apply
-                                                                    (Ty.path "array")
-                                                                    [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        1
-                                                                    ]
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [ Ty.path "str" ]
-                                                                    ],
-                                                                  Value.Array
-                                                                    [
-                                                                      mk_str (|
-                                                                        "internal error: entered unreachable code: BTreeMap has different depths"
-                                                                      |)
-                                                                    ]
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.alloc (|
-                                                                  Ty.apply
-                                                                    (Ty.path "array")
-                                                                    [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        0
-                                                                    ]
-                                                                    [
-                                                                      Ty.path
-                                                                        "core::fmt::rt::Argument"
-                                                                    ],
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          0
-                                                                      ]
-                                                                      [
-                                                                        Ty.path
-                                                                          "core::fmt::rt::Argument"
-                                                                      ],
-                                                                    M.get_associated_function (|
-                                                                      Ty.path
-                                                                        "core::fmt::rt::Argument",
-                                                                      "none",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    []
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            |)
+                                                          mk_str (|
+                                                            "internal error: entered unreachable code: BTreeMap has different depths"
                                                           |)
                                                         ]
                                                       |)
@@ -8424,7 +8349,9 @@ Module collections.
         Admitted.
         Global Typeclasses Opaque find_leaf_edges_spanning_range.
         (*
-            pub fn first_leaf_edge(self) -> Handle<NodeRef<BorrowType, K, V, marker::Leaf>, marker::Edge> {
+            pub(super) fn first_leaf_edge(
+                self,
+            ) -> Handle<NodeRef<BorrowType, K, V, marker::Leaf>, marker::Edge> {
                 let mut node = self;
                 loop {
                     match node.force() {
@@ -8764,7 +8691,9 @@ Module collections.
         Global Typeclasses Opaque first_leaf_edge.
         
         (*
-            pub fn last_leaf_edge(self) -> Handle<NodeRef<BorrowType, K, V, marker::Leaf>, marker::Edge> {
+            pub(super) fn last_leaf_edge(
+                self,
+            ) -> Handle<NodeRef<BorrowType, K, V, marker::Leaf>, marker::Edge> {
                 let mut node = self;
                 loop {
                     match node.force() {
@@ -9103,7 +9032,7 @@ Module collections.
         Admitted.
         Global Typeclasses Opaque last_leaf_edge.
         (*
-            pub fn lower_bound<Q: ?Sized>(
+            pub(super) fn lower_bound<Q: ?Sized>(
                 self,
                 mut bound: SearchBound<&Q>,
             ) -> Handle<NodeRef<BorrowType, K, V, marker::Leaf>, marker::Edge>
@@ -9561,7 +9490,7 @@ Module collections.
         Global Typeclasses Opaque lower_bound.
         
         (*
-            pub fn upper_bound<Q: ?Sized>(
+            pub(super) fn upper_bound<Q: ?Sized>(
                 self,
                 mut bound: SearchBound<&Q>,
             ) -> Handle<NodeRef<BorrowType, K, V, marker::Leaf>, marker::Edge>
@@ -10121,7 +10050,7 @@ Module collections.
             ].
         
         (*
-            pub fn range_search<Q, R>(self, range: R) -> LeafRange<marker::Immut<'a>, K, V>
+            pub(super) fn range_search<Q, R>(self, range: R) -> LeafRange<marker::Immut<'a>, K, V>
             where
                 Q: ?Sized + Ord,
                 K: Borrow<Q>,
@@ -10186,7 +10115,7 @@ Module collections.
         Global Typeclasses Opaque range_search.
         
         (*
-            pub fn full_range(self) -> LazyLeafRange<marker::Immut<'a>, K, V> {
+            pub(super) fn full_range(self) -> LazyLeafRange<marker::Immut<'a>, K, V> {
                 full_range(self, self)
             }
         *)
@@ -10234,7 +10163,7 @@ Module collections.
         Admitted.
         Global Typeclasses Opaque full_range.
         (*
-            pub fn visit_nodes_in_order<F>(self, mut visit: F)
+            pub(super) fn visit_nodes_in_order<F>(self, mut visit: F)
             where
                 F: FnMut(Position<marker::Immut<'a>, K, V>),
             {
@@ -11217,7 +11146,7 @@ Module collections.
         Global Typeclasses Opaque visit_nodes_in_order.
         
         (*
-            pub fn calc_length(self) -> usize {
+            pub(super) fn calc_length(self) -> usize {
                 let mut result = 0;
                 self.visit_nodes_in_order(|pos| match pos {
                     Position::Leaf(node) => result += node.len(),
@@ -11473,7 +11402,7 @@ Module collections.
             ].
         
         (*
-            pub fn range_search<Q, R>(self, range: R) -> LeafRange<marker::ValMut<'a>, K, V>
+            pub(super) fn range_search<Q, R>(self, range: R) -> LeafRange<marker::ValMut<'a>, K, V>
             where
                 Q: ?Sized + Ord,
                 K: Borrow<Q>,
@@ -11537,7 +11466,7 @@ Module collections.
         Global Typeclasses Opaque range_search.
         
         (*
-            pub fn full_range(self) -> LazyLeafRange<marker::ValMut<'a>, K, V> {
+            pub(super) fn full_range(self) -> LazyLeafRange<marker::ValMut<'a>, K, V> {
                 // We duplicate the root NodeRef here -- we will never visit the same KV
                 // twice, and never end up with overlapping value references.
                 let self2 = unsafe { ptr::read(&self) };
@@ -11652,7 +11581,7 @@ Module collections.
             ].
         
         (*
-            pub fn full_range(self) -> LazyLeafRange<marker::Dying, K, V> {
+            pub(super) fn full_range(self) -> LazyLeafRange<marker::Dying, K, V> {
                 // We duplicate the root NodeRef here -- we will never access it in a way
                 // that overlaps references obtained from the root.
                 let self2 = unsafe { ptr::read(&self) };
@@ -11768,7 +11697,7 @@ Module collections.
             ].
         
         (*
-            pub fn next_kv(
+            pub(super) fn next_kv(
                 self,
             ) -> Result<
                 Handle<NodeRef<BorrowType, K, V, marker::LeafOrInternal>, marker::KV>,
@@ -12476,7 +12405,7 @@ Module collections.
         Global Typeclasses Opaque next_kv.
         
         (*
-            pub fn next_back_kv(
+            pub(super) fn next_back_kv(
                 self,
             ) -> Result<
                 Handle<NodeRef<BorrowType, K, V, marker::LeafOrInternal>, marker::KV>,
@@ -19202,7 +19131,9 @@ Module collections.
             ].
         
         (*
-            pub fn next_leaf_edge(self) -> Handle<NodeRef<BorrowType, K, V, marker::Leaf>, marker::Edge> {
+            pub(super) fn next_leaf_edge(
+                self,
+            ) -> Handle<NodeRef<BorrowType, K, V, marker::Leaf>, marker::Edge> {
                 match self.force() {
                     Leaf(leaf_kv) => leaf_kv.right_edge(),
                     Internal(internal_kv) => {
@@ -19595,7 +19526,7 @@ Module collections.
         Global Typeclasses Opaque next_leaf_edge.
         
         (*
-            pub fn next_back_leaf_edge(
+            pub(super) fn next_back_leaf_edge(
                 self,
             ) -> Handle<NodeRef<BorrowType, K, V, marker::Leaf>, marker::Edge> {
                 match self.force() {

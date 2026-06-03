@@ -33,24 +33,23 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
-                          [
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.eq,
-                              [
-                                M.read (| M.deref (| M.read (| raw_p |) |) |);
-                                Value.Integer IntegerKind.U32 10
-                              ]
-                            |)
-                          ]
-                        |)
-                      |)) in
+                        UnOp.not,
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.eq,
+                            [
+                              M.read (| M.deref (| M.read (| raw_p |) |) |);
+                              Value.Integer IntegerKind.U32 10
+                            ]
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.never_to_any (|
                     M.call_closure (|

@@ -32,9 +32,10 @@ pub(crate) enum Pattern {
 }
 
 impl Pattern {
-    /// This function is a bit redundant with [crate::thir_pattern::compile_pattern]. It is used to
-    /// translate the patterns in HIR form, that appear only in function parameters. In particular,
-    /// these patterns should always be exhaustive, so we do not need to handle all the cases.
+    /// This function is a bit redundant with [crate::thir_pattern::compile_pattern]. It is used by
+    /// top-level function translation for patterns that appear in function parameters. In
+    /// particular, these patterns must be irrefutable, so this path does not need the full pattern
+    /// coverage required for source `match` arms.
     pub(crate) fn compile(env: &Env, pattern: &rustc_hir::Pat) -> Rc<Pattern> {
         match pattern.kind {
             rustc_hir::PatKind::Wild => Rc::new(Pattern::Wild),
@@ -46,7 +47,7 @@ impl Pattern {
                     ]),
                     is_with_ref: matches!(
                         binding_annotation,
-                        rustc_hir::BindingMode(rustc_hir::ByRef::Yes(_), _)
+                        rustc_hir::BindingMode(rustc_hir::ByRef::Yes(..), _)
                     ),
                     is_with_mutability: matches!(
                         binding_annotation,
@@ -79,7 +80,20 @@ impl Pattern {
                 Rc::new(Pattern::Or(patterns))
             }
             rustc_hir::PatKind::Never => Rc::new(Pattern::Or(vec![])),
-            rustc_hir::PatKind::Path(qpath) => {
+            rustc_hir::PatKind::Expr(pat_expr) => {
+                let rustc_hir::PatExprKind::Path(qpath) = pat_expr.kind else {
+                    emit_warning_with_note(
+                        env,
+                        &pattern.span,
+                        "Unsupported expression pattern in a function parameter.",
+                        Some(
+                            "Function parameter patterns must be irrefutable; this translator \
+                             currently only handles path expression patterns in this code path.",
+                        ),
+                    );
+
+                    return Rc::new(Pattern::Literal(Rc::new(Literal::Error)));
+                };
                 let path = compile_qpath(env, pattern.hir_id, &qpath);
 
                 Rc::new(Pattern::StructTuple(path, vec![]))
@@ -89,19 +103,24 @@ impl Pattern {
 
                 Rc::new(Pattern::Tuple(patterns))
             }
-            rustc_hir::PatKind::Box(sub_pattern) | rustc_hir::PatKind::Ref(sub_pattern, _) => {
+            rustc_hir::PatKind::Box(sub_pattern) | rustc_hir::PatKind::Ref(sub_pattern, _, _) => {
                 Rc::new(Pattern::Deref(Pattern::compile(env, sub_pattern)))
             }
-            rustc_hir::PatKind::Lit(_)
-            | rustc_hir::PatKind::Deref(_)
+            rustc_hir::PatKind::Deref(_)
+            | rustc_hir::PatKind::Guard(_, _)
             | rustc_hir::PatKind::Range(_, _, _)
             | rustc_hir::PatKind::Slice(_, _, _)
+            | rustc_hir::PatKind::Missing
             | rustc_hir::PatKind::Err(_) => {
                 emit_warning_with_note(
                     env,
                     &pattern.span,
-                    "We do not handle this kind of pattern here.",
-                    Some("This should not happen as function parameter patterns should be exhaustive."),
+                    "Unsupported pattern in a function parameter.",
+                    Some(
+                        "Function parameter patterns must be irrefutable, but rustc can still \
+                         represent several irrefutable forms here that this translator does not \
+                         handle yet.",
+                    ),
                 );
 
                 Rc::new(Pattern::Literal(Rc::new(Literal::Error)))

@@ -768,7 +768,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -797,20 +797,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (| "core::num::wrapping::shift_max::u8", Ty.path "u32" |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -891,7 +878,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -920,20 +907,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (| "core::num::wrapping::shift_max::u8", Ty.path "u32" |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -1014,7 +988,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1043,23 +1017,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u16",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -1140,7 +1098,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1169,23 +1127,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u16",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -1266,7 +1208,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1295,23 +1237,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u32",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -1392,7 +1318,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1421,23 +1347,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u32",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -1518,7 +1428,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1547,23 +1457,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u64",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -1644,7 +1538,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1673,23 +1567,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u64",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -1770,7 +1648,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1799,23 +1677,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u128",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -1896,7 +1758,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1925,23 +1787,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u128",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -2022,7 +1868,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2051,23 +1897,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::platform::usize",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -2148,7 +1978,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2177,23 +2007,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::platform::usize",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -2274,7 +2088,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2303,20 +2117,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (| "core::num::wrapping::shift_max::i8", Ty.path "u32" |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -2397,7 +2198,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2426,20 +2227,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (| "core::num::wrapping::shift_max::i8", Ty.path "u32" |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -2520,7 +2308,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2549,23 +2337,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i16",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -2646,7 +2418,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2675,23 +2447,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i16",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -2772,7 +2528,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2801,23 +2557,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i32",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -2898,7 +2638,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2927,23 +2667,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i32",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -3024,7 +2748,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3053,23 +2777,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i64",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -3150,7 +2858,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3179,23 +2887,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i64",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -3276,7 +2968,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3305,23 +2997,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i128",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -3402,7 +3078,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3431,23 +3107,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i128",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -3528,7 +3188,7 @@ Module num.
       
       (*
                   fn shl(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shl((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shl(other as u32))
                   }
       *)
       Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3557,23 +3217,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::platform::isize",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -3654,7 +3298,7 @@ Module num.
       
       (*
                   fn shr(self, other: $f) -> Wrapping<$t> {
-                      Wrapping(self.0.wrapping_shr((other & self::shift_max::$t as $f) as u32))
+                      Wrapping(self.0.wrapping_shr(other as u32))
                   }
       *)
       Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3683,23 +3327,7 @@ Module num.
                         0
                       |)
                     |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::platform::isize",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
+                    M.cast (Ty.path "u32") (M.read (| other |))
                   ]
                 |)
               ]))
@@ -30859,182 +30487,5 @@ Module num.
     
     
     
-    
-    Module shift_max.
-      Module platform.
-        Definition usize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          ltac:(M.monadic
-            (get_constant (| "core::num::wrapping::shift_max::u64", Ty.path "u32" |))).
-        
-        Global Instance Instance_IsConstant_usize :
-          M.IsFunction.C "core::num::wrapping::shift_max::platform::usize" usize.
-        Admitted.
-        Global Typeclasses Opaque usize.
-        
-        Definition isize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          ltac:(M.monadic
-            (get_constant (| "core::num::wrapping::shift_max::i64", Ty.path "u32" |))).
-        
-        Global Instance Instance_IsConstant_isize :
-          M.IsFunction.C "core::num::wrapping::shift_max::platform::isize" isize.
-        Admitted.
-        Global Typeclasses Opaque isize.
-      End platform.
-      
-      Definition i8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic
-          (M.alloc (|
-            Ty.path "u32",
-            M.call_closure (|
-              Ty.path "u32",
-              BinOp.Wrap.sub,
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.shl,
-                  [ Value.Integer IntegerKind.U32 1; Value.Integer IntegerKind.I32 3 ]
-                |);
-                Value.Integer IntegerKind.U32 1
-              ]
-            |)
-          |))).
-      
-      Global Instance Instance_IsConstant_i8 :
-        M.IsFunction.C "core::num::wrapping::shift_max::i8" i8.
-      Admitted.
-      Global Typeclasses Opaque i8.
-      
-      Definition i16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic
-          (M.alloc (|
-            Ty.path "u32",
-            M.call_closure (|
-              Ty.path "u32",
-              BinOp.Wrap.sub,
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.shl,
-                  [ Value.Integer IntegerKind.U32 1; Value.Integer IntegerKind.I32 4 ]
-                |);
-                Value.Integer IntegerKind.U32 1
-              ]
-            |)
-          |))).
-      
-      Global Instance Instance_IsConstant_i16 :
-        M.IsFunction.C "core::num::wrapping::shift_max::i16" i16.
-      Admitted.
-      Global Typeclasses Opaque i16.
-      
-      Definition i32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic
-          (M.alloc (|
-            Ty.path "u32",
-            M.call_closure (|
-              Ty.path "u32",
-              BinOp.Wrap.sub,
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.shl,
-                  [ Value.Integer IntegerKind.U32 1; Value.Integer IntegerKind.I32 5 ]
-                |);
-                Value.Integer IntegerKind.U32 1
-              ]
-            |)
-          |))).
-      
-      Global Instance Instance_IsConstant_i32 :
-        M.IsFunction.C "core::num::wrapping::shift_max::i32" i32.
-      Admitted.
-      Global Typeclasses Opaque i32.
-      
-      Definition i64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic
-          (M.alloc (|
-            Ty.path "u32",
-            M.call_closure (|
-              Ty.path "u32",
-              BinOp.Wrap.sub,
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.shl,
-                  [ Value.Integer IntegerKind.U32 1; Value.Integer IntegerKind.I32 6 ]
-                |);
-                Value.Integer IntegerKind.U32 1
-              ]
-            |)
-          |))).
-      
-      Global Instance Instance_IsConstant_i64 :
-        M.IsFunction.C "core::num::wrapping::shift_max::i64" i64.
-      Admitted.
-      Global Typeclasses Opaque i64.
-      
-      Definition i128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic
-          (M.alloc (|
-            Ty.path "u32",
-            M.call_closure (|
-              Ty.path "u32",
-              BinOp.Wrap.sub,
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.shl,
-                  [ Value.Integer IntegerKind.U32 1; Value.Integer IntegerKind.I32 7 ]
-                |);
-                Value.Integer IntegerKind.U32 1
-              ]
-            |)
-          |))).
-      
-      Global Instance Instance_IsConstant_i128 :
-        M.IsFunction.C "core::num::wrapping::shift_max::i128" i128.
-      Admitted.
-      Global Typeclasses Opaque i128.
-      
-      Definition u8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic (get_constant (| "core::num::wrapping::shift_max::i8", Ty.path "u32" |))).
-      
-      Global Instance Instance_IsConstant_u8 :
-        M.IsFunction.C "core::num::wrapping::shift_max::u8" u8.
-      Admitted.
-      Global Typeclasses Opaque u8.
-      
-      Definition u16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic (get_constant (| "core::num::wrapping::shift_max::i16", Ty.path "u32" |))).
-      
-      Global Instance Instance_IsConstant_u16 :
-        M.IsFunction.C "core::num::wrapping::shift_max::u16" u16.
-      Admitted.
-      Global Typeclasses Opaque u16.
-      
-      Definition u32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic (get_constant (| "core::num::wrapping::shift_max::i32", Ty.path "u32" |))).
-      
-      Global Instance Instance_IsConstant_u32 :
-        M.IsFunction.C "core::num::wrapping::shift_max::u32" u32.
-      Admitted.
-      Global Typeclasses Opaque u32.
-      
-      Definition u64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic (get_constant (| "core::num::wrapping::shift_max::i64", Ty.path "u32" |))).
-      
-      Global Instance Instance_IsConstant_u64 :
-        M.IsFunction.C "core::num::wrapping::shift_max::u64" u64.
-      Admitted.
-      Global Typeclasses Opaque u64.
-      
-      Definition u128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        ltac:(M.monadic (get_constant (| "core::num::wrapping::shift_max::i128", Ty.path "u32" |))).
-      
-      Global Instance Instance_IsConstant_u128 :
-        M.IsFunction.C "core::num::wrapping::shift_max::u128" u128.
-      Admitted.
-      Global Typeclasses Opaque u128.
-    End shift_max.
   End wrapping.
 End num.

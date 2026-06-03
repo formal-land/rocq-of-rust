@@ -34,25 +34,20 @@ Module buf.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| dst |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| dst |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -70,28 +65,23 @@ Module buf.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_impl::Buf",
-                                      Self,
-                                      [],
-                                      [],
-                                      "has_remaining",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_impl::Buf",
+                                    Self,
+                                    [],
+                                    [],
+                                    "has_remaining",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -211,44 +201,39 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_impl::Buf",
-                                      Ty.apply (Ty.path "&mut") [] [ Self ],
-                                      [],
-                                      [],
-                                      "remaining",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| dst |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_impl::Buf",
+                                    Ty.apply (Ty.path "&mut") [] [ Self ],
+                                    [],
+                                    [],
+                                    "remaining",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| dst |) |) |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -296,31 +281,30 @@ Module buf.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                          "is_empty",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| dst |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                        "is_empty",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| dst |) |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -579,30 +563,29 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_impl::Buf",
-                                      Ty.apply (Ty.path "&mut") [] [ Self ],
-                                      [],
-                                      [],
-                                      "remaining",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_impl::Buf",
+                                    Ty.apply (Ty.path "&mut") [] [ Self ],
+                                    [],
+                                    [],
+                                    "remaining",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                |);
+                                Value.Integer IntegerKind.Usize 1
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -675,30 +658,29 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_impl::Buf",
-                                      Ty.apply (Ty.path "&mut") [] [ Self ],
-                                      [],
-                                      [],
-                                      "remaining",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_impl::Buf",
+                                    Ty.apply (Ty.path "&mut") [] [ Self ],
+                                    [],
+                                    [],
+                                    "remaining",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                |);
+                                Value.Integer IntegerKind.Usize 1
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -778,35 +760,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u16::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u16::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1168,35 +1149,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u16_le::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u16_le::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1558,35 +1538,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u16_ne::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u16_ne::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1943,35 +1922,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i16::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i16::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2333,35 +2311,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i16_le::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i16_le::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2723,35 +2700,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i16_ne::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i16_ne::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -3108,35 +3084,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u32::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u32::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -3498,35 +3473,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u32_le::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u32_le::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -3888,35 +3862,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u32_ne::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u32_ne::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -4273,35 +4246,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i32::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i32::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -4663,35 +4635,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i32_le::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i32_le::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -5053,35 +5024,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i32_ne::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i32_ne::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -5438,35 +5408,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u64::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u64::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -5828,35 +5797,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u64_le::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u64_le::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -6218,35 +6186,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u64_ne::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u64_ne::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -6603,35 +6570,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i64::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i64::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -6993,35 +6959,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i64_le::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i64_le::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -7383,35 +7348,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i64_ne::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i64_ne::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -7768,35 +7732,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u128::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u128::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -8159,35 +8122,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u128_le::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u128_le::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -8550,35 +8512,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_u128_ne::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_u128_ne::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -8936,35 +8897,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i128::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i128::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -9327,35 +9287,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i128_le::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i128_le::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -9718,35 +9677,34 @@ Module buf.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "bytes::buf::buf_impl::Buf",
-                                                Ty.apply (Ty.path "&mut") [] [ Self ],
-                                                [],
-                                                [],
-                                                "remaining",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                            |);
-                                            M.read (|
-                                              get_constant (|
-                                                "bytes::buf::buf_impl::Buf::get_i128_ne::SIZE",
-                                                Ty.path "usize"
-                                              |)
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ Self ],
+                                              [],
+                                              [],
+                                              "remaining",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                          |);
+                                          M.read (|
+                                            get_constant (|
+                                              "bytes::buf::buf_impl::Buf::get_i128_ne::SIZE",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -10409,7 +10367,7 @@ Module buf.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.path "u64",
@@ -10776,7 +10734,7 @@ Module buf.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.path "i64",
@@ -11033,30 +10991,29 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_impl::Buf",
-                                      Ty.apply (Ty.path "&mut") [] [ Self ],
-                                      [],
-                                      [],
-                                      "remaining",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                  |);
-                                  M.read (| len |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_impl::Buf",
+                                    Ty.apply (Ty.path "&mut") [] [ Self ],
+                                    [],
+                                    [],
+                                    "remaining",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                |);
+                                M.read (| len |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -13583,32 +13540,31 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.read (| cnt |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                    |)
+                                  ]
+                                |);
+                                M.read (| cnt |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -13723,46 +13679,41 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| dst |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| dst |) |) |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -14230,15 +14181,14 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [ M.read (| cnt |); M.read (| max_cnt |) ]
-                              |)
-                            |)) in
+                              BinOp.gt,
+                              [ M.read (| cnt |); M.read (| max_cnt |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|

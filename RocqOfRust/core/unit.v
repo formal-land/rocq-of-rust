@@ -71,4 +71,55 @@ Module unit_.
         Self
         (* Instance *) [ ("from_iter", InstanceField.Method from_iter) ].
   End Impl_core_iter_traits_collect_FromIterator_Tuple__for_Tuple_.
+  
+  (* Trait *)
+  (* Empty module 'IsUnit' *)
+  
+  Module Impl_core_unit_IsUnit_where_core_marker_Sized_T_for_T.
+    Definition Self (T : Ty.t) : Ty.t := T.
+    
+    (*
+        default fn is_unit() -> bool {
+            false
+        }
+    *)
+    Definition is_unit (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] => ltac:(M.monadic (Value.Bool false))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::unit::IsUnit"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("is_unit", InstanceField.Method (is_unit T)) ].
+  End Impl_core_unit_IsUnit_where_core_marker_Sized_T_for_T.
+  
+  Module Impl_core_unit_IsUnit_for_Tuple_.
+    Definition Self : Ty.t := Ty.tuple [].
+    
+    (*
+        fn is_unit() -> bool {
+            true
+        }
+    *)
+    Definition is_unit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [] => ltac:(M.monadic (Value.Bool true))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::unit::IsUnit"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("is_unit", InstanceField.Method is_unit) ].
+  End Impl_core_unit_IsUnit_for_Tuple_.
 End unit_.

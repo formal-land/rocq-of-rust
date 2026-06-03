@@ -1,6 +1,5 @@
 Require Import links.RocqOfRust.
 Require Import core.fmt.rt.
-Require Import core.links.array.
 
 (*
 pub struct Argument<'a> {
@@ -36,13 +35,5 @@ Module Impl_Argument.
   Admitted.
   Global Opaque run_new_display.
 
-  (* pub fn none() -> [Self; 0] *)
-  Instance run_none :
-    Run.Trait fmt.rt.Impl_core_fmt_rt_Argument.none [] [] [] (array.t Self {| Integer.value := 0 |}).
-  Proof.
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_none.
 End Impl_Argument.
 Export (hints) Impl_Argument.

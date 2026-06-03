@@ -13,6 +13,18 @@ Require Import RocqOfRust.RocqOfRust.
       ];
   } *)
 
+Module Impl_core_clone_TrivialClone_for_unpacking_options_via_question_mark_PhoneNumber.
+  Definition Self : Ty.t := Ty.path "unpacking_options_via_question_mark::PhoneNumber".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_unpacking_options_via_question_mark_PhoneNumber.
+
 Module Impl_core_clone_Clone_for_unpacking_options_via_question_mark_PhoneNumber.
   Definition Self : Ty.t := Ty.path "unpacking_options_via_question_mark::PhoneNumber".
   
@@ -80,6 +92,18 @@ End Impl_core_marker_Copy_for_unpacking_options_via_question_mark_PhoneNumber.
             [ Ty.path "unpacking_options_via_question_mark::PhoneNumber" ])
       ];
   } *)
+
+Module Impl_core_clone_TrivialClone_for_unpacking_options_via_question_mark_Job.
+  Definition Self : Ty.t := Ty.path "unpacking_options_via_question_mark::Job".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_unpacking_options_via_question_mark_Job.
 
 Module Impl_core_clone_Clone_for_unpacking_options_via_question_mark_Job.
   Definition Self : Ty.t := Ty.path "unpacking_options_via_question_mark::Job".
@@ -528,46 +552,42 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialEq",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                                      [],
+                                      [
                                         Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.path "u8" ],
-                                        [],
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [ Ty.path "u8" ]
-                                        ],
-                                        "eq",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                          [ Ty.path "u8" ]
+                                      ],
+                                      "eq",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| left_val |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| right_val |) |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|

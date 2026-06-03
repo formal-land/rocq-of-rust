@@ -23,6 +23,18 @@ Module Impl_core_fmt_Debug_for_clone_Unit.
       (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
 End Impl_core_fmt_Debug_for_clone_Unit.
 
+Module Impl_core_clone_TrivialClone_for_clone_Unit.
+  Definition Self : Ty.t := Ty.path "clone::Unit".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_clone_Unit.
+
 Module Impl_core_clone_Clone_for_clone_Unit.
   Definition Self : Ty.t := Ty.path "clone::Unit".
   

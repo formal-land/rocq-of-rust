@@ -38,7 +38,7 @@ Module convert.
   (* Trait *)
   (* Empty module 'TryFrom' *)
   
-  Module Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsRef_T_U_U_for_ref__T.
+  Module Impl_core_convert_AsRef_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_convert_AsRef_T_U_U_for_ref__T.
     Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
     
     (*
@@ -79,9 +79,9 @@ Module convert.
         (* Trait polymorphic types *) [ U ]
         (Self T U)
         (* Instance *) [ ("as_ref", InstanceField.Method (as_ref T U)) ].
-  End Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsRef_T_U_U_for_ref__T.
+  End Impl_core_convert_AsRef_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_convert_AsRef_T_U_U_for_ref__T.
   
-  Module Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsRef_T_U_U_for_ref_mut_T.
+  Module Impl_core_convert_AsRef_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_convert_AsRef_T_U_U_for_ref_mut_T.
     Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
     
     (*
@@ -122,9 +122,9 @@ Module convert.
         (* Trait polymorphic types *) [ U ]
         (Self T U)
         (* Instance *) [ ("as_ref", InstanceField.Method (as_ref T U)) ].
-  End Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsRef_T_U_U_for_ref_mut_T.
+  End Impl_core_convert_AsRef_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_convert_AsRef_T_U_U_for_ref_mut_T.
   
-  Module Impl_core_convert_AsMut_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsMut_T_U_U_for_ref_mut_T.
+  Module Impl_core_convert_AsMut_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_convert_AsMut_T_U_U_for_ref_mut_T.
     Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
     
     (*
@@ -173,7 +173,7 @@ Module convert.
         (* Trait polymorphic types *) [ U ]
         (Self T U)
         (* Instance *) [ ("as_mut", InstanceField.Method (as_mut T U)) ].
-  End Impl_core_convert_AsMut_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsMut_T_U_U_for_ref_mut_T.
+  End Impl_core_convert_AsMut_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_convert_AsMut_T_U_U_for_ref_mut_T.
   
   Module Impl_core_convert_Into_where_core_convert_From_U_T_U_for_T.
     Definition Self (T U : Ty.t) : Ty.t := T.
@@ -608,30 +608,13 @@ Module convert.
   Module Impl_core_error_Error_for_core_convert_Infallible.
     Definition Self : Ty.t := Ty.path "core::convert::Infallible".
     
-    (*
-        fn description(&self) -> &str {
-            match *self {}
-        }
-    *)
-    Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::convert::Infallible" ], self |) in
-          M.never_to_any (|
-            M.match_operator (| Ty.path "never", M.deref (| M.read (| self |) |), [] |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
     Axiom Implements :
       M.IsTraitInstance
         "core::error::Error"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         Self
-        (* Instance *) [ ("description", InstanceField.Method description) ].
+        (* Instance *) [].
   End Impl_core_error_Error_for_core_convert_Infallible.
   
   Module Impl_core_cmp_PartialEq_core_convert_Infallible_for_core_convert_Infallible.

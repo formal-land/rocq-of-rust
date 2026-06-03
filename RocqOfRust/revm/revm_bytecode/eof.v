@@ -2364,49 +2364,48 @@ Module eof.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
-                                          [
-                                            M.read (| eof_size |);
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path "bytes::bytes::Bytes",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [ Ty.path "bytes::bytes::Bytes" ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::deref::Deref",
-                                                        Ty.path "alloy_primitives::bytes_::Bytes",
-                                                        [],
-                                                        [],
-                                                        "deref",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, raw |) ]
-                                                    |)
+                                        BinOp.gt,
+                                        [
+                                          M.read (| eof_size |);
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.path "bytes::bytes::Bytes",
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "bytes::bytes::Bytes" ],
+                                                    M.get_trait_method (|
+                                                      "core::ops::deref::Deref",
+                                                      Ty.path "alloy_primitives::bytes_::Bytes",
+                                                      [],
+                                                      [],
+                                                      "deref",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.borrow (| Pointer.Kind.Ref, raw |) ]
                                                   |)
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -3247,6 +3246,18 @@ Module eof.
     M.IsDiscriminant "revm_bytecode::eof::EofDecodeError::TooManyContainerSections" 18.
   Axiom IsDiscriminant_EofDecodeError_InvalidEOFSize :
     M.IsDiscriminant "revm_bytecode::eof::EofDecodeError::InvalidEOFSize" 19.
+  
+  Module Impl_core_clone_TrivialClone_for_revm_bytecode_eof_EofDecodeError.
+    Definition Self : Ty.t := Ty.path "revm_bytecode::eof::EofDecodeError".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_bytecode_eof_EofDecodeError.
   
   Module Impl_core_clone_Clone_for_revm_bytecode_eof_EofDecodeError.
     Definition Self : Ty.t := Ty.path "revm_bytecode::eof::EofDecodeError".

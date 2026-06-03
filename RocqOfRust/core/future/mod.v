@@ -117,6 +117,18 @@ Module future.
         (* Instance *) [].
   End Impl_core_marker_Copy_for_core_future_ResumeTy.
   
+  Module Impl_core_clone_TrivialClone_for_core_future_ResumeTy.
+    Definition Self : Ty.t := Ty.path "core::future::ResumeTy".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_future_ResumeTy.
+  
   Module Impl_core_clone_Clone_for_core_future_ResumeTy.
     Definition Self : Ty.t := Ty.path "core::future::ResumeTy".
     

@@ -64,6 +64,19 @@ Module signature.
           ];
       } *)
     
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_signature_primitive_sig_PrimitiveSignature.
+      Definition Self : Ty.t :=
+        Ty.path "alloy_primitives::signature::primitive_sig::PrimitiveSignature".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_signature_primitive_sig_PrimitiveSignature.
+    
     Module Impl_core_clone_Clone_for_alloy_primitives_signature_primitive_sig_PrimitiveSignature.
       Definition Self : Ty.t :=
         Ty.path "alloy_primitives::signature::primitive_sig::PrimitiveSignature".
@@ -652,32 +665,31 @@ Module signature.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.ne,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                          "len",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| bytes |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 65
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.ne,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| bytes |) |)
+                                        |)
+                                      ]
+                                    |);
+                                    Value.Integer IntegerKind.Usize 65
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -1824,39 +1836,46 @@ Module signature.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_trait_method (|
-                                  "core::cmp::PartialOrd",
+                              M.get_trait_method (|
+                                "core::cmp::PartialOrd",
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [],
+                                [],
+                                [
                                   Ty.apply
                                     (Ty.path "ruint::Uint")
                                     [
                                       Value.Integer IntegerKind.Usize 256;
                                       Value.Integer IntegerKind.Usize 4
                                     ]
-                                    [],
-                                  [],
-                                  [
+                                    []
+                                ],
+                                "gt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, s |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
                                     Ty.apply
                                       (Ty.path "ruint::Uint")
                                       [
                                         Value.Integer IntegerKind.Usize 256;
                                         Value.Integer IntegerKind.Usize 4
                                       ]
-                                      []
-                                  ],
-                                  "gt",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, s |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                                      [],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "ruint::Uint")
                                         [
@@ -1864,7 +1883,8 @@ Module signature.
                                           Value.Integer IntegerKind.Usize 4
                                         ]
                                         [],
-                                      M.call_closure (|
+                                      M.get_trait_method (|
+                                        "core::ops::bit::Shr",
                                         Ty.apply
                                           (Ty.path "ruint::Uint")
                                           [
@@ -1872,42 +1892,33 @@ Module signature.
                                             Value.Integer IntegerKind.Usize 4
                                           ]
                                           [],
-                                        M.get_trait_method (|
-                                          "core::ops::bit::Shr",
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            [],
-                                          [],
-                                          [ Ty.path "i32" ],
-                                          "shr",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.read (|
-                                            get_constant (|
-                                              "alloy_primitives::signature::primitive_sig::SECP256K1N_ORDER",
-                                              Ty.apply
-                                                (Ty.path "ruint::Uint")
-                                                [
-                                                  Value.Integer IntegerKind.Usize 256;
-                                                  Value.Integer IntegerKind.Usize 4
-                                                ]
-                                                []
-                                            |)
-                                          |);
-                                          Value.Integer IntegerKind.I32 1
-                                        ]
-                                      |)
+                                        [],
+                                        [ Ty.path "i32" ],
+                                        "shr",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (|
+                                          get_constant (|
+                                            "alloy_primitives::signature::primitive_sig::SECP256K1N_ORDER",
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          |)
+                                        |);
+                                        Value.Integer IntegerKind.I32 1
+                                      ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::option::Option::Some"

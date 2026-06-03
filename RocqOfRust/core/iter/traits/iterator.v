@@ -294,284 +294,27 @@ Module iter.
             ltac:(M.monadic
               (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
               let n := M.alloc (| Ty.path "usize", n |) in
-              M.catch_return
-                (Ty.apply
+              M.call_closure (|
+                Ty.apply
                   (Ty.path "core::result::Result")
                   []
                   [
                     Ty.tuple [];
                     Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                  ]) (|
-                ltac:(M.monadic
-                  (M.read (|
-                    let~ _ : Ty.tuple [] :=
-                      M.read (|
-                        M.use
-                          (M.alloc (|
-                            Ty.tuple [],
-                            M.match_operator (|
-                              Ty.tuple [],
-                              M.alloc (|
-                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::ops::range::Range")
-                                    []
-                                    [ Ty.path "usize" ],
-                                  M.get_trait_method (|
-                                    "core::iter::traits::collect::IntoIterator",
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::Range")
-                                      []
-                                      [ Ty.path "usize" ],
-                                    [],
-                                    [],
-                                    "into_iter",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    Value.mkStructRecord
-                                      "core::ops::range::Range"
-                                      []
-                                      [ Ty.path "usize" ]
-                                      [
-                                        ("start", Value.Integer IntegerKind.Usize 0);
-                                        ("end_", M.read (| n |))
-                                      ]
-                                  ]
-                                |)
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let~ iter :
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::Range")
-                                          []
-                                          [ Ty.path "usize" ] :=
-                                      M.read (| γ |) in
-                                    M.read (|
-                                      M.loop (|
-                                        Ty.tuple [],
-                                        ltac:(M.monadic
-                                          (let~ _ : Ty.tuple [] :=
-                                            M.match_operator (|
-                                              Ty.tuple [],
-                                              M.alloc (|
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [ Ty.path "usize" ],
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "core::option::Option")
-                                                    []
-                                                    [ Ty.path "usize" ],
-                                                  M.get_trait_method (|
-                                                    "core::iter::traits::iterator::Iterator",
-                                                    Ty.apply
-                                                      (Ty.path "core::ops::range::Range")
-                                                      []
-                                                      [ Ty.path "usize" ],
-                                                    [],
-                                                    [],
-                                                    "next",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.deref (|
-                                                        M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
-                                              |),
-                                              [
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let _ :=
-                                                      M.is_struct_tuple (|
-                                                        γ,
-                                                        "core::option::Option::None"
-                                                      |) in
-                                                    M.never_to_any (|
-                                                      M.read (| M.break (||) |)
-                                                    |)));
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let γ0_0 :=
-                                                      M.SubPointer.get_struct_tuple_field (|
-                                                        γ,
-                                                        "core::option::Option::Some",
-                                                        0
-                                                      |) in
-                                                    let i := M.copy (| Ty.path "usize", γ0_0 |) in
-                                                    M.match_operator (|
-                                                      Ty.tuple [],
-                                                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                                      [
-                                                        fun γ =>
-                                                          ltac:(M.monadic
-                                                            (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
-                                                                  Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    M.get_associated_function (|
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::option::Option")
-                                                                        []
-                                                                        [
-                                                                          Ty.associated_in_trait
-                                                                            "core::iter::traits::iterator::Iterator"
-                                                                            []
-                                                                            []
-                                                                            Self
-                                                                            "Item"
-                                                                        ],
-                                                                      "is_none",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.alloc (|
-                                                                          Ty.apply
-                                                                            (Ty.path
-                                                                              "core::option::Option")
-                                                                            []
-                                                                            [
-                                                                              Ty.associated_in_trait
-                                                                                "core::iter::traits::iterator::Iterator"
-                                                                                []
-                                                                                []
-                                                                                Self
-                                                                                "Item"
-                                                                            ],
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::option::Option")
-                                                                              []
-                                                                              [
-                                                                                Ty.associated_in_trait
-                                                                                  "core::iter::traits::iterator::Iterator"
-                                                                                  []
-                                                                                  []
-                                                                                  Self
-                                                                                  "Item"
-                                                                              ],
-                                                                            M.get_trait_method (|
-                                                                              "core::iter::traits::iterator::Iterator",
-                                                                              Self,
-                                                                              [],
-                                                                              [],
-                                                                              "next",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.MutRef,
-                                                                                M.deref (|
-                                                                                  M.read (| self |)
-                                                                                |)
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
-                                                            let _ :=
-                                                              is_constant_or_break_match (|
-                                                                M.read (| γ |),
-                                                                Value.Bool true
-                                                              |) in
-                                                            M.never_to_any (|
-                                                              M.read (|
-                                                                M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "core::result::Result::Err"
-                                                                    []
-                                                                    [
-                                                                      Ty.tuple [];
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::num::nonzero::NonZero")
-                                                                        []
-                                                                        [ Ty.path "usize" ]
-                                                                    ]
-                                                                    [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
-                                                                          (Ty.path
-                                                                            "core::num::nonzero::NonZero")
-                                                                          []
-                                                                          [ Ty.path "usize" ],
-                                                                        M.get_associated_function (|
-                                                                          Ty.apply
-                                                                            (Ty.path
-                                                                              "core::num::nonzero::NonZero")
-                                                                            []
-                                                                            [ Ty.path "usize" ],
-                                                                          "new_unchecked",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.sub,
-                                                                            [
-                                                                              M.read (| n |);
-                                                                              M.read (| i |)
-                                                                            ]
-                                                                          |)
-                                                                        ]
-                                                                      |)
-                                                                    ]
-                                                                |)
-                                                              |)
-                                                            |)));
-                                                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                                                      ]
-                                                    |)))
-                                              ]
-                                            |) in
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |)))
-                                      |)
-                                    |)))
-                              ]
-                            |)
-                          |))
-                      |) in
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.tuple [];
-                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                        ],
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.tuple [];
-                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                        ]
-                        [ Value.Tuple [] ]
-                    |)
-                  |)))
+                  ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator::advance_by::SpecAdvanceBy",
+                  Self,
+                  [],
+                  [],
+                  "spec_advance_by",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| n |)
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -1471,25 +1214,270 @@ Module iter.
           | [], [ B ], [ self ] =>
             ltac:(M.monadic
               (let self := M.alloc (| Self, self |) in
-              M.call_closure (|
-                B,
-                M.get_trait_method (|
-                  "core::iter::traits::collect::FromIterator",
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.read (|
+                            let~ hint :
+                                Ty.tuple
+                                  [
+                                    Ty.path "usize";
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                  ] :=
+                              M.call_closure (|
+                                Ty.tuple
+                                  [
+                                    Ty.path "usize";
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                  ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  Self,
+                                  [],
+                                  [],
+                                  "size_hint",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                              |) in
+                            let~ _ : Ty.tuple [] :=
+                              M.match_operator (|
+                                Ty.tuple [],
+                                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ :=
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "usize" ],
+                                                  "is_none_or",
+                                                  [],
+                                                  [ Ty.function [ Ty.path "usize" ] (Ty.path "bool")
+                                                  ]
+                                                |),
+                                                [
+                                                  M.read (|
+                                                    M.SubPointer.get_tuple_field (| hint, 1 |)
+                                                  |);
+                                                  M.closure
+                                                    (fun γ =>
+                                                      ltac:(M.monadic
+                                                        match γ with
+                                                        | [ α0 ] =>
+                                                          ltac:(M.monadic
+                                                            (M.match_operator (|
+                                                              Ty.path "bool",
+                                                              M.alloc (| Ty.path "usize", α0 |),
+                                                              [
+                                                                fun γ =>
+                                                                  ltac:(M.monadic
+                                                                    (let high :=
+                                                                      M.copy (|
+                                                                        Ty.path "usize",
+                                                                        γ
+                                                                      |) in
+                                                                    M.call_closure (|
+                                                                      Ty.path "bool",
+                                                                      BinOp.ge,
+                                                                      [
+                                                                        M.read (| high |);
+                                                                        M.read (|
+                                                                          M.SubPointer.get_tuple_field (|
+                                                                            hint,
+                                                                            0
+                                                                          |)
+                                                                        |)
+                                                                      ]
+                                                                    |)))
+                                                              ]
+                                                            |)))
+                                                        | _ =>
+                                                          M.impossible "wrong number of arguments"
+                                                        end))
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
+                                      let _ :=
+                                        is_constant_or_break_match (|
+                                          M.read (| γ |),
+                                          Value.Bool true
+                                        |) in
+                                      M.never_to_any (|
+                                        M.call_closure (|
+                                          Ty.path "never",
+                                          M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                                          [
+                                            M.read (|
+                                              let~ args :
+                                                  Ty.tuple
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.tuple
+                                                            [
+                                                              Ty.path "usize";
+                                                              Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [ Ty.path "usize" ]
+                                                            ]
+                                                        ]
+                                                    ] :=
+                                                Value.Tuple
+                                                  [ M.borrow (| Pointer.Kind.Ref, hint |) ] in
+                                              let~ args :
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                                    [ Ty.path "core::fmt::rt::Argument" ] :=
+                                                Value.Array
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      M.get_associated_function (|
+                                                        Ty.path "core::fmt::rt::Argument",
+                                                        "new_debug",
+                                                        [],
+                                                        [
+                                                          Ty.tuple
+                                                            [
+                                                              Ty.path "usize";
+                                                              Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [ Ty.path "usize" ]
+                                                            ]
+                                                        ]
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.SubPointer.get_tuple_field (|
+                                                                args,
+                                                                0
+                                                              |)
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  ] in
+                                              M.alloc (|
+                                                Ty.path "core::fmt::Arguments",
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::Arguments",
+                                                    "new",
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 23;
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref
+                                                          23
+                                                          [
+                                                            20;
+                                                            77;
+                                                            97;
+                                                            108;
+                                                            102;
+                                                            111;
+                                                            114;
+                                                            109;
+                                                            101;
+                                                            100;
+                                                            32;
+                                                            115;
+                                                            105;
+                                                            122;
+                                                            101;
+                                                            95;
+                                                            104;
+                                                            105;
+                                                            110;
+                                                            116;
+                                                            32;
+                                                            192;
+                                                            0
+                                                          ]
+                                                      |)
+                                                    |);
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, args |)
+                                                      |)
+                                                    |)
+                                                  ]
+                                                |)
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      |)));
+                                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                                ]
+                              |) in
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
                   B,
-                  [],
-                  [
-                    Ty.associated_in_trait
-                      "core::iter::traits::iterator::Iterator"
-                      []
-                      []
-                      Self
-                      "Item"
-                  ],
-                  "from_iter",
-                  [],
-                  [ Self ]
-                |),
-                [ M.read (| self |) ]
+                  M.call_closure (|
+                    B,
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::FromIterator",
+                      B,
+                      [],
+                      [
+                        Ty.associated_in_trait
+                          "core::iter::traits::iterator::Iterator"
+                          []
+                          []
+                          Self
+                          "Item"
+                      ],
+                      "from_iter",
+                      [],
+                      [ Self ]
+                    |),
+                    [ M.read (| self |) ]
+                  |)
+                |)
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -5726,102 +5714,49 @@ Module iter.
               (let self := M.alloc (| Self, self |) in
               let other := M.alloc (| I, other |) in
               let eq := M.alloc (| F, eq |) in
-              M.match_operator (|
+              M.call_closure (|
                 Ty.path "bool",
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "core::ops::control_flow::ControlFlow")
-                    []
-                    [ Ty.tuple []; Ty.path "core::cmp::Ordering" ],
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::ops::control_flow::ControlFlow")
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::SpecIterEq",
+                  Self,
+                  [],
+                  [
+                    Ty.associated_in_trait
+                      "core::iter::traits::collect::IntoIterator"
                       []
-                      [ Ty.tuple []; Ty.path "core::cmp::Ordering" ],
-                    M.get_function (|
-                      "core::iter::traits::iterator::iter_compare",
-                      [],
-                      [
-                        Self;
-                        Ty.associated_in_trait
-                          "core::iter::traits::collect::IntoIterator"
-                          []
-                          []
-                          I
-                          "IntoIter";
-                        Ty.associated_unknown;
-                        Ty.tuple []
-                      ]
-                    |),
-                    [
-                      M.read (| self |);
-                      M.call_closure (|
-                        Ty.associated_in_trait
-                          "core::iter::traits::collect::IntoIterator"
-                          []
-                          []
-                          I
-                          "IntoIter",
-                        M.get_trait_method (|
-                          "core::iter::traits::collect::IntoIterator",
-                          I,
-                          [],
-                          [],
-                          "into_iter",
-                          [],
-                          []
-                        |),
-                        [ M.read (| other |) ]
-                      |);
-                      M.call_closure (|
-                        Ty.associated_unknown,
-                        M.get_associated_function (| Self, "compare.eq_by", [], [] |),
-                        [ M.read (| eq |) ]
-                      |)
-                    ]
-                  |)
+                      []
+                      I
+                      "IntoIter"
+                  ],
+                  "spec_iter_eq",
+                  [],
+                  [ Ty.associated_unknown ]
                 |),
                 [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ0_0 :=
-                        M.SubPointer.get_struct_tuple_field (|
-                          γ,
-                          "core::ops::control_flow::ControlFlow::Continue",
-                          0
-                        |) in
-                      let ord := M.copy (| Ty.path "core::cmp::Ordering", γ0_0 |) in
-                      M.call_closure (|
-                        Ty.path "bool",
-                        M.get_trait_method (|
-                          "core::cmp::PartialEq",
-                          Ty.path "core::cmp::Ordering",
-                          [],
-                          [ Ty.path "core::cmp::Ordering" ],
-                          "eq",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.Ref, ord |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.path "core::cmp::Ordering",
-                              Value.StructTuple "core::cmp::Ordering::Equal" [] [] []
-                            |)
-                          |)
-                        ]
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ0_0 :=
-                        M.SubPointer.get_struct_tuple_field (|
-                          γ,
-                          "core::ops::control_flow::ControlFlow::Break",
-                          0
-                        |) in
-                      Value.Bool false))
+                  M.read (| self |);
+                  M.call_closure (|
+                    Ty.associated_in_trait
+                      "core::iter::traits::collect::IntoIterator"
+                      []
+                      []
+                      I
+                      "IntoIter",
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::IntoIterator",
+                      I,
+                      [],
+                      [],
+                      "into_iter",
+                      [],
+                      []
+                    |),
+                    [ M.read (| other |) ]
+                  |);
+                  M.call_closure (|
+                    Ty.associated_unknown,
+                    M.get_associated_function (| Self, "compare.eq_by", [], [] |),
+                    [ M.read (| eq |) ]
+                  |)
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -6495,58 +6430,11 @@ Module iter.
                       Ty.path "core::fmt::Arguments",
                       M.get_associated_function (|
                         Ty.path "core::fmt::Arguments",
-                        "new_v1",
-                        [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                        "from_str_nonconst",
+                        [],
                         []
                       |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [
-                                    mk_str (|
-                                      "internal error: entered unreachable code: Always specialized"
-                                    |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 0 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 0 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "none",
-                                    [],
-                                    []
-                                  |),
-                                  []
-                                |)
-                              |)
-                            |)
-                          |)
-                        |)
+                      [ mk_str (| "internal error: entered unreachable code: Always specialized" |)
                       ]
                     |)
                   ]
@@ -6561,6 +6449,221 @@ Module iter.
             "__iterator_get_unchecked"
             __iterator_get_unchecked.
       End Iterator.
+      
+      (* Trait *)
+      (* Empty module 'SpecIterEq' *)
+      
+      Module Impl_core_iter_traits_iterator_SpecIterEq_where_core_iter_traits_iterator_Iterator_A_where_core_iter_traits_iterator_Iterator_B_B_for_A.
+        Definition Self (A B : Ty.t) : Ty.t := A.
+        
+        (*
+            default fn spec_iter_eq<F>(self, b: B, f: F) -> bool
+            where
+                F: FnMut(Self::Item, <B as Iterator>::Item) -> ControlFlow<()>,
+            {
+                iter_eq(self, b, f)
+            }
+        *)
+        Definition spec_iter_eq
+            (A B : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B in
+          match ε, τ, α with
+          | [], [ F ], [ self; b; f ] =>
+            ltac:(M.monadic
+              (let self := M.alloc (| A, self |) in
+              let b := M.alloc (| B, b |) in
+              let f := M.alloc (| F, f |) in
+              M.call_closure (|
+                Ty.path "bool",
+                M.get_function (| "core::iter::traits::iterator::iter_eq", [], [ A; B; F ] |),
+                [ M.read (| self |); M.read (| b |); M.read (| f |) ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::iterator::SpecIterEq"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ B ]
+            (Self A B)
+            (* Instance *) [ ("spec_iter_eq", InstanceField.Method (spec_iter_eq A B)) ].
+      End Impl_core_iter_traits_iterator_SpecIterEq_where_core_iter_traits_iterator_Iterator_A_where_core_iter_traits_iterator_Iterator_B_B_for_A.
+      
+      Module Impl_core_iter_traits_iterator_SpecIterEq_where_core_iter_traits_iterator_Iterator_A_where_core_iter_traits_marker_TrustedLen_A_where_core_iter_traits_iterator_Iterator_B_where_core_iter_traits_marker_TrustedLen_B_B_for_A.
+        Definition Self (A B : Ty.t) : Ty.t := A.
+        
+        (*
+            fn spec_iter_eq<F>(self, b: B, f: F) -> bool
+            where
+                F: FnMut(Self::Item, <B as Iterator>::Item) -> ControlFlow<()>,
+            {
+                // we *can't* short-circuit if:
+                match (self.size_hint(), b.size_hint()) {
+                    // ... both iterators have the same length
+                    ((_, Some(a)), (_, Some(b))) if a == b => {}
+                    // ... or both of them are longer than `usize::MAX` (i.e. have an unknown length).
+                    ((_, None), (_, None)) => {}
+                    // otherwise, we can ascertain that they are unequal without actually comparing items
+                    _ => return false,
+                }
+        
+                iter_eq(self, b, f)
+            }
+        *)
+        Definition spec_iter_eq
+            (A B : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B in
+          match ε, τ, α with
+          | [], [ F ], [ self; b; f ] =>
+            ltac:(M.monadic
+              (let self := M.alloc (| A, self |) in
+              let b := M.alloc (| B, b |) in
+              let f := M.alloc (| F, f |) in
+              M.catch_return (Ty.path "bool") (|
+                ltac:(M.monadic
+                  (M.read (|
+                    let~ _ : Ty.tuple [] :=
+                      M.match_operator (|
+                        Ty.tuple [],
+                        M.alloc (|
+                          Ty.tuple
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.path "usize";
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                ];
+                              Ty.tuple
+                                [
+                                  Ty.path "usize";
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                ]
+                            ],
+                          Value.Tuple
+                            [
+                              M.call_closure (|
+                                Ty.tuple
+                                  [
+                                    Ty.path "usize";
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                  ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  A,
+                                  [],
+                                  [],
+                                  "size_hint",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                              |);
+                              M.call_closure (|
+                                Ty.tuple
+                                  [
+                                    Ty.path "usize";
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                  ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  B,
+                                  [],
+                                  [],
+                                  "size_hint",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, b |) ]
+                              |)
+                            ]
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                              let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                              let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
+                              let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                              let γ2_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ1_1,
+                                  "core::option::Option::Some",
+                                  0
+                                |) in
+                              let a := M.copy (| Ty.path "usize", γ2_0 |) in
+                              let γ1_0 := M.SubPointer.get_tuple_field (| γ0_1, 0 |) in
+                              let γ1_1 := M.SubPointer.get_tuple_field (| γ0_1, 1 |) in
+                              let γ2_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ1_1,
+                                  "core::option::Option::Some",
+                                  0
+                                |) in
+                              let b := M.copy (| Ty.path "usize", γ2_0 |) in
+                              let γ :=
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [ M.read (| a |); M.read (| b |) ]
+                                  |)
+                                |) in
+                              let _ :=
+                                is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                              Value.Tuple []));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                              let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                              let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
+                              let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                              let _ := M.is_struct_tuple (| γ1_1, "core::option::Option::None" |) in
+                              let γ1_0 := M.SubPointer.get_tuple_field (| γ0_1, 0 |) in
+                              let γ1_1 := M.SubPointer.get_tuple_field (| γ0_1, 1 |) in
+                              let _ := M.is_struct_tuple (| γ1_1, "core::option::Option::None" |) in
+                              Value.Tuple []));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (M.never_to_any (| M.read (| M.return_ (| Value.Bool false |) |) |)))
+                        ]
+                      |) in
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        M.get_function (|
+                          "core::iter::traits::iterator::iter_eq",
+                          [],
+                          [ A; B; F ]
+                        |),
+                        [ M.read (| self |); M.read (| b |); M.read (| f |) ]
+                      |)
+                    |)
+                  |)))
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::iterator::SpecIterEq"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ B ]
+            (Self A B)
+            (* Instance *) [ ("spec_iter_eq", InstanceField.Method (spec_iter_eq A B)) ].
+      End Impl_core_iter_traits_iterator_SpecIterEq_where_core_iter_traits_iterator_Iterator_A_where_core_iter_traits_marker_TrustedLen_A_where_core_iter_traits_iterator_Iterator_B_where_core_iter_traits_marker_TrustedLen_B_B_for_A.
       
       (*
       fn iter_compare<A, B, F, T>(mut a: A, mut b: B, f: F) -> ControlFlow<T, Ordering>
@@ -6986,6 +7089,107 @@ Module iter.
         Admitted.
         Global Typeclasses Opaque compare.
       End iter_compare.
+      
+      (*
+      fn iter_eq<A, B, F>(a: A, b: B, f: F) -> bool
+      where
+          A: Iterator,
+          B: Iterator,
+          F: FnMut(A::Item, B::Item) -> ControlFlow<()>,
+      {
+          iter_compare(a, b, f).continue_value().is_some_and(|ord| ord == Ordering::Equal)
+      }
+      *)
+      Definition iter_eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ A; B; F ], [ a; b; f ] =>
+          ltac:(M.monadic
+            (let a := M.alloc (| A, a |) in
+            let b := M.alloc (| B, b |) in
+            let f := M.alloc (| F, f |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+                "is_some_and",
+                [],
+                [ Ty.function [ Ty.path "core::cmp::Ordering" ] (Ty.path "bool") ]
+              |),
+              [
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::ops::control_flow::ControlFlow")
+                      []
+                      [ Ty.tuple []; Ty.path "core::cmp::Ordering" ],
+                    "continue_value",
+                    [],
+                    []
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.tuple []; Ty.path "core::cmp::Ordering" ],
+                      M.get_function (|
+                        "core::iter::traits::iterator::iter_compare",
+                        [],
+                        [ A; B; F; Ty.tuple [] ]
+                      |),
+                      [ M.read (| a |); M.read (| b |); M.read (| f |) ]
+                    |)
+                  ]
+                |);
+                M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "bool",
+                            M.alloc (| Ty.path "core::cmp::Ordering", α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let ord := M.copy (| Ty.path "core::cmp::Ordering", γ |) in
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.path "core::cmp::Ordering",
+                                      [],
+                                      [ Ty.path "core::cmp::Ordering" ],
+                                      "eq",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, ord |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "core::cmp::Ordering",
+                                          Value.StructTuple "core::cmp::Ordering::Equal" [] [] []
+                                        |)
+                                      |)
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_iter_eq :
+        M.IsFunction.C "core::iter::traits::iterator::iter_eq" iter_eq.
+      Admitted.
+      Global Typeclasses Opaque iter_eq.
       
       Module Impl_core_iter_traits_iterator_Iterator_where_core_iter_traits_iterator_Iterator_I_where_core_marker_Sized_I_for_ref_mut_I.
         Definition Self (I : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ I ].

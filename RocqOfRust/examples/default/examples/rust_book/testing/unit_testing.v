@@ -45,7 +45,7 @@ Module tests.
           assert_eq!(add(1, 2), 3);
       }
   *)
-  Definition test_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  Definition test_add_1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
@@ -94,24 +94,23 @@ Module tests.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.read (| M.deref (| M.read (| left_val |) |) |);
-                                          M.read (| M.deref (| M.read (| right_val |) |) |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [
+                                        M.read (| M.deref (| M.read (| left_val |) |) |);
+                                        M.read (| M.deref (| M.read (| right_val |) |) |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -167,10 +166,10 @@ Module tests.
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_test_add :
-    M.IsFunction.C "unit_testing::tests::test_add'1" test_add.
+  Global Instance Instance_IsFunction_test_add_1 :
+    M.IsFunction.C "unit_testing::tests::test_add'1" test_add_1.
   Admitted.
-  Global Typeclasses Opaque test_add.
+  Global Typeclasses Opaque test_add_1.
   
   (*
       fn test_bad_add() {
@@ -179,7 +178,7 @@ Module tests.
           assert_eq!(bad_add(1, 2), 3);
       }
   *)
-  Definition test_bad_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  Definition test_bad_add_1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
@@ -228,24 +227,23 @@ Module tests.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.read (| M.deref (| M.read (| left_val |) |) |);
-                                          M.read (| M.deref (| M.read (| right_val |) |) |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [
+                                        M.read (| M.deref (| M.read (| left_val |) |) |);
+                                        M.read (| M.deref (| M.read (| right_val |) |) |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -301,8 +299,8 @@ Module tests.
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_test_bad_add :
-    M.IsFunction.C "unit_testing::tests::test_bad_add'1" test_bad_add.
+  Global Instance Instance_IsFunction_test_bad_add_1 :
+    M.IsFunction.C "unit_testing::tests::test_bad_add'1" test_bad_add_1.
   Admitted.
-  Global Typeclasses Opaque test_bad_add.
+  Global Typeclasses Opaque test_bad_add_1.
 End tests.

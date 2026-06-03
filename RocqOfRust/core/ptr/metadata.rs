@@ -1,9 +1,10 @@
 #![unstable(feature = "ptr_metadata", issue = "81513")]
 
+use crate::clone::TrivialClone;
 use crate::fmt;
 use crate::hash::{Hash, Hasher};
 use crate::intrinsics::{aggregate_raw_ptr, ptr_metadata};
-use crate::marker::Freeze;
+use crate::marker::{Freeze, PointeeSized};
 use crate::ptr::NonNull;
 
 /// Provides the pointer metadata type of any pointed-to type.
@@ -53,13 +54,16 @@ use crate::ptr::NonNull;
 ///
 /// [`to_raw_parts`]: *const::to_raw_parts
 #[lang = "pointee_trait"]
-#[rustc_deny_explicit_impl(implement_via_object = false)]
-pub trait Pointee {
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
+pub trait Pointee: PointeeSized {
     /// The type for metadata in pointers and references to `Self`.
     #[lang = "metadata_type"]
     // NOTE: Keep trait bounds in `static_assert_expected_bounds_for_metadata`
     // in `library/core/src/ptr/metadata.rs`
     // in sync with those here:
+    // NOTE: The metadata of `dyn Trait + 'a` is `DynMetadata<dyn Trait + 'a>`
+    // so a `'static` bound must not be added.
     type Metadata: fmt::Debug + Copy + Send + Sync + Ord + Hash + Unpin + Freeze;
 }
 
@@ -73,12 +77,12 @@ pub trait Pointee {
 /// #![feature(ptr_metadata)]
 ///
 /// fn this_never_panics<T: std::ptr::Thin>() {
-///     assert_eq!(std::mem::size_of::<&T>(), std::mem::size_of::<usize>())
+///     assert_eq!(size_of::<&T>(), size_of::<usize>())
 /// }
 /// ```
 #[unstable(feature = "ptr_metadata", issue = "81513")]
 // NOTE: don’t stabilize this before trait aliases are stable in the language?
-pub trait Thin = Pointee<Metadata = ()>;
+pub trait Thin = Pointee<Metadata = ()> + PointeeSized;
 
 /// Extracts the metadata component of a pointer.
 ///
@@ -93,7 +97,7 @@ pub trait Thin = Pointee<Metadata = ()>;
 /// assert_eq!(std::ptr::metadata("foo"), 3_usize);
 /// ```
 #[inline]
-pub const fn metadata<T: ?Sized>(ptr: *const T) -> <T as Pointee>::Metadata {
+pub const fn metadata<T: PointeeSized>(ptr: *const T) -> <T as Pointee>::Metadata {
     ptr_metadata(ptr)
 }
 
@@ -103,10 +107,13 @@ pub const fn metadata<T: ?Sized>(ptr: *const T) -> <T as Pointee>::Metadata {
 /// For slices, see the documentation of [`slice::from_raw_parts`] for safety requirements.
 /// For trait objects, the metadata must come from a pointer to the same underlying erased type.
 ///
+/// If you are attempting to deconstruct a DST in a generic context to be reconstructed later,
+/// a thin pointer can always be obtained by casting `*const T` to `*const ()`.
+///
 /// [`slice::from_raw_parts`]: crate::slice::from_raw_parts
 #[unstable(feature = "ptr_metadata", issue = "81513")]
 #[inline]
-pub const fn from_raw_parts<T: ?Sized>(
+pub const fn from_raw_parts<T: PointeeSized>(
     data_pointer: *const impl Thin,
     metadata: <T as Pointee>::Metadata,
 ) -> *const T {
@@ -119,7 +126,7 @@ pub const fn from_raw_parts<T: ?Sized>(
 /// See the documentation of [`from_raw_parts`] for more details.
 #[unstable(feature = "ptr_metadata", issue = "81513")]
 #[inline]
-pub const fn from_raw_parts_mut<T: ?Sized>(
+pub const fn from_raw_parts_mut<T: PointeeSized>(
     data_pointer: *mut impl Thin,
     metadata: <T as Pointee>::Metadata,
 ) -> *mut T {
@@ -149,12 +156,12 @@ pub const fn from_raw_parts_mut<T: ?Sized>(
 /// duplicated in multiple codegen units), and pointers to vtables of *different* types/traits can
 /// compare equal (since identical vtables can be deduplicated within a codegen unit).
 #[lang = "dyn_metadata"]
-pub struct DynMetadata<Dyn: ?Sized> {
+pub struct DynMetadata<Dyn: PointeeSized> {
     _vtable_ptr: NonNull<VTable>,
     _phantom: crate::marker::PhantomData<Dyn>,
 }
 
-extern "C" {
+unsafe extern "C" {
     /// Opaque type for accessing vtables.
     ///
     /// Private implementation detail of `DynMetadata::size_of` etc.
@@ -162,7 +169,7 @@ extern "C" {
     type VTable;
 }
 
-impl<Dyn: ?Sized> DynMetadata<Dyn> {
+impl<Dyn: PointeeSized> DynMetadata<Dyn> {
     /// When `DynMetadata` appears as the metadata field of a wide pointer, the rustc_middle layout
     /// computation does magic and the resulting layout is *not* a `FieldsShape::Aggregate`, instead
     /// it is a `FieldsShape::Primitive`. This means that the same type can have different layout
@@ -203,10 +210,10 @@ impl<Dyn: ?Sized> DynMetadata<Dyn> {
     }
 }
 
-unsafe impl<Dyn: ?Sized> Send for DynMetadata<Dyn> {}
-unsafe impl<Dyn: ?Sized> Sync for DynMetadata<Dyn> {}
+unsafe impl<Dyn: PointeeSized> Send for DynMetadata<Dyn> {}
+unsafe impl<Dyn: PointeeSized> Sync for DynMetadata<Dyn> {}
 
-impl<Dyn: ?Sized> fmt::Debug for DynMetadata<Dyn> {
+impl<Dyn: PointeeSized> fmt::Debug for DynMetadata<Dyn> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_tuple("DynMetadata").field(&self.vtable_ptr()).finish()
     }
@@ -214,27 +221,30 @@ impl<Dyn: ?Sized> fmt::Debug for DynMetadata<Dyn> {
 
 // Manual impls needed to avoid `Dyn: $Trait` bounds.
 
-impl<Dyn: ?Sized> Unpin for DynMetadata<Dyn> {}
+impl<Dyn: PointeeSized> Unpin for DynMetadata<Dyn> {}
 
-impl<Dyn: ?Sized> Copy for DynMetadata<Dyn> {}
+impl<Dyn: PointeeSized> Copy for DynMetadata<Dyn> {}
 
-impl<Dyn: ?Sized> Clone for DynMetadata<Dyn> {
+impl<Dyn: PointeeSized> Clone for DynMetadata<Dyn> {
     #[inline]
     fn clone(&self) -> Self {
         *self
     }
 }
 
-impl<Dyn: ?Sized> Eq for DynMetadata<Dyn> {}
+#[doc(hidden)]
+unsafe impl<Dyn: ?Sized> TrivialClone for DynMetadata<Dyn> {}
 
-impl<Dyn: ?Sized> PartialEq for DynMetadata<Dyn> {
+impl<Dyn: PointeeSized> Eq for DynMetadata<Dyn> {}
+
+impl<Dyn: PointeeSized> PartialEq for DynMetadata<Dyn> {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
         crate::ptr::eq::<VTable>(self.vtable_ptr(), other.vtable_ptr())
     }
 }
 
-impl<Dyn: ?Sized> Ord for DynMetadata<Dyn> {
+impl<Dyn: PointeeSized> Ord for DynMetadata<Dyn> {
     #[inline]
     #[allow(ambiguous_wide_pointer_comparisons)]
     fn cmp(&self, other: &Self) -> crate::cmp::Ordering {
@@ -242,14 +252,14 @@ impl<Dyn: ?Sized> Ord for DynMetadata<Dyn> {
     }
 }
 
-impl<Dyn: ?Sized> PartialOrd for DynMetadata<Dyn> {
+impl<Dyn: PointeeSized> PartialOrd for DynMetadata<Dyn> {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<crate::cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl<Dyn: ?Sized> Hash for DynMetadata<Dyn> {
+impl<Dyn: PointeeSized> Hash for DynMetadata<Dyn> {
     #[inline]
     fn hash<H: Hasher>(&self, hasher: &mut H) {
         crate::ptr::hash::<VTable, _>(self.vtable_ptr(), hasher)

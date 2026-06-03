@@ -37,7 +37,7 @@ macro_rules! panic {
 /// ```
 #[macro_export]
 #[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "assert_eq_macro")]
+#[rustc_diagnostic_item = "assert_eq_macro"]
 #[allow_internal_unstable(panic_internals)]
 macro_rules! assert_eq {
     ($left:expr, $right:expr $(,)?) => {
@@ -93,7 +93,7 @@ macro_rules! assert_eq {
 /// ```
 #[macro_export]
 #[stable(feature = "assert_ne", since = "1.13.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "assert_ne_macro")]
+#[rustc_diagnostic_item = "assert_ne_macro"]
 #[allow_internal_unstable(panic_internals)]
 macro_rules! assert_ne {
     ($left:expr, $right:expr $(,)?) => {
@@ -196,27 +196,25 @@ pub macro assert_matches {
     },
 }
 
-/// A macro for defining `#[cfg]` match-like statements.
+/// Selects code at compile-time based on `cfg` predicates.
 ///
-/// It is similar to the `if/elif` C preprocessor macro by allowing definition of a cascade of
-/// `#[cfg]` cases, emitting the implementation which matches first.
+/// This macro evaluates, at compile-time, a series of `cfg` predicates,
+/// selects the first that is true, and emits the code guarded by that
+/// predicate. The code guarded by other predicates is not emitted.
 ///
-/// This allows you to conveniently provide a long list `#[cfg]`'d blocks of code
-/// without having to rewrite each clause multiple times.
-///
-/// Trailing `_` wildcard match arms are **optional** and they indicate a fallback branch when
-/// all previous declarations do not evaluate to true.
+/// An optional trailing `_` wildcard can be used to specify a fallback. If
+/// none of the predicates are true, a [`compile_error`] is emitted.
 ///
 /// # Example
 ///
 /// ```
-/// #![feature(cfg_match)]
+/// #![feature(cfg_select)]
 ///
-/// cfg_match! {
-///     cfg(unix) => {
+/// cfg_select! {
+///     unix => {
 ///         fn foo() { /* unix specific functionality */ }
 ///     }
-///     cfg(target_pointer_width = "32") => {
+///     target_pointer_width = "32" => {
 ///         fn foo() { /* non-unix, 32-bit functionality */ }
 ///     }
 ///     _ => {
@@ -224,64 +222,23 @@ pub macro assert_matches {
 ///     }
 /// }
 /// ```
-#[unstable(feature = "cfg_match", issue = "115585")]
-#[rustc_diagnostic_item = "cfg_match"]
-pub macro cfg_match {
-    // with a final wildcard
-    (
-        $(cfg($initial_meta:meta) => { $($initial_tokens:tt)* })+
-        _ => { $($extra_tokens:tt)* }
-    ) => {
-        cfg_match! {
-            @__items ();
-            $((($initial_meta) ($($initial_tokens)*)),)+
-            (() ($($extra_tokens)*)),
-        }
-    },
-
-    // without a final wildcard
-    (
-        $(cfg($extra_meta:meta) => { $($extra_tokens:tt)* })*
-    ) => {
-        cfg_match! {
-            @__items ();
-            $((($extra_meta) ($($extra_tokens)*)),)*
-        }
-    },
-
-    // Internal and recursive macro to emit all the items
-    //
-    // Collects all the previous cfgs in a list at the beginning, so they can be
-    // negated. After the semicolon is all the remaining items.
-    (@__items ($($_:meta,)*);) => {},
-    (
-        @__items ($($no:meta,)*);
-        (($($yes:meta)?) ($($tokens:tt)*)),
-        $($rest:tt,)*
-    ) => {
-        // Emit all items within one block, applying an appropriate #[cfg]. The
-        // #[cfg] will require all `$yes` matchers specified and must also negate
-        // all previous matchers.
-        #[cfg(all(
-            $($yes,)?
-            not(any($($no),*))
-        ))]
-        cfg_match! { @__identity $($tokens)* }
-
-        // Recurse to emit all other items in `$rest`, and when we do so add all
-        // our `$yes` matchers to the list of `$no` matchers as future emissions
-        // will have to negate everything we just matched as well.
-        cfg_match! {
-            @__items ($($no,)* $($yes,)?);
-            $($rest,)*
-        }
-    },
-
-    // Internal macro to make __apply work out right for different match types,
-    // because of how macros match/expand stuff.
-    (@__identity $($tokens:tt)*) => {
-        $($tokens)*
-    }
+///
+/// The `cfg_select!` macro can also be used in expression position, with or without braces on the
+/// right-hand side:
+///
+/// ```
+/// #![feature(cfg_select)]
+///
+/// let _some_string = cfg_select! {
+///     unix => "With great power comes great electricity bills",
+///     _ => { "Behind every successful diet is an unwatched pizza" }
+/// };
+/// ```
+#[unstable(feature = "cfg_select", issue = "115585")]
+#[rustc_diagnostic_item = "cfg_select"]
+#[rustc_builtin_macro]
+pub macro cfg_select($($tt:tt)*) {
+    /* compiler built-in */
 }
 
 /// Asserts that a boolean expression is `true` at runtime.
@@ -315,7 +272,10 @@ pub macro cfg_match {
 /// // expression given.
 /// debug_assert!(true);
 ///
-/// fn some_expensive_computation() -> bool { true } // a very simple function
+/// fn some_expensive_computation() -> bool {
+///     // Some expensive computation here
+///     true
+/// }
 /// debug_assert!(some_expensive_computation());
 ///
 /// // assert with a custom message
@@ -358,7 +318,7 @@ macro_rules! debug_assert {
 /// ```
 #[macro_export]
 #[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "debug_assert_eq_macro")]
+#[rustc_diagnostic_item = "debug_assert_eq_macro"]
 macro_rules! debug_assert_eq {
     ($($arg:tt)*) => {
         if $crate::cfg!(debug_assertions) {
@@ -388,7 +348,7 @@ macro_rules! debug_assert_eq {
 /// ```
 #[macro_export]
 #[stable(feature = "assert_ne", since = "1.13.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "debug_assert_ne_macro")]
+#[rustc_diagnostic_item = "debug_assert_ne_macro"]
 macro_rules! debug_assert_ne {
     ($($arg:tt)*) => {
         if $crate::cfg!(debug_assertions) {
@@ -469,9 +429,11 @@ pub macro debug_assert_matches($($arg:tt)*) {
 /// ```
 #[macro_export]
 #[stable(feature = "matches_macro", since = "1.42.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "matches_macro")]
+#[rustc_diagnostic_item = "matches_macro"]
+#[allow_internal_unstable(non_exhaustive_omitted_patterns_lint, stmt_expr_attributes)]
 macro_rules! matches {
     ($expression:expr, $pattern:pat $(if $guard:expr)? $(,)?) => {
+        #[allow(non_exhaustive_omitted_patterns)]
         match $expression {
             $pattern $(if $guard)? => true,
             _ => false
@@ -644,7 +606,7 @@ macro_rules! r#try {
 /// ```
 #[macro_export]
 #[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "write_macro")]
+#[rustc_diagnostic_item = "write_macro"]
 macro_rules! write {
     ($dst:expr, $($arg:tt)*) => {
         $dst.write_fmt($crate::format_args!($($arg)*))
@@ -678,7 +640,7 @@ macro_rules! write {
 /// ```
 #[macro_export]
 #[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "writeln_macro")]
+#[rustc_diagnostic_item = "writeln_macro"]
 #[allow_internal_unstable(format_args_nl)]
 macro_rules! writeln {
     ($dst:expr $(,)?) => {
@@ -745,7 +707,7 @@ macro_rules! writeln {
 #[rustc_builtin_macro(unreachable)]
 #[allow_internal_unstable(edition_panic)]
 #[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "unreachable_macro")]
+#[rustc_diagnostic_item = "unreachable_macro"]
 macro_rules! unreachable {
     // Expands to either `$crate::panic::unreachable_2015` or `$crate::panic::unreachable_2021`
     // depending on the edition of the caller.
@@ -830,7 +792,7 @@ macro_rules! unreachable {
 /// ```
 #[macro_export]
 #[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "unimplemented_macro")]
+#[rustc_diagnostic_item = "unimplemented_macro"]
 #[allow_internal_unstable(panic_internals)]
 macro_rules! unimplemented {
     () => {
@@ -910,7 +872,7 @@ macro_rules! unimplemented {
 /// ```
 #[macro_export]
 #[stable(feature = "todo_macro", since = "1.40.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "todo_macro")]
+#[rustc_diagnostic_item = "todo_macro"]
 #[allow_internal_unstable(panic_internals)]
 macro_rules! todo {
     () => {
@@ -989,8 +951,9 @@ pub(crate) mod builtin {
     /// format string in `format_args!`.
     ///
     /// ```rust
-    /// let debug = format!("{:?}", format_args!("{} foo {:?}", 1, 2));
-    /// let display = format!("{}", format_args!("{} foo {:?}", 1, 2));
+    /// let args = format_args!("{} foo {:?}", 1, 2);
+    /// let debug = format!("{args:?}");
+    /// let display = format!("{args}");
     /// assert_eq!("1 foo 2", display);
     /// assert_eq!(display, debug);
     /// ```
@@ -1014,17 +977,21 @@ pub(crate) mod builtin {
     /// assert_eq!(s, format!("hello {}", "world"));
     /// ```
     ///
-    /// # Lifetime limitation
+    /// # Argument lifetimes
     ///
     /// Except when no formatting arguments are used,
-    /// the produced `fmt::Arguments` value borrows temporary values,
-    /// which means it can only be used within the same expression
-    /// and cannot be stored for later use.
-    /// This is a known limitation, see [#92698](https://github.com/rust-lang/rust/issues/92698).
+    /// the produced `fmt::Arguments` value borrows temporary values.
+    /// To allow it to be stored for later use, the arguments' lifetimes, as well as those of
+    /// temporaries they borrow, may be [extended] when `format_args!` appears in the initializer
+    /// expression of a `let` statement. The syntactic rules used to determine when temporaries'
+    /// lifetimes are extended are documented in the [Reference].
+    ///
+    /// [extended]: ../reference/destructors.html#temporary-lifetime-extension
+    /// [Reference]: ../reference/destructors.html#extending-based-on-expressions
     #[stable(feature = "rust1", since = "1.0.0")]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "format_args_macro")]
+    #[rustc_diagnostic_item = "format_args_macro"]
     #[allow_internal_unsafe]
-    #[allow_internal_unstable(fmt_internals)]
+    #[allow_internal_unstable(fmt_internals, fmt_arguments_from_str)]
     #[rustc_builtin_macro]
     #[macro_export]
     macro_rules! format_args {
@@ -1038,7 +1005,7 @@ pub(crate) mod builtin {
     ///
     /// This macro will be removed once `format_args` is allowed in const contexts.
     #[unstable(feature = "const_format_args", issue = "none")]
-    #[allow_internal_unstable(fmt_internals, const_fmt_arguments_new)]
+    #[allow_internal_unstable(fmt_internals, fmt_arguments_from_str)]
     #[rustc_builtin_macro]
     #[macro_export]
     macro_rules! const_format_args {
@@ -1053,8 +1020,9 @@ pub(crate) mod builtin {
         reason = "`format_args_nl` is only for internal \
                   language use and is subject to change"
     )]
-    #[allow_internal_unstable(fmt_internals)]
+    #[allow_internal_unstable(fmt_internals, fmt_arguments_from_str)]
     #[rustc_builtin_macro]
+    #[doc(hidden)]
     #[macro_export]
     macro_rules! format_args_nl {
         ($fmt:expr) => {{ /* compiler built-in */ }};
@@ -1135,41 +1103,6 @@ pub(crate) mod builtin {
         ($name:expr $(,)?) => {{ /* compiler built-in */ }};
     }
 
-    /// Concatenates identifiers into one identifier.
-    ///
-    /// This macro takes any number of comma-separated identifiers, and
-    /// concatenates them all into one, yielding an expression which is a new
-    /// identifier. Note that hygiene makes it such that this macro cannot
-    /// capture local variables. Also, as a general rule, macros are only
-    /// allowed in item, statement or expression position. That means while
-    /// you may use this macro for referring to existing variables, functions or
-    /// modules etc, you cannot define a new one with it.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// #![feature(concat_idents)]
-    ///
-    /// # fn main() {
-    /// fn foobar() -> u32 { 23 }
-    ///
-    /// let f = concat_idents!(foo, bar);
-    /// println!("{}", f());
-    ///
-    /// // fn concat_idents!(new, fun, name) { } // not usable in this way!
-    /// # }
-    /// ```
-    #[unstable(
-        feature = "concat_idents",
-        issue = "29599",
-        reason = "`concat_idents` is not stable enough for use and is subject to change"
-    )]
-    #[rustc_builtin_macro]
-    #[macro_export]
-    macro_rules! concat_idents {
-        ($($e:ident),+ $(,)?) => {{ /* compiler built-in */ }};
-    }
-
     /// Concatenates literals into a byte slice.
     ///
     /// This macro takes any number of comma-separated literals, and concatenates them all into
@@ -1214,6 +1147,7 @@ pub(crate) mod builtin {
     /// ```
     #[stable(feature = "rust1", since = "1.0.0")]
     #[rustc_builtin_macro]
+    #[rustc_diagnostic_item = "macro_concat"]
     #[macro_export]
     macro_rules! concat {
         ($($e:expr),* $(,)?) => {{ /* compiler built-in */ }};
@@ -1295,6 +1229,19 @@ pub(crate) mod builtin {
     /// first macro invocation leading up to the invocation of the `file!`
     /// macro.
     ///
+    /// The file name is derived from the crate root's source path passed to the Rust compiler
+    /// and the sequence the compiler takes to get from the crate root to the
+    /// module containing `file!`, modified by any flags passed to the Rust compiler (e.g.
+    /// `--remap-path-prefix`).  If the crate's source path is relative, the initial base
+    /// directory will be the working directory of the Rust compiler.  For example, if the source
+    /// path passed to the compiler is `./src/lib.rs` which has a `mod foo;` with a source path of
+    /// `src/foo/mod.rs`, then calling `file!` inside `mod foo;` will return `./src/foo/mod.rs`.
+    ///
+    /// Future compiler options might make further changes to the behavior of `file!`,
+    /// including potentially making it entirely empty. Code (e.g. test libraries)
+    /// relying on `file!` producing an openable file path would be incompatible
+    /// with such options, and might wish to recommend not using those options.
+    ///
     /// # Examples
     ///
     /// ```
@@ -1369,7 +1316,7 @@ pub(crate) mod builtin {
     #[stable(feature = "rust1", since = "1.0.0")]
     #[rustc_builtin_macro]
     #[macro_export]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "include_str_macro")]
+    #[rustc_diagnostic_item = "include_str_macro"]
     macro_rules! include_str {
         ($file:expr $(,)?) => {{ /* compiler built-in */ }};
     }
@@ -1409,7 +1356,7 @@ pub(crate) mod builtin {
     #[stable(feature = "rust1", since = "1.0.0")]
     #[rustc_builtin_macro]
     #[macro_export]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "include_bytes_macro")]
+    #[rustc_diagnostic_item = "include_bytes_macro"]
     macro_rules! include_bytes {
         ($file:expr $(,)?) => {{ /* compiler built-in */ }};
     }
@@ -1541,20 +1488,144 @@ pub(crate) mod builtin {
         ($file:expr $(,)?) => {{ /* compiler built-in */ }};
     }
 
-    /// Automatic Differentiation macro which allows generating a new function to compute
-    /// the derivative of a given function. It may only be applied to a function.
-    /// The expected usage syntax is
-    /// `#[autodiff(NAME, MODE, INPUT_ACTIVITIES, OUTPUT_ACTIVITY)]`
-    /// where:
-    /// NAME is a string that represents a valid function name.
-    /// MODE is any of Forward, Reverse, ForwardFirst, ReverseFirst.
-    /// INPUT_ACTIVITIES consists of one valid activity for each input parameter.
-    /// OUTPUT_ACTIVITY must not be set if we implicitely return nothing (or explicitely return
-    /// `-> ()`). Otherwise it must be set to one of the allowed activities.
+    /// This macro uses forward-mode automatic differentiation to generate a new function.
+    /// It may only be applied to a function. The new function will compute the derivative
+    /// of the function to which the macro was applied.
+    ///
+    /// The expected usage syntax is:
+    /// `#[autodiff_forward(NAME, INPUT_ACTIVITIES, OUTPUT_ACTIVITY)]`
+    ///
+    /// - `NAME`: A string that represents a valid function name.
+    /// - `INPUT_ACTIVITIES`: Specifies one valid activity for each input parameter.
+    /// - `OUTPUT_ACTIVITY`: Must not be set if the function implicitly returns nothing
+    ///   (or explicitly returns `-> ()`). Otherwise, it must be set to one of the allowed activities.
+    ///
+    /// ACTIVITIES might either be `Dual` or `Const`, more options will be exposed later.
+    ///
+    /// `Const` should be used on non-float arguments, or float-based arguments as an optimization
+    /// if we are not interested in computing the derivatives with respect to this argument.
+    ///
+    /// `Dual` can be used for float scalar values or for references, raw pointers, or other
+    /// indirect input arguments. It can also be used on a scalar float return value.
+    /// If used on a return value, the generated function will return a tuple of two float scalars.
+    /// If used on an input argument, a new shadow argument of the same type will be created,
+    /// directly following the original argument.
+    ///
+    /// ### Usage examples:
+    ///
+    /// ```rust,ignore (autodiff requires a -Z flag as well as fat-lto for testing)
+    /// #![feature(autodiff)]
+    /// use std::autodiff::*;
+    /// #[autodiff_forward(rb_fwd1, Dual, Const, Dual)]
+    /// #[autodiff_forward(rb_fwd2, Const, Dual, Dual)]
+    /// #[autodiff_forward(rb_fwd3, Dual, Dual, Dual)]
+    /// fn rosenbrock(x: f64, y: f64) -> f64 {
+    ///     (1.0 - x).powi(2) + 100.0 * (y - x.powi(2)).powi(2)
+    /// }
+    /// #[autodiff_forward(rb_inp_fwd, Dual, Dual, Dual)]
+    /// fn rosenbrock_inp(x: f64, y: f64, out: &mut f64) {
+    ///     *out = (1.0 - x).powi(2) + 100.0 * (y - x.powi(2)).powi(2);
+    /// }
+    ///
+    /// fn main() {
+    ///   let x0 = rosenbrock(1.0, 3.0); // 400.0
+    ///   let (x1, dx1) = rb_fwd1(1.0, 1.0, 3.0); // (400.0, -800.0)
+    ///   let (x2, dy1) = rb_fwd2(1.0, 3.0, 1.0); // (400.0, 400.0)
+    ///   // When seeding both arguments at once the tangent return is the sum of both.
+    ///   let (x3, dxy) = rb_fwd3(1.0, 1.0, 3.0, 1.0); // (400.0, -400.0)
+    ///
+    ///   let mut out = 0.0;
+    ///   let mut dout = 0.0;
+    ///   rb_inp_fwd(1.0, 1.0, 3.0, 1.0, &mut out, &mut dout);
+    ///   // (out, dout) == (400.0, -400.0)
+    /// }
+    /// ```
+    ///
+    /// We might want to track how one input float affects one or more output floats. In this case,
+    /// the shadow of one input should be initialized to `1.0`, while the shadows of the other
+    /// inputs should be initialized to `0.0`. The shadow of the output(s) should be initialized to
+    /// `0.0`. After calling the generated function, the shadow of the input will be zeroed,
+    /// while the shadow(s) of the output(s) will contain the derivatives. Forward mode is generally
+    /// more efficient if we have more output floats marked as `Dual` than input floats.
+    /// Related information can also be found under the term "Vector-Jacobian product" (VJP).
     #[unstable(feature = "autodiff", issue = "124509")]
     #[allow_internal_unstable(rustc_attrs)]
+    #[allow_internal_unstable(core_intrinsics)]
     #[rustc_builtin_macro]
-    pub macro autodiff($item:item) {
+    pub macro autodiff_forward($item:item) {
+        /* compiler built-in */
+    }
+
+    /// This macro uses reverse-mode automatic differentiation to generate a new function.
+    /// It may only be applied to a function. The new function will compute the derivative
+    /// of the function to which the macro was applied.
+    ///
+    /// The expected usage syntax is:
+    /// `#[autodiff_reverse(NAME, INPUT_ACTIVITIES, OUTPUT_ACTIVITY)]`
+    ///
+    /// - `NAME`: A string that represents a valid function name.
+    /// - `INPUT_ACTIVITIES`: Specifies one valid activity for each input parameter.
+    /// - `OUTPUT_ACTIVITY`: Must not be set if the function implicitly returns nothing
+    ///   (or explicitly returns `-> ()`). Otherwise, it must be set to one of the allowed activities.
+    ///
+    /// ACTIVITIES might either be `Active`, `Duplicated` or `Const`, more options will be exposed later.
+    ///
+    /// `Active` can be used for float scalar values.
+    /// If used on an input, a new float will be appended to the return tuple of the generated
+    /// function. If the function returns a float scalar, `Active` can be used for the return as
+    /// well. In this case a float scalar will be appended to the argument list, it works as seed.
+    ///
+    /// `Duplicated` can be used on references, raw pointers, or other indirect input
+    /// arguments. It creates a new shadow argument of the same type, following the original argument.
+    /// A const reference or pointer argument will receive a mutable reference or pointer as shadow.
+    ///
+    /// `Const` should be used on non-float arguments, or float-based arguments as an optimization
+    /// if we are not interested in computing the derivatives with respect to this argument.
+    ///
+    /// ### Usage examples:
+    ///
+    /// ```rust,ignore (autodiff requires a -Z flag as well as fat-lto for testing)
+    /// #![feature(autodiff)]
+    /// use std::autodiff::*;
+    /// #[autodiff_reverse(rb_rev, Active, Active, Active)]
+    /// fn rosenbrock(x: f64, y: f64) -> f64 {
+    ///     (1.0 - x).powi(2) + 100.0 * (y - x.powi(2)).powi(2)
+    /// }
+    /// #[autodiff_reverse(rb_inp_rev, Active, Active, Duplicated)]
+    /// fn rosenbrock_inp(x: f64, y: f64, out: &mut f64) {
+    ///     *out = (1.0 - x).powi(2) + 100.0 * (y - x.powi(2)).powi(2);
+    /// }
+    ///
+    /// fn main() {
+    ///     let (output1, dx1, dy1) = rb_rev(1.0, 3.0, 1.0);
+    ///     dbg!(output1, dx1, dy1); // (400.0, -800.0, 400.0)
+    ///     let mut output2 = 0.0;
+    ///     let mut seed = 1.0;
+    ///     let (dx2, dy2) = rb_inp_rev(1.0, 3.0, &mut output2, &mut seed);
+    ///     // (dx2, dy2, output2, seed) == (-800.0, 400.0, 400.0, 0.0)
+    /// }
+    /// ```
+    ///
+    ///
+    /// We often want to track how one or more input floats affect one output float. This output can
+    /// be a scalar return value, or a mutable reference or pointer argument. In the latter case, the
+    /// mutable input should be marked as duplicated and its shadow initialized to `0.0`. The shadow of
+    /// the output should be marked as active or duplicated and initialized to `1.0`. After calling
+    /// the generated function, the shadow(s) of the input(s) will contain the derivatives. The
+    /// shadow of the outputs ("seed") will be reset to zero.
+    /// If the function has more than one output float marked as active or duplicated, users might want to
+    /// set one of them to `1.0` and the others to `0.0` to compute partial derivatives.
+    /// Unlike forward-mode, a call to the generated function does not reset the shadow of the
+    /// inputs.
+    /// Reverse mode is generally more efficient if we have more active/duplicated input than
+    /// output floats.
+    ///
+    /// Related information can also be found under the term "Jacobian-Vector Product" (JVP).
+    #[unstable(feature = "autodiff", issue = "124509")]
+    #[allow_internal_unstable(rustc_attrs)]
+    #[allow_internal_unstable(core_intrinsics)]
+    #[rustc_builtin_macro]
+    pub macro autodiff_reverse($item:item) {
         /* compiler built-in */
     }
 
@@ -1591,7 +1662,10 @@ pub(crate) mod builtin {
     /// // expression given.
     /// assert!(true);
     ///
-    /// fn some_computation() -> bool { true } // a very simple function
+    /// fn some_computation() -> bool {
+    ///     // Some expensive computation here
+    ///     true
+    /// }
     ///
     /// assert!(some_computation());
     ///
@@ -1661,7 +1735,7 @@ pub(crate) mod builtin {
     /// See [the reference] for more info.
     ///
     /// [the reference]: ../../../reference/attributes/derive.html
-    #[unstable(feature = "derive_const", issue = "none")]
+    #[unstable(feature = "derive_const", issue = "118304")]
     #[rustc_builtin_macro]
     pub macro derive_const($item:item) {
         /* compiler built-in */
@@ -1683,7 +1757,6 @@ pub(crate) mod builtin {
     #[unstable(
         feature = "test",
         issue = "50297",
-        soft,
         reason = "`bench` is a part of custom test frameworks which are unstable"
     )]
     #[allow_internal_unstable(test, rustc_attrs, coverage_attribute)]
@@ -1711,6 +1784,30 @@ pub(crate) mod builtin {
     #[allow_internal_unstable(rustc_attrs)]
     #[rustc_builtin_macro]
     pub macro global_allocator($item:item) {
+        /* compiler built-in */
+    }
+
+    /// Attribute macro applied to a function to give it a post-condition.
+    ///
+    /// The attribute carries an argument token-tree which is
+    /// eventually parsed as a unary closure expression that is
+    /// invoked on a reference to the return value.
+    #[unstable(feature = "contracts", issue = "128044")]
+    #[allow_internal_unstable(contracts_internals)]
+    #[rustc_builtin_macro]
+    pub macro contracts_ensures($item:item) {
+        /* compiler built-in */
+    }
+
+    /// Attribute macro applied to a function to give it a precondition.
+    ///
+    /// The attribute carries an argument token-tree which is
+    /// eventually parsed as an boolean expression with access to the
+    /// function's formal parameters
+    #[unstable(feature = "contracts", issue = "128044")]
+    #[allow_internal_unstable(contracts_internals)]
+    #[rustc_builtin_macro]
+    pub macro contracts_requires($item:item) {
         /* compiler built-in */
     }
 
@@ -1746,6 +1843,20 @@ pub(crate) mod builtin {
         /* compiler built-in */
     }
 
+    /// Provide a list of type aliases and other opaque-type-containing type definitions
+    /// to an item with a body. This list will be used in that body to define opaque
+    /// types' hidden types.
+    /// Can only be applied to things that have bodies.
+    #[unstable(
+        feature = "type_alias_impl_trait",
+        issue = "63063",
+        reason = "`type_alias_impl_trait` has open design concerns"
+    )]
+    #[rustc_builtin_macro]
+    pub macro define_opaque($($tt:tt)*) {
+        /* compiler built-in */
+    }
+
     /// Unstable placeholder for type ascription.
     #[allow_internal_unstable(builtin_syntax)]
     #[unstable(
@@ -1769,31 +1880,14 @@ pub(crate) mod builtin {
         builtin # deref($pat)
     }
 
-    /// Derive macro for `rustc-serialize`. Should not be used in new code.
+    /// Derive macro generating an impl of the trait `From`.
+    /// Currently, it can only be used on single-field structs.
+    // Note that the macro is in a different module than the `From` trait,
+    // to avoid triggering an unstable feature being used if someone imports
+    // `std::convert::From`.
     #[rustc_builtin_macro]
-    #[unstable(
-        feature = "rustc_encodable_decodable",
-        issue = "none",
-        soft,
-        reason = "derive macro for `rustc-serialize`; should not be used in new code"
-    )]
-    #[deprecated(since = "1.52.0", note = "rustc-serialize is deprecated and no longer supported")]
-    #[doc(hidden)] // While technically stable, using it is unstable, and deprecated. Hide it.
-    pub macro RustcDecodable($item:item) {
-        /* compiler built-in */
-    }
-
-    /// Derive macro for `rustc-serialize`. Should not be used in new code.
-    #[rustc_builtin_macro]
-    #[unstable(
-        feature = "rustc_encodable_decodable",
-        issue = "none",
-        soft,
-        reason = "derive macro for `rustc-serialize`; should not be used in new code"
-    )]
-    #[deprecated(since = "1.52.0", note = "rustc-serialize is deprecated and no longer supported")]
-    #[doc(hidden)] // While technically stable, using it is unstable, and deprecated. Hide it.
-    pub macro RustcEncodable($item:item) {
+    #[unstable(feature = "derive_from", issue = "144889")]
+    pub macro From($item: item) {
         /* compiler built-in */
     }
 }

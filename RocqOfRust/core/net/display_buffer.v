@@ -24,7 +24,7 @@ Module net.
         Ty.apply (Ty.path "core::net::display_buffer::DisplayBuffer") [ SIZE ] [].
       
       (*
-          pub const fn new() -> Self {
+          pub(super) const fn new() -> Self {
               Self { buf: [MaybeUninit::uninit(); SIZE], len: 0 }
           }
       *)
@@ -67,11 +67,11 @@ Module net.
       Global Typeclasses Opaque new.
       
       (*
-          pub fn as_str(&self) -> &str {
+          pub(super) fn as_str(&self) -> &str {
               // SAFETY: `buf` is only written to by the `fmt::Write::write_str` implementation
               // which writes a valid UTF-8 string to `buf` and correctly sets `len`.
               unsafe {
-                  let s = MaybeUninit::slice_assume_init_ref(&self.buf[..self.len]);
+                  let s = self.buf[..self.len].assume_init_ref();
                   str::from_utf8_unchecked(s)
               }
           }
@@ -100,8 +100,16 @@ Module net.
                 M.call_closure (|
                   Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                   M.get_associated_function (|
-                    Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ Ty.path "u8" ],
-                    "slice_assume_init_ref",
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                          []
+                          [ Ty.path "u8" ]
+                      ],
+                    "assume_init_ref",
                     [],
                     []
                   |),
@@ -109,72 +117,63 @@ Module net.
                     M.borrow (|
                       Pointer.Kind.Ref,
                       M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
-                                (Ty.path "&")
+                                (Ty.path "slice")
                                 []
                                 [
                                   Ty.apply
-                                    (Ty.path "slice")
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                     []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ Ty.path "u8" ]
-                                    ]
-                                ],
-                              M.get_trait_method (|
-                                "core::ops::index::Index",
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ SIZE ]
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ Ty.path "u8" ]
-                                  ],
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ops::range::RangeTo")
-                                    []
-                                    [ Ty.path "usize" ]
-                                ],
-                                "index",
-                                [],
-                                []
-                              |),
+                                    [ Ty.path "u8" ]
+                                ]
+                            ],
+                          M.get_trait_method (|
+                            "core::ops::index::Index",
+                            Ty.apply
+                              (Ty.path "array")
+                              [ SIZE ]
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::net::display_buffer::DisplayBuffer",
-                                    "buf"
-                                  |)
-                                |);
-                                Value.mkStructRecord
-                                  "core::ops::range::RangeTo"
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                   []
-                                  [ Ty.path "usize" ]
-                                  [
-                                    ("end_",
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::net::display_buffer::DisplayBuffer",
-                                          "len"
-                                        |)
-                                      |))
-                                  ]
+                                  [ Ty.path "u8" ]
+                              ],
+                            [],
+                            [ Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]
+                            ],
+                            "index",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::net::display_buffer::DisplayBuffer",
+                                "buf"
+                              |)
+                            |);
+                            Value.mkStructRecord
+                              "core::ops::range::RangeTo"
+                              []
+                              [ Ty.path "usize" ]
+                              [
+                                ("end_",
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::net::display_buffer::DisplayBuffer",
+                                      "len"
+                                    |)
+                                  |))
                               ]
-                            |)
-                          |)
+                          ]
                         |)
                       |)
                     |)
@@ -213,7 +212,7 @@ Module net.
               let bytes = s.as_bytes();
       
               if let Some(buf) = self.buf.get_mut(self.len..(self.len + bytes.len())) {
-                  MaybeUninit::copy_from_slice(buf, bytes);
+                  buf.write_copy_of_slice(bytes);
                   self.len += bytes.len();
                   Ok(())
               } else {
@@ -462,10 +461,15 @@ Module net.
                                 [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                               M.get_associated_function (|
                                 Ty.apply
-                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  (Ty.path "slice")
                                   []
-                                  [ Ty.path "u8" ],
-                                "copy_from_slice",
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ],
+                                "write_copy_of_slice",
                                 [],
                                 []
                               |),

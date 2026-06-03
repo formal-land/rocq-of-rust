@@ -21,7 +21,7 @@ Module vec.
       
       (*
           fn len(&self) -> usize {
-              unsafe { self.dst.sub_ptr(self.inner) }
+              unsafe { self.dst.offset_from_unsigned(self.inner) }
           }
       *)
       Definition len (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -39,7 +39,12 @@ Module vec.
               |) in
             M.call_closure (|
               Ty.path "usize",
-              M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "sub_ptr", [], [] |),
+              M.get_associated_function (|
+                Ty.apply (Ty.path "*mut") [] [ T ],
+                "offset_from_unsigned",
+                [],
+                []
+              |),
               [
                 M.read (|
                   M.SubPointer.get_struct_record_field (|

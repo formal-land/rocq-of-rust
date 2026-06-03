@@ -17,7 +17,7 @@ Module collections.
             ].
         
         (*
-            pub fn calc_split_length(
+            pub(super) fn calc_split_length(
                 total_num: usize,
                 root_a: &Root<K, V>,
                 root_b: &Root<K, V>,
@@ -101,68 +101,65 @@ Module collections.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "alloc::collections::btree::node::NodeRef")
-                                                  []
-                                                  [
-                                                    Ty.path
-                                                      "alloc::collections::btree::node::marker::Owned";
-                                                    K;
-                                                    V;
-                                                    Ty.path
-                                                      "alloc::collections::btree::node::marker::LeafOrInternal"
-                                                  ],
-                                                "height",
-                                                [],
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::btree::node::NodeRef")
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| root_a |) |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "alloc::collections::btree::node::NodeRef")
-                                                  []
-                                                  [
-                                                    Ty.path
-                                                      "alloc::collections::btree::node::marker::Owned";
-                                                    K;
-                                                    V;
-                                                    Ty.path
-                                                      "alloc::collections::btree::node::marker::LeafOrInternal"
-                                                  ],
-                                                "height",
-                                                [],
+                                                [
+                                                  Ty.path
+                                                    "alloc::collections::btree::node::marker::Owned";
+                                                  K;
+                                                  V;
+                                                  Ty.path
+                                                    "alloc::collections::btree::node::marker::LeafOrInternal"
+                                                ],
+                                              "height",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| root_a |) |)
+                                              |)
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::btree::node::NodeRef")
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| root_b |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                                [
+                                                  Ty.path
+                                                    "alloc::collections::btree::node::marker::Owned";
+                                                  K;
+                                                  V;
+                                                  Ty.path
+                                                    "alloc::collections::btree::node::marker::LeafOrInternal"
+                                                ],
+                                              "height",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| root_b |) |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -247,8 +244,7 @@ Module collections.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                                M.alloc (| Ty.path "bool", Value.Bool true |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -381,36 +377,35 @@ Module collections.
                                                               fun γ =>
                                                                 ltac:(M.monadic
                                                                   (let γ :=
-                                                                    M.use
-                                                                      (M.alloc (|
+                                                                    M.alloc (|
+                                                                      Ty.path "bool",
+                                                                      M.call_closure (|
                                                                         Ty.path "bool",
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          UnOp.not,
-                                                                          [
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.eq,
-                                                                              [
-                                                                                M.read (|
-                                                                                  M.deref (|
-                                                                                    M.read (|
-                                                                                      left_val
-                                                                                    |)
-                                                                                  |)
-                                                                                |);
-                                                                                M.read (|
-                                                                                  M.deref (|
-                                                                                    M.read (|
-                                                                                      right_val
-                                                                                    |)
+                                                                        UnOp.not,
+                                                                        [
+                                                                          M.call_closure (|
+                                                                            Ty.path "bool",
+                                                                            BinOp.eq,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    left_val
                                                                                   |)
                                                                                 |)
-                                                                              ]
-                                                                            |)
-                                                                          ]
-                                                                        |)
-                                                                      |)) in
+                                                                              |);
+                                                                              M.read (|
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    right_val
+                                                                                  |)
+                                                                                |)
+                                                                              |)
+                                                                            ]
+                                                                          |)
+                                                                        ]
+                                                                      |)
+                                                                    |) in
                                                                   let _ :=
                                                                     is_constant_or_break_match (|
                                                                       M.read (| γ |),
@@ -573,8 +568,7 @@ Module collections.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                                M.alloc (| Ty.path "bool", Value.Bool true |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -707,36 +701,35 @@ Module collections.
                                                               fun γ =>
                                                                 ltac:(M.monadic
                                                                   (let γ :=
-                                                                    M.use
-                                                                      (M.alloc (|
+                                                                    M.alloc (|
+                                                                      Ty.path "bool",
+                                                                      M.call_closure (|
                                                                         Ty.path "bool",
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          UnOp.not,
-                                                                          [
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.eq,
-                                                                              [
-                                                                                M.read (|
-                                                                                  M.deref (|
-                                                                                    M.read (|
-                                                                                      left_val
-                                                                                    |)
-                                                                                  |)
-                                                                                |);
-                                                                                M.read (|
-                                                                                  M.deref (|
-                                                                                    M.read (|
-                                                                                      right_val
-                                                                                    |)
+                                                                        UnOp.not,
+                                                                        [
+                                                                          M.call_closure (|
+                                                                            Ty.path "bool",
+                                                                            BinOp.eq,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    left_val
                                                                                   |)
                                                                                 |)
-                                                                              ]
-                                                                            |)
-                                                                          ]
-                                                                        |)
-                                                                      |)) in
+                                                                              |);
+                                                                              M.read (|
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    right_val
+                                                                                  |)
+                                                                                |)
+                                                                              |)
+                                                                            ]
+                                                                          |)
+                                                                        ]
+                                                                      |)
+                                                                    |) in
                                                                   let _ :=
                                                                     is_constant_or_break_match (|
                                                                       M.read (| γ |),
@@ -837,7 +830,11 @@ Module collections.
         Global Typeclasses Opaque calc_split_length.
         
         (*
-            pub fn split_off<Q: ?Sized + Ord, A: Allocator + Clone>(&mut self, key: &Q, alloc: A) -> Self
+            pub(super) fn split_off<Q: ?Sized + Ord, A: Allocator + Clone>(
+                &mut self,
+                key: &Q,
+                alloc: A,
+            ) -> Self
             where
                 K: Borrow<Q>,
             {

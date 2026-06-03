@@ -102,15 +102,14 @@ Definition steps_between (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.le,
-                                          [ M.read (| start |); M.read (| end_ |) ]
-                                        |)
-                                      |)) in
+                                        BinOp.le,
+                                        [ M.read (| start |); M.read (| end_ |) ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -138,29 +137,34 @@ Definition steps_between (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    LogicalOp.and (|
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        BinOp.lt,
-                                                        [
-                                                          M.read (| start |);
-                                                          Value.Integer IntegerKind.U32 55296
-                                                        ]
-                                                      |),
-                                                      ltac:(M.monadic
-                                                        (M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.le,
-                                                          [
-                                                            Value.Integer IntegerKind.U32 57344;
-                                                            M.read (| end_ |)
-                                                          ]
-                                                        |)))
-                                                    |)
-                                                  |)) in
+                                                    BinOp.lt,
+                                                    [
+                                                      M.read (| start |);
+                                                      Value.Integer IntegerKind.U32 55296
+                                                    ]
+                                                  |)
+                                                |) in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              let γ :=
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.le,
+                                                    [
+                                                      Value.Integer IntegerKind.U32 57344;
+                                                      M.read (| end_ |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),

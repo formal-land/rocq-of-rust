@@ -34,7 +34,7 @@ Definition mload
     IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.slice_len)
       interpreter.(Interpreter.memory) offset 32 in
   let deref_stub :=
-    IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.Deref_for_Synthetic1).(Deref.deref) in
+    IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.Deref_for_Synthetic).(Deref.deref) in
   let bytes := deref_stub.(RefStub.projection) memory_slice in
   (* [Impl_Uint.try_from_be_slice_eq] in the success case *)
   let value := {| Uint.value := Impl_Uint.bytes_to_value bytes |} in
@@ -48,7 +48,7 @@ Lemma good_size
     mem
     (offset : usize) :
   List.length
-    (IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.Deref_for_Synthetic1)
+    (IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.Deref_for_Synthetic)
     .(Deref.deref).(RefStub.projection)
     (IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.slice_len) mem
       offset 32)) =
@@ -98,7 +98,7 @@ Proof.
   s. {
     apply Impl_Option.unwrap_eq.
     set (mem := snd _).
-    set (slice := _.(MemoryTrait.Deref_for_Synthetic1).(Deref.deref).(RefStub.projection) _).
+    set (slice := _.(MemoryTrait.Deref_for_Synthetic).(Deref.deref).(RefStub.projection) _).
     assert (H_size : List.length slice = 32%nat) by apply good_size.
     unfold Impl_Uint.try_from_be_slice.
     rewrite H_size; cbn.

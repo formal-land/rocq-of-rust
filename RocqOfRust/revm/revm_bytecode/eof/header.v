@@ -807,38 +807,20 @@ Module eof.
                       ltac:(M.monadic
                         (M.call_closure (|
                           Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialEq",
-                            Ty.apply
-                              (Ty.path "alloc::vec::Vec")
-                              []
-                              [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::vec::Vec")
-                                []
-                                [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
-                            ],
-                            "eq",
-                            [],
-                            []
-                          |),
+                          BinOp.eq,
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
+                            M.read (|
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
                                 "revm_bytecode::eof::header::EofHeader",
-                                "code_sizes"
+                                "data_size"
                               |)
                             |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
+                            M.read (|
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| other |) |),
                                 "revm_bytecode::eof::header::EofHeader",
-                                "code_sizes"
+                                "data_size"
                               |)
                             |)
                           ]
@@ -870,7 +852,7 @@ Module eof.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "revm_bytecode::eof::header::EofHeader",
-                              "container_sizes"
+                              "code_sizes"
                             |)
                           |);
                           M.borrow (|
@@ -878,7 +860,7 @@ Module eof.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| other |) |),
                               "revm_bytecode::eof::header::EofHeader",
-                              "container_sizes"
+                              "code_sizes"
                             |)
                           |)
                         ]
@@ -887,20 +869,38 @@ Module eof.
                   ltac:(M.monadic
                     (M.call_closure (|
                       Ty.path "bool",
-                      BinOp.eq,
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                        ],
+                        "eq",
+                        [],
+                        []
+                      |),
                       [
-                        M.read (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "revm_bytecode::eof::header::EofHeader",
-                            "data_size"
+                            "container_sizes"
                           |)
                         |);
-                        M.read (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| other |) |),
                             "revm_bytecode::eof::header::EofHeader",
-                            "data_size"
+                            "container_sizes"
                           |)
                         |)
                       ]
@@ -2413,18 +2413,15 @@ Module eof.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [
-                                            M.read (| num_sections |);
-                                            Value.Integer IntegerKind.U16 0
-                                          ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [ M.read (| num_sections |); Value.Integer IntegerKind.U16 0
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2481,32 +2478,31 @@ Module eof.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| input |) |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.read (| byte_size |)
-                                          ]
-                                        |)
-                                      |)) in
+                                        BinOp.lt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| input |) |)
+                                              |)
+                                            ]
+                                          |);
+                                          M.read (| byte_size |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2749,22 +2745,19 @@ Module eof.
                                                                 fun γ =>
                                                                   ltac:(M.monadic
                                                                     (let γ :=
-                                                                      M.use
-                                                                        (M.alloc (|
+                                                                      M.alloc (|
+                                                                        Ty.path "bool",
+                                                                        M.call_closure (|
                                                                           Ty.path "bool",
-                                                                          M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            BinOp.eq,
-                                                                            [
-                                                                              M.read (|
-                                                                                code_size
-                                                                              |);
-                                                                              Value.Integer
-                                                                                IntegerKind.U16
-                                                                                0
-                                                                            ]
-                                                                          |)
-                                                                        |)) in
+                                                                          BinOp.eq,
+                                                                          [
+                                                                            M.read (| code_size |);
+                                                                            Value.Integer
+                                                                              IntegerKind.U16
+                                                                              0
+                                                                          ]
+                                                                        |)
+                                                                      |) in
                                                                     let _ :=
                                                                       is_constant_or_break_match (|
                                                                         M.read (| γ |),
@@ -3069,32 +3062,31 @@ Module eof.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                                          "is_empty",
-                                          [],
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "revm_bytecode::eof::header::EofHeader",
-                                              "container_sizes"
-                                            |)
+                                          [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
+                                        "is_empty",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_bytecode::eof::header::EofHeader",
+                                            "container_sizes"
                                           |)
-                                        ]
-                                      |)
-                                    |)) in
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -3920,32 +3912,31 @@ Module eof.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                                  "is_empty",
-                                  [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
                                   []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "revm_bytecode::eof::header::EofHeader",
-                                      "container_sizes"
-                                    |)
+                                  [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
+                                "is_empty",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "revm_bytecode::eof::header::EofHeader",
+                                    "container_sizes"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -4876,18 +4867,17 @@ Module eof.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.ne,
-                                                [
-                                                  M.read (| kind |);
-                                                  Value.Integer IntegerKind.U16 61184
-                                                ]
-                                              |)
-                                            |)) in
+                                              BinOp.ne,
+                                              [
+                                                M.read (| kind |);
+                                                Value.Integer IntegerKind.U16 61184
+                                              ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -5223,18 +5213,17 @@ Module eof.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        M.call_closure (|
                                                           Ty.path "bool",
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.ne,
-                                                            [
-                                                              M.read (| version |);
-                                                              Value.Integer IntegerKind.U8 1
-                                                            ]
-                                                          |)
-                                                        |)) in
+                                                          BinOp.ne,
+                                                          [
+                                                            M.read (| version |);
+                                                            Value.Integer IntegerKind.U8 1
+                                                          ]
+                                                        |)
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),
@@ -5618,23 +5607,22 @@ Module eof.
                                                             fun γ =>
                                                               ltac:(M.monadic
                                                                 (let γ :=
-                                                                  M.use
-                                                                    (M.alloc (|
+                                                                  M.alloc (|
+                                                                    Ty.path "bool",
+                                                                    M.call_closure (|
                                                                       Ty.path "bool",
-                                                                      M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        BinOp.ne,
-                                                                        [
-                                                                          M.read (| kind_types |);
-                                                                          M.read (|
-                                                                            get_constant (|
-                                                                              "revm_bytecode::eof::header::KIND_TYPES",
-                                                                              Ty.path "u8"
-                                                                            |)
+                                                                      BinOp.ne,
+                                                                      [
+                                                                        M.read (| kind_types |);
+                                                                        M.read (|
+                                                                          get_constant (|
+                                                                            "revm_bytecode::eof::header::KIND_TYPES",
+                                                                            Ty.path "u8"
                                                                           |)
-                                                                        ]
-                                                                      |)
-                                                                    |)) in
+                                                                        |)
+                                                                      ]
+                                                                    |)
+                                                                  |) in
                                                                 let _ :=
                                                                   is_constant_or_break_match (|
                                                                     M.read (| γ |),
@@ -6067,36 +6055,34 @@ Module eof.
                                                                         fun γ =>
                                                                           ltac:(M.monadic
                                                                             (let γ :=
-                                                                              M.use
-                                                                                (M.alloc (|
+                                                                              M.alloc (|
+                                                                                Ty.path "bool",
+                                                                                M.call_closure (|
                                                                                   Ty.path "bool",
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "bool",
-                                                                                    BinOp.ne,
-                                                                                    [
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "u16",
-                                                                                        BinOp.Wrap.rem,
-                                                                                        [
-                                                                                          M.read (|
-                                                                                            M.SubPointer.get_struct_record_field (|
-                                                                                              header,
-                                                                                              "revm_bytecode::eof::header::EofHeader",
-                                                                                              "types_size"
-                                                                                            |)
-                                                                                          |);
-                                                                                          Value.Integer
-                                                                                            IntegerKind.U16
-                                                                                            4
-                                                                                        ]
-                                                                                      |);
-                                                                                      Value.Integer
-                                                                                        IntegerKind.U16
-                                                                                        0
-                                                                                    ]
-                                                                                  |)
-                                                                                |)) in
+                                                                                  BinOp.ne,
+                                                                                  [
+                                                                                    M.call_closure (|
+                                                                                      Ty.path "u16",
+                                                                                      BinOp.Wrap.rem,
+                                                                                      [
+                                                                                        M.read (|
+                                                                                          M.SubPointer.get_struct_record_field (|
+                                                                                            header,
+                                                                                            "revm_bytecode::eof::header::EofHeader",
+                                                                                            "types_size"
+                                                                                          |)
+                                                                                        |);
+                                                                                        Value.Integer
+                                                                                          IntegerKind.U16
+                                                                                          4
+                                                                                      ]
+                                                                                    |);
+                                                                                    Value.Integer
+                                                                                      IntegerKind.U16
+                                                                                      0
+                                                                                  ]
+                                                                                |)
+                                                                              |) in
                                                                             let _ :=
                                                                               is_constant_or_break_match (|
                                                                                 M.read (| γ |),
@@ -6562,28 +6548,27 @@ Module eof.
                                                                                     fun γ =>
                                                                                       ltac:(M.monadic
                                                                                         (let γ :=
-                                                                                          M.use
-                                                                                            (M.alloc (|
+                                                                                          M.alloc (|
+                                                                                            Ty.path
+                                                                                              "bool",
+                                                                                            M.call_closure (|
                                                                                               Ty.path
                                                                                                 "bool",
-                                                                                              M.call_closure (|
-                                                                                                Ty.path
-                                                                                                  "bool",
-                                                                                                BinOp.ne,
-                                                                                                [
-                                                                                                  M.read (|
-                                                                                                    kind_types
-                                                                                                  |);
-                                                                                                  M.read (|
-                                                                                                    get_constant (|
-                                                                                                      "revm_bytecode::eof::header::KIND_CODE",
-                                                                                                      Ty.path
-                                                                                                        "u8"
-                                                                                                    |)
+                                                                                              BinOp.ne,
+                                                                                              [
+                                                                                                M.read (|
+                                                                                                  kind_types
+                                                                                                |);
+                                                                                                M.read (|
+                                                                                                  get_constant (|
+                                                                                                    "revm_bytecode::eof::header::KIND_CODE",
+                                                                                                    Ty.path
+                                                                                                      "u8"
                                                                                                   |)
-                                                                                                ]
-                                                                                              |)
-                                                                                            |)) in
+                                                                                                |)
+                                                                                              ]
+                                                                                            |)
+                                                                                          |) in
                                                                                         let _ :=
                                                                                           is_constant_or_break_match (|
                                                                                             M.read (|
@@ -7183,46 +7168,45 @@ Module eof.
                                                                                                   ltac:(M.monadic
                                                                                                     (let
                                                                                                           γ :=
-                                                                                                      M.use
-                                                                                                        (M.alloc (|
+                                                                                                      M.alloc (|
+                                                                                                        Ty.path
+                                                                                                          "bool",
+                                                                                                        M.call_closure (|
                                                                                                           Ty.path
                                                                                                             "bool",
-                                                                                                          M.call_closure (|
-                                                                                                            Ty.path
-                                                                                                              "bool",
-                                                                                                            BinOp.gt,
-                                                                                                            [
-                                                                                                              M.call_closure (|
-                                                                                                                Ty.path
-                                                                                                                  "usize",
-                                                                                                                M.get_associated_function (|
-                                                                                                                  Ty.apply
-                                                                                                                    (Ty.path
-                                                                                                                      "alloc::vec::Vec")
-                                                                                                                    []
-                                                                                                                    [
-                                                                                                                      Ty.path
-                                                                                                                        "u16";
-                                                                                                                      Ty.path
-                                                                                                                        "alloc::alloc::Global"
-                                                                                                                    ],
-                                                                                                                  "len",
-                                                                                                                  [],
+                                                                                                          BinOp.gt,
+                                                                                                          [
+                                                                                                            M.call_closure (|
+                                                                                                              Ty.path
+                                                                                                                "usize",
+                                                                                                              M.get_associated_function (|
+                                                                                                                Ty.apply
+                                                                                                                  (Ty.path
+                                                                                                                    "alloc::vec::Vec")
                                                                                                                   []
-                                                                                                                |),
-                                                                                                                [
-                                                                                                                  M.borrow (|
-                                                                                                                    Pointer.Kind.Ref,
-                                                                                                                    sizes
-                                                                                                                  |)
-                                                                                                                ]
-                                                                                                              |);
-                                                                                                              Value.Integer
-                                                                                                                IntegerKind.Usize
-                                                                                                                1024
-                                                                                                            ]
-                                                                                                          |)
-                                                                                                        |)) in
+                                                                                                                  [
+                                                                                                                    Ty.path
+                                                                                                                      "u16";
+                                                                                                                    Ty.path
+                                                                                                                      "alloc::alloc::Global"
+                                                                                                                  ],
+                                                                                                                "len",
+                                                                                                                [],
+                                                                                                                []
+                                                                                                              |),
+                                                                                                              [
+                                                                                                                M.borrow (|
+                                                                                                                  Pointer.Kind.Ref,
+                                                                                                                  sizes
+                                                                                                                |)
+                                                                                                              ]
+                                                                                                            |);
+                                                                                                            Value.Integer
+                                                                                                              IntegerKind.Usize
+                                                                                                              1024
+                                                                                                          ]
+                                                                                                        |)
+                                                                                                      |) in
                                                                                                     let
                                                                                                           _ :=
                                                                                                       is_constant_or_break_match (|
@@ -7296,36 +7280,35 @@ Module eof.
                                                                                                   ltac:(M.monadic
                                                                                                     (let
                                                                                                           γ :=
-                                                                                                      M.use
-                                                                                                        (M.alloc (|
+                                                                                                      M.alloc (|
+                                                                                                        Ty.path
+                                                                                                          "bool",
+                                                                                                        M.call_closure (|
                                                                                                           Ty.path
                                                                                                             "bool",
-                                                                                                          M.call_closure (|
-                                                                                                            Ty.path
-                                                                                                              "bool",
-                                                                                                            M.get_associated_function (|
-                                                                                                              Ty.apply
-                                                                                                                (Ty.path
-                                                                                                                  "alloc::vec::Vec")
-                                                                                                                []
-                                                                                                                [
-                                                                                                                  Ty.path
-                                                                                                                    "u16";
-                                                                                                                  Ty.path
-                                                                                                                    "alloc::alloc::Global"
-                                                                                                                ],
-                                                                                                              "is_empty",
-                                                                                                              [],
+                                                                                                          M.get_associated_function (|
+                                                                                                            Ty.apply
+                                                                                                              (Ty.path
+                                                                                                                "alloc::vec::Vec")
                                                                                                               []
-                                                                                                            |),
-                                                                                                            [
-                                                                                                              M.borrow (|
-                                                                                                                Pointer.Kind.Ref,
-                                                                                                                sizes
-                                                                                                              |)
-                                                                                                            ]
-                                                                                                          |)
-                                                                                                        |)) in
+                                                                                                              [
+                                                                                                                Ty.path
+                                                                                                                  "u16";
+                                                                                                                Ty.path
+                                                                                                                  "alloc::alloc::Global"
+                                                                                                              ],
+                                                                                                            "is_empty",
+                                                                                                            [],
+                                                                                                            []
+                                                                                                          |),
+                                                                                                          [
+                                                                                                            M.borrow (|
+                                                                                                              Pointer.Kind.Ref,
+                                                                                                              sizes
+                                                                                                            |)
+                                                                                                          ]
+                                                                                                        |)
+                                                                                                      |) in
                                                                                                     let
                                                                                                           _ :=
                                                                                                       is_constant_or_break_match (|
@@ -7399,59 +7382,58 @@ Module eof.
                                                                                                   ltac:(M.monadic
                                                                                                     (let
                                                                                                           γ :=
-                                                                                                      M.use
-                                                                                                        (M.alloc (|
+                                                                                                      M.alloc (|
+                                                                                                        Ty.path
+                                                                                                          "bool",
+                                                                                                        M.call_closure (|
                                                                                                           Ty.path
                                                                                                             "bool",
-                                                                                                          M.call_closure (|
-                                                                                                            Ty.path
-                                                                                                              "bool",
-                                                                                                            BinOp.ne,
-                                                                                                            [
-                                                                                                              M.call_closure (|
-                                                                                                                Ty.path
-                                                                                                                  "usize",
-                                                                                                                M.get_associated_function (|
-                                                                                                                  Ty.apply
-                                                                                                                    (Ty.path
-                                                                                                                      "alloc::vec::Vec")
-                                                                                                                    []
-                                                                                                                    [
-                                                                                                                      Ty.path
-                                                                                                                        "u16";
-                                                                                                                      Ty.path
-                                                                                                                        "alloc::alloc::Global"
-                                                                                                                    ],
-                                                                                                                  "len",
-                                                                                                                  [],
+                                                                                                          BinOp.ne,
+                                                                                                          [
+                                                                                                            M.call_closure (|
+                                                                                                              Ty.path
+                                                                                                                "usize",
+                                                                                                              M.get_associated_function (|
+                                                                                                                Ty.apply
+                                                                                                                  (Ty.path
+                                                                                                                    "alloc::vec::Vec")
                                                                                                                   []
-                                                                                                                |),
-                                                                                                                [
-                                                                                                                  M.borrow (|
-                                                                                                                    Pointer.Kind.Ref,
-                                                                                                                    sizes
-                                                                                                                  |)
-                                                                                                                ]
-                                                                                                              |);
-                                                                                                              M.cast
-                                                                                                                (Ty.path
-                                                                                                                  "usize")
-                                                                                                                (M.call_closure (|
-                                                                                                                  Ty.path
-                                                                                                                    "u16",
-                                                                                                                  BinOp.Wrap.div,
                                                                                                                   [
-                                                                                                                    M.read (|
-                                                                                                                      types_size
-                                                                                                                    |);
-                                                                                                                    Value.Integer
-                                                                                                                      IntegerKind.U16
-                                                                                                                      4
-                                                                                                                  ]
-                                                                                                                |))
-                                                                                                            ]
-                                                                                                          |)
-                                                                                                        |)) in
+                                                                                                                    Ty.path
+                                                                                                                      "u16";
+                                                                                                                    Ty.path
+                                                                                                                      "alloc::alloc::Global"
+                                                                                                                  ],
+                                                                                                                "len",
+                                                                                                                [],
+                                                                                                                []
+                                                                                                              |),
+                                                                                                              [
+                                                                                                                M.borrow (|
+                                                                                                                  Pointer.Kind.Ref,
+                                                                                                                  sizes
+                                                                                                                |)
+                                                                                                              ]
+                                                                                                            |);
+                                                                                                            M.cast
+                                                                                                              (Ty.path
+                                                                                                                "usize")
+                                                                                                              (M.call_closure (|
+                                                                                                                Ty.path
+                                                                                                                  "u16",
+                                                                                                                BinOp.Wrap.div,
+                                                                                                                [
+                                                                                                                  M.read (|
+                                                                                                                    types_size
+                                                                                                                  |);
+                                                                                                                  Value.Integer
+                                                                                                                    IntegerKind.U16
+                                                                                                                    4
+                                                                                                                ]
+                                                                                                              |))
+                                                                                                          ]
+                                                                                                        |)
+                                                                                                      |) in
                                                                                                     let
                                                                                                           _ :=
                                                                                                       is_constant_or_break_match (|
@@ -8540,46 +8522,45 @@ Module eof.
                                                                                                                                   ltac:(M.monadic
                                                                                                                                     (let
                                                                                                                                           γ :=
-                                                                                                                                      M.use
-                                                                                                                                        (M.alloc (|
+                                                                                                                                      M.alloc (|
+                                                                                                                                        Ty.path
+                                                                                                                                          "bool",
+                                                                                                                                        M.call_closure (|
                                                                                                                                           Ty.path
                                                                                                                                             "bool",
-                                                                                                                                          M.call_closure (|
-                                                                                                                                            Ty.path
-                                                                                                                                              "bool",
-                                                                                                                                            BinOp.gt,
-                                                                                                                                            [
-                                                                                                                                              M.call_closure (|
-                                                                                                                                                Ty.path
-                                                                                                                                                  "usize",
-                                                                                                                                                M.get_associated_function (|
-                                                                                                                                                  Ty.apply
-                                                                                                                                                    (Ty.path
-                                                                                                                                                      "alloc::vec::Vec")
-                                                                                                                                                    []
-                                                                                                                                                    [
-                                                                                                                                                      Ty.path
-                                                                                                                                                        "u16";
-                                                                                                                                                      Ty.path
-                                                                                                                                                        "alloc::alloc::Global"
-                                                                                                                                                    ],
-                                                                                                                                                  "len",
-                                                                                                                                                  [],
+                                                                                                                                          BinOp.gt,
+                                                                                                                                          [
+                                                                                                                                            M.call_closure (|
+                                                                                                                                              Ty.path
+                                                                                                                                                "usize",
+                                                                                                                                              M.get_associated_function (|
+                                                                                                                                                Ty.apply
+                                                                                                                                                  (Ty.path
+                                                                                                                                                    "alloc::vec::Vec")
                                                                                                                                                   []
-                                                                                                                                                |),
-                                                                                                                                                [
-                                                                                                                                                  M.borrow (|
-                                                                                                                                                    Pointer.Kind.Ref,
-                                                                                                                                                    sizes
-                                                                                                                                                  |)
-                                                                                                                                                ]
-                                                                                                                                              |);
-                                                                                                                                              Value.Integer
-                                                                                                                                                IntegerKind.Usize
-                                                                                                                                                256
-                                                                                                                                            ]
-                                                                                                                                          |)
-                                                                                                                                        |)) in
+                                                                                                                                                  [
+                                                                                                                                                    Ty.path
+                                                                                                                                                      "u16";
+                                                                                                                                                    Ty.path
+                                                                                                                                                      "alloc::alloc::Global"
+                                                                                                                                                  ],
+                                                                                                                                                "len",
+                                                                                                                                                [],
+                                                                                                                                                []
+                                                                                                                                              |),
+                                                                                                                                              [
+                                                                                                                                                M.borrow (|
+                                                                                                                                                  Pointer.Kind.Ref,
+                                                                                                                                                  sizes
+                                                                                                                                                |)
+                                                                                                                                              ]
+                                                                                                                                            |);
+                                                                                                                                            Value.Integer
+                                                                                                                                              IntegerKind.Usize
+                                                                                                                                              256
+                                                                                                                                          ]
+                                                                                                                                        |)
+                                                                                                                                      |) in
                                                                                                                                     let
                                                                                                                                           _ :=
                                                                                                                                       is_constant_or_break_match (|
@@ -9102,28 +9083,27 @@ Module eof.
                                                                                                                                               ltac:(M.monadic
                                                                                                                                                 (let
                                                                                                                                                       γ :=
-                                                                                                                                                  M.use
-                                                                                                                                                    (M.alloc (|
+                                                                                                                                                  M.alloc (|
+                                                                                                                                                    Ty.path
+                                                                                                                                                      "bool",
+                                                                                                                                                    M.call_closure (|
                                                                                                                                                       Ty.path
                                                                                                                                                         "bool",
-                                                                                                                                                      M.call_closure (|
-                                                                                                                                                        Ty.path
-                                                                                                                                                          "bool",
-                                                                                                                                                        BinOp.ne,
-                                                                                                                                                        [
-                                                                                                                                                          M.read (|
-                                                                                                                                                            kind_data
-                                                                                                                                                          |);
-                                                                                                                                                          M.read (|
-                                                                                                                                                            get_constant (|
-                                                                                                                                                              "revm_bytecode::eof::header::KIND_DATA",
-                                                                                                                                                              Ty.path
-                                                                                                                                                                "u8"
-                                                                                                                                                            |)
+                                                                                                                                                      BinOp.ne,
+                                                                                                                                                      [
+                                                                                                                                                        M.read (|
+                                                                                                                                                          kind_data
+                                                                                                                                                        |);
+                                                                                                                                                        M.read (|
+                                                                                                                                                          get_constant (|
+                                                                                                                                                            "revm_bytecode::eof::header::KIND_DATA",
+                                                                                                                                                            Ty.path
+                                                                                                                                                              "u8"
                                                                                                                                                           |)
-                                                                                                                                                        ]
-                                                                                                                                                      |)
-                                                                                                                                                    |)) in
+                                                                                                                                                        |)
+                                                                                                                                                      ]
+                                                                                                                                                    |)
+                                                                                                                                                  |) in
                                                                                                                                                 let
                                                                                                                                                       _ :=
                                                                                                                                                   is_constant_or_break_match (|
@@ -10177,28 +10157,27 @@ Module eof.
                                                                                                                                       ltac:(M.monadic
                                                                                                                                         (let
                                                                                                                                               γ :=
-                                                                                                                                          M.use
-                                                                                                                                            (M.alloc (|
+                                                                                                                                          M.alloc (|
+                                                                                                                                            Ty.path
+                                                                                                                                              "bool",
+                                                                                                                                            M.call_closure (|
                                                                                                                                               Ty.path
                                                                                                                                                 "bool",
-                                                                                                                                              M.call_closure (|
-                                                                                                                                                Ty.path
-                                                                                                                                                  "bool",
-                                                                                                                                                BinOp.ne,
-                                                                                                                                                [
-                                                                                                                                                  M.read (|
-                                                                                                                                                    terminator
-                                                                                                                                                  |);
-                                                                                                                                                  M.read (|
-                                                                                                                                                    get_constant (|
-                                                                                                                                                      "revm_bytecode::eof::header::KIND_TERMINAL",
-                                                                                                                                                      Ty.path
-                                                                                                                                                        "u8"
-                                                                                                                                                    |)
+                                                                                                                                              BinOp.ne,
+                                                                                                                                              [
+                                                                                                                                                M.read (|
+                                                                                                                                                  terminator
+                                                                                                                                                |);
+                                                                                                                                                M.read (|
+                                                                                                                                                  get_constant (|
+                                                                                                                                                    "revm_bytecode::eof::header::KIND_TERMINAL",
+                                                                                                                                                    Ty.path
+                                                                                                                                                      "u8"
                                                                                                                                                   |)
-                                                                                                                                                ]
-                                                                                                                                              |)
-                                                                                                                                            |)) in
+                                                                                                                                                |)
+                                                                                                                                              ]
+                                                                                                                                            |)
+                                                                                                                                          |) in
                                                                                                                                         let
                                                                                                                                               _ :=
                                                                                                                                           is_constant_or_break_match (|

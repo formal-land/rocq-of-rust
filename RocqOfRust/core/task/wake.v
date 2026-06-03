@@ -464,6 +464,18 @@ Module task.
           (* Instance *) [].
     End Impl_core_marker_Copy_for_core_task_wake_RawWakerVTable.
     
+    Module Impl_core_clone_TrivialClone_for_core_task_wake_RawWakerVTable.
+      Definition Self : Ty.t := Ty.path "core::task::wake::RawWakerVTable".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_task_wake_RawWakerVTable.
+    
     Module Impl_core_clone_Clone_for_core_task_wake_RawWakerVTable.
       Definition Self : Ty.t := Ty.path "core::task::wake::RawWakerVTable".
       
@@ -1588,7 +1600,7 @@ Module task.
               // SAFETY: LocalWaker is just Waker without thread safety
               let local_waker = unsafe { transmute(waker) };
               Self {
-                  waker: waker,
+                  waker,
                   local_waker,
                   ext: ExtData::None(()),
                   _marker: PhantomData,
@@ -2507,6 +2519,85 @@ Module task.
       Global Instance AssociatedFunction_vtable : M.IsAssociatedFunction.C Self "vtable" vtable.
       Admitted.
       Global Typeclasses Opaque vtable.
+      
+      (*
+          pub const fn from_fn_ptr(f: fn()) -> Self {
+              // SAFETY: Unsafe is used for transmutes, pointer came from `fn()` so it
+              //         is sound to transmute it back to `fn()`.
+              static VTABLE: RawWakerVTable = unsafe {
+                  RawWakerVTable::new(
+                      |this| RawWaker::new(this, &VTABLE),
+                      |this| transmute::<*const (), fn()>(this)(),
+                      |this| transmute::<*const (), fn()>(this)(),
+                      |_| {},
+                  )
+              };
+              let raw = RawWaker::new(f as *const (), &VTABLE);
+      
+              // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
+              //         `wake_by_ref` just call the function pointer.
+              unsafe { Self::from_raw(raw) }
+          }
+      *)
+      Definition from_fn_ptr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ f ] =>
+          ltac:(M.monadic
+            (let f := M.alloc (| Ty.function [] (Ty.tuple []), f |) in
+            M.read (|
+              let~ raw : Ty.path "core::task::wake::RawWaker" :=
+                M.call_closure (|
+                  Ty.path "core::task::wake::RawWaker",
+                  M.get_associated_function (|
+                    Ty.path "core::task::wake::RawWaker",
+                    "new",
+                    [],
+                    []
+                  |),
+                  [
+                    M.cast (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]) (M.read (| f |));
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.read (|
+                              get_constant (|
+                                "core::task::wake::from_fn_ptr::VTABLE",
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::task::wake::RawWakerVTable" ]
+                              |)
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.path "core::task::wake::Waker",
+                M.call_closure (|
+                  Ty.path "core::task::wake::Waker",
+                  M.get_associated_function (|
+                    Ty.path "core::task::wake::Waker",
+                    "from_raw",
+                    [],
+                    []
+                  |),
+                  [ M.read (| raw |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_from_fn_ptr :
+        M.IsAssociatedFunction.C Self "from_fn_ptr" from_fn_ptr.
+      Admitted.
+      Global Typeclasses Opaque from_fn_ptr.
     End Impl_core_task_wake_Waker.
     
     Module Impl_core_clone_Clone_for_core_task_wake_Waker.
@@ -2601,29 +2692,28 @@ Module task.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.path "core::task::wake::Waker",
-                                  "will_wake",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |)) in
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_associated_function (|
+                                Ty.path "core::task::wake::Waker",
+                                "will_wake",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |)
+                              ]
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -3409,6 +3499,85 @@ Module task.
       Global Instance AssociatedFunction_vtable : M.IsAssociatedFunction.C Self "vtable" vtable.
       Admitted.
       Global Typeclasses Opaque vtable.
+      
+      (*
+          pub const fn from_fn_ptr(f: fn()) -> Self {
+              // SAFETY: Unsafe is used for transmutes, pointer came from `fn()` so it
+              //         is sound to transmute it back to `fn()`.
+              static VTABLE: RawWakerVTable = unsafe {
+                  RawWakerVTable::new(
+                      |this| RawWaker::new(this, &VTABLE),
+                      |this| transmute::<*const (), fn()>(this)(),
+                      |this| transmute::<*const (), fn()>(this)(),
+                      |_| {},
+                  )
+              };
+              let raw = RawWaker::new(f as *const (), &VTABLE);
+      
+              // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
+              //         `wake_by_ref` just call the function pointer.
+              unsafe { Self::from_raw(raw) }
+          }
+      *)
+      Definition from_fn_ptr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ f ] =>
+          ltac:(M.monadic
+            (let f := M.alloc (| Ty.function [] (Ty.tuple []), f |) in
+            M.read (|
+              let~ raw : Ty.path "core::task::wake::RawWaker" :=
+                M.call_closure (|
+                  Ty.path "core::task::wake::RawWaker",
+                  M.get_associated_function (|
+                    Ty.path "core::task::wake::RawWaker",
+                    "new",
+                    [],
+                    []
+                  |),
+                  [
+                    M.cast (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]) (M.read (| f |));
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.read (|
+                              get_constant (|
+                                "core::task::wake::from_fn_ptr::VTABLE",
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::task::wake::RawWakerVTable" ]
+                              |)
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.path "core::task::wake::LocalWaker",
+                M.call_closure (|
+                  Ty.path "core::task::wake::LocalWaker",
+                  M.get_associated_function (|
+                    Ty.path "core::task::wake::LocalWaker",
+                    "from_raw",
+                    [],
+                    []
+                  |),
+                  [ M.read (| raw |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_from_fn_ptr :
+        M.IsAssociatedFunction.C Self "from_fn_ptr" from_fn_ptr.
+      Admitted.
+      Global Typeclasses Opaque from_fn_ptr.
     End Impl_core_task_wake_LocalWaker.
     
     Module Impl_core_clone_Clone_for_core_task_wake_LocalWaker.
@@ -3506,29 +3675,28 @@ Module task.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.path "core::task::wake::LocalWaker",
-                                  "will_wake",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |)) in
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_associated_function (|
+                                Ty.path "core::task::wake::LocalWaker",
+                                "will_wake",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |)
+                              ]
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=

@@ -67,7 +67,7 @@ Proof.
   destruct links.mod.Impl_Deref_for_Bytes.run.
   destruct bytes.Impl_Deref_for_Bytes.run.
   destruct (Impl_AsRef_for_Slice.run u8).
-  destruct run_Deref_for_Synthetic1.
+  destruct run_Deref_for_Synthetic.
   Time run_symbolic.
 Admitted.
 Global Opaque run_return_contract.

@@ -792,33 +792,32 @@ Module processor.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.lt,
-                                              [
-                                                M.read (| new_amount |);
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  M.get_associated_function (|
-                                                    Ty.path
-                                                      "pinocchio_token_interface::state::account::Account",
-                                                    "amount",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| native_account |) |)
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            BinOp.lt,
+                                            [
+                                              M.read (| new_amount |);
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "pinocchio_token_interface::state::account::Account",
+                                                  "amount",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| native_account |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),

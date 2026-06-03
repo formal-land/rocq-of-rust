@@ -29,15 +29,14 @@ Definition is_divisible_by (ε : list Value.t) (τ : list Ty.t) (α : list Value
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.eq,
-                              [ M.read (| rhs |); Value.Integer IntegerKind.U32 0 ]
-                            |)
-                          |)) in
+                            BinOp.eq,
+                            [ M.read (| rhs |); Value.Integer IntegerKind.U32 0 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (| M.read (| M.return_ (| Value.Bool false |) |) |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -93,15 +92,14 @@ Definition fizzbuzz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
           fun γ =>
             ltac:(M.monadic
               (let γ :=
-                M.use
-                  (M.alloc (|
+                M.alloc (|
+                  Ty.path "bool",
+                  M.call_closure (|
                     Ty.path "bool",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      M.get_function (| "functions::is_divisible_by", [], [] |),
-                      [ M.read (| n |); Value.Integer IntegerKind.U32 15 ]
-                    |)
-                  |)) in
+                    M.get_function (| "functions::is_divisible_by", [], [] |),
+                    [ M.read (| n |); Value.Integer IntegerKind.U32 15 ]
+                  |)
+                |) in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               M.read (|
                 let~ _ : Ty.tuple [] :=
@@ -115,28 +113,12 @@ Definition fizzbuzz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                             Ty.path "core::fmt::Arguments",
                             M.get_associated_function (|
                               Ty.path "core::fmt::Arguments",
-                              "new_const",
-                              [ Value.Integer IntegerKind.Usize 1 ],
+                              "from_str",
+                              [],
                               []
                             |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "fizzbuzz
+                            [ mk_str (| "fizzbuzz
 " |) ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
                           |)
                         ]
                       |) in
@@ -153,15 +135,14 @@ Definition fizzbuzz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (| "functions::is_divisible_by", [], [] |),
-                              [ M.read (| n |); Value.Integer IntegerKind.U32 3 ]
-                            |)
-                          |)) in
+                            M.get_function (| "functions::is_divisible_by", [], [] |),
+                            [ M.read (| n |); Value.Integer IntegerKind.U32 3 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -175,28 +156,12 @@ Definition fizzbuzz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                                     Ty.path "core::fmt::Arguments",
                                     M.get_associated_function (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      "from_str",
+                                      [],
                                       []
                                     |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array [ mk_str (| "fizz
+                                    [ mk_str (| "fizz
 " |) ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
                                   |)
                                 ]
                               |) in
@@ -213,15 +178,14 @@ Definition fizzbuzz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_function (| "functions::is_divisible_by", [], [] |),
-                                      [ M.read (| n |); Value.Integer IntegerKind.U32 5 ]
-                                    |)
-                                  |)) in
+                                    M.get_function (| "functions::is_divisible_by", [], [] |),
+                                    [ M.read (| n |); Value.Integer IntegerKind.U32 5 ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -236,33 +200,12 @@ Definition fizzbuzz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                                             Ty.path "core::fmt::Arguments",
                                             M.get_associated_function (|
                                               Ty.path "core::fmt::Arguments",
-                                              "new_const",
-                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              "from_str",
+                                              [],
                                               []
                                             |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array [ mk_str (| "buzz
+                                            [ mk_str (| "buzz
 " |) ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
                                           |)
                                         ]
                                       |) in
@@ -280,75 +223,70 @@ Definition fizzbuzz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                                         Ty.tuple [],
                                         M.get_function (| "std::io::stdio::_print", [], [] |),
                                         [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::Arguments",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::Arguments",
-                                              "new_v1",
-                                              [
-                                                Value.Integer IntegerKind.Usize 2;
-                                                Value.Integer IntegerKind.Usize 1
-                                              ],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array
-                                                        [ mk_str (| "" |); mk_str (| "
-" |) ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                                      Value.Array
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "core::fmt::rt::Argument",
-                                                            M.get_associated_function (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              "new_display",
-                                                              [],
-                                                              [ Ty.path "u32" ]
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (| Pointer.Kind.Ref, n |)
-                                                                |)
-                                                              |)
-                                                            ]
+                                          M.read (|
+                                            let~ args :
+                                                Ty.tuple
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] :=
+                                              Value.Tuple [ M.borrow (| Pointer.Kind.Ref, n |) ] in
+                                            let~ args :
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.path "core::fmt::rt::Argument" ] :=
+                                              Value.Array
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      "new_display",
+                                                      [],
+                                                      [ Ty.path "u32" ]
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.read (|
+                                                            M.SubPointer.get_tuple_field (|
+                                                              args,
+                                                              0
+                                                            |)
                                                           |)
-                                                        ]
+                                                        |)
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ] in
+                                            M.alloc (|
+                                              Ty.path "core::fmt::Arguments",
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::Arguments",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  "new",
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 4;
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.mk_byte_str_ref 4 [ 192; 1; 10; 0 ]
+                                                    |)
+                                                  |);
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, args |)
                                                     |)
                                                   |)
-                                                |)
+                                                ]
                                               |)
-                                            ]
+                                            |)
                                           |)
                                         ]
                                       |) in

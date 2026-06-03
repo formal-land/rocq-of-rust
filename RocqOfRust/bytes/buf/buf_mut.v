@@ -55,42 +55,41 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_mut::BufMut",
-                                      Ty.apply (Ty.path "&mut") [] [ Self ],
-                                      [],
-                                      [],
-                                      "remaining_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_impl::Buf",
-                                      T,
-                                      [],
-                                      [],
-                                      "remaining",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, src |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_mut::BufMut",
+                                    Ty.apply (Ty.path "&mut") [] [ Self ],
+                                    [],
+                                    [],
+                                    "remaining_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_impl::Buf",
+                                    T,
+                                    [],
+                                    [],
+                                    "remaining",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, src |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -141,23 +140,22 @@ Module buf.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_impl::Buf",
-                                      T,
-                                      [],
-                                      [],
-                                      "has_remaining",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, src |) ]
-                                  |)
-                                |)) in
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_impl::Buf",
+                                    T,
+                                    [],
+                                    [],
+                                    "has_remaining",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, src |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -420,44 +418,39 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_mut::BufMut",
-                                      Ty.apply (Ty.path "&mut") [] [ Self ],
-                                      [],
-                                      [],
-                                      "remaining_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| src |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_mut::BufMut",
+                                    Ty.apply (Ty.path "&mut") [] [ Self ],
+                                    [],
+                                    [],
+                                    "remaining_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -505,31 +498,30 @@ Module buf.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                          "is_empty",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| src |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                        "is_empty",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| src |) |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -800,30 +792,29 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_mut::BufMut",
-                                      Ty.apply (Ty.path "&mut") [] [ Self ],
-                                      [],
-                                      [],
-                                      "remaining_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                  |);
-                                  M.read (| cnt |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_mut::BufMut",
+                                    Ty.apply (Ty.path "&mut") [] [ Self ],
+                                    [],
+                                    [],
+                                    "remaining_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                |);
+                                M.read (| cnt |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -862,15 +853,14 @@ Module buf.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| cnt |); Value.Integer IntegerKind.Usize 0 ]
-                                  |)
-                                |)) in
+                                  BinOp.gt,
+                                  [ M.read (| cnt |); Value.Integer IntegerKind.Usize 0 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -935,7 +925,7 @@ Module buf.
                                 M.call_closure (|
                                   Ty.tuple [],
                                   M.get_function (|
-                                    "core::intrinsics::write_bytes",
+                                    "core::ptr::write_bytes",
                                     [],
                                     [ Ty.path "u8" ]
                                   |),
@@ -3113,7 +3103,7 @@ Module buf.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.tuple [],
@@ -3500,7 +3490,7 @@ Module buf.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.tuple [],
@@ -5863,32 +5853,31 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.read (| cnt |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                    |)
+                                  ]
+                                |);
+                                M.read (| cnt |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -6084,46 +6073,41 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| src |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -6291,32 +6275,31 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.read (| cnt |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                    |)
+                                  ]
+                                |);
+                                M.read (| cnt |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -6348,7 +6331,7 @@ Module buf.
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
-                  M.get_function (| "core::intrinsics::write_bytes", [], [ Ty.path "u8" ] |),
+                  M.get_function (| "core::ptr::write_bytes", [], [ Ty.path "u8" ] |),
                   [
                     M.call_closure (|
                       Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -6583,40 +6566,39 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ Ty.path "u8" ]
-                                        ],
-                                      "len",
-                                      [],
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "slice")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.read (| cnt |)
-                                ]
-                              |)
-                            |)) in
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                    |)
+                                  ]
+                                |);
+                                M.read (| cnt |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -6944,54 +6926,49 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ Ty.path "u8" ]
-                                        ],
-                                      "len",
-                                      [],
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "slice")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| src |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -7040,11 +7017,7 @@ Module buf.
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
-                  M.get_function (|
-                    "core::intrinsics::copy_nonoverlapping",
-                    [],
-                    [ Ty.path "u8" ]
-                  |),
+                  M.get_function (| "core::ptr::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
                   [
                     M.call_closure (|
                       Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
@@ -7213,40 +7186,39 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ Ty.path "u8" ]
-                                        ],
-                                      "len",
-                                      [],
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "slice")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.read (| cnt |)
-                                ]
-                              |)
-                            |)) in
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                    |)
+                                  ]
+                                |);
+                                M.read (| cnt |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -7286,7 +7258,7 @@ Module buf.
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
-                  M.get_function (| "core::intrinsics::write_bytes", [], [ Ty.path "u8" ] |),
+                  M.get_function (| "core::ptr::write_bytes", [], [ Ty.path "u8" ] |),
                   [
                     M.cast
                       (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
@@ -7409,7 +7381,9 @@ Module buf.
               [
                 M.cast
                   (Ty.path "usize")
-                  (M.read (| get_constant (| "core::isize::MAX", Ty.path "isize" |) |));
+                  (M.read (|
+                    get_constant (| "core::legacy_int_modules::isize::MAX", Ty.path "isize" |)
+                  |));
                 M.call_closure (|
                   Ty.path "usize",
                   M.get_associated_function (|
@@ -7503,15 +7477,14 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [ M.read (| remaining |); M.read (| cnt |) ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [ M.read (| remaining |); M.read (| cnt |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -7594,52 +7567,51 @@ Module buf.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                                          "capacity",
-                                          [],
+                                  BinOp.eq,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                                          "len",
-                                          [],
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                                        "capacity",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |)
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -7837,23 +7809,22 @@ Module buf.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "bytes::buf::buf_impl::Buf",
-                                      T,
-                                      [],
-                                      [],
-                                      "has_remaining",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, src |) ]
-                                  |)
-                                |)) in
+                                  M.get_trait_method (|
+                                    "bytes::buf::buf_impl::Buf",
+                                    T,
+                                    [],
+                                    [],
+                                    "has_remaining",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, src |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|

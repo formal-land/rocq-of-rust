@@ -48,6 +48,18 @@ Module Impl_core_default_Default_for_call_builder_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_call_builder_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_call_builder_AccountId.
+  Definition Self : Ty.t := Ty.path "call_builder::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_call_builder_AccountId.
+
 Module Impl_core_clone_Clone_for_call_builder_AccountId.
   Definition Self : Ty.t := Ty.path "call_builder::AccountId".
   
@@ -303,58 +315,13 @@ Module Impl_call_builder_CallBuilderTest.
                             Ty.path "core::fmt::Arguments",
                             M.get_associated_function (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0
-                              ],
+                              "from_str_nonconst",
+                              [],
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (|
-                                            "not implemented: No other `LangError` variants exist at the moment."
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 0 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "none",
-                                          [],
-                                          []
-                                        |),
-                                        []
-                                      |)
-                                    |)
-                                  |)
-                                |)
+                              mk_str (|
+                                "not implemented: No other `LangError` variants exist at the moment."
                               |)
                             ]
                           |)

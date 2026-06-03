@@ -11,6 +11,20 @@ Module signed.
         fields := [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ];
       } *)
     
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_signed_int_Signed_BITS_LIMBS.
+      Definition Self (BITS LIMBS : Value.t) : Ty.t :=
+        Ty.apply (Ty.path "alloy_primitives::signed::int::Signed") [ BITS; LIMBS ] [].
+      
+      Axiom Implements :
+        forall (BITS LIMBS : Value.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self BITS LIMBS)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_signed_int_Signed_BITS_LIMBS.
+    
     Module Impl_core_clone_Clone_for_alloy_primitives_signed_int_Signed_BITS_LIMBS.
       Definition Self (BITS LIMBS : Value.t) : Ty.t :=
         Ty.apply (Ty.path "alloy_primitives::signed::int::Signed") [ BITS; LIMBS ] [].
@@ -602,25 +616,24 @@ Module signed.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::Formatter",
-                                              "sign_plus",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| f |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::Formatter",
+                                            "sign_plus",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| f |) |)
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -642,74 +655,80 @@ Module signed.
                                           Pointer.Kind.MutRef,
                                           M.deref (| M.read (| f |) |)
                                         |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Arguments",
-                                            "new_v1",
-                                            [
-                                              Value.Integer IntegerKind.Usize 1;
-                                              Value.Integer IntegerKind.Usize 1
-                                            ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array [ mk_str (| "" |) ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                                    Value.Array
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "core::fmt::rt::Argument",
-                                                          M.get_associated_function (|
-                                                            Ty.path "core::fmt::rt::Argument",
-                                                            "new_display",
-                                                            [],
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "ruint::Uint")
-                                                                [ BITS; LIMBS ]
-                                                                []
-                                                            ]
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (| Pointer.Kind.Ref, abs |)
-                                                              |)
-                                                            |)
-                                                          ]
+                                        M.read (|
+                                          let~ args :
+                                              Ty.tuple
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        []
+                                                    ]
+                                                ] :=
+                                            Value.Tuple [ M.borrow (| Pointer.Kind.Ref, abs |) ] in
+                                          let~ args :
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 1 ]
+                                                [ Ty.path "core::fmt::rt::Argument" ] :=
+                                            Value.Array
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    "new_display",
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        []
+                                                    ]
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.read (|
+                                                          M.SubPointer.get_tuple_field (| args, 0 |)
                                                         |)
-                                                      ]
+                                                      |)
+                                                    |)
+                                                  ]
+                                                |)
+                                              ] in
+                                          M.alloc (|
+                                            Ty.path "core::fmt::Arguments",
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::Arguments",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Arguments",
+                                                "new",
+                                                [
+                                                  Value.Integer IntegerKind.Usize 2;
+                                                  Value.Integer IntegerKind.Usize 1
+                                                ],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
+                                                |);
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, args |)
                                                   |)
                                                 |)
-                                              |)
+                                              ]
                                             |)
-                                          ]
+                                          |)
                                         |)
                                       ]
                                     |)));
@@ -1616,28 +1635,26 @@ Module signed.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.ge,
-                                            [
-                                              M.read (| M.deref (| M.read (| limb |) |) |);
-                                              M.read (|
-                                                get_associated_constant (|
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloy_primitives::signed::int::Signed")
-                                                    [ BITS; LIMBS ]
-                                                    [],
-                                                  "SIGN_BIT",
-                                                  Ty.path "u64"
-                                                |)
+                                          BinOp.ge,
+                                          [
+                                            M.read (| M.deref (| M.read (| limb |) |) |);
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.apply
+                                                  (Ty.path "alloy_primitives::signed::int::Signed")
+                                                  [ BITS; LIMBS ]
+                                                  [],
+                                                "SIGN_BIT",
+                                                Ty.path "u64"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -1709,15 +1726,14 @@ Module signed.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                          |)
-                        |)) in
+                          BinOp.eq,
+                          [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.Bool false));
                 fun γ =>
@@ -2462,52 +2478,43 @@ Module signed.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloy_primitives::signed::int::Signed")
-                                        [ BITS; LIMBS ]
-                                        [],
-                                      "count_zeros",
+                              BinOp.eq,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "alloy_primitives::signed::int::Signed")
+                                      [ BITS; LIMBS ]
                                       [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloy_primitives::signed::int::Signed")
-                                        [ BITS; LIMBS ]
-                                        [],
-                                      "trailing_zeros",
+                                    "count_zeros",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "alloy_primitives::signed::int::Signed")
+                                      [ BITS; LIMBS ]
                                       [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                    "trailing_zeros",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (| unsigned_bits |)));
                     fun γ =>
@@ -2765,7 +2772,7 @@ Module signed.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let γ := M.use overflow in
+                            (let γ := overflow in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             Value.StructTuple
@@ -3324,19 +3331,79 @@ Module signed.
                     [ Ty.path "alloc::string::String" ]
                   |),
                   [
-                    M.read (|
-                      let~ res : Ty.path "alloc::string::String" :=
-                        M.call_closure (|
-                          Ty.path "alloc::string::String",
-                          M.get_function (| "alloc::fmt::format", [], [] |),
-                          [
+                    M.call_closure (|
+                      Ty.path "alloc::string::String",
+                      M.get_function (| "alloc::fmt::format", [], [] |),
+                      [
+                        M.read (|
+                          let~ args :
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::signed::sign::Sign" ];
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                ] :=
+                            Value.Tuple
+                              [
+                                M.borrow (| Pointer.Kind.Ref, sign |);
+                                M.borrow (| Pointer.Kind.Ref, abs |)
+                              ] in
+                          let~ args :
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 2 ]
+                                [ Ty.path "core::fmt::rt::Argument" ] :=
+                            Value.Array
+                              [
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.path "alloy_primitives::signed::sign::Sign" ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ] in
+                          M.alloc (|
+                            Ty.path "core::fmt::Arguments",
                             M.call_closure (|
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_v1",
+                                "new",
                                 [
-                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 3;
                                   Value.Integer IntegerKind.Usize 2
                                 ],
                                 []
@@ -3344,78 +3411,17 @@ Module signed.
                               [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 2 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "" |); mk_str (| "" |) ]
-                                      |)
-                                    |)
-                                  |)
+                                  M.deref (| M.mk_byte_str_ref 3 [ 192; 192; 0 ] |)
                                 |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 2 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        Value.Array
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_display",
-                                                [],
-                                                [ Ty.path "alloy_primitives::signed::sign::Sign" ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.Ref, sign |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_display",
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    []
-                                                ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, abs |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                 |)
                               ]
                             |)
-                          ]
-                        |) in
-                      res
+                          |)
+                        |)
+                      ]
                     |)
                   ]
                 |)
@@ -3704,32 +3710,31 @@ Module signed.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.gt,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.path "str",
-                                                  "len",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| value |) |)
-                                                  |)
-                                                ]
-                                              |);
-                                              Value.Integer IntegerKind.Usize 64
-                                            ]
-                                          |)
-                                        |)) in
+                                          BinOp.gt,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.path "str",
+                                                "len",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| value |) |)
+                                                |)
+                                              ]
+                                            |);
+                                            Value.Integer IntegerKind.Usize 64
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -4056,19 +4061,79 @@ Module signed.
                     [ Ty.path "alloc::string::String" ]
                   |),
                   [
-                    M.read (|
-                      let~ res : Ty.path "alloc::string::String" :=
-                        M.call_closure (|
-                          Ty.path "alloc::string::String",
-                          M.get_function (| "alloc::fmt::format", [], [] |),
-                          [
+                    M.call_closure (|
+                      Ty.path "alloc::string::String",
+                      M.get_function (| "alloc::fmt::format", [], [] |),
+                      [
+                        M.read (|
+                          let~ args :
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::signed::sign::Sign" ];
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                ] :=
+                            Value.Tuple
+                              [
+                                M.borrow (| Pointer.Kind.Ref, sign |);
+                                M.borrow (| Pointer.Kind.Ref, abs |)
+                              ] in
+                          let~ args :
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 2 ]
+                                [ Ty.path "core::fmt::rt::Argument" ] :=
+                            Value.Array
+                              [
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.path "alloy_primitives::signed::sign::Sign" ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_lower_hex",
+                                    [],
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ] in
+                          M.alloc (|
+                            Ty.path "core::fmt::Arguments",
                             M.call_closure (|
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_v1",
+                                "new",
                                 [
-                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 6;
                                   Value.Integer IntegerKind.Usize 2
                                 ],
                                 []
@@ -4076,78 +4141,17 @@ Module signed.
                               [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 2 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "" |); mk_str (| "0x" |) ]
-                                      |)
-                                    |)
-                                  |)
+                                  M.deref (| M.mk_byte_str_ref 6 [ 192; 2; 48; 120; 192; 0 ] |)
                                 |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 2 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        Value.Array
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_display",
-                                                [],
-                                                [ Ty.path "alloy_primitives::signed::sign::Sign" ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.Ref, sign |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_lower_hex",
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    []
-                                                ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, abs |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                 |)
                               ]
                             |)
-                          ]
-                        |) in
-                      res
+                          |)
+                        |)
+                      ]
                     |)
                   ]
                 |)

@@ -6,9 +6,10 @@ Module hint.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
@@ -23,21 +24,39 @@ Module hint.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
-                        Ty.path "bool",
-                        M.call_closure (| Ty.path "bool", UnOp.not, [ Value.Bool false ] |)
-                      |)) in
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (| Ty.path "bool", UnOp.not, [ Value.Bool false ] |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
                         mk_str (|
-                          "unsafe precondition(s) violated: hint::unreachable_unchecked must never be reached"
+                          "unsafe precondition(s) violated: hint::unreachable_unchecked must never be reached
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
+                        M.call_closure (|
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -56,9 +75,10 @@ Module hint.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
@@ -74,21 +94,39 @@ Module hint.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
-                        Ty.path "bool",
-                        M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| cond |) ] |)
-                      |)) in
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| cond |) ] |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
                         mk_str (|
-                          "unsafe precondition(s) violated: hint::assert_unchecked must never be called when the condition is false"
+                          "unsafe precondition(s) violated: hint::assert_unchecked must never be called when the condition is false
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
+                        M.call_closure (|
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -104,14 +142,15 @@ Module hint.
   End assert_unchecked.
 End hint.
 
-Module intrinsics.
+Module ptr.
   Module copy_nonoverlapping.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
@@ -131,74 +170,49 @@ Module intrinsics.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
-                          [
-                            M.read (|
-                              let~ zero_size : Ty.path "bool" :=
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                        UnOp.not,
+                        [
+                          M.read (|
+                            let~ zero_size : Ty.path "bool" :=
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
                                     BinOp.eq,
-                                    [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
+                                    [ M.read (| size |); Value.Integer IntegerKind.Usize 0 ]
+                                  |)))
+                              |) in
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.and (|
+                                LogicalOp.and (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_function (|
+                                      "core::ub_checks::maybe_is_aligned_and_not_null",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| src |); M.read (| align |); M.read (| zero_size |) ]
                                   |),
                                   ltac:(M.monadic
                                     (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [ M.read (| size |); Value.Integer IntegerKind.Usize 0 ]
-                                    |)))
-                                |) in
-                              M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.and (|
-                                  LogicalOp.and (|
-                                    M.call_closure (|
                                       Ty.path "bool",
                                       M.get_function (|
                                         "core::ub_checks::maybe_is_aligned_and_not_null",
                                         [],
                                         []
                                       |),
-                                      [ M.read (| src |); M.read (| align |); M.read (| zero_size |)
-                                      ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_function (|
-                                          "core::ub_checks::maybe_is_aligned_and_not_null",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                            M.pointer_coercion
-                                              M.PointerCoercion.MutToConstPointer
-                                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                            [ M.read (| dst |) ]
-                                          |);
-                                          M.read (| align |);
-                                          M.read (| zero_size |)
-                                        ]
-                                      |)))
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_function (|
-                                        "core::ub_checks::maybe_is_nonoverlapping",
-                                        [],
-                                        []
-                                      |),
                                       [
-                                        M.read (| src |);
                                         M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
                                           M.pointer_coercion
@@ -207,26 +221,68 @@ Module intrinsics.
                                             (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
                                           [ M.read (| dst |) ]
                                         |);
-                                        M.read (| size |);
-                                        M.read (| count |)
+                                        M.read (| align |);
+                                        M.read (| zero_size |)
                                       ]
                                     |)))
-                                |)
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_function (|
+                                      "core::ub_checks::maybe_is_nonoverlapping",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (| src |);
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                        [ M.read (| dst |) ]
+                                      |);
+                                      M.read (| size |);
+                                      M.read (| count |)
+                                    ]
+                                  |)))
                               |)
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
                         mk_str (|
-                          "unsafe precondition(s) violated: ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap"
+                          "unsafe precondition(s) violated: ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
+                        M.call_closure (|
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -236,7 +292,7 @@ Module intrinsics.
       end.
     
     Global Instance Instance_IsFunction_precondition_check :
-      M.IsFunction.C "core::intrinsics::copy_nonoverlapping::precondition_check" precondition_check.
+      M.IsFunction.C "core::ptr::copy_nonoverlapping::precondition_check" precondition_check.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End copy_nonoverlapping.
@@ -245,9 +301,10 @@ Module intrinsics.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
@@ -266,58 +323,76 @@ Module intrinsics.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
-                          [
-                            LogicalOp.and (|
-                              M.call_closure (|
+                        UnOp.not,
+                        [
+                          LogicalOp.and (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_function (|
+                                "core::ub_checks::maybe_is_aligned_and_not_null",
+                                [],
+                                []
+                              |),
+                              [ M.read (| src |); M.read (| align |); M.read (| zero_size |) ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
                                 Ty.path "bool",
                                 M.get_function (|
                                   "core::ub_checks::maybe_is_aligned_and_not_null",
                                   [],
                                   []
                                 |),
-                                [ M.read (| src |); M.read (| align |); M.read (| zero_size |) ]
-                              |),
-                              ltac:(M.monadic
-                                (M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_function (|
-                                    "core::ub_checks::maybe_is_aligned_and_not_null",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                        (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                      [ M.read (| dst |) ]
-                                    |);
-                                    M.read (| align |);
-                                    M.read (| zero_size |)
-                                  ]
-                                |)))
-                            |)
-                          ]
-                        |)
-                      |)) in
+                                [
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                    [ M.read (| dst |) ]
+                                  |);
+                                  M.read (| align |);
+                                  M.read (| zero_size |)
+                                ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
                         mk_str (|
-                          "unsafe precondition(s) violated: ptr::copy requires that both pointer arguments are aligned and non-null"
+                          "unsafe precondition(s) violated: ptr::copy requires that both pointer arguments are aligned and non-null
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
+                        M.call_closure (|
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -327,7 +402,7 @@ Module intrinsics.
       end.
     
     Global Instance Instance_IsFunction_precondition_check :
-      M.IsFunction.C "core::intrinsics::copy::precondition_check" precondition_check.
+      M.IsFunction.C "core::ptr::copy::precondition_check" precondition_check.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End copy.
@@ -336,9 +411,10 @@ Module intrinsics.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
@@ -356,35 +432,53 @@ Module intrinsics.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
+                        UnOp.not,
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_function (|
+                              "core::ub_checks::maybe_is_aligned_and_not_null",
+                              [],
+                              []
+                            |),
+                            [ M.read (| addr |); M.read (| align |); M.read (| zero_size |) ]
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
+                        mk_str (|
+                          "unsafe precondition(s) violated: ptr::write_bytes requires that the destination pointer is aligned and non-null
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
                         M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
                           [
                             M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (|
-                                "core::ub_checks::maybe_is_aligned_and_not_null",
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
                                 [],
                                 []
                               |),
-                              [ M.read (| addr |); M.read (| align |); M.read (| zero_size |) ]
-                            |)
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
                           ]
                         |)
-                      |)) in
-                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::write_bytes requires that the destination pointer is aligned and non-null"
-                        |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -394,20 +488,19 @@ Module intrinsics.
       end.
     
     Global Instance Instance_IsFunction_precondition_check :
-      M.IsFunction.C "core::intrinsics::write_bytes::precondition_check" precondition_check.
+      M.IsFunction.C "core::ptr::write_bytes::precondition_check" precondition_check.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End write_bytes.
-End intrinsics.
-
-Module ptr.
+  
   Module swap_nonoverlapping.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
@@ -427,33 +520,53 @@ Module ptr.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
-                          [
-                            M.read (|
-                              let~ zero_size : Ty.path "bool" :=
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                        UnOp.not,
+                        [
+                          M.read (|
+                            let~ zero_size : Ty.path "bool" :=
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| size |); Value.Integer IntegerKind.Usize 0 ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
                                     BinOp.eq,
-                                    [ M.read (| size |); Value.Integer IntegerKind.Usize 0 ]
+                                    [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
+                                  |)))
+                              |) in
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.and (|
+                                LogicalOp.and (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_function (|
+                                      "core::ub_checks::maybe_is_aligned_and_not_null",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                        [ M.read (| x |) ]
+                                      |);
+                                      M.read (| align |);
+                                      M.read (| zero_size |)
+                                    ]
                                   |),
                                   ltac:(M.monadic
                                     (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
-                                    |)))
-                                |) in
-                              M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.and (|
-                                  LogicalOp.and (|
-                                    M.call_closure (|
                                       Ty.path "bool",
                                       M.get_function (|
                                         "core::ub_checks::maybe_is_aligned_and_not_null",
@@ -467,79 +580,77 @@ Module ptr.
                                             M.PointerCoercion.MutToConstPointer
                                             (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
                                             (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                          [ M.read (| x |) ]
+                                          [ M.read (| y |) ]
                                         |);
                                         M.read (| align |);
                                         M.read (| zero_size |)
                                       ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_function (|
-                                          "core::ub_checks::maybe_is_aligned_and_not_null",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                            M.pointer_coercion
-                                              M.PointerCoercion.MutToConstPointer
-                                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                            [ M.read (| y |) ]
-                                          |);
-                                          M.read (| align |);
-                                          M.read (| zero_size |)
-                                        ]
-                                      |)))
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_function (|
-                                        "core::ub_checks::maybe_is_nonoverlapping",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                          M.pointer_coercion
-                                            M.PointerCoercion.MutToConstPointer
-                                            (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                            (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                          [ M.read (| x |) ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                          M.pointer_coercion
-                                            M.PointerCoercion.MutToConstPointer
-                                            (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                            (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                          [ M.read (| y |) ]
-                                        |);
-                                        M.read (| size |);
-                                        M.read (| count |)
-                                      ]
                                     |)))
-                                |)
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_function (|
+                                      "core::ub_checks::maybe_is_nonoverlapping",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                        [ M.read (| x |) ]
+                                      |);
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                        [ M.read (| y |) ]
+                                      |);
+                                      M.read (| size |);
+                                      M.read (| count |)
+                                    ]
+                                  |)))
                               |)
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
                         mk_str (|
-                          "unsafe precondition(s) violated: ptr::swap_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap"
+                          "unsafe precondition(s) violated: ptr::swap_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
+                        M.call_closure (|
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -558,9 +669,10 @@ Module ptr.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
@@ -578,35 +690,53 @@ Module ptr.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
+                        UnOp.not,
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_function (|
+                              "core::ub_checks::maybe_is_aligned_and_not_null",
+                              [],
+                              []
+                            |),
+                            [ M.read (| addr |); M.read (| align |); M.read (| is_zst |) ]
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
+                        mk_str (|
+                          "unsafe precondition(s) violated: ptr::replace requires that the pointer argument is aligned and non-null
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
                         M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
                           [
                             M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (|
-                                "core::ub_checks::maybe_is_aligned_and_not_null",
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
                                 [],
                                 []
                               |),
-                              [ M.read (| addr |); M.read (| align |); M.read (| is_zst |) ]
-                            |)
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
                           ]
                         |)
-                      |)) in
-                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::replace requires that the pointer argument is aligned and non-null"
-                        |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -625,9 +755,10 @@ Module ptr.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
@@ -645,35 +776,53 @@ Module ptr.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
+                        UnOp.not,
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_function (|
+                              "core::ub_checks::maybe_is_aligned_and_not_null",
+                              [],
+                              []
+                            |),
+                            [ M.read (| addr |); M.read (| align |); M.read (| is_zst |) ]
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
+                        mk_str (|
+                          "unsafe precondition(s) violated: ptr::read requires that the pointer argument is aligned and non-null
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
                         M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
                           [
                             M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (|
-                                "core::ub_checks::maybe_is_aligned_and_not_null",
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
                                 [],
                                 []
                               |),
-                              [ M.read (| addr |); M.read (| align |); M.read (| is_zst |) ]
-                            |)
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
                           ]
                         |)
-                      |)) in
-                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::read requires that the pointer argument is aligned and non-null"
-                        |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -692,9 +841,10 @@ Module ptr.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
@@ -712,46 +862,64 @@ Module ptr.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
+                        UnOp.not,
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_function (|
+                              "core::ub_checks::maybe_is_aligned_and_not_null",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.MutToConstPointer
+                                  (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                [ M.read (| addr |) ]
+                              |);
+                              M.read (| align |);
+                              M.read (| is_zst |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
+                        mk_str (|
+                          "unsafe precondition(s) violated: ptr::write requires that the pointer argument is aligned and non-null
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
                         M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
                           [
                             M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (|
-                                "core::ub_checks::maybe_is_aligned_and_not_null",
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
                                 [],
                                 []
                               |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.MutToConstPointer
-                                    (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                  [ M.read (| addr |) ]
-                                |);
-                                M.read (| align |);
-                                M.read (| is_zst |)
-                              ]
-                            |)
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
                           ]
                         |)
-                      |)) in
-                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::write requires that the pointer argument is aligned and non-null"
-                        |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -770,19 +938,19 @@ Module ptr.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
     Definition precondition_check (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ addr; align; is_zst ] =>
+      | [], [], [ addr; align ] =>
         ltac:(M.monadic
           (let addr := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ], addr |) in
           let align := M.alloc (| Ty.path "usize", align |) in
-          let is_zst := M.alloc (| Ty.path "bool", is_zst |) in
           M.match_operator (|
             Ty.tuple [],
             M.alloc (| Ty.tuple [], Value.Tuple [] |),
@@ -790,35 +958,49 @@ Module ptr.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
+                        UnOp.not,
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_function (| "core::ub_checks::maybe_is_aligned", [], [] |),
+                            [ M.read (| addr |); M.read (| align |) ]
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
+                        mk_str (|
+                          "unsafe precondition(s) violated: ptr::read_volatile requires that the pointer argument is aligned
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
                         M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
                           [
                             M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (|
-                                "core::ub_checks::maybe_is_aligned_and_not_null",
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
                                 [],
                                 []
                               |),
-                              [ M.read (| addr |); M.read (| align |); M.read (| is_zst |) ]
-                            |)
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
                           ]
                         |)
-                      |)) in
-                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::read_volatile requires that the pointer argument is aligned and non-null"
-                        |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -837,19 +1019,19 @@ Module ptr.
     (*
                 const fn precondition_check($($name:$ty),* ) {
                     if !$e {
-                        ::core::panicking::panic_nounwind(
-                            concat!("unsafe precondition(s) violated: ", $message)
-                        );
+                        let msg = concat!("unsafe precondition(s) violated: ", $message,
+                            "\n\nThis indicates a bug in the program. \
+                            This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                        ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                     }
                 }
     *)
     Definition precondition_check (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ addr; align; is_zst ] =>
+      | [], [], [ addr; align ] =>
         ltac:(M.monadic
           (let addr := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ], addr |) in
           let align := M.alloc (| Ty.path "usize", align |) in
-          let is_zst := M.alloc (| Ty.path "bool", is_zst |) in
           M.match_operator (|
             Ty.tuple [],
             M.alloc (| Ty.tuple [], Value.Tuple [] |),
@@ -857,46 +1039,59 @@ Module ptr.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
+                        UnOp.not,
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_function (| "core::ub_checks::maybe_is_aligned", [], [] |),
+                            [
+                              M.call_closure (|
+                                Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.MutToConstPointer
+                                  (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                [ M.read (| addr |) ]
+                              |);
+                              M.read (| align |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.read (|
+                      let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
+                        mk_str (|
+                          "unsafe precondition(s) violated: ptr::write_volatile requires that the pointer argument is aligned
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                        |) in
+                      M.alloc (|
+                        Ty.path "never",
                         M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
+                          Ty.path "never",
+                          M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
                           [
                             M.call_closure (|
-                              Ty.path "bool",
-                              M.get_function (|
-                                "core::ub_checks::maybe_is_aligned_and_not_null",
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "from_str",
                                 [],
                                 []
                               |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.MutToConstPointer
-                                    (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                  [ M.read (| addr |) ]
-                                |);
-                                M.read (| align |);
-                                M.read (| is_zst |)
-                              ]
-                            |)
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                            |);
+                            Value.Bool false
                           ]
                         |)
-                      |)) in
-                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                      [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::write_volatile requires that the pointer argument is aligned and non-null"
-                        |)
-                      ]
+                      |)
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -974,14 +1169,7 @@ Module ub_checks.
       is_zst: bool,
   ) -> bool {
       // This is just for safety checks so we can const_eval_select.
-      const_eval_select!(
-          @capture { ptr: *const (), align: usize, is_zst: bool } -> bool:
-          if const {
-              is_zst || !ptr.is_null()
-          } else {
-              ptr.is_aligned_to(align) && (is_zst || !ptr.is_null())
-          }
-      )
+      maybe_is_aligned(ptr, align) && (is_zst || !ptr.is_null())
   }
   *)
   Definition maybe_is_aligned_and_not_null
@@ -995,32 +1183,33 @@ Module ub_checks.
         (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ], ptr |) in
         let align := M.alloc (| Ty.path "usize", align |) in
         let is_zst := M.alloc (| Ty.path "bool", is_zst |) in
-        M.call_closure (|
-          Ty.path "bool",
-          M.get_function (|
-            "core::intrinsics::const_eval_select",
-            [],
-            [
-              Ty.tuple
-                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]; Ty.path "usize"; Ty.path "bool" ];
-              Ty.function
-                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]; Ty.path "usize"; Ty.path "bool" ]
-                (Ty.path "bool");
-              Ty.function
-                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]; Ty.path "usize"; Ty.path "bool" ]
-                (Ty.path "bool");
-              Ty.path "bool"
-            ]
+        LogicalOp.and (|
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_function (| "core::ub_checks::maybe_is_aligned", [], [] |),
+            [ M.read (| ptr |); M.read (| align |) ]
           |),
-          [
-            Value.Tuple [ M.read (| ptr |); M.read (| align |); M.read (| is_zst |) ];
-            M.get_function (|
-              "core::ub_checks::maybe_is_aligned_and_not_null.compiletime",
-              [],
-              []
-            |);
-            M.get_function (| "core::ub_checks::maybe_is_aligned_and_not_null.runtime", [], [] |)
-          ]
+          ltac:(M.monadic
+            (LogicalOp.or (|
+              M.read (| is_zst |),
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  UnOp.not,
+                  [
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                        "is_null",
+                        [],
+                        []
+                      |),
+                      [ M.read (| ptr |) ]
+                    |)
+                  ]
+                |)))
+            |)))
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -1029,6 +1218,55 @@ Module ub_checks.
     M.IsFunction.C "core::ub_checks::maybe_is_aligned_and_not_null" maybe_is_aligned_and_not_null.
   Admitted.
   Global Typeclasses Opaque maybe_is_aligned_and_not_null.
+  
+  (*
+  pub(crate) const fn maybe_is_aligned(ptr: *const (), align: usize) -> bool {
+      // This is just for safety checks so we can const_eval_select.
+      const_eval_select!(
+          @capture { ptr: *const (), align: usize } -> bool:
+          if const {
+              true
+          } else {
+              ptr.is_aligned_to(align)
+          }
+      )
+  }
+  *)
+  Definition maybe_is_aligned (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ ptr; align ] =>
+      ltac:(M.monadic
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ], ptr |) in
+        let align := M.alloc (| Ty.path "usize", align |) in
+        M.call_closure (|
+          Ty.path "bool",
+          M.get_function (|
+            "core::intrinsics::const_eval_select",
+            [],
+            [
+              Ty.tuple [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]; Ty.path "usize" ];
+              Ty.function
+                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]; Ty.path "usize" ]
+                (Ty.path "bool");
+              Ty.function
+                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]; Ty.path "usize" ]
+                (Ty.path "bool");
+              Ty.path "bool"
+            ]
+          |),
+          [
+            Value.Tuple [ M.read (| ptr |); M.read (| align |) ];
+            M.get_function (| "core::ub_checks::maybe_is_aligned.compiletime", [], [] |);
+            M.get_function (| "core::ub_checks::maybe_is_aligned.runtime", [], [] |)
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_maybe_is_aligned :
+    M.IsFunction.C "core::ub_checks::maybe_is_aligned" maybe_is_aligned.
+  Admitted.
+  Global Typeclasses Opaque maybe_is_aligned.
   
   (*
   pub(crate) const fn is_valid_allocation_size(size: usize, len: usize) -> bool {
@@ -1051,15 +1289,14 @@ Module ub_checks.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [ M.read (| size |); Value.Integer IntegerKind.Usize 0 ]
-                          |)
-                        |)) in
+                          BinOp.eq,
+                          [ M.read (| size |); Value.Integer IntegerKind.Usize 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |)
@@ -1187,9 +1424,10 @@ Module char.
       (*
                   const fn precondition_check($($name:$ty),* ) {
                       if !$e {
-                          ::core::panicking::panic_nounwind(
-                              concat!("unsafe precondition(s) violated: ", $message)
-                          );
+                          let msg = concat!("unsafe precondition(s) violated: ", $message,
+                              "\n\nThis indicates a bug in the program. \
+                              This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                          ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                       }
                   }
       *)
@@ -1205,31 +1443,36 @@ Module char.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [
-                                      Ty.path "char";
-                                      Ty.path "core::char::convert::CharTryFromError"
-                                    ],
-                                  "is_ok",
-                                  [],
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
                                   []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                                  [ Ty.path "char"; Ty.path "core::char::convert::CharTryFromError"
+                                  ],
+                                "is_ok",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "char";
+                                        Ty.path "core::char::convert::CharTryFromError"
+                                      ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
@@ -1237,34 +1480,49 @@ Module char.
                                           Ty.path "char";
                                           Ty.path "core::char::convert::CharTryFromError"
                                         ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "char";
-                                            Ty.path "core::char::convert::CharTryFromError"
-                                          ],
-                                        M.get_function (|
-                                          "core::char::convert::char_try_from_u32",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| i |) ]
-                                      |)
+                                      M.get_function (|
+                                        "core::char::convert::char_try_from_u32",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| i |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |)) in
+                                |)
+                              ]
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
-                      M.call_closure (|
-                        Ty.path "never",
-                        M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                        [ mk_str (| "unsafe precondition(s) violated: invalid value for `char`" |) ]
+                      M.read (|
+                        let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
+                          mk_str (|
+                            "unsafe precondition(s) violated: invalid value for `char`
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                          |) in
+                        M.alloc (|
+                          Ty.path "never",
+                          M.call_closure (|
+                            Ty.path "never",
+                            M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::Arguments",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "from_str",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                              |);
+                              Value.Bool false
+                            ]
+                          |)
+                        |)
                       |)
                     |)));
                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1289,9 +1547,10 @@ Module slice.
       (*
                   const fn precondition_check($($name:$ty),* ) {
                       if !$e {
-                          ::core::panicking::panic_nounwind(
-                              concat!("unsafe precondition(s) violated: ", $message)
-                          );
+                          let msg = concat!("unsafe precondition(s) violated: ", $message,
+                              "\n\nThis indicates a bug in the program. \
+                              This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                          ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                       }
                   }
       *)
@@ -1310,58 +1569,76 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              LogicalOp.and (|
-                                M.call_closure (|
+                          UnOp.not,
+                          [
+                            LogicalOp.and (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_function (|
+                                  "core::ub_checks::maybe_is_aligned_and_not_null",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                    [ M.read (| data |) ]
+                                  |);
+                                  M.read (| align |);
+                                  Value.Bool false
+                                ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
                                   M.get_function (|
-                                    "core::ub_checks::maybe_is_aligned_and_not_null",
+                                    "core::ub_checks::is_valid_allocation_size",
                                     [],
                                     []
                                   |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                        (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                      [ M.read (| data |) ]
-                                    |);
-                                    M.read (| align |);
-                                    Value.Bool false
-                                  ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_function (|
-                                      "core::ub_checks::is_valid_allocation_size",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| size |); M.read (| len |) ]
-                                  |)))
-                              |)
-                            ]
-                          |)
-                        |)) in
+                                  [ M.read (| size |); M.read (| len |) ]
+                                |)))
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
-                      M.call_closure (|
-                        Ty.path "never",
-                        M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                        [
+                      M.read (|
+                        let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
                           mk_str (|
-                            "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`"
+                            "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                          |) in
+                        M.alloc (|
+                          Ty.path "never",
+                          M.call_closure (|
+                            Ty.path "never",
+                            M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::Arguments",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "from_str",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                              |);
+                              Value.Bool false
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     |)));
                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1380,9 +1657,10 @@ Module slice.
       (*
                   const fn precondition_check($($name:$ty),* ) {
                       if !$e {
-                          ::core::panicking::panic_nounwind(
-                              concat!("unsafe precondition(s) violated: ", $message)
-                          );
+                          let msg = concat!("unsafe precondition(s) violated: ", $message,
+                              "\n\nThis indicates a bug in the program. \
+                              This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                          ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                       }
                   }
       *)
@@ -1401,58 +1679,76 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              LogicalOp.and (|
-                                M.call_closure (|
+                          UnOp.not,
+                          [
+                            LogicalOp.and (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_function (|
+                                  "core::ub_checks::maybe_is_aligned_and_not_null",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                    [ M.read (| data |) ]
+                                  |);
+                                  M.read (| align |);
+                                  Value.Bool false
+                                ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
                                   M.get_function (|
-                                    "core::ub_checks::maybe_is_aligned_and_not_null",
+                                    "core::ub_checks::is_valid_allocation_size",
                                     [],
                                     []
                                   |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                        (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                      [ M.read (| data |) ]
-                                    |);
-                                    M.read (| align |);
-                                    Value.Bool false
-                                  ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_function (|
-                                      "core::ub_checks::is_valid_allocation_size",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| size |); M.read (| len |) ]
-                                  |)))
-                              |)
-                            ]
-                          |)
-                        |)) in
+                                  [ M.read (| size |); M.read (| len |) ]
+                                |)))
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
-                      M.call_closure (|
-                        Ty.path "never",
-                        M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                        [
+                      M.read (|
+                        let~ msg : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
                           mk_str (|
-                            "unsafe precondition(s) violated: slice::from_raw_parts_mut requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`"
+                            "unsafe precondition(s) violated: slice::from_raw_parts_mut requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`
+
+This indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety."
+                          |) in
+                        M.alloc (|
+                          Ty.path "never",
+                          M.call_closure (|
+                            Ty.path "never",
+                            M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::Arguments",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "from_str",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                              |);
+                              Value.Bool false
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     |)));
                 fun γ => ltac:(M.monadic (Value.Tuple []))

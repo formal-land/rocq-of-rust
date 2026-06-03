@@ -135,54 +135,53 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
-                                  Ty.path "bool",
-                                  LogicalOp.or (|
-                                    M.call_closure (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                LogicalOp.or (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    UnOp.not,
+                                    [ M.read (| has_advanced |) ]
+                                  |),
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.path "bool",
-                                      UnOp.not,
-                                      [ M.read (| has_advanced |) ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ge,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_trait_method (|
-                                              "core::iter::traits::exact_size::ExactSizeIterator",
-                                              Ty.apply
-                                                (Ty.path "alloc::vec::into_iter::IntoIter")
-                                                []
-                                                [ T; Ty.path "alloc::alloc::Global" ],
-                                              [],
-                                              [],
-                                              "len",
-                                              [],
+                                      BinOp.ge,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_trait_method (|
+                                            "core::iter::traits::exact_size::ExactSizeIterator",
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::into_iter::IntoIter")
                                               []
-                                            |),
-                                            [ M.borrow (| Pointer.Kind.Ref, iterator |) ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.div,
-                                            [
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  iterator,
-                                                  "alloc::vec::into_iter::IntoIter",
-                                                  "cap"
-                                                |)
-                                              |);
-                                              Value.Integer IntegerKind.Usize 2
-                                            ]
-                                          |)
-                                        ]
-                                      |)))
-                                  |)
-                                |)) in
+                                              [ T; Ty.path "alloc::alloc::Global" ],
+                                            [],
+                                            [],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.borrow (| Pointer.Kind.Ref, iterator |) ]
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.div,
+                                          [
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                iterator,
+                                                "alloc::vec::into_iter::IntoIter",
+                                                "cap"
+                                              |)
+                                            |);
+                                            Value.Integer IntegerKind.Usize 2
+                                          ]
+                                        |)
+                                      ]
+                                    |)))
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -230,7 +229,7 @@ Module vec.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let γ := M.use has_advanced in
+                                          (let γ := has_advanced in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -240,11 +239,7 @@ Module vec.
                                             let~ _ : Ty.tuple [] :=
                                               M.call_closure (|
                                                 Ty.tuple [],
-                                                M.get_function (|
-                                                  "core::intrinsics::copy",
-                                                  [],
-                                                  [ T ]
-                                                |),
+                                                M.get_function (| "core::ptr::copy", [], [ T ] |),
                                                 [
                                                   M.call_closure (|
                                                     Ty.apply (Ty.path "*const") [] [ T ],

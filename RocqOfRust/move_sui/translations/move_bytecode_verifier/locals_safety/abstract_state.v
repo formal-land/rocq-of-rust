@@ -39,6 +39,19 @@ Module locals_safety.
         "move_bytecode_verifier::locals_safety::abstract_state::LocalState::Available"
         2.
     
+    Module Impl_core_clone_TrivialClone_for_move_bytecode_verifier_locals_safety_abstract_state_LocalState.
+      Definition Self : Ty.t :=
+        Ty.path "move_bytecode_verifier::locals_safety::abstract_state::LocalState".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_move_bytecode_verifier_locals_safety_abstract_state_LocalState.
+    
     Module Impl_core_clone_Clone_for_move_bytecode_verifier_locals_safety_abstract_state_LocalState.
       Definition Self : Ty.t :=
         Ty.path "move_bytecode_verifier::locals_safety::abstract_state::LocalState".
@@ -1155,18 +1168,15 @@ Module locals_safety.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.lt,
-                                                              [
-                                                                M.read (| i |);
-                                                                M.read (| num_args |)
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                            BinOp.lt,
+                                                            [ M.read (| i |); M.read (| num_args |)
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -2233,87 +2243,86 @@ Module locals_safety.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      Ty.path
-                                        "move_bytecode_verifier::locals_safety::abstract_state::LocalState",
-                                      [],
-                                      [
-                                        Ty.path
-                                          "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
-                                      ],
-                                      "eq",
-                                      [],
-                                      []
-                                    |),
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    Ty.path
+                                      "move_bytecode_verifier::locals_safety::abstract_state::LocalState",
+                                    [],
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
+                                      Ty.path
+                                        "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                    ],
+                                    "eq",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.path
+                                                "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                            ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
                                             Ty.apply
-                                              (Ty.path "&")
+                                              (Ty.path "alloc::vec::Vec")
                                               []
                                               [
                                                 Ty.path
-                                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                                Ty.path "alloc::alloc::Global"
                                               ],
-                                            M.get_trait_method (|
-                                              "core::ops::index::Index",
-                                              Ty.apply
-                                                (Ty.path "alloc::vec::Vec")
-                                                []
-                                                [
-                                                  Ty.path
-                                                    "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                                                  Ty.path "alloc::alloc::Global"
-                                                ],
-                                              [],
-                                              [ Ty.path "usize" ],
-                                              "index",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                                  "local_states"
-                                                |)
-                                              |);
-                                              M.cast (Ty.path "usize") (M.read (| idx |))
-                                            ]
-                                          |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.path
-                                            "move_bytecode_verifier::locals_safety::abstract_state::LocalState",
-                                          Value.StructTuple
-                                            "move_bytecode_verifier::locals_safety::abstract_state::LocalState::Available"
+                                            [],
+                                            [ Ty.path "usize" ],
+                                            "index",
+                                            [],
                                             []
-                                            []
-                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                                "local_states"
+                                              |)
+                                            |);
+                                            M.cast (Ty.path "usize") (M.read (| idx |))
+                                          ]
                                         |)
                                       |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.path
+                                          "move_bytecode_verifier::locals_safety::abstract_state::LocalState",
+                                        Value.StructTuple
+                                          "move_bytecode_verifier::locals_safety::abstract_state::LocalState::Available"
+                                          []
+                                          []
+                                          []
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -2532,60 +2541,59 @@ Module locals_safety.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [
+                                        Ty.path
+                                          "move_binary_format::file_format::FunctionDefinitionIndex"
+                                      ],
+                                    [],
+                                    [
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [
                                           Ty.path
                                             "move_binary_format::file_format::FunctionDefinitionIndex"
-                                        ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [
-                                            Ty.path
-                                              "move_binary_format::file_format::FunctionDefinitionIndex"
-                                          ]
-                                      ],
-                                      "eq",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                          "current_function"
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| other |) |),
-                                          "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                          "current_function"
-                                        |)
+                                        ]
+                                    ],
+                                    "eq",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                        "current_function"
                                       |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| other |) |),
+                                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                        "current_function"
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -2609,72 +2617,71 @@ Module locals_safety.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [
-                                              Ty.path "move_binary_format::file_format::AbilitySet";
-                                              Ty.path "alloc::alloc::Global"
-                                            ],
-                                          "len",
-                                          [],
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                              "all_local_abilities"
-                                            |)
+                                          [
+                                            Ty.path "move_binary_format::file_format::AbilitySet";
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                            "all_local_abilities"
                                           |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [
-                                              Ty.path "move_binary_format::file_format::AbilitySet";
-                                              Ty.path "alloc::alloc::Global"
-                                            ],
-                                          "len",
-                                          [],
+                                        |)
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| other |) |),
-                                              "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                              "all_local_abilities"
-                                            |)
+                                          [
+                                            Ty.path "move_binary_format::file_format::AbilitySet";
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| other |) |),
+                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                            "all_local_abilities"
                                           |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -2698,74 +2705,73 @@ Module locals_safety.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [
-                                              Ty.path
-                                                "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                                              Ty.path "alloc::alloc::Global"
-                                            ],
-                                          "len",
-                                          [],
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                              "local_states"
-                                            |)
+                                          [
+                                            Ty.path
+                                              "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                            "local_states"
                                           |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [
-                                              Ty.path
-                                                "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                                              Ty.path "alloc::alloc::Global"
-                                            ],
-                                          "len",
-                                          [],
+                                        |)
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| other |) |),
-                                              "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                              "local_states"
-                                            |)
+                                          [
+                                            Ty.path
+                                              "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| other |) |),
+                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                            "local_states"
                                           |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -3930,74 +3936,73 @@ Module locals_safety.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "alloc::vec::Vec")
-                                                []
-                                                [
-                                                  Ty.path
-                                                    "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                                                  Ty.path "alloc::alloc::Global"
-                                                ],
-                                              "len",
-                                              [],
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
                                               []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                                  "local_states"
-                                                |)
+                                              [
+                                                Ty.path
+                                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                                "local_states"
                                               |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "alloc::vec::Vec")
-                                                []
-                                                [
-                                                  Ty.path
-                                                    "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                                                  Ty.path "alloc::alloc::Global"
-                                                ],
-                                              "len",
-                                              [],
+                                            |)
+                                          ]
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
                                               []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  joined,
-                                                  "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                                  "local_states"
-                                                |)
+                                              [
+                                                Ty.path
+                                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                joined,
+                                                "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                                "local_states"
                                               |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -4330,7 +4335,7 @@ Module locals_safety.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let γ := M.use locals_unchanged in
+                            (let γ := locals_unchanged in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             Value.StructTuple

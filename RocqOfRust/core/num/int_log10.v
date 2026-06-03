@@ -4,7 +4,7 @@ Require Import RocqOfRust.RocqOfRust.
 Module num.
   Module int_log10.
     (*
-    pub const fn u8(val: u8) -> u32 {
+    pub(super) const fn u8(val: u8) -> u32 {
         let val = val as u32;
     
         // For better performance, avoid branches by assembling the solution
@@ -285,7 +285,7 @@ Module num.
     End less_than_5.
     
     (*
-    pub const fn u16(val: u16) -> u32 {
+    pub(super) const fn u16(val: u16) -> u32 {
         less_than_5(val as u32)
     }
     *)
@@ -307,7 +307,7 @@ Module num.
     Global Typeclasses Opaque u16.
     
     (*
-    pub const fn u32(mut val: u32) -> u32 {
+    pub(super) const fn u32(mut val: u32) -> u32 {
         let mut log = 0;
         if val >= 100_000 {
             val /= 100_000;
@@ -331,15 +331,14 @@ Module num.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| val |); Value.Integer IntegerKind.U32 100000 ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| val |); Value.Integer IntegerKind.U32 100000 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -391,7 +390,7 @@ Module num.
     Global Typeclasses Opaque u32.
     
     (*
-    pub const fn u64(mut val: u64) -> u32 {
+    pub(super) const fn u64(mut val: u64) -> u32 {
         let mut log = 0;
         if val >= 10_000_000_000 {
             val /= 10_000_000_000;
@@ -419,15 +418,14 @@ Module num.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| val |); Value.Integer IntegerKind.U64 10000000000 ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| val |); Value.Integer IntegerKind.U64 10000000000 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -463,15 +461,14 @@ Module num.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| val |); Value.Integer IntegerKind.U64 100000 ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| val |); Value.Integer IntegerKind.U64 100000 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -523,7 +520,7 @@ Module num.
     Global Typeclasses Opaque u64.
     
     (*
-    pub const fn u128(mut val: u128) -> u32 {
+    pub(super) const fn u128(mut val: u128) -> u32 {
         let mut log = 0;
         if val >= 100_000_000_000_000_000_000_000_000_000_000 {
             val /= 100_000_000_000_000_000_000_000_000_000_000;
@@ -554,18 +551,17 @@ Module num.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ge,
-                                  [
-                                    M.read (| val |);
-                                    Value.Integer IntegerKind.U128 100000000000000000000000000000000
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.ge,
+                                [
+                                  M.read (| val |);
+                                  Value.Integer IntegerKind.U128 100000000000000000000000000000000
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -622,18 +618,15 @@ Module num.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ge,
-                                  [
-                                    M.read (| val |);
-                                    Value.Integer IntegerKind.U128 10000000000000000
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.ge,
+                                [ M.read (| val |); Value.Integer IntegerKind.U128 10000000000000000
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -688,7 +681,7 @@ Module num.
     Global Typeclasses Opaque u128.
     
     (*
-    pub const fn usize(val: usize) -> u32 {
+    pub(super) const fn usize(val: usize) -> u32 {
         u64(val as _)
     }
     *)
@@ -710,7 +703,7 @@ Module num.
     Global Typeclasses Opaque usize.
     
     (*
-    pub const fn i8(val: i8) -> u32 {
+    pub(super) const fn i8(val: i8) -> u32 {
         u8(val as u8)
     }
     *)
@@ -732,7 +725,7 @@ Module num.
     Global Typeclasses Opaque i8.
     
     (*
-    pub const fn i16(val: i16) -> u32 {
+    pub(super) const fn i16(val: i16) -> u32 {
         u16(val as u16)
     }
     *)
@@ -754,7 +747,7 @@ Module num.
     Global Typeclasses Opaque i16.
     
     (*
-    pub const fn i32(val: i32) -> u32 {
+    pub(super) const fn i32(val: i32) -> u32 {
         u32(val as u32)
     }
     *)
@@ -776,7 +769,7 @@ Module num.
     Global Typeclasses Opaque i32.
     
     (*
-    pub const fn i64(val: i64) -> u32 {
+    pub(super) const fn i64(val: i64) -> u32 {
         u64(val as u64)
     }
     *)
@@ -798,7 +791,7 @@ Module num.
     Global Typeclasses Opaque i64.
     
     (*
-    pub const fn i128(val: i128) -> u32 {
+    pub(super) const fn i128(val: i128) -> u32 {
         u128(val as u128)
     }
     *)
@@ -820,7 +813,7 @@ Module num.
     Global Typeclasses Opaque i128.
     
     (*
-    pub const fn panic_for_nonpositive_argument() -> ! {
+    pub(super) const fn panic_for_nonpositive_argument() -> ! {
         panic!("argument of integer logarithm must be positive")
     }
     *)
@@ -838,30 +831,8 @@ Module num.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [ mk_str (| "argument of integer logarithm must be positive" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "argument of integer logarithm must be positive" |) ]
               |)
             ]
           |)))

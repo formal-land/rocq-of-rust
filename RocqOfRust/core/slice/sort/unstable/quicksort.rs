@@ -1,13 +1,15 @@
 //! This module contains an unstable quicksort and two partition implementations.
 
-use crate::mem::{self, ManuallyDrop};
+#[cfg(not(feature = "optimize_for_size"))]
+use crate::mem;
+use crate::mem::ManuallyDrop;
 #[cfg(not(feature = "optimize_for_size"))]
 use crate::slice::sort::shared::pivot::choose_pivot;
 #[cfg(not(feature = "optimize_for_size"))]
 use crate::slice::sort::shared::smallsort::UnstableSmallSortTypeImpl;
 #[cfg(not(feature = "optimize_for_size"))]
 use crate::slice::sort::unstable::heapsort;
-use crate::{intrinsics, ptr};
+use crate::{cfg_select, intrinsics, ptr};
 
 /// Sorts `v` recursively.
 ///
@@ -46,8 +48,7 @@ pub(crate) fn quicksort<'a, T, F>(
         // slice. Partition the slice into elements equal to and elements greater than the pivot.
         // This case is usually hit when the slice contains many duplicate elements.
         if let Some(p) = ancestor_pivot {
-            // SAFETY: We assume choose_pivot yields an in-bounds position.
-            if !is_less(p, unsafe { v.get_unchecked(pivot_pos) }) {
+            if !is_less(p, &v[pivot_pos]) {
                 let num_lt = partition(v, pivot_pos, &mut |a, b| !is_less(b, a));
 
                 // Continue sorting elements greater than the pivot. We know that `num_lt` contains
@@ -137,13 +138,14 @@ where
 
 const fn inst_partition<T, F: FnMut(&T, &T) -> bool>() -> fn(&mut [T], &T, &mut F) -> usize {
     const MAX_BRANCHLESS_PARTITION_SIZE: usize = 96;
-    if mem::size_of::<T>() <= MAX_BRANCHLESS_PARTITION_SIZE {
+    if size_of::<T>() <= MAX_BRANCHLESS_PARTITION_SIZE {
         // Specialize for types that are relatively cheap to copy, where branchless optimizations
         // have large leverage e.g. `u64` and `String`.
-        cfg_if! {
-            if #[cfg(feature = "optimize_for_size")] {
+        cfg_select! {
+            feature = "optimize_for_size" => {
                 partition_lomuto_branchless_simple::<T, F>
-            } else {
+            }
+            _ => {
                 partition_lomuto_branchless_cyclic::<T, F>
             }
         }
@@ -224,7 +226,7 @@ where
             left = left.add(1);
         }
 
-        left.sub_ptr(v_base)
+        left.offset_from_unsigned(v_base)
 
         // `gap_opt` goes out of scope and overwrites the last wrong-side element on the right side
         // with the first wrong-side element of the left side that was initially overwritten by the
@@ -304,7 +306,7 @@ where
 
         // Manual unrolling that works well on x86, Arm and with opt-level=s without murdering
         // compile-times. Leaving this to the compiler yields ok to bad results.
-        let unroll_len = const { if mem::size_of::<T>() <= 16 { 2 } else { 1 } };
+        let unroll_len = const { if size_of::<T>() <= 16 { 2 } else { 1 } };
 
         let unroll_end = v_base.add(len - (unroll_len - 1));
         while state.right < unroll_end {

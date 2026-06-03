@@ -53,7 +53,7 @@ Module collections.
           Ty.apply (Ty.path "alloc::collections::btree::borrow::DormantMutRef") [] [ T ].
         
         (*
-            pub fn new(t: &'a mut T) -> (&'a mut T, Self) {
+            pub(super) fn new(t: &'a mut T) -> (&'a mut T, Self) {
                 let ptr = NonNull::from(t);
                 // SAFETY: we hold the borrow throughout 'a via `_marker`, and we expose
                 // only this reference, so it is unique.
@@ -138,7 +138,7 @@ Module collections.
         Global Typeclasses Opaque new.
         
         (*
-            pub unsafe fn awaken(self) -> &'a mut T {
+            pub(super) unsafe fn awaken(self) -> &'a mut T {
                 // SAFETY: our own safety conditions imply this reference is again unique.
                 unsafe { &mut *self.ptr.as_ptr() }
             }
@@ -201,7 +201,7 @@ Module collections.
         Global Typeclasses Opaque awaken.
         
         (*
-            pub unsafe fn reborrow(&mut self) -> &'a mut T {
+            pub(super) unsafe fn reborrow(&mut self) -> &'a mut T {
                 // SAFETY: our own safety conditions imply this reference is again unique.
                 unsafe { &mut *self.ptr.as_ptr() }
             }
@@ -268,7 +268,7 @@ Module collections.
         Global Typeclasses Opaque reborrow.
         
         (*
-            pub unsafe fn reborrow_shared(&self) -> &'a T {
+            pub(super) unsafe fn reborrow_shared(&self) -> &'a T {
                 // SAFETY: our own safety conditions imply this reference is again unique.
                 unsafe { &*self.ptr.as_ptr() }
             }

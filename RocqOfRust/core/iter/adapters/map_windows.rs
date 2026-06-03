@@ -1,5 +1,5 @@
 use crate::iter::FusedIterator;
-use crate::mem::{self, MaybeUninit};
+use crate::mem::MaybeUninit;
 use crate::{fmt, ptr};
 
 /// An iterator over the mapped windows of another iterator.
@@ -50,7 +50,7 @@ impl<I: Iterator, F, const N: usize> MapWindows<I, F, N> {
         assert!(N != 0, "array in `Iterator::map_windows` must contain more than 0 elements");
 
         // Only ZST arrays' length can be so large.
-        if mem::size_of::<I::Item>() == 0 {
+        if size_of::<I::Item>() == 0 {
             assert!(
                 N.checked_mul(2).is_some(),
                 "array size of `Iterator::map_windows` is too large"
@@ -195,7 +195,7 @@ impl<T, const N: usize> Buffer<T, N> {
 
         // SAFETY: the index is valid and this is element `a` in the
         // diagram above and has not been dropped yet.
-        unsafe { ptr::drop_in_place(to_drop.cast::<T>()) };
+        unsafe { ptr::drop_in_place(to_drop.cast_init()) };
     }
 }
 

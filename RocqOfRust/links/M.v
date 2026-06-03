@@ -1851,6 +1851,21 @@ Module OneElementTuple.
     smpl of_value; eassumption.
   Defined.
   Smpl Add apply of_value : of_value.
+
+  Module SubPointer.
+    Definition get_index_0 {A : Set} `{Link A} :
+        SubPointer.Runner.t (t A) (Pointer.Index.Tuple 0) := {|
+      SubPointer.Runner.projection x := Some x.(value);
+      SubPointer.Runner.injection x value := Some {| value := value |};
+    |}.
+
+    Lemma get_index_0_is_valid {A : Set} `{Link A} :
+      SubPointer.Runner.Valid.t (get_index_0 (A := A)).
+    Proof.
+      hauto l: on.
+    Qed.
+    Smpl Add apply get_index_0_is_valid : run_sub_pointer.
+  End SubPointer.
 End OneElementTuple.
 
 Module Pair.

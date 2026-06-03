@@ -31,6 +31,18 @@ Module num.
             (* Instance *) [].
       End Impl_core_marker_Copy_for_core_num_flt2dec_decoder_Decoded.
       
+      Module Impl_core_clone_TrivialClone_for_core_num_flt2dec_decoder_Decoded.
+        Definition Self : Ty.t := Ty.path "core::num::flt2dec::decoder::Decoded".
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::clone::TrivialClone"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            Self
+            (* Instance *) [].
+      End Impl_core_clone_TrivialClone_for_core_num_flt2dec_decoder_Decoded.
+      
       Module Impl_core_clone_Clone_for_core_num_flt2dec_decoder_Decoded.
         Definition Self : Ty.t := Ty.path "core::num::flt2dec::decoder::Decoded".
         
@@ -497,6 +509,18 @@ Module num.
             (* Instance *) [].
       End Impl_core_marker_Copy_for_core_num_flt2dec_decoder_FullDecoded.
       
+      Module Impl_core_clone_TrivialClone_for_core_num_flt2dec_decoder_FullDecoded.
+        Definition Self : Ty.t := Ty.path "core::num::flt2dec::decoder::FullDecoded".
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::clone::TrivialClone"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            Self
+            (* Instance *) [].
+      End Impl_core_clone_TrivialClone_for_core_num_flt2dec_decoder_FullDecoded.
+      
       Module Impl_core_clone_Clone_for_core_num_flt2dec_decoder_FullDecoded.
         Definition Self : Ty.t := Ty.path "core::num::flt2dec::decoder::FullDecoded".
         
@@ -886,6 +910,33 @@ Module num.
       (* Trait *)
       (* Empty module 'DecodableFloat' *)
       
+      Module Impl_core_num_flt2dec_decoder_DecodableFloat_for_f16.
+        Definition Self : Ty.t := Ty.path "f16".
+        
+        (*
+            fn min_pos_norm_value() -> Self {
+                f16::MIN_POSITIVE
+            }
+        *)
+        Definition min_pos_norm_value (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [] =>
+            ltac:(M.monadic
+              (M.read (|
+                get_associated_constant (| Ty.path "f16", "MIN_POSITIVE", Ty.path "f16" |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::num::flt2dec::decoder::DecodableFloat"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            Self
+            (* Instance *) [ ("min_pos_norm_value", InstanceField.Method min_pos_norm_value) ].
+      End Impl_core_num_flt2dec_decoder_DecodableFloat_for_f16.
+      
       Module Impl_core_num_flt2dec_decoder_DecodableFloat_for_f32.
         Definition Self : Ty.t := Ty.path "f32".
         
@@ -1137,23 +1188,19 @@ Module num.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    BinOp.eq,
-                                                    [
-                                                      M.read (| mant |);
-                                                      M.read (|
-                                                        M.SubPointer.get_tuple_field (|
-                                                          minnorm,
-                                                          0
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)) in
+                                                  BinOp.eq,
+                                                  [
+                                                    M.read (| mant |);
+                                                    M.read (|
+                                                      M.SubPointer.get_tuple_field (| minnorm, 0 |)
+                                                    |)
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),

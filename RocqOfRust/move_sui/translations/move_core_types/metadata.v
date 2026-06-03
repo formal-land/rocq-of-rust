@@ -814,6 +814,9 @@ Module metadata.
           Self
           (* Instance *) [ ("serialize", InstanceField.Method serialize) ].
     End Impl_serde_ser_Serialize_for_move_core_types_metadata_Metadata.
+  End underscore.
+  
+  Module underscore_1.
     Module Impl_serde_de_Deserialize_for_move_core_types_metadata_Metadata.
       Definition Self : Ty.t := Ty.path "move_core_types::metadata::Metadata".
       
@@ -888,6 +891,5 @@ Module metadata.
           Self
           (* Instance *) [ ("deserialize", InstanceField.Method deserialize) ].
     End Impl_serde_de_Deserialize_for_move_core_types_metadata_Metadata.
-  End underscore.
-  
+  End underscore_1.
 End metadata.

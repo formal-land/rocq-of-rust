@@ -309,6 +309,59 @@ Proof.
 Defined.
 Smpl Add apply of_value_repeat : of_value.
 
+Fixpoint byte_string_array_pairs
+    (length : nat) (bytes : list Z) : ArrayPairs.t u8 length :=
+  match length, bytes with
+  | O, _ => ArrayEmpty.Make
+  | S length, [] =>
+      {|
+        ArrayPair.x := Integer.Build_t IntegerKind.U8 0;
+        ArrayPair.xs := byte_string_array_pairs length [];
+      |}
+  | S length, byte :: bytes =>
+      {|
+        ArrayPair.x := Integer.Build_t IntegerKind.U8 byte;
+        ArrayPair.xs := byte_string_array_pairs length bytes;
+      |}
+  end.
+
+Lemma byte_string_to_values_eq (length : nat) (bytes : list Z) :
+  M.byte_string_to_values length bytes =
+  ArrayPairs.to_values (byte_string_array_pairs length bytes).
+Proof.
+  revert bytes.
+  induction length; intros [|byte bytes]; cbn; try reflexivity;
+    now rewrite IHlength.
+Qed.
+
+Definition of_value_byte_string_ref (length : Z) (bytes : list Z) :
+  OfValue.t (M.mk_byte_str_ref length bytes).
+Proof.
+  eapply OfValue.Make with
+    (value := Ref.immediate Pointer.Kind.Ref
+      (Build_t u8
+        {| Integer.value := length |}
+        (byte_string_array_pairs (Z.to_nat length) bytes))).
+  unfold M.mk_byte_str_ref.
+  change (
+    Value.Pointer {|
+      Pointer.kind := Pointer.Kind.Ref;
+      Pointer.core := Pointer.Core.Immediate (Some (
+        Value.Array (M.byte_string_to_values (Z.to_nat length) bytes)
+      ));
+    |} =
+    Value.Pointer {|
+      Pointer.kind := Pointer.Kind.Ref;
+      Pointer.core := Pointer.Core.Immediate (Some (
+        Value.Array (ArrayPairs.to_values
+          (byte_string_array_pairs (Z.to_nat length) bytes))
+      ));
+    |}
+  ).
+  now rewrite byte_string_to_values_eq.
+Defined.
+Smpl Add apply of_value_byte_string_ref : of_value.
+
 Module SubPointer.
   Definition get_index (A : Set) `{Link A} (length : usize) (index : Z) :
     SubPointer.Runner.t (t A length) (Pointer.Index.Array index) :=

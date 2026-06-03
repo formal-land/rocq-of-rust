@@ -1,9 +1,5 @@
 use crate::top_level::*;
-use rustc_errors::registry;
-use rustc_session::config;
 use std::path::PathBuf;
-use std::sync::atomic::AtomicBool;
-use std::sync::Arc;
 use std::{fs, path, process, str};
 use walkdir::WalkDir;
 
@@ -106,47 +102,45 @@ fn create_translation_to_rocq(opts: &CliOptions) -> String {
         .output()
         .unwrap();
     let sysroot = str::from_utf8(&out.stdout).unwrap().trim();
-    let config = rustc_interface::Config {
-        crate_cfg: vec![],
-        crate_check_cfg: vec![],
-        file_loader: None,
-        input: config::Input::File(input_file_name),
-        lint_caps: rustc_hash::FxHashMap::default(),
-        locale_resources: rustc_driver::DEFAULT_LOCALE_RESOURCES.to_vec(),
-        make_codegen_backend: None,
-        opts: config::Options {
-            maybe_sysroot: Some(path::PathBuf::from(sysroot)),
-            // Run in test mode to generate a translation of the tests.
-            test: true,
-            ..config::Options::default()
-        },
-        output_dir: None,
-        output_file: None,
-        override_queries: None,
-        psess_created: None,
-        register_lints: None,
-        registry: registry::Registry::new(rustc_errors::codes::DIAGNOSTICS),
-        expanded_args: vec![],
-        ice_file: None,
-        hash_untracked_state: None,
-        using_internal_features: Arc::new(AtomicBool::new(false)),
-    };
 
     println!("Starting to translate {filename:?}...");
 
     let now = std::time::Instant::now();
-    let translation = rustc_interface::run_compiler(config, |compiler| {
-        compiler.enter(|queries| {
-            queries.global_ctxt().unwrap().enter(|ctxt| {
-                translate_top_level(
-                    &ctxt,
-                    TopLevelOptions {
-                        axiomatize: opts.axiomatize,
-                    },
-                )
-            })
-        })
-    });
+
+    struct TranslateSingleFile {
+        axiomatize: bool,
+        translation: Option<std::collections::HashMap<String, (String, String)>>,
+    }
+
+    impl rustc_driver::Callbacks for TranslateSingleFile {
+        fn after_expansion<'tcx>(
+            &mut self,
+            _compiler: &rustc_interface::interface::Compiler,
+            tcx: rustc_middle::ty::TyCtxt<'tcx>,
+        ) -> rustc_driver::Compilation {
+            self.translation = Some(translate_top_level(
+                &tcx,
+                TopLevelOptions {
+                    axiomatize: self.axiomatize,
+                },
+            ));
+            rustc_driver::Compilation::Stop
+        }
+    }
+
+    let mut callbacks = TranslateSingleFile {
+        axiomatize: opts.axiomatize,
+        translation: None,
+    };
+    let args = vec![
+        "rustc".to_string(),
+        filename.to_string_lossy().to_string(),
+        "--test".to_string(),
+        format!("--sysroot={sysroot}"),
+    ];
+
+    rustc_driver::run_compiler(&args, &mut callbacks);
+    let translation = callbacks.translation.unwrap_or_default();
 
     println!(
         "{} ms have passed to translate: {:?}",

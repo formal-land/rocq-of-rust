@@ -14,7 +14,7 @@ Module ops.
       
       (*
           fn deref(&self) -> &T {
-              *self
+              self
           }
       *)
       Definition deref (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -63,7 +63,7 @@ Module ops.
       
       (*
           fn deref(&self) -> &T {
-              *self
+              self
           }
       *)
       Definition deref (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -102,7 +102,7 @@ Module ops.
       
       (*
           fn deref_mut(&mut self) -> &mut T {
-              *self
+              self
           }
       *)
       Definition deref_mut (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -188,7 +188,7 @@ Module ops.
     (* Trait *)
     (* Empty module 'LegacyReceiver' *)
     
-    Module Impl_core_ops_deref_LegacyReceiver_where_core_marker_Sized_T_for_ref__T.
+    Module Impl_core_ops_deref_LegacyReceiver_where_core_marker_PointeeSized_T_for_ref__T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
       
       Axiom Implements :
@@ -199,9 +199,9 @@ Module ops.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_ops_deref_LegacyReceiver_where_core_marker_Sized_T_for_ref__T.
+    End Impl_core_ops_deref_LegacyReceiver_where_core_marker_PointeeSized_T_for_ref__T.
     
-    Module Impl_core_ops_deref_LegacyReceiver_where_core_marker_Sized_T_for_ref_mut_T.
+    Module Impl_core_ops_deref_LegacyReceiver_where_core_marker_PointeeSized_T_for_ref_mut_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
       Axiom Implements :
@@ -212,6 +212,6 @@ Module ops.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_ops_deref_LegacyReceiver_where_core_marker_Sized_T_for_ref_mut_T.
+    End Impl_core_ops_deref_LegacyReceiver_where_core_marker_PointeeSized_T_for_ref_mut_T.
   End deref.
 End ops.

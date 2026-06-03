@@ -192,7 +192,7 @@ Module str.
               const CHUNK_SIZE: usize = 32;
       
               if remainder >= CHUNK_SIZE {
-                  let mut chunks = self.iter.as_slice().array_chunks::<CHUNK_SIZE>();
+                  let mut chunks = self.iter.as_slice().as_chunks::<CHUNK_SIZE>().0.iter();
                   let mut bytes_skipped: usize = 0;
       
                   while remainder > CHUNK_SIZE
@@ -255,69 +255,155 @@ Module str.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ge,
-                                [
-                                  M.read (| remainder |);
-                                  M.read (|
-                                    get_constant (|
-                                      "core::str::iter::advance_by::CHUNK_SIZE",
-                                      Ty.path "usize"
-                                    |)
+                              BinOp.ge,
+                              [
+                                M.read (| remainder |);
+                                M.read (|
+                                  get_constant (|
+                                    "core::str::iter::advance_by::CHUNK_SIZE",
+                                    Ty.path "usize"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ chunks :
                               Ty.apply
-                                (Ty.path "core::slice::iter::ArrayChunks")
-                                [ Value.Integer IntegerKind.Usize 32 ]
-                                [ Ty.path "u8" ] :=
+                                (Ty.path "core::slice::iter::Iter")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                    [ Ty.path "u8" ]
+                                ] :=
                             M.call_closure (|
                               Ty.apply
-                                (Ty.path "core::slice::iter::ArrayChunks")
-                                [ Value.Integer IntegerKind.Usize 32 ]
-                                [ Ty.path "u8" ],
+                                (Ty.path "core::slice::iter::Iter")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                    [ Ty.path "u8" ]
+                                ],
                               M.get_associated_function (|
-                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                "array_chunks",
-                                [ Value.Integer IntegerKind.Usize 32 ],
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ]
+                                  ],
+                                "iter",
+                                [],
                                 []
                               |),
                               [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
                                   M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "core::slice::iter::Iter")
-                                          []
-                                          [ Ty.path "u8" ],
-                                        "as_slice",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::str::iter::Chars",
-                                            "iter"
+                                    M.read (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.alloc (|
+                                          Ty.tuple
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ];
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                            ],
+                                          M.call_closure (|
+                                            Ty.tuple
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ];
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                              ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              "as_chunks",
+                                              [ Value.Integer IntegerKind.Usize 32 ],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::Iter")
+                                                        []
+                                                        [ Ty.path "u8" ],
+                                                      "as_slice",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::str::iter::Chars",
+                                                          "iter"
+                                                        |)
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |)
+                                              |)
+                                            ]
                                           |)
-                                        |)
-                                      ]
+                                        |),
+                                        0
+                                      |)
                                     |)
                                   |)
                                 |)
@@ -339,23 +425,22 @@ Module str.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    BinOp.gt,
-                                                    [
-                                                      M.read (| remainder |);
-                                                      M.read (|
-                                                        get_constant (|
-                                                          "core::str::iter::advance_by::CHUNK_SIZE",
-                                                          Ty.path "usize"
-                                                        |)
+                                                  BinOp.gt,
+                                                  [
+                                                    M.read (| remainder |);
+                                                    M.read (|
+                                                      get_constant (|
+                                                        "core::str::iter::advance_by::CHUNK_SIZE",
+                                                        Ty.path "usize"
                                                       |)
-                                                    ]
-                                                  |)
-                                                |)) in
+                                                    |)
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -395,9 +480,14 @@ Module str.
                                                   M.get_trait_method (|
                                                     "core::iter::traits::iterator::Iterator",
                                                     Ty.apply
-                                                      (Ty.path "core::slice::iter::ArrayChunks")
-                                                      [ Value.Integer IntegerKind.Usize 32 ]
-                                                      [ Ty.path "u8" ],
+                                                      (Ty.path "core::slice::iter::Iter")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                                          [ Ty.path "u8" ]
+                                                      ],
                                                     [],
                                                     [],
                                                     "next",
@@ -874,42 +964,41 @@ Module str.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.gt,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_trait_method (|
-                                                      "core::iter::traits::exact_size::ExactSizeIterator",
-                                                      Ty.apply
-                                                        (Ty.path "core::slice::iter::Iter")
-                                                        []
-                                                        [ Ty.path "u8" ],
-                                                      [],
-                                                      [],
-                                                      "len",
-                                                      [],
+                                              BinOp.gt,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_trait_method (|
+                                                    "core::iter::traits::exact_size::ExactSizeIterator",
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::Iter")
                                                       []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "core::str::iter::Chars",
-                                                          "iter"
-                                                        |)
+                                                      [ Ty.path "u8" ],
+                                                    [],
+                                                    [],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::str::iter::Chars",
+                                                        "iter"
                                                       |)
-                                                    ]
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 0
-                                                ]
-                                              |)
-                                            |)) in
+                                                    |)
+                                                  ]
+                                                |);
+                                                Value.Integer IntegerKind.Usize 0
+                                              ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -962,25 +1051,24 @@ Module str.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        M.call_closure (|
                                                           Ty.path "bool",
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            UnOp.not,
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.path "bool",
-                                                                M.get_function (|
-                                                                  "core::str::validations::utf8_is_cont_byte",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [ M.read (| b |) ]
-                                                              |)
-                                                            ]
-                                                          |)
-                                                        |)) in
+                                                          UnOp.not,
+                                                          [
+                                                            M.call_closure (|
+                                                              Ty.path "bool",
+                                                              M.get_function (|
+                                                                "core::str::validations::utf8_is_cont_byte",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [ M.read (| b |) ]
+                                                            |)
+                                                          ]
+                                                        |)
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),
@@ -1081,53 +1169,55 @@ Module str.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      LogicalOp.and (|
+                                      BinOp.gt,
+                                      [ M.read (| remainder |); Value.Integer IntegerKind.Usize 0 ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.gt,
+                                      [
                                         M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
+                                          Ty.path "usize",
+                                          M.get_trait_method (|
+                                            "core::iter::traits::exact_size::ExactSizeIterator",
+                                            Ty.apply
+                                              (Ty.path "core::slice::iter::Iter")
+                                              []
+                                              [ Ty.path "u8" ],
+                                            [],
+                                            [],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            M.read (| remainder |);
-                                            Value.Integer IntegerKind.Usize 0
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::str::iter::Chars",
+                                                "iter"
+                                              |)
+                                            |)
                                           ]
-                                        |),
-                                        ltac:(M.monadic
-                                          (M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.gt,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_trait_method (|
-                                                  "core::iter::traits::exact_size::ExactSizeIterator",
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::Iter")
-                                                    []
-                                                    [ Ty.path "u8" ],
-                                                  [],
-                                                  [],
-                                                  "len",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "core::str::iter::Chars",
-                                                      "iter"
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              Value.Integer IntegerKind.Usize 0
-                                            ]
-                                          |)))
-                                      |)
-                                    |)) in
+                                        |);
+                                        Value.Integer IntegerKind.Usize 0
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -1343,7 +1433,7 @@ Module str.
               // `(len + 3)` can't overflow, because we know that the `slice::Iter`
               // belongs to a slice in memory which has a maximum length of
               // `isize::MAX` (that's well below `usize::MAX`).
-              ((len + 3) / 4, Some(len))
+              (len.div_ceil(4), Some(len))
           }
       *)
       Definition size_hint (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1386,15 +1476,8 @@ Module str.
                   [
                     M.call_closure (|
                       Ty.path "usize",
-                      BinOp.Wrap.div,
-                      [
-                        M.call_closure (|
-                          Ty.path "usize",
-                          BinOp.Wrap.add,
-                          [ M.read (| len |); Value.Integer IntegerKind.Usize 3 ]
-                        |);
-                        Value.Integer IntegerKind.Usize 4
-                      ]
+                      M.get_associated_function (| Ty.path "usize", "div_ceil", [], [] |),
+                      [ M.read (| len |); Value.Integer IntegerKind.Usize 4 ]
                     |);
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -1532,27 +1615,11 @@ Module str.
                                   Ty.path "core::fmt::Arguments",
                                   M.get_associated_function (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
+                                    "from_str",
+                                    [],
                                     []
                                   |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array [ mk_str (| "Chars(" |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
+                                  [ mk_str (| "Chars(" |) ]
                                 |)
                               ]
                             |)
@@ -1853,27 +1920,11 @@ Module str.
                                   Ty.path "core::fmt::Arguments",
                                   M.get_associated_function (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
+                                    "from_str",
+                                    [],
                                     []
                                   |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array [ mk_str (| ")" |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
+                                  [ mk_str (| ")" |) ]
                                 |)
                               ]
                             |)
@@ -4321,23 +4372,22 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::str::iter::SplitInternal",
-                                          "finished"
-                                        |)
+                                  UnOp.not,
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::str::iter::SplitInternal",
+                                        "finished"
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -4359,47 +4409,46 @@ Module str.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
-                                              Ty.path "bool",
-                                              LogicalOp.or (|
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::str::iter::SplitInternal",
-                                                    "allow_trailing_empty"
-                                                  |)
-                                                |),
-                                                ltac:(M.monadic
-                                                  (M.call_closure (|
-                                                    Ty.path "bool",
-                                                    BinOp.gt,
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        BinOp.Wrap.sub,
-                                                        [
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "core::str::iter::SplitInternal",
-                                                              "end"
-                                                            |)
-                                                          |);
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "core::str::iter::SplitInternal",
-                                                              "start"
-                                                            |)
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            LogicalOp.or (|
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::str::iter::SplitInternal",
+                                                  "allow_trailing_empty"
+                                                |)
+                                              |),
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.gt,
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.sub,
+                                                      [
+                                                        M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "core::str::iter::SplitInternal",
+                                                            "end"
                                                           |)
-                                                        ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 0
-                                                    ]
-                                                  |)))
-                                              |)
-                                            |)) in
+                                                        |);
+                                                        M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "core::str::iter::SplitInternal",
+                                                            "start"
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |);
+                                                    Value.Integer IntegerKind.Usize 0
+                                                  ]
+                                                |)))
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -4569,12 +4618,11 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::str::iter::SplitInternal",
-                                  "finished"
-                                |)) in
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::str::iter::SplitInternal",
+                                "finished"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -4811,12 +4859,11 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::str::iter::SplitInternal",
-                                  "finished"
-                                |)) in
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::str::iter::SplitInternal",
+                                "finished"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -5064,12 +5111,11 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::str::iter::SplitInternal",
-                                  "finished"
-                                |)) in
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::str::iter::SplitInternal",
+                                "finished"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -5094,23 +5140,22 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::str::iter::SplitInternal",
-                                          "allow_trailing_empty"
-                                        |)
+                                  UnOp.not,
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::str::iter::SplitInternal",
+                                        "allow_trailing_empty"
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -5223,12 +5268,11 @@ Module str.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "core::str::iter::SplitInternal",
-                                                      "finished"
-                                                    |)) in
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::str::iter::SplitInternal",
+                                                    "finished"
+                                                  |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
@@ -5559,12 +5603,11 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::str::iter::SplitInternal",
-                                  "finished"
-                                |)) in
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::str::iter::SplitInternal",
+                                "finished"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -5589,23 +5632,22 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::str::iter::SplitInternal",
-                                          "allow_trailing_empty"
-                                        |)
+                                  UnOp.not,
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::str::iter::SplitInternal",
+                                        "allow_trailing_empty"
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -5718,12 +5760,11 @@ Module str.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "core::str::iter::SplitInternal",
-                                                      "finished"
-                                                    |)) in
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::str::iter::SplitInternal",
+                                                    "finished"
+                                                  |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
@@ -6016,12 +6057,11 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::str::iter::SplitInternal",
-                                  "finished"
-                                |)) in
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::str::iter::SplitInternal",
+                                "finished"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -12940,24 +12980,23 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.SubPointer.get_struct_record_field (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.SubPointer.get_struct_record_field (|
                                   M.SubPointer.get_struct_record_field (|
                                     M.SubPointer.get_struct_record_field (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::str::iter::SplitAsciiWhitespace",
-                                        "inner"
-                                      |),
-                                      "core::iter::adapters::map::Map",
-                                      "iter"
+                                      M.deref (| M.read (| self |) |),
+                                      "core::str::iter::SplitAsciiWhitespace",
+                                      "inner"
                                     |),
-                                    "core::iter::adapters::filter::Filter",
+                                    "core::iter::adapters::map::Map",
                                     "iter"
                                   |),
-                                  "core::slice::iter::Split",
-                                  "finished"
-                                |)) in
+                                  "core::iter::adapters::filter::Filter",
+                                  "iter"
+                                |),
+                                "core::slice::iter::Split",
+                                "finished"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -13611,24 +13650,23 @@ Module str.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.ne,
-                                    [
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::str::iter::EncodeUtf16",
-                                          "extra"
-                                        |)
-                                      |);
-                                      Value.Integer IntegerKind.U16 0
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.ne,
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::str::iter::EncodeUtf16",
+                                        "extra"
+                                      |)
+                                    |);
+                                    Value.Integer IntegerKind.U16 0
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -13809,18 +13847,17 @@ Module str.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.eq,
-                                                              [
-                                                                M.read (| n |);
-                                                                Value.Integer IntegerKind.Usize 2
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                            BinOp.eq,
+                                                            [
+                                                              M.read (| n |);
+                                                              Value.Integer IntegerKind.Usize 2
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -13875,11 +13912,11 @@ Module str.
               // belongs to a slice in memory which has a maximum length of
               // `isize::MAX` (that's well below `usize::MAX`)
               if self.extra == 0 {
-                  ((len + 2) / 3, Some(len))
+                  (len.div_ceil(3), Some(len))
               } else {
                   // We're in the middle of a surrogate pair, so add the remaining
                   // surrogate to the bounds.
-                  ((len + 2) / 3 + 1, Some(len + 1))
+                  (len.div_ceil(3) + 1, Some(len + 1))
               }
           }
       *)
@@ -13937,38 +13974,30 @@ Module str.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::str::iter::EncodeUtf16",
-                                      "extra"
-                                    |)
-                                  |);
-                                  Value.Integer IntegerKind.U16 0
-                                ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::str::iter::EncodeUtf16",
+                                    "extra"
+                                  |)
+                                |);
+                                Value.Integer IntegerKind.U16 0
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.Tuple
                           [
                             M.call_closure (|
                               Ty.path "usize",
-                              BinOp.Wrap.div,
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
-                                |);
-                                Value.Integer IntegerKind.Usize 3
-                              ]
+                              M.get_associated_function (| Ty.path "usize", "div_ceil", [], [] |),
+                              [ M.read (| len |); Value.Integer IntegerKind.Usize 3 ]
                             |);
                             Value.StructTuple
                               "core::option::Option::Some"
@@ -13986,15 +14015,13 @@ Module str.
                               [
                                 M.call_closure (|
                                   Ty.path "usize",
-                                  BinOp.Wrap.div,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.add,
-                                      [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
-                                    |);
-                                    Value.Integer IntegerKind.Usize 3
-                                  ]
+                                  M.get_associated_function (|
+                                    Ty.path "usize",
+                                    "div_ceil",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| len |); Value.Integer IntegerKind.Usize 3 ]
                                 |);
                                 Value.Integer IntegerKind.Usize 1
                               ]

@@ -23,6 +23,18 @@ Module Impl_core_default_Default_for_custom_environment_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_custom_environment_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_custom_environment_AccountId.
+  Definition Self : Ty.t := Ty.path "custom_environment::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_custom_environment_AccountId.
+
 Module Impl_core_clone_Clone_for_custom_environment_AccountId.
   Definition Self : Ty.t := Ty.path "custom_environment::AccountId".
   

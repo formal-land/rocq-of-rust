@@ -24,15 +24,14 @@ Definition division (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
           fun γ =>
             ltac:(M.monadic
               (let γ :=
-                M.use
-                  (M.alloc (|
+                M.alloc (|
+                  Ty.path "bool",
+                  M.call_closure (|
                     Ty.path "bool",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      BinOp.eq,
-                      [ M.read (| divisor |); Value.Integer IntegerKind.I32 0 ]
-                    |)
-                  |)) in
+                    BinOp.eq,
+                    [ M.read (| divisor |); Value.Integer IntegerKind.I32 0 ]
+                  |)
+                |) in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               M.never_to_any (|
                 M.call_closure (|
@@ -117,28 +116,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.path "core::fmt::Arguments",
                     M.get_associated_function (|
                       Ty.path "core::fmt::Arguments",
-                      "new_const",
-                      [ Value.Integer IntegerKind.Usize 1 ],
+                      "from_str",
+                      [],
                       []
                     |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "This point won't be reached!
+                    [ mk_str (| "This point won't be reached!
 " |) ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
                   |)
                 ]
               |) in

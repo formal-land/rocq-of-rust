@@ -21,6 +21,18 @@ Module Impl_core_marker_Copy_for_subtle_Choice.
       (* Instance *) [].
 End Impl_core_marker_Copy_for_subtle_Choice.
 
+Module Impl_core_clone_TrivialClone_for_subtle_Choice.
+  Definition Self : Ty.t := Ty.path "subtle::Choice".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_subtle_Choice.
+
 Module Impl_core_clone_Clone_for_subtle_Choice.
   Definition Self : Ty.t := Ty.path "subtle::Choice".
   
@@ -161,7 +173,7 @@ Module Impl_core_convert_From_subtle_Choice_for_bool.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -172,50 +184,49 @@ Module Impl_core_convert_From_subtle_Choice_for_bool.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        UnOp.not,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      source,
-                                                      "subtle::Choice",
-                                                      0
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.U8 0
-                                                ]
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      source,
-                                                      "subtle::Choice",
-                                                      0
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.U8 1
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    |)) in
+                                      UnOp.not,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.Wrap.bit_or,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.eq,
+                                              [
+                                                M.read (|
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    source,
+                                                    "subtle::Choice",
+                                                    0
+                                                  |)
+                                                |);
+                                                Value.Integer IntegerKind.U8 0
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.eq,
+                                              [
+                                                M.read (|
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    source,
+                                                    "subtle::Choice",
+                                                    0
+                                                  |)
+                                                |);
+                                                Value.Integer IntegerKind.U8 1
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -646,7 +657,7 @@ Definition black_box (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
             [
               fun γ =>
                 ltac:(M.monadic
-                  (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                  (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
@@ -657,32 +668,31 @@ Definition black_box (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      UnOp.not,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.eq,
-                                              [ M.read (| input |); Value.Integer IntegerKind.U8 0 ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.eq,
-                                              [ M.read (| input |); Value.Integer IntegerKind.U8 1 ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.Wrap.bit_or,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            BinOp.eq,
+                                            [ M.read (| input |); Value.Integer IntegerKind.U8 0 ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            BinOp.eq,
+                                            [ M.read (| input |); Value.Integer IntegerKind.U8 1 ]
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -857,32 +867,27 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_slice_T.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ne,
-                                [
-                                  M.read (| len |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| _rhs |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.ne,
+                              [
+                                M.read (| len |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| _rhs |) |) |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -4487,44 +4492,43 @@ Module Impl_core_convert_From_subtle_CtOption_T_for_core_option_Option_T.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.eq,
-                        [
-                          M.call_closure (|
-                            Ty.path "u8",
-                            M.get_associated_function (|
-                              Ty.path "subtle::Choice",
-                              "unwrap_u8",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                      BinOp.eq,
+                      [
+                        M.call_closure (|
+                          Ty.path "u8",
+                          M.get_associated_function (|
+                            Ty.path "subtle::Choice",
+                            "unwrap_u8",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.path "subtle::Choice",
+                                M.call_closure (|
                                   Ty.path "subtle::Choice",
-                                  M.call_closure (|
-                                    Ty.path "subtle::Choice",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "subtle::CtOption") [] [ T ],
-                                      "is_some",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, source |) ]
-                                  |)
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "subtle::CtOption") [] [ T ],
+                                    "is_some",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, source |) ]
                                 |)
                               |)
-                            ]
-                          |);
-                          Value.Integer IntegerKind.U8 1
-                        ]
-                      |)
-                    |)) in
+                            |)
+                          ]
+                        |);
+                        Value.Integer IntegerKind.U8 1
+                      ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::option::Option::Some"
@@ -4655,24 +4659,23 @@ Module Impl_subtle_CtOption_T.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.read (| M.deref (| M.read (| left_val |) |) |);
-                                          M.read (| M.deref (| M.read (| right_val |) |) |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [
+                                        M.read (| M.deref (| M.read (| left_val |) |) |);
+                                        M.read (| M.deref (| M.read (| right_val |) |) |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -4713,81 +4716,76 @@ Module Impl_subtle_CtOption_T.
                                         []
                                         [ Ty.path "core::fmt::Arguments" ]
                                         [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::Arguments",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::Arguments",
-                                              "new_v1",
-                                              [
-                                                Value.Integer IntegerKind.Usize 1;
-                                                Value.Integer IntegerKind.Usize 1
-                                              ],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array [ mk_str (| "" |) ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                                      Value.Array
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "core::fmt::rt::Argument",
-                                                            M.get_associated_function (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              "new_display",
-                                                              [],
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [ Ty.path "str" ]
-                                                              ]
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    msg
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
+                                          M.read (|
+                                            let~ args :
+                                                Ty.tuple
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ]
+                                                  ] :=
+                                              Value.Tuple
+                                                [ M.borrow (| Pointer.Kind.Ref, msg |) ] in
+                                            let~ args :
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.path "core::fmt::rt::Argument" ] :=
+                                              Value.Array
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      "new_display",
+                                                      [],
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ]
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.read (|
+                                                            M.SubPointer.get_tuple_field (|
+                                                              args,
+                                                              0
+                                                            |)
                                                           |)
-                                                        ]
+                                                        |)
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ] in
+                                            M.alloc (|
+                                              Ty.path "core::fmt::Arguments",
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::Arguments",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  "new",
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 2;
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
+                                                  |);
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, args |)
                                                     |)
                                                   |)
-                                                |)
+                                                ]
                                               |)
-                                            ]
+                                            |)
                                           |)
                                         ]
                                     ]
@@ -4882,24 +4880,23 @@ Module Impl_subtle_CtOption_T.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.read (| M.deref (| M.read (| left_val |) |) |);
-                                          M.read (| M.deref (| M.read (| right_val |) |) |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [
+                                        M.read (| M.deref (| M.read (| left_val |) |) |);
+                                        M.read (| M.deref (| M.read (| right_val |) |) |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -5919,15 +5916,14 @@ Module Impl_subtle_ConstantTimeGreater_for_u8.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| pow |); Value.Integer IntegerKind.I32 8 ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| pow |); Value.Integer IntegerKind.I32 8 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -5996,15 +5992,14 @@ Module Impl_subtle_ConstantTimeGreater_for_u8.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| pow |); Value.Integer IntegerKind.I32 8 ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| pow |); Value.Integer IntegerKind.I32 8 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -6198,15 +6193,14 @@ Module Impl_subtle_ConstantTimeGreater_for_u16.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| pow |); Value.Integer IntegerKind.I32 16 ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| pow |); Value.Integer IntegerKind.I32 16 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -6275,15 +6269,14 @@ Module Impl_subtle_ConstantTimeGreater_for_u16.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| pow |); Value.Integer IntegerKind.I32 16 ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| pow |); Value.Integer IntegerKind.I32 16 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -6473,15 +6466,14 @@ Module Impl_subtle_ConstantTimeGreater_for_u32.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| pow |); Value.Integer IntegerKind.I32 32 ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| pow |); Value.Integer IntegerKind.I32 32 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -6550,15 +6542,14 @@ Module Impl_subtle_ConstantTimeGreater_for_u32.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| pow |); Value.Integer IntegerKind.I32 32 ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| pow |); Value.Integer IntegerKind.I32 32 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -6748,15 +6739,14 @@ Module Impl_subtle_ConstantTimeGreater_for_u64.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| pow |); Value.Integer IntegerKind.I32 64 ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| pow |); Value.Integer IntegerKind.I32 64 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -6825,15 +6815,14 @@ Module Impl_subtle_ConstantTimeGreater_for_u64.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| pow |); Value.Integer IntegerKind.I32 64 ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| pow |); Value.Integer IntegerKind.I32 64 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|

@@ -1909,6 +1909,18 @@ Module vm_status.
   Axiom IsDiscriminant_StatusCode_UNKNOWN_STATUS :
     M.IsDiscriminant "move_core_types::vm_status::StatusCode::UNKNOWN_STATUS" 18446744073709551615.
   
+  Module Impl_core_clone_TrivialClone_for_move_core_types_vm_status_StatusCode.
+    Definition Self : Ty.t := Ty.path "move_core_types::vm_status::StatusCode".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_move_core_types_vm_status_StatusCode.
+  
   Module Impl_core_clone_Clone_for_move_core_types_vm_status_StatusCode.
     Definition Self : Ty.t := Ty.path "move_core_types::vm_status::StatusCode".
     
@@ -9164,47 +9176,49 @@ Module vm_status.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.ge,
-                                    [
-                                      M.read (| major_status_number |);
+                                BinOp.ge,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
                                       M.read (|
-                                        M.deref (|
-                                          M.read (|
-                                            get_constant (|
-                                              "move_core_types::vm_status::VALIDATION_STATUS_MIN_CODE",
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                            |)
-                                          |)
+                                        get_constant (|
+                                          "move_core_types::vm_status::VALIDATION_STATUS_MIN_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
                                       |)
-                                    ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.le,
-                                      [
-                                        M.read (| major_status_number |);
-                                        M.read (|
-                                          M.deref (|
-                                            M.read (|
-                                              get_constant (|
-                                                "move_core_types::vm_status::VALIDATION_STATUS_MAX_CODE",
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                              |)
-                                            |)
-                                          |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
+                                      M.read (|
+                                        get_constant (|
+                                          "move_core_types::vm_status::VALIDATION_STATUS_MAX_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -9229,47 +9243,49 @@ Module vm_status.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.ge,
-                                    [
-                                      M.read (| major_status_number |);
+                                BinOp.ge,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
                                       M.read (|
-                                        M.deref (|
-                                          M.read (|
-                                            get_constant (|
-                                              "move_core_types::vm_status::VERIFICATION_STATUS_MIN_CODE",
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                            |)
-                                          |)
+                                        get_constant (|
+                                          "move_core_types::vm_status::VERIFICATION_STATUS_MIN_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
                                       |)
-                                    ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.le,
-                                      [
-                                        M.read (| major_status_number |);
-                                        M.read (|
-                                          M.deref (|
-                                            M.read (|
-                                              get_constant (|
-                                                "move_core_types::vm_status::VERIFICATION_STATUS_MAX_CODE",
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                              |)
-                                            |)
-                                          |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
+                                      M.read (|
+                                        get_constant (|
+                                          "move_core_types::vm_status::VERIFICATION_STATUS_MAX_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -9294,47 +9310,49 @@ Module vm_status.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.ge,
-                                    [
-                                      M.read (| major_status_number |);
+                                BinOp.ge,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
                                       M.read (|
-                                        M.deref (|
-                                          M.read (|
-                                            get_constant (|
-                                              "move_core_types::vm_status::INVARIANT_VIOLATION_STATUS_MIN_CODE",
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                            |)
-                                          |)
+                                        get_constant (|
+                                          "move_core_types::vm_status::INVARIANT_VIOLATION_STATUS_MIN_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
                                       |)
-                                    ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.le,
-                                      [
-                                        M.read (| major_status_number |);
-                                        M.read (|
-                                          M.deref (|
-                                            M.read (|
-                                              get_constant (|
-                                                "move_core_types::vm_status::INVARIANT_VIOLATION_STATUS_MAX_CODE",
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                              |)
-                                            |)
-                                          |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
+                                      M.read (|
+                                        get_constant (|
+                                          "move_core_types::vm_status::INVARIANT_VIOLATION_STATUS_MAX_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -9359,47 +9377,49 @@ Module vm_status.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.ge,
-                                    [
-                                      M.read (| major_status_number |);
+                                BinOp.ge,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
                                       M.read (|
-                                        M.deref (|
-                                          M.read (|
-                                            get_constant (|
-                                              "move_core_types::vm_status::DESERIALIZATION_STATUS_MIN_CODE",
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                            |)
-                                          |)
+                                        get_constant (|
+                                          "move_core_types::vm_status::DESERIALIZATION_STATUS_MIN_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
                                       |)
-                                    ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.le,
-                                      [
-                                        M.read (| major_status_number |);
-                                        M.read (|
-                                          M.deref (|
-                                            M.read (|
-                                              get_constant (|
-                                                "move_core_types::vm_status::DESERIALIZATION_STATUS_MAX_CODE",
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                              |)
-                                            |)
-                                          |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
+                                      M.read (|
+                                        get_constant (|
+                                          "move_core_types::vm_status::DESERIALIZATION_STATUS_MAX_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -9424,47 +9444,49 @@ Module vm_status.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.ge,
-                                    [
-                                      M.read (| major_status_number |);
+                                BinOp.ge,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
                                       M.read (|
-                                        M.deref (|
-                                          M.read (|
-                                            get_constant (|
-                                              "move_core_types::vm_status::EXECUTION_STATUS_MIN_CODE",
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                            |)
-                                          |)
+                                        get_constant (|
+                                          "move_core_types::vm_status::EXECUTION_STATUS_MIN_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
                                       |)
-                                    ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.le,
-                                      [
-                                        M.read (| major_status_number |);
-                                        M.read (|
-                                          M.deref (|
-                                            M.read (|
-                                              get_constant (|
-                                                "move_core_types::vm_status::EXECUTION_STATUS_MAX_CODE",
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                              |)
-                                            |)
-                                          |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [
+                                  M.read (| major_status_number |);
+                                  M.read (|
+                                    M.deref (|
+                                      M.read (|
+                                        get_constant (|
+                                          "move_core_types::vm_status::EXECUTION_STATUS_MAX_CODE",
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
                                         |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|

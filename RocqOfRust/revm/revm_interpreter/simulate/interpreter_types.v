@@ -1114,7 +1114,7 @@ Module MemoryTrait.
     slice (self : Self) (range : Range.t usize) : Synthetic;
     Deref_for_Synthetic :: Deref.C Synthetic (list u8);
     (* fn slice_len(&self, offset: usize, len: usize) -> impl Deref<Target = [u8]> + '_; *)
-    slice_len (self : Self) (offset len : usize) : Synthetic1;
+    slice_len (self : Self) (offset len : usize) : Synthetic;
     Deref_for_Synthetic1 :: Deref.C Synthetic1 (list u8);
     (* fn resize(&mut self, new_size: usize) -> bool; *)
     resize (self : Self) (new_size : usize) : bool * Self;

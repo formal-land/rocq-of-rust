@@ -103,6 +103,18 @@ Module Impl_core_default_Default_for_dns_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_dns_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_dns_AccountId.
+  Definition Self : Ty.t := Ty.path "dns::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_dns_AccountId.
+
 Module Impl_core_clone_Clone_for_dns_AccountId.
   Definition Self : Ty.t := Ty.path "dns::AccountId".
   

@@ -1314,18 +1314,17 @@ Module error.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [
-                              M.read (| n |);
-                              M.cast (Ty.path "i64") (Value.Integer IntegerKind.Isize 0)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.eq,
+                          [
+                            M.read (| n |);
+                            M.cast (Ty.path "i64") (Value.Integer IntegerKind.Isize 0)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -1350,18 +1349,17 @@ Module error.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.read (| n |);
-                                      M.cast (Ty.path "i64") (Value.Integer IntegerKind.Isize 1)
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.eq,
+                                  [
+                                    M.read (| n |);
+                                    M.cast (Ty.path "i64") (Value.Integer IntegerKind.Isize 1)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             Value.StructTuple
@@ -1387,20 +1385,19 @@ Module error.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [
-                                              M.read (| n |);
-                                              M.cast
-                                                (Ty.path "i64")
-                                                (Value.Integer IntegerKind.Isize 2)
-                                            ]
-                                          |)
-                                        |)) in
+                                          BinOp.eq,
+                                          [
+                                            M.read (| n |);
+                                            M.cast
+                                              (Ty.path "i64")
+                                              (Value.Integer IntegerKind.Isize 2)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -1429,20 +1426,19 @@ Module error.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    BinOp.eq,
-                                                    [
-                                                      M.read (| n |);
-                                                      M.cast
-                                                        (Ty.path "i64")
-                                                        (Value.Integer IntegerKind.Isize 3)
-                                                    ]
-                                                  |)
-                                                |)) in
+                                                  BinOp.eq,
+                                                  [
+                                                    M.read (| n |);
+                                                    M.cast
+                                                      (Ty.path "i64")
+                                                      (Value.Integer IntegerKind.Isize 3)
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -1472,20 +1468,19 @@ Module error.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        M.call_closure (|
                                                           Ty.path "bool",
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.eq,
-                                                            [
-                                                              M.read (| n |);
-                                                              M.cast
-                                                                (Ty.path "i64")
-                                                                (Value.Integer IntegerKind.Isize 4)
-                                                            ]
-                                                          |)
-                                                        |)) in
+                                                          BinOp.eq,
+                                                          [
+                                                            M.read (| n |);
+                                                            M.cast
+                                                              (Ty.path "i64")
+                                                              (Value.Integer IntegerKind.Isize 4)
+                                                          ]
+                                                        |)
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),
@@ -1520,22 +1515,21 @@ Module error.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                M.call_closure (|
                                                                   Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    BinOp.eq,
-                                                                    [
-                                                                      M.read (| n |);
-                                                                      M.cast
-                                                                        (Ty.path "i64")
-                                                                        (Value.Integer
-                                                                          IntegerKind.Isize
-                                                                          5)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
+                                                                  BinOp.eq,
+                                                                  [
+                                                                    M.read (| n |);
+                                                                    M.cast
+                                                                      (Ty.path "i64")
+                                                                      (Value.Integer
+                                                                        IntegerKind.Isize
+                                                                        5)
+                                                                  ]
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -1573,22 +1567,21 @@ Module error.
                                                                 fun γ =>
                                                                   ltac:(M.monadic
                                                                     (let γ :=
-                                                                      M.use
-                                                                        (M.alloc (|
+                                                                      M.alloc (|
+                                                                        Ty.path "bool",
+                                                                        M.call_closure (|
                                                                           Ty.path "bool",
-                                                                          M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            BinOp.eq,
-                                                                            [
-                                                                              M.read (| n |);
-                                                                              M.cast
-                                                                                (Ty.path "i64")
-                                                                                (Value.Integer
-                                                                                  IntegerKind.Isize
-                                                                                  6)
-                                                                            ]
-                                                                          |)
-                                                                        |)) in
+                                                                          BinOp.eq,
+                                                                          [
+                                                                            M.read (| n |);
+                                                                            M.cast
+                                                                              (Ty.path "i64")
+                                                                              (Value.Integer
+                                                                                IntegerKind.Isize
+                                                                                6)
+                                                                          ]
+                                                                        |)
+                                                                      |) in
                                                                     let _ :=
                                                                       is_constant_or_break_match (|
                                                                         M.read (| γ |),
@@ -1627,25 +1620,22 @@ Module error.
                                                                         fun γ =>
                                                                           ltac:(M.monadic
                                                                             (let γ :=
-                                                                              M.use
-                                                                                (M.alloc (|
+                                                                              M.alloc (|
+                                                                                Ty.path "bool",
+                                                                                M.call_closure (|
                                                                                   Ty.path "bool",
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "bool",
-                                                                                    BinOp.eq,
-                                                                                    [
-                                                                                      M.read (|
-                                                                                        n
-                                                                                      |);
-                                                                                      M.cast
-                                                                                        (Ty.path
-                                                                                          "i64")
-                                                                                        (Value.Integer
-                                                                                          IntegerKind.Isize
-                                                                                          7)
-                                                                                    ]
-                                                                                  |)
-                                                                                |)) in
+                                                                                  BinOp.eq,
+                                                                                  [
+                                                                                    M.read (| n |);
+                                                                                    M.cast
+                                                                                      (Ty.path
+                                                                                        "i64")
+                                                                                      (Value.Integer
+                                                                                        IntegerKind.Isize
+                                                                                        7)
+                                                                                  ]
+                                                                                |)
+                                                                              |) in
                                                                             let _ :=
                                                                               is_constant_or_break_match (|
                                                                                 M.read (| γ |),
@@ -1684,27 +1674,26 @@ Module error.
                                                                                 fun γ =>
                                                                                   ltac:(M.monadic
                                                                                     (let γ :=
-                                                                                      M.use
-                                                                                        (M.alloc (|
+                                                                                      M.alloc (|
+                                                                                        Ty.path
+                                                                                          "bool",
+                                                                                        M.call_closure (|
                                                                                           Ty.path
                                                                                             "bool",
-                                                                                          M.call_closure (|
-                                                                                            Ty.path
-                                                                                              "bool",
-                                                                                            BinOp.eq,
-                                                                                            [
-                                                                                              M.read (|
-                                                                                                n
-                                                                                              |);
-                                                                                              M.cast
-                                                                                                (Ty.path
-                                                                                                  "i64")
-                                                                                                (Value.Integer
-                                                                                                  IntegerKind.Isize
-                                                                                                  8)
-                                                                                            ]
-                                                                                          |)
-                                                                                        |)) in
+                                                                                          BinOp.eq,
+                                                                                          [
+                                                                                            M.read (|
+                                                                                              n
+                                                                                            |);
+                                                                                            M.cast
+                                                                                              (Ty.path
+                                                                                                "i64")
+                                                                                              (Value.Integer
+                                                                                                IntegerKind.Isize
+                                                                                                8)
+                                                                                          ]
+                                                                                        |)
+                                                                                      |) in
                                                                                     let _ :=
                                                                                       is_constant_or_break_match (|
                                                                                         M.read (|
@@ -1748,27 +1737,26 @@ Module error.
                                                                                           ltac:(M.monadic
                                                                                             (let
                                                                                                   γ :=
-                                                                                              M.use
-                                                                                                (M.alloc (|
+                                                                                              M.alloc (|
+                                                                                                Ty.path
+                                                                                                  "bool",
+                                                                                                M.call_closure (|
                                                                                                   Ty.path
                                                                                                     "bool",
-                                                                                                  M.call_closure (|
-                                                                                                    Ty.path
-                                                                                                      "bool",
-                                                                                                    BinOp.eq,
-                                                                                                    [
-                                                                                                      M.read (|
-                                                                                                        n
-                                                                                                      |);
-                                                                                                      M.cast
-                                                                                                        (Ty.path
-                                                                                                          "i64")
-                                                                                                        (Value.Integer
-                                                                                                          IntegerKind.Isize
-                                                                                                          9)
-                                                                                                    ]
-                                                                                                  |)
-                                                                                                |)) in
+                                                                                                  BinOp.eq,
+                                                                                                  [
+                                                                                                    M.read (|
+                                                                                                      n
+                                                                                                    |);
+                                                                                                    M.cast
+                                                                                                      (Ty.path
+                                                                                                        "i64")
+                                                                                                      (Value.Integer
+                                                                                                        IntegerKind.Isize
+                                                                                                        9)
+                                                                                                  ]
+                                                                                                |)
+                                                                                              |) in
                                                                                             let _ :=
                                                                                               is_constant_or_break_match (|
                                                                                                 M.read (|
@@ -1814,27 +1802,26 @@ Module error.
                                                                                                   ltac:(M.monadic
                                                                                                     (let
                                                                                                           γ :=
-                                                                                                      M.use
-                                                                                                        (M.alloc (|
+                                                                                                      M.alloc (|
+                                                                                                        Ty.path
+                                                                                                          "bool",
+                                                                                                        M.call_closure (|
                                                                                                           Ty.path
                                                                                                             "bool",
-                                                                                                          M.call_closure (|
-                                                                                                            Ty.path
-                                                                                                              "bool",
-                                                                                                            BinOp.eq,
-                                                                                                            [
-                                                                                                              M.read (|
-                                                                                                                n
-                                                                                                              |);
-                                                                                                              M.cast
-                                                                                                                (Ty.path
-                                                                                                                  "i64")
-                                                                                                                (Value.Integer
-                                                                                                                  IntegerKind.Isize
-                                                                                                                  10)
-                                                                                                            ]
-                                                                                                          |)
-                                                                                                        |)) in
+                                                                                                          BinOp.eq,
+                                                                                                          [
+                                                                                                            M.read (|
+                                                                                                              n
+                                                                                                            |);
+                                                                                                            M.cast
+                                                                                                              (Ty.path
+                                                                                                                "i64")
+                                                                                                              (Value.Integer
+                                                                                                                IntegerKind.Isize
+                                                                                                                10)
+                                                                                                          ]
+                                                                                                        |)
+                                                                                                      |) in
                                                                                                     let
                                                                                                           _ :=
                                                                                                       is_constant_or_break_match (|
@@ -1882,27 +1869,26 @@ Module error.
                                                                                                           ltac:(M.monadic
                                                                                                             (let
                                                                                                                   γ :=
-                                                                                                              M.use
-                                                                                                                (M.alloc (|
+                                                                                                              M.alloc (|
+                                                                                                                Ty.path
+                                                                                                                  "bool",
+                                                                                                                M.call_closure (|
                                                                                                                   Ty.path
                                                                                                                     "bool",
-                                                                                                                  M.call_closure (|
-                                                                                                                    Ty.path
-                                                                                                                      "bool",
-                                                                                                                    BinOp.eq,
-                                                                                                                    [
-                                                                                                                      M.read (|
-                                                                                                                        n
-                                                                                                                      |);
-                                                                                                                      M.cast
-                                                                                                                        (Ty.path
-                                                                                                                          "i64")
-                                                                                                                        (Value.Integer
-                                                                                                                          IntegerKind.Isize
-                                                                                                                          11)
-                                                                                                                    ]
-                                                                                                                  |)
-                                                                                                                |)) in
+                                                                                                                  BinOp.eq,
+                                                                                                                  [
+                                                                                                                    M.read (|
+                                                                                                                      n
+                                                                                                                    |);
+                                                                                                                    M.cast
+                                                                                                                      (Ty.path
+                                                                                                                        "i64")
+                                                                                                                      (Value.Integer
+                                                                                                                        IntegerKind.Isize
+                                                                                                                        11)
+                                                                                                                  ]
+                                                                                                                |)
+                                                                                                              |) in
                                                                                                             let
                                                                                                                   _ :=
                                                                                                               is_constant_or_break_match (|
@@ -1950,27 +1936,26 @@ Module error.
                                                                                                                   ltac:(M.monadic
                                                                                                                     (let
                                                                                                                           γ :=
-                                                                                                                      M.use
-                                                                                                                        (M.alloc (|
+                                                                                                                      M.alloc (|
+                                                                                                                        Ty.path
+                                                                                                                          "bool",
+                                                                                                                        M.call_closure (|
                                                                                                                           Ty.path
                                                                                                                             "bool",
-                                                                                                                          M.call_closure (|
-                                                                                                                            Ty.path
-                                                                                                                              "bool",
-                                                                                                                            BinOp.eq,
-                                                                                                                            [
-                                                                                                                              M.read (|
-                                                                                                                                n
-                                                                                                                              |);
-                                                                                                                              M.cast
-                                                                                                                                (Ty.path
-                                                                                                                                  "i64")
-                                                                                                                                (Value.Integer
-                                                                                                                                  IntegerKind.Isize
-                                                                                                                                  12)
-                                                                                                                            ]
-                                                                                                                          |)
-                                                                                                                        |)) in
+                                                                                                                          BinOp.eq,
+                                                                                                                          [
+                                                                                                                            M.read (|
+                                                                                                                              n
+                                                                                                                            |);
+                                                                                                                            M.cast
+                                                                                                                              (Ty.path
+                                                                                                                                "i64")
+                                                                                                                              (Value.Integer
+                                                                                                                                IntegerKind.Isize
+                                                                                                                                12)
+                                                                                                                          ]
+                                                                                                                        |)
+                                                                                                                      |) in
                                                                                                                     let
                                                                                                                           _ :=
                                                                                                                       is_constant_or_break_match (|
@@ -2018,27 +2003,26 @@ Module error.
                                                                                                                           ltac:(M.monadic
                                                                                                                             (let
                                                                                                                                   γ :=
-                                                                                                                              M.use
-                                                                                                                                (M.alloc (|
+                                                                                                                              M.alloc (|
+                                                                                                                                Ty.path
+                                                                                                                                  "bool",
+                                                                                                                                M.call_closure (|
                                                                                                                                   Ty.path
                                                                                                                                     "bool",
-                                                                                                                                  M.call_closure (|
-                                                                                                                                    Ty.path
-                                                                                                                                      "bool",
-                                                                                                                                    BinOp.eq,
-                                                                                                                                    [
-                                                                                                                                      M.read (|
-                                                                                                                                        n
-                                                                                                                                      |);
-                                                                                                                                      M.cast
-                                                                                                                                        (Ty.path
-                                                                                                                                          "i64")
-                                                                                                                                        (Value.Integer
-                                                                                                                                          IntegerKind.Isize
-                                                                                                                                          13)
-                                                                                                                                    ]
-                                                                                                                                  |)
-                                                                                                                                |)) in
+                                                                                                                                  BinOp.eq,
+                                                                                                                                  [
+                                                                                                                                    M.read (|
+                                                                                                                                      n
+                                                                                                                                    |);
+                                                                                                                                    M.cast
+                                                                                                                                      (Ty.path
+                                                                                                                                        "i64")
+                                                                                                                                      (Value.Integer
+                                                                                                                                        IntegerKind.Isize
+                                                                                                                                        13)
+                                                                                                                                  ]
+                                                                                                                                |)
+                                                                                                                              |) in
                                                                                                                             let
                                                                                                                                   _ :=
                                                                                                                               is_constant_or_break_match (|
@@ -2086,27 +2070,26 @@ Module error.
                                                                                                                                   ltac:(M.monadic
                                                                                                                                     (let
                                                                                                                                           γ :=
-                                                                                                                                      M.use
-                                                                                                                                        (M.alloc (|
+                                                                                                                                      M.alloc (|
+                                                                                                                                        Ty.path
+                                                                                                                                          "bool",
+                                                                                                                                        M.call_closure (|
                                                                                                                                           Ty.path
                                                                                                                                             "bool",
-                                                                                                                                          M.call_closure (|
-                                                                                                                                            Ty.path
-                                                                                                                                              "bool",
-                                                                                                                                            BinOp.eq,
-                                                                                                                                            [
-                                                                                                                                              M.read (|
-                                                                                                                                                n
-                                                                                                                                              |);
-                                                                                                                                              M.cast
-                                                                                                                                                (Ty.path
-                                                                                                                                                  "i64")
-                                                                                                                                                (Value.Integer
-                                                                                                                                                  IntegerKind.Isize
-                                                                                                                                                  14)
-                                                                                                                                            ]
-                                                                                                                                          |)
-                                                                                                                                        |)) in
+                                                                                                                                          BinOp.eq,
+                                                                                                                                          [
+                                                                                                                                            M.read (|
+                                                                                                                                              n
+                                                                                                                                            |);
+                                                                                                                                            M.cast
+                                                                                                                                              (Ty.path
+                                                                                                                                                "i64")
+                                                                                                                                              (Value.Integer
+                                                                                                                                                IntegerKind.Isize
+                                                                                                                                                14)
+                                                                                                                                          ]
+                                                                                                                                        |)
+                                                                                                                                      |) in
                                                                                                                                     let
                                                                                                                                           _ :=
                                                                                                                                       is_constant_or_break_match (|
@@ -2154,27 +2137,26 @@ Module error.
                                                                                                                                           ltac:(M.monadic
                                                                                                                                             (let
                                                                                                                                                   γ :=
-                                                                                                                                              M.use
-                                                                                                                                                (M.alloc (|
+                                                                                                                                              M.alloc (|
+                                                                                                                                                Ty.path
+                                                                                                                                                  "bool",
+                                                                                                                                                M.call_closure (|
                                                                                                                                                   Ty.path
                                                                                                                                                     "bool",
-                                                                                                                                                  M.call_closure (|
-                                                                                                                                                    Ty.path
-                                                                                                                                                      "bool",
-                                                                                                                                                    BinOp.eq,
-                                                                                                                                                    [
-                                                                                                                                                      M.read (|
-                                                                                                                                                        n
-                                                                                                                                                      |);
-                                                                                                                                                      M.cast
-                                                                                                                                                        (Ty.path
-                                                                                                                                                          "i64")
-                                                                                                                                                        (Value.Integer
-                                                                                                                                                          IntegerKind.Isize
-                                                                                                                                                          15)
-                                                                                                                                                    ]
-                                                                                                                                                  |)
-                                                                                                                                                |)) in
+                                                                                                                                                  BinOp.eq,
+                                                                                                                                                  [
+                                                                                                                                                    M.read (|
+                                                                                                                                                      n
+                                                                                                                                                    |);
+                                                                                                                                                    M.cast
+                                                                                                                                                      (Ty.path
+                                                                                                                                                        "i64")
+                                                                                                                                                      (Value.Integer
+                                                                                                                                                        IntegerKind.Isize
+                                                                                                                                                        15)
+                                                                                                                                                  ]
+                                                                                                                                                |)
+                                                                                                                                              |) in
                                                                                                                                             let
                                                                                                                                                   _ :=
                                                                                                                                               is_constant_or_break_match (|
@@ -2222,27 +2204,26 @@ Module error.
                                                                                                                                                   ltac:(M.monadic
                                                                                                                                                     (let
                                                                                                                                                           γ :=
-                                                                                                                                                      M.use
-                                                                                                                                                        (M.alloc (|
+                                                                                                                                                      M.alloc (|
+                                                                                                                                                        Ty.path
+                                                                                                                                                          "bool",
+                                                                                                                                                        M.call_closure (|
                                                                                                                                                           Ty.path
                                                                                                                                                             "bool",
-                                                                                                                                                          M.call_closure (|
-                                                                                                                                                            Ty.path
-                                                                                                                                                              "bool",
-                                                                                                                                                            BinOp.eq,
-                                                                                                                                                            [
-                                                                                                                                                              M.read (|
-                                                                                                                                                                n
-                                                                                                                                                              |);
-                                                                                                                                                              M.cast
-                                                                                                                                                                (Ty.path
-                                                                                                                                                                  "i64")
-                                                                                                                                                                (Value.Integer
-                                                                                                                                                                  IntegerKind.Isize
-                                                                                                                                                                  16)
-                                                                                                                                                            ]
-                                                                                                                                                          |)
-                                                                                                                                                        |)) in
+                                                                                                                                                          BinOp.eq,
+                                                                                                                                                          [
+                                                                                                                                                            M.read (|
+                                                                                                                                                              n
+                                                                                                                                                            |);
+                                                                                                                                                            M.cast
+                                                                                                                                                              (Ty.path
+                                                                                                                                                                "i64")
+                                                                                                                                                              (Value.Integer
+                                                                                                                                                                IntegerKind.Isize
+                                                                                                                                                                16)
+                                                                                                                                                          ]
+                                                                                                                                                        |)
+                                                                                                                                                      |) in
                                                                                                                                                     let
                                                                                                                                                           _ :=
                                                                                                                                                       is_constant_or_break_match (|
@@ -2290,27 +2271,26 @@ Module error.
                                                                                                                                                           ltac:(M.monadic
                                                                                                                                                             (let
                                                                                                                                                                   γ :=
-                                                                                                                                                              M.use
-                                                                                                                                                                (M.alloc (|
+                                                                                                                                                              M.alloc (|
+                                                                                                                                                                Ty.path
+                                                                                                                                                                  "bool",
+                                                                                                                                                                M.call_closure (|
                                                                                                                                                                   Ty.path
                                                                                                                                                                     "bool",
-                                                                                                                                                                  M.call_closure (|
-                                                                                                                                                                    Ty.path
-                                                                                                                                                                      "bool",
-                                                                                                                                                                    BinOp.eq,
-                                                                                                                                                                    [
-                                                                                                                                                                      M.read (|
-                                                                                                                                                                        n
-                                                                                                                                                                      |);
-                                                                                                                                                                      M.cast
-                                                                                                                                                                        (Ty.path
-                                                                                                                                                                          "i64")
-                                                                                                                                                                        (Value.Integer
-                                                                                                                                                                          IntegerKind.Isize
-                                                                                                                                                                          17)
-                                                                                                                                                                    ]
-                                                                                                                                                                  |)
-                                                                                                                                                                |)) in
+                                                                                                                                                                  BinOp.eq,
+                                                                                                                                                                  [
+                                                                                                                                                                    M.read (|
+                                                                                                                                                                      n
+                                                                                                                                                                    |);
+                                                                                                                                                                    M.cast
+                                                                                                                                                                      (Ty.path
+                                                                                                                                                                        "i64")
+                                                                                                                                                                      (Value.Integer
+                                                                                                                                                                        IntegerKind.Isize
+                                                                                                                                                                        17)
+                                                                                                                                                                  ]
+                                                                                                                                                                |)
+                                                                                                                                                              |) in
                                                                                                                                                             let
                                                                                                                                                                   _ :=
                                                                                                                                                               is_constant_or_break_match (|
@@ -2358,27 +2338,26 @@ Module error.
                                                                                                                                                                   ltac:(M.monadic
                                                                                                                                                                     (let
                                                                                                                                                                           γ :=
-                                                                                                                                                                      M.use
-                                                                                                                                                                        (M.alloc (|
+                                                                                                                                                                      M.alloc (|
+                                                                                                                                                                        Ty.path
+                                                                                                                                                                          "bool",
+                                                                                                                                                                        M.call_closure (|
                                                                                                                                                                           Ty.path
                                                                                                                                                                             "bool",
-                                                                                                                                                                          M.call_closure (|
-                                                                                                                                                                            Ty.path
-                                                                                                                                                                              "bool",
-                                                                                                                                                                            BinOp.eq,
-                                                                                                                                                                            [
-                                                                                                                                                                              M.read (|
-                                                                                                                                                                                n
-                                                                                                                                                                              |);
-                                                                                                                                                                              M.cast
-                                                                                                                                                                                (Ty.path
-                                                                                                                                                                                  "i64")
-                                                                                                                                                                                (Value.Integer
-                                                                                                                                                                                  IntegerKind.Isize
-                                                                                                                                                                                  18)
-                                                                                                                                                                            ]
-                                                                                                                                                                          |)
-                                                                                                                                                                        |)) in
+                                                                                                                                                                          BinOp.eq,
+                                                                                                                                                                          [
+                                                                                                                                                                            M.read (|
+                                                                                                                                                                              n
+                                                                                                                                                                            |);
+                                                                                                                                                                            M.cast
+                                                                                                                                                                              (Ty.path
+                                                                                                                                                                                "i64")
+                                                                                                                                                                              (Value.Integer
+                                                                                                                                                                                IntegerKind.Isize
+                                                                                                                                                                                18)
+                                                                                                                                                                          ]
+                                                                                                                                                                        |)
+                                                                                                                                                                      |) in
                                                                                                                                                                     let
                                                                                                                                                                           _ :=
                                                                                                                                                                       is_constant_or_break_match (|
@@ -2426,27 +2405,26 @@ Module error.
                                                                                                                                                                           ltac:(M.monadic
                                                                                                                                                                             (let
                                                                                                                                                                                   γ :=
-                                                                                                                                                                              M.use
-                                                                                                                                                                                (M.alloc (|
+                                                                                                                                                                              M.alloc (|
+                                                                                                                                                                                Ty.path
+                                                                                                                                                                                  "bool",
+                                                                                                                                                                                M.call_closure (|
                                                                                                                                                                                   Ty.path
                                                                                                                                                                                     "bool",
-                                                                                                                                                                                  M.call_closure (|
-                                                                                                                                                                                    Ty.path
-                                                                                                                                                                                      "bool",
-                                                                                                                                                                                    BinOp.eq,
-                                                                                                                                                                                    [
-                                                                                                                                                                                      M.read (|
-                                                                                                                                                                                        n
-                                                                                                                                                                                      |);
-                                                                                                                                                                                      M.cast
-                                                                                                                                                                                        (Ty.path
-                                                                                                                                                                                          "i64")
-                                                                                                                                                                                        (Value.Integer
-                                                                                                                                                                                          IntegerKind.Isize
-                                                                                                                                                                                          19)
-                                                                                                                                                                                    ]
-                                                                                                                                                                                  |)
-                                                                                                                                                                                |)) in
+                                                                                                                                                                                  BinOp.eq,
+                                                                                                                                                                                  [
+                                                                                                                                                                                    M.read (|
+                                                                                                                                                                                      n
+                                                                                                                                                                                    |);
+                                                                                                                                                                                    M.cast
+                                                                                                                                                                                      (Ty.path
+                                                                                                                                                                                        "i64")
+                                                                                                                                                                                      (Value.Integer
+                                                                                                                                                                                        IntegerKind.Isize
+                                                                                                                                                                                        19)
+                                                                                                                                                                                  ]
+                                                                                                                                                                                |)
+                                                                                                                                                                              |) in
                                                                                                                                                                             let
                                                                                                                                                                                   _ :=
                                                                                                                                                                               is_constant_or_break_match (|

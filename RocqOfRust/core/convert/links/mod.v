@@ -176,7 +176,7 @@ Module Impl_AsRef_for_Ref.
 
   Instance run_as_ref (T U : Set) `{Link T} `{Link U} (self : '& (Self T))
       `{!AsRef.Run T U} :
-    Run.Trait (convert.Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsRef_T_U_U_for_ref__T.as_ref (Φ T) (Φ U))
+    Run.Trait (convert.Impl_core_convert_AsRef_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_convert_AsRef_T_U_U_for_ref__T.as_ref (Φ T) (Φ U))
       [] [] [φ self]
       ('& U).
   Proof.
@@ -193,7 +193,7 @@ Module Impl_AsRef_for_Ref.
     eexists.
     { constructor.
       eapply IsTraitMethod.Defined.
-      { apply convert.Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsRef_T_U_U_for_ref__T.Implements. }
+      { apply convert.Impl_core_convert_AsRef_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_convert_AsRef_T_U_U_for_ref__T.Implements. }
       { reflexivity. }
     }
     { typeclasses eauto. }

@@ -15,18 +15,18 @@ use crate::{fmt, ops, slice, str};
 //   actually reference libstd or liballoc in intra-doc links. so, the best we can do is remove the
 //   links to `CString` and `String` for now until a solution is developed
 
-/// Representation of a borrowed C string.
+/// A dynamically-sized view of a C string.
 ///
-/// This type represents a borrowed reference to a nul-terminated
+/// The type `&CStr` represents a reference to a borrowed nul-terminated
 /// array of bytes. It can be constructed safely from a <code>&[[u8]]</code>
 /// slice, or unsafely from a raw `*const c_char`. It can be expressed as a
 /// literal in the form `c"Hello world"`.
 ///
-/// The `CStr` can then be converted to a Rust <code>&[str]</code> by performing
+/// The `&CStr` can then be converted to a Rust <code>&[str]</code> by performing
 /// UTF-8 validation, or into an owned `CString`.
 ///
 /// `&CStr` is to `CString` as <code>&[str]</code> is to `String`: the former
-/// in each pair are borrowed references; the latter are owned
+/// in each pair are borrowing references; the latter are owned
 /// strings.
 ///
 /// Note that this structure does **not** have a guaranteed layout (the `repr(transparent)`
@@ -55,18 +55,15 @@ use crate::{fmt, ops, slice, str};
 /// Passing a Rust-originating C string:
 ///
 /// ```
-/// use std::ffi::{CString, CStr};
+/// use std::ffi::CStr;
 /// use std::os::raw::c_char;
 ///
 /// fn work(data: &CStr) {
-/// #   /* Extern functions are awkward in doc comments - fake it instead
-///     extern "C" { fn work_with(data: *const c_char); }
-/// #   */ unsafe extern "C" fn work_with(s: *const c_char) {}
-///
+///     unsafe extern "C" fn work_with(s: *const c_char) {}
 ///     unsafe { work_with(data.as_ptr()) }
 /// }
 ///
-/// let s = CString::new("data data data data").expect("CString::new failed");
+/// let s = c"Hello world!";
 /// work(&s);
 /// ```
 ///
@@ -82,8 +79,9 @@ use crate::{fmt, ops, slice, str};
 ///
 /// fn my_string_safe() -> String {
 ///     let cstr = unsafe { CStr::from_ptr(my_string()) };
-///     // Get copy-on-write Cow<'_, str>, then guarantee a freshly-owned String allocation
-///     String::from_utf8_lossy(cstr.to_bytes()).to_string()
+///     // Get a copy-on-write Cow<'_, str>, then extract the
+///     // allocated String (or allocate a fresh one if needed).
+///     cstr.to_string_lossy().into_owned()
 /// }
 ///
 /// println!("string: {}", my_string_safe());
@@ -124,40 +122,32 @@ pub struct CStr {
 ///
 /// let _: FromBytesWithNulError = CStr::from_bytes_with_nul(b"f\0oo").unwrap_err();
 /// ```
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 #[stable(feature = "core_c_str", since = "1.64.0")]
-pub struct FromBytesWithNulError {
-    kind: FromBytesWithNulErrorKind,
-}
-
-#[derive(Clone, PartialEq, Eq, Debug)]
-enum FromBytesWithNulErrorKind {
-    InteriorNul(usize),
+pub enum FromBytesWithNulError {
+    /// Data provided contains an interior nul byte at byte `position`.
+    InteriorNul {
+        /// The position of the interior nul byte.
+        position: usize,
+    },
+    /// Data provided is not nul terminated.
     NotNulTerminated,
 }
 
-// FIXME: const stability attributes should not be required here, I think
-impl FromBytesWithNulError {
-    const fn interior_nul(pos: usize) -> FromBytesWithNulError {
-        FromBytesWithNulError { kind: FromBytesWithNulErrorKind::InteriorNul(pos) }
-    }
-    const fn not_nul_terminated() -> FromBytesWithNulError {
-        FromBytesWithNulError { kind: FromBytesWithNulErrorKind::NotNulTerminated }
+#[stable(feature = "frombyteswithnulerror_impls", since = "1.17.0")]
+impl fmt::Display for FromBytesWithNulError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::InteriorNul { position } => {
+                write!(f, "data provided contains an interior nul byte at byte position {position}")
+            }
+            Self::NotNulTerminated => write!(f, "data provided is not nul terminated"),
+        }
     }
 }
 
 #[stable(feature = "frombyteswithnulerror_impls", since = "1.17.0")]
-impl Error for FromBytesWithNulError {
-    #[allow(deprecated)]
-    fn description(&self) -> &str {
-        match self.kind {
-            FromBytesWithNulErrorKind::InteriorNul(..) => {
-                "data provided contains an interior nul byte"
-            }
-            FromBytesWithNulErrorKind::NotNulTerminated => "data provided is not nul terminated",
-        }
-    }
-}
+impl Error for FromBytesWithNulError {}
 
 /// An error indicating that no nul byte was present.
 ///
@@ -165,7 +155,6 @@ impl Error for FromBytesWithNulError {
 /// within the slice.
 ///
 /// This error is created by the [`CStr::from_bytes_until_nul`] method.
-///
 #[derive(Clone, PartialEq, Eq, Debug)]
 #[stable(feature = "cstr_from_bytes_until_nul", since = "1.69.0")]
 pub struct FromBytesUntilNulError(());
@@ -177,10 +166,12 @@ impl fmt::Display for FromBytesUntilNulError {
     }
 }
 
+/// Shows the underlying bytes as a normal string, with invalid UTF-8
+/// presented as hex escape sequences.
 #[stable(feature = "cstr_debug", since = "1.3.0")]
 impl fmt::Debug for CStr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "\"{}\"", self.to_bytes().escape_ascii())
+        fmt::Debug::fmt(crate::bstr::ByteStr::from_bytes(self.to_bytes()), f)
     }
 }
 
@@ -188,21 +179,7 @@ impl fmt::Debug for CStr {
 impl Default for &CStr {
     #[inline]
     fn default() -> Self {
-        const SLICE: &[c_char] = &[0];
-        // SAFETY: `SLICE` is indeed pointing to a valid nul-terminated string.
-        unsafe { CStr::from_ptr(SLICE.as_ptr()) }
-    }
-}
-
-#[stable(feature = "frombyteswithnulerror_impls", since = "1.17.0")]
-impl fmt::Display for FromBytesWithNulError {
-    #[allow(deprecated, deprecated_in_future)]
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(self.description())?;
-        if let FromBytesWithNulErrorKind::InteriorNul(pos) = self.kind {
-            write!(f, " at byte pos {pos}")?;
-        }
-        Ok(())
+        c""
     }
 }
 
@@ -222,7 +199,7 @@ impl CStr {
     /// * `ptr` must be [valid] for reads of bytes up to and including the nul terminator.
     ///   This means in particular:
     ///
-    ///     * The entire memory range of this `CStr` must be contained within a single allocated object!
+    ///     * The entire memory range of this `CStr` must be contained within a single allocation!
     ///     * `ptr` must be non-null even for a zero-length cstr.
     ///
     /// * The memory referenced by the returned `CStr` must not be mutated for
@@ -349,25 +326,25 @@ impl CStr {
     /// use std::ffi::CStr;
     ///
     /// let cstr = CStr::from_bytes_with_nul(b"hello\0");
-    /// assert!(cstr.is_ok());
+    /// assert_eq!(cstr, Ok(c"hello"));
     /// ```
     ///
     /// Creating a `CStr` without a trailing nul terminator is an error:
     ///
     /// ```
-    /// use std::ffi::CStr;
+    /// use std::ffi::{CStr, FromBytesWithNulError};
     ///
     /// let cstr = CStr::from_bytes_with_nul(b"hello");
-    /// assert!(cstr.is_err());
+    /// assert_eq!(cstr, Err(FromBytesWithNulError::NotNulTerminated));
     /// ```
     ///
     /// Creating a `CStr` with an interior nul byte is an error:
     ///
     /// ```
-    /// use std::ffi::CStr;
+    /// use std::ffi::{CStr, FromBytesWithNulError};
     ///
     /// let cstr = CStr::from_bytes_with_nul(b"he\0llo\0");
-    /// assert!(cstr.is_err());
+    /// assert_eq!(cstr, Err(FromBytesWithNulError::InteriorNul { position: 2 }));
     /// ```
     #[stable(feature = "cstr_from_bytes", since = "1.10.0")]
     #[rustc_const_stable(feature = "const_cstr_methods", since = "1.72.0")]
@@ -379,8 +356,8 @@ impl CStr {
                 // of the byte slice.
                 Ok(unsafe { Self::from_bytes_with_nul_unchecked(bytes) })
             }
-            Some(nul_pos) => Err(FromBytesWithNulError::interior_nul(nul_pos)),
-            None => Err(FromBytesWithNulError::not_nul_terminated()),
+            Some(position) => Err(FromBytesWithNulError::InteriorNul { position }),
+            None => Err(FromBytesWithNulError::NotNulTerminated),
         }
     }
 
@@ -396,13 +373,12 @@ impl CStr {
     /// # Examples
     ///
     /// ```
-    /// use std::ffi::{CStr, CString};
+    /// use std::ffi::CStr;
     ///
-    /// unsafe {
-    ///     let cstring = CString::new("hello").expect("CString::new failed");
-    ///     let cstr = CStr::from_bytes_with_nul_unchecked(cstring.to_bytes_with_nul());
-    ///     assert_eq!(cstr, &*cstring);
-    /// }
+    /// let bytes = b"Hello world!\0";
+    ///
+    /// let cstr = unsafe { CStr::from_bytes_with_nul_unchecked(bytes) };
+    /// assert_eq!(cstr.to_bytes_with_nul(), bytes);
     /// ```
     #[inline]
     #[must_use]
@@ -461,38 +437,43 @@ impl CStr {
     /// behavior when `ptr` is used inside the `unsafe` block:
     ///
     /// ```no_run
-    /// # #![allow(unused_must_use)]
     /// # #![expect(dangling_pointers_from_temporaries)]
-    /// use std::ffi::CString;
+    /// use std::ffi::{CStr, CString};
     ///
-    /// // Do not do this:
-    /// let ptr = CString::new("Hello").expect("CString::new failed").as_ptr();
-    /// unsafe {
-    ///     // `ptr` is dangling
-    ///     *ptr;
-    /// }
+    /// // 💀 The meaning of this entire program is undefined,
+    /// // 💀 and nothing about its behavior is guaranteed,
+    /// // 💀 not even that its behavior resembles the code as written,
+    /// // 💀 just because it contains a single instance of undefined behavior!
+    ///
+    /// // 🚨 creates a dangling pointer to a temporary `CString`
+    /// // 🚨 that is deallocated at the end of the statement
+    /// let ptr = CString::new("Hi!".to_uppercase()).unwrap().as_ptr();
+    ///
+    /// // without undefined behavior, you would expect that `ptr` equals:
+    /// dbg!(CStr::from_bytes_with_nul(b"HI!\0").unwrap());
+    ///
+    /// // 🙏 Possibly the program behaved as expected so far,
+    /// // 🙏 and this just shows `ptr` is now garbage..., but
+    /// // 💀 this violates `CStr::from_ptr`'s safety contract
+    /// // 💀 leading to a dereference of a dangling pointer,
+    /// // 💀 which is immediate undefined behavior.
+    /// // 💀 *BOOM*, you're dead, your entire program has no meaning.
+    /// dbg!(unsafe { CStr::from_ptr(ptr) });
     /// ```
     ///
-    /// This happens because the pointer returned by `as_ptr` does not carry any
-    /// lifetime information and the `CString` is deallocated immediately after
-    /// the `CString::new("Hello").expect("CString::new failed").as_ptr()`
-    /// expression is evaluated.
+    /// This happens because, the pointer returned by `as_ptr` does not carry any
+    /// lifetime information, and the `CString` is deallocated immediately after
+    /// the expression that it is part of has been evaluated.
     /// To fix the problem, bind the `CString` to a local variable:
     ///
-    /// ```no_run
-    /// # #![allow(unused_must_use)]
-    /// use std::ffi::CString;
-    ///
-    /// let hello = CString::new("Hello").expect("CString::new failed");
-    /// let ptr = hello.as_ptr();
-    /// unsafe {
-    ///     // `ptr` is valid because `hello` is in scope
-    ///     *ptr;
-    /// }
     /// ```
+    /// use std::ffi::{CStr, CString};
     ///
-    /// This way, the lifetime of the `CString` in `hello` encompasses
-    /// the lifetime of `ptr` and the `unsafe` block.
+    /// let c_str = CString::new("Hi!".to_uppercase()).unwrap();
+    /// let ptr = c_str.as_ptr();
+    ///
+    /// assert_eq!(unsafe { CStr::from_ptr(ptr) }, c"HI!");
+    /// ```
     #[inline]
     #[must_use]
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -522,13 +503,8 @@ impl CStr {
     /// # Examples
     ///
     /// ```
-    /// use std::ffi::CStr;
-    ///
-    /// let cstr = CStr::from_bytes_with_nul(b"foo\0").unwrap();
-    /// assert_eq!(cstr.count_bytes(), 3);
-    ///
-    /// let cstr = CStr::from_bytes_with_nul(b"\0").unwrap();
-    /// assert_eq!(cstr.count_bytes(), 0);
+    /// assert_eq!(c"foo".count_bytes(), 3);
+    /// assert_eq!(c"".count_bytes(), 0);
     /// ```
     #[inline]
     #[must_use]
@@ -544,19 +520,8 @@ impl CStr {
     /// # Examples
     ///
     /// ```
-    /// use std::ffi::CStr;
-    /// # use std::ffi::FromBytesWithNulError;
-    ///
-    /// # fn main() { test().unwrap(); }
-    /// # fn test() -> Result<(), FromBytesWithNulError> {
-    /// let cstr = CStr::from_bytes_with_nul(b"foo\0")?;
-    /// assert!(!cstr.is_empty());
-    ///
-    /// let empty_cstr = CStr::from_bytes_with_nul(b"\0")?;
-    /// assert!(empty_cstr.is_empty());
+    /// assert!(!c"foo".is_empty());
     /// assert!(c"".is_empty());
-    /// # Ok(())
-    /// # }
     /// ```
     #[inline]
     #[stable(feature = "cstr_is_empty", since = "1.71.0")]
@@ -580,10 +545,7 @@ impl CStr {
     /// # Examples
     ///
     /// ```
-    /// use std::ffi::CStr;
-    ///
-    /// let cstr = CStr::from_bytes_with_nul(b"foo\0").expect("CStr::from_bytes_with_nul failed");
-    /// assert_eq!(cstr.to_bytes(), b"foo");
+    /// assert_eq!(c"foo".to_bytes(), b"foo");
     /// ```
     #[inline]
     #[must_use = "this returns the result of the operation, \
@@ -609,10 +571,7 @@ impl CStr {
     /// # Examples
     ///
     /// ```
-    /// use std::ffi::CStr;
-    ///
-    /// let cstr = CStr::from_bytes_with_nul(b"foo\0").expect("CStr::from_bytes_with_nul failed");
-    /// assert_eq!(cstr.to_bytes_with_nul(), b"foo\0");
+    /// assert_eq!(c"foo".to_bytes_with_nul(), b"foo\0");
     /// ```
     #[inline]
     #[must_use = "this returns the result of the operation, \
@@ -634,10 +593,8 @@ impl CStr {
     ///
     /// ```
     /// #![feature(cstr_bytes)]
-    /// use std::ffi::CStr;
     ///
-    /// let cstr = CStr::from_bytes_with_nul(b"foo\0").expect("CStr::from_bytes_with_nul failed");
-    /// assert!(cstr.bytes().eq(*b"foo"));
+    /// assert!(c"foo".bytes().eq(*b"foo"));
     /// ```
     #[inline]
     #[unstable(feature = "cstr_bytes", issue = "112115")]
@@ -656,10 +613,7 @@ impl CStr {
     /// # Examples
     ///
     /// ```
-    /// use std::ffi::CStr;
-    ///
-    /// let cstr = CStr::from_bytes_with_nul(b"foo\0").expect("CStr::from_bytes_with_nul failed");
-    /// assert_eq!(cstr.to_str(), Ok("foo"));
+    /// assert_eq!(c"foo".to_str(), Ok("foo"));
     /// ```
     #[stable(feature = "cstr_to_str", since = "1.4.0")]
     #[rustc_const_stable(feature = "const_cstr_methods", since = "1.72.0")]
@@ -669,6 +623,43 @@ impl CStr {
         // be rewritten to do the UTF-8 check inline with the length calculation
         // instead of doing it afterwards.
         str::from_utf8(self.to_bytes())
+    }
+
+    /// Returns an object that implements [`Display`] for safely printing a [`CStr`] that may
+    /// contain non-Unicode data.
+    ///
+    /// Behaves as if `self` were first lossily converted to a `str`, with invalid UTF-8 presented
+    /// as the Unicode replacement character: �.
+    ///
+    /// [`Display`]: fmt::Display
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// #![feature(cstr_display)]
+    ///
+    /// let cstr = c"Hello, world!";
+    /// println!("{}", cstr.display());
+    /// ```
+    #[unstable(feature = "cstr_display", issue = "139984")]
+    #[must_use = "this does not display the `CStr`; \
+                  it returns an object that can be displayed"]
+    #[inline]
+    pub fn display(&self) -> impl fmt::Display {
+        crate::bstr::ByteStr::from_bytes(self.to_bytes())
+    }
+}
+
+#[stable(feature = "c_string_eq_c_str", since = "1.90.0")]
+impl PartialEq<&Self> for CStr {
+    #[inline]
+    fn eq(&self, other: &&Self) -> bool {
+        *self == **other
+    }
+
+    #[inline]
+    fn ne(&self, other: &&Self) -> bool {
+        *self != **other
     }
 }
 
@@ -682,6 +673,7 @@ impl PartialOrd for CStr {
         self.to_bytes().partial_cmp(&other.to_bytes())
     }
 }
+
 #[stable(feature = "rust1", since = "1.0.0")]
 impl Ord for CStr {
     #[inline]
@@ -714,7 +706,8 @@ impl ops::Index<ops::RangeFrom<usize>> for CStr {
 }
 
 #[stable(feature = "cstring_asref", since = "1.7.0")]
-impl AsRef<CStr> for CStr {
+#[rustc_const_unstable(feature = "const_convert", issue = "143773")]
+impl const AsRef<CStr> for CStr {
     #[inline]
     fn as_ref(&self) -> &CStr {
         self
@@ -743,7 +736,7 @@ const unsafe fn strlen(ptr: *const c_char) -> usize {
 
             len
         } else {
-            extern "C" {
+            unsafe extern "C" {
                 /// Provided by libc or compiler_builtins.
                 fn strlen(s: *const c_char) -> usize;
             }

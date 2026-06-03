@@ -7,72 +7,6 @@ Module iter.
       (* Trait *)
       (* Empty module 'FromIterator' *)
       
-      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_A_where_core_iter_traits_collect_Extend_A_AE_where_core_default_Default_B_where_core_iter_traits_collect_Extend_B_BE_Tuple_AE_BE__for_Tuple_A_B_.
-        Definition Self (A B AE BE : Ty.t) : Ty.t := Ty.tuple [ A; B ].
-        
-        (*
-            fn from_iter<I: IntoIterator<Item = (AE, BE)>>(iter: I) -> Self {
-                let mut res = <(A, B)>::default();
-                res.extend(iter);
-        
-                res
-            }
-        *)
-        Definition from_iter
-            (A B AE BE : Ty.t)
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          let Self : Ty.t := Self A B AE BE in
-          match ε, τ, α with
-          | [], [ _ as I ], [ iter ] =>
-            ltac:(M.monadic
-              (let iter := M.alloc (| I, iter |) in
-              M.read (|
-                let~ res : Ty.tuple [ A; B ] :=
-                  M.call_closure (|
-                    Ty.tuple [ A; B ],
-                    M.get_trait_method (|
-                      "core::default::Default",
-                      Ty.tuple [ A; B ],
-                      [],
-                      [],
-                      "default",
-                      [],
-                      []
-                    |),
-                    []
-                  |) in
-                let~ _ : Ty.tuple [] :=
-                  M.call_closure (|
-                    Ty.tuple [],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::Extend",
-                      Ty.tuple [ A; B ],
-                      [],
-                      [ Ty.tuple [ AE; BE ] ],
-                      "extend",
-                      [],
-                      [ I ]
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
-                  |) in
-                res
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        Axiom Implements :
-          forall (A B AE BE : Ty.t),
-          M.IsTraitInstance
-            "core::iter::traits::collect::FromIterator"
-            (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) [ Ty.tuple [ AE; BE ] ]
-            (Self A B AE BE)
-            (* Instance *) [ ("from_iter", InstanceField.Method (from_iter A B AE BE)) ].
-      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_A_where_core_iter_traits_collect_Extend_A_AE_where_core_default_Default_B_where_core_iter_traits_collect_Extend_B_BE_Tuple_AE_BE__for_Tuple_A_B_.
-      
       (* Trait *)
       (* Empty module 'IntoIterator' *)
       
@@ -301,586 +235,592 @@ Module iter.
             ].
       End Impl_core_iter_traits_collect_Extend_Tuple__for_Tuple_.
       
-      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExtendA_A_where_core_iter_traits_collect_Extend_ExtendB_B_Tuple_A_B__for_Tuple_ExtendA_ExtendB_.
-        Definition Self (A B ExtendA ExtendB : Ty.t) : Ty.t := Ty.tuple [ ExtendA; ExtendB ].
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExtendT_T_Tuple_T__for_Tuple_ExtendT_.
+        Definition Self (T ExtendT : Ty.t) : Ty.t := Ty.tuple [ ExtendT ].
         
         (*
-            fn extend<T: IntoIterator<Item = (A, B)>>(&mut self, into_iter: T) {
-                let (a, b) = self;
-                let iter = into_iter.into_iter();
-                SpecTupleExtend::extend(iter, a, b);
+            fn extend<I: IntoIterator<Item = (T,)>>(&mut self, iter: I) {
+                self.0.extend(iter.into_iter().map(|t| t.0));
             }
         *)
         Definition extend
-            (A B ExtendA ExtendB : Ty.t)
+            (T ExtendT : Ty.t)
             (ε : list Value.t)
             (τ : list Ty.t)
             (α : list Value.t)
             : M :=
-          let Self : Ty.t := Self A B ExtendA ExtendB in
+          let Self : Ty.t := Self T ExtendT in
           match ε, τ, α with
-          | [], [ T ], [ self; into_iter ] =>
+          | [], [ _ as I ], [ self; iter ] =>
             ltac:(M.monadic
               (let self :=
-                M.alloc (|
-                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExtendA; ExtendB ] ],
-                  self
-                |) in
-              let into_iter := M.alloc (| T, into_iter |) in
-              M.match_operator (|
-                Ty.tuple [],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                      let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                      let a := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendA ], γ1_0 |) in
-                      let b := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendB ], γ1_1 |) in
-                      M.read (|
-                        let~ iter :
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExtendT ] ], self |) in
+              let iter := M.alloc (| I, iter |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExtendT,
+                      [],
+                      [ T ],
+                      "extend",
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
                             Ty.associated_in_trait
                               "core::iter::traits::collect::IntoIterator"
                               []
                               []
-                              T
-                              "IntoIter" :=
+                              I
+                              "IntoIter";
+                            Ty.function [ Ty.tuple [ T ] ] T
+                          ]
+                      ]
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "core::iter::traits::collect::IntoIterator"
+                              []
+                              []
+                              I
+                              "IntoIter";
+                            Ty.function [ Ty.tuple [ T ] ] T
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          Ty.associated_in_trait
+                            "core::iter::traits::collect::IntoIterator"
+                            []
+                            []
+                            I
+                            "IntoIter",
+                          [],
+                          [],
+                          "map",
+                          [],
+                          [ T; Ty.function [ Ty.tuple [ T ] ] T ]
+                        |),
+                        [
                           M.call_closure (|
                             Ty.associated_in_trait
                               "core::iter::traits::collect::IntoIterator"
                               []
                               []
-                              T
+                              I
                               "IntoIter",
                             M.get_trait_method (|
                               "core::iter::traits::collect::IntoIterator",
-                              T,
+                              I,
                               [],
                               [],
                               "into_iter",
                               [],
                               []
                             |),
-                            [ M.read (| into_iter |) ]
-                          |) in
-                        let~ _ : Ty.tuple [] :=
-                          M.call_closure (|
-                            Ty.tuple [],
-                            M.get_trait_method (|
-                              "core::iter::traits::collect::SpecTupleExtend",
-                              Ty.associated_in_trait
-                                "core::iter::traits::collect::IntoIterator"
-                                []
-                                []
-                                T
-                                "IntoIter",
-                              [],
-                              [ ExtendA; ExtendB ],
-                              "extend",
-                              [],
-                              []
-                            |),
-                            [
-                              M.read (| iter |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |)
-                            ]
-                          |) in
-                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                      |)))
+                            [ M.read (| iter |) ]
+                          |);
+                          M.closure
+                            (fun γ =>
+                              ltac:(M.monadic
+                                match γ with
+                                | [ α0 ] =>
+                                  ltac:(M.monadic
+                                    (M.match_operator (|
+                                      T,
+                                      M.alloc (| Ty.tuple [ T ], α0 |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let t := M.copy (| Ty.tuple [ T ], γ |) in
+                                            M.read (| M.SubPointer.get_tuple_field (| t, 0 |) |)))
+                                      ]
+                                    |)))
+                                | _ => M.impossible "wrong number of arguments"
+                                end))
+                        ]
+                      |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+            fn extend_one(&mut self, item: (T,)) {
+                self.0.extend_one(item.0)
+            }
+        *)
+        Definition extend_one
+            (T ExtendT : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self T ExtendT in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExtendT ] ], self |) in
+              let item := M.alloc (| Ty.tuple [ T ], item |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (|
+                  "core::iter::traits::collect::Extend",
+                  ExtendT,
+                  [],
+                  [ T ],
+                  "extend_one",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                  |);
+                  M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
         (*
-            fn extend_one(&mut self, item: (A, B)) {
-                self.0.extend_one(item.0);
-                self.1.extend_one(item.1);
-            }
-        *)
-        Definition extend_one
-            (A B ExtendA ExtendB : Ty.t)
-            (ε : list Value.t)
-            (τ : list Ty.t)
-            (α : list Value.t)
-            : M :=
-          let Self : Ty.t := Self A B ExtendA ExtendB in
-          match ε, τ, α with
-          | [], [], [ self; item ] =>
-            ltac:(M.monadic
-              (let self :=
-                M.alloc (|
-                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExtendA; ExtendB ] ],
-                  self
-                |) in
-              let item := M.alloc (| Ty.tuple [ A; B ], item |) in
-              M.read (|
-                let~ _ : Ty.tuple [] :=
-                  M.call_closure (|
-                    Ty.tuple [],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::Extend",
-                      ExtendA,
-                      [],
-                      [ A ],
-                      "extend_one",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
-                      |);
-                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
-                    ]
-                  |) in
-                let~ _ : Ty.tuple [] :=
-                  M.call_closure (|
-                    Ty.tuple [],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::Extend",
-                      ExtendB,
-                      [],
-                      [ B ],
-                      "extend_one",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
-                      |);
-                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
-                    ]
-                  |) in
-                M.alloc (| Ty.tuple [], Value.Tuple [] |)
-              |)))
-          | _, _, _ => M.impossible "wrong number of arguments"
-          end.
-        
-        (*
             fn extend_reserve(&mut self, additional: usize) {
-                self.0.extend_reserve(additional);
-                self.1.extend_reserve(additional);
+                self.0.extend_reserve(additional)
             }
         *)
         Definition extend_reserve
-            (A B ExtendA ExtendB : Ty.t)
+            (T ExtendT : Ty.t)
             (ε : list Value.t)
             (τ : list Ty.t)
             (α : list Value.t)
             : M :=
-          let Self : Ty.t := Self A B ExtendA ExtendB in
+          let Self : Ty.t := Self T ExtendT in
           match ε, τ, α with
           | [], [], [ self; additional ] =>
             ltac:(M.monadic
               (let self :=
-                M.alloc (|
-                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExtendA; ExtendB ] ],
-                  self
-                |) in
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExtendT ] ], self |) in
               let additional := M.alloc (| Ty.path "usize", additional |) in
-              M.read (|
-                let~ _ : Ty.tuple [] :=
-                  M.call_closure (|
-                    Ty.tuple [],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::Extend",
-                      ExtendA,
-                      [],
-                      [ A ],
-                      "extend_reserve",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
-                      |);
-                      M.read (| additional |)
-                    ]
-                  |) in
-                let~ _ : Ty.tuple [] :=
-                  M.call_closure (|
-                    Ty.tuple [],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::Extend",
-                      ExtendB,
-                      [],
-                      [ B ],
-                      "extend_reserve",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
-                      |);
-                      M.read (| additional |)
-                    ]
-                  |) in
-                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (|
+                  "core::iter::traits::collect::Extend",
+                  ExtendT,
+                  [],
+                  [ T ],
+                  "extend_reserve",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                  |);
+                  M.read (| additional |)
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
         (*
-            unsafe fn extend_one_unchecked(&mut self, item: (A, B)) {
-                // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
-                unsafe {
-                    self.0.extend_one_unchecked(item.0);
-                    self.1.extend_one_unchecked(item.1);
-                }
+            unsafe fn extend_one_unchecked(&mut self, item: (T,)) {
+                // SAFETY: the caller guarantees all preconditions.
+                unsafe { self.0.extend_one_unchecked(item.0) }
             }
         *)
         Definition extend_one_unchecked
-            (A B ExtendA ExtendB : Ty.t)
+            (T ExtendT : Ty.t)
             (ε : list Value.t)
             (τ : list Ty.t)
             (α : list Value.t)
             : M :=
-          let Self : Ty.t := Self A B ExtendA ExtendB in
+          let Self : Ty.t := Self T ExtendT in
           match ε, τ, α with
           | [], [], [ self; item ] =>
             ltac:(M.monadic
               (let self :=
-                M.alloc (|
-                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExtendA; ExtendB ] ],
-                  self
-                |) in
-              let item := M.alloc (| Ty.tuple [ A; B ], item |) in
-              M.read (|
-                let~ _ : Ty.tuple [] :=
-                  M.call_closure (|
-                    Ty.tuple [],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::Extend",
-                      ExtendA,
-                      [],
-                      [ A ],
-                      "extend_one_unchecked",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
-                      |);
-                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
-                    ]
-                  |) in
-                let~ _ : Ty.tuple [] :=
-                  M.call_closure (|
-                    Ty.tuple [],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::Extend",
-                      ExtendB,
-                      [],
-                      [ B ],
-                      "extend_one_unchecked",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
-                      |);
-                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
-                    ]
-                  |) in
-                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExtendT ] ], self |) in
+              let item := M.alloc (| Ty.tuple [ T ], item |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (|
+                  "core::iter::traits::collect::Extend",
+                  ExtendT,
+                  [],
+                  [ T ],
+                  "extend_one_unchecked",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                  |);
+                  M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
         Axiom Implements :
-          forall (A B ExtendA ExtendB : Ty.t),
+          forall (T ExtendT : Ty.t),
           M.IsTraitInstance
             "core::iter::traits::collect::Extend"
             (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) [ Ty.tuple [ A; B ] ]
-            (Self A B ExtendA ExtendB)
+            (* Trait polymorphic types *) [ Ty.tuple [ T ] ]
+            (Self T ExtendT)
             (* Instance *)
             [
-              ("extend", InstanceField.Method (extend A B ExtendA ExtendB));
-              ("extend_one", InstanceField.Method (extend_one A B ExtendA ExtendB));
-              ("extend_reserve", InstanceField.Method (extend_reserve A B ExtendA ExtendB));
-              ("extend_one_unchecked",
-                InstanceField.Method (extend_one_unchecked A B ExtendA ExtendB))
+              ("extend", InstanceField.Method (extend T ExtendT));
+              ("extend_one", InstanceField.Method (extend_one T ExtendT));
+              ("extend_reserve", InstanceField.Method (extend_reserve T ExtendT));
+              ("extend_one_unchecked", InstanceField.Method (extend_one_unchecked T ExtendT))
             ].
-      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExtendA_A_where_core_iter_traits_collect_Extend_ExtendB_B_Tuple_A_B__for_Tuple_ExtendA_ExtendB_.
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExtendT_T_Tuple_T__for_Tuple_ExtendT_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExtendT_where_core_iter_traits_collect_Extend_ExtendT_T_Tuple_T__for_Tuple_ExtendT_.
+        Definition Self (T ExtendT : Ty.t) : Ty.t := Ty.tuple [ ExtendT ].
+        
+        (*
+            fn from_iter<Iter: IntoIterator<Item = (T,)>>(iter: Iter) -> Self {
+                let mut res = ExtendT::default();
+                res.extend(iter.into_iter().map(|t| t.0));
+                (res,)
+            }
+        *)
+        Definition from_iter
+            (T ExtendT : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self T ExtendT in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : ExtendT :=
+                  M.call_closure (|
+                    ExtendT,
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      ExtendT,
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExtendT,
+                      [],
+                      [ T ],
+                      "extend",
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "core::iter::traits::collect::IntoIterator"
+                              []
+                              []
+                              Iter
+                              "IntoIter";
+                            Ty.function [ Ty.tuple [ T ] ] T
+                          ]
+                      ]
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, res |);
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "core::iter::traits::collect::IntoIterator"
+                              []
+                              []
+                              Iter
+                              "IntoIter";
+                            Ty.function [ Ty.tuple [ T ] ] T
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          Ty.associated_in_trait
+                            "core::iter::traits::collect::IntoIterator"
+                            []
+                            []
+                            Iter
+                            "IntoIter",
+                          [],
+                          [],
+                          "map",
+                          [],
+                          [ T; Ty.function [ Ty.tuple [ T ] ] T ]
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.associated_in_trait
+                              "core::iter::traits::collect::IntoIterator"
+                              []
+                              []
+                              Iter
+                              "IntoIter",
+                            M.get_trait_method (|
+                              "core::iter::traits::collect::IntoIterator",
+                              Iter,
+                              [],
+                              [],
+                              "into_iter",
+                              [],
+                              []
+                            |),
+                            [ M.read (| iter |) ]
+                          |);
+                          M.closure
+                            (fun γ =>
+                              ltac:(M.monadic
+                                match γ with
+                                | [ α0 ] =>
+                                  ltac:(M.monadic
+                                    (M.match_operator (|
+                                      T,
+                                      M.alloc (| Ty.tuple [ T ], α0 |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let t := M.copy (| Ty.tuple [ T ], γ |) in
+                                            M.read (| M.SubPointer.get_tuple_field (| t, 0 |) |)))
+                                      ]
+                                    |)))
+                                | _ => M.impossible "wrong number of arguments"
+                                end))
+                        ]
+                      |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [ ExtendT ], Value.Tuple [ M.read (| res |) ] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (T ExtendT : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ T ] ]
+            (Self T ExtendT)
+            (* Instance *) [ ("from_iter", InstanceField.Method (from_iter T ExtendT)) ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExtendT_where_core_iter_traits_collect_Extend_ExtendT_T_Tuple_T__for_Tuple_ExtendT_.
       
       (*
-      fn default_extend_tuple<A, B, ExtendA, ExtendB>(
-          iter: impl Iterator<Item = (A, B)>,
-          a: &mut ExtendA,
-          b: &mut ExtendB,
-      ) where
-          ExtendA: Extend<A>,
-          ExtendB: Extend<B>,
+      fn default_extend<ExtendT, I, T>(collection: &mut ExtendT, iter: I)
+      where
+          ExtendT: Extend<T>,
+          I: IntoIterator<Item = T>,
       {
-          fn extend<'a, A, B>(
-              a: &'a mut impl Extend<A>,
-              b: &'a mut impl Extend<B>,
-          ) -> impl FnMut((), (A, B)) + 'a {
-              move |(), (t, u)| {
-                  a.extend_one(t);
-                  b.extend_one(u);
+          // Specialize on `TrustedLen` and call `extend_one_unchecked` where
+          // applicable.
+          trait SpecExtend<I> {
+              fn extend(&mut self, iter: I);
+          }
+      
+          // Extracting these to separate functions avoid monomorphising the closures
+          // for every iterator type.
+          fn extender<ExtendT, T>(collection: &mut ExtendT) -> impl FnMut(T) + use<'_, ExtendT, T>
+          where
+              ExtendT: Extend<T>,
+          {
+              move |item| collection.extend_one(item)
+          }
+      
+          unsafe fn unchecked_extender<ExtendT, T>(
+              collection: &mut ExtendT,
+          ) -> impl FnMut(T) + use<'_, ExtendT, T>
+          where
+              ExtendT: Extend<T>,
+          {
+              // SAFETY: we make sure that there is enough space at the callsite of
+              // this function.
+              move |item| unsafe { collection.extend_one_unchecked(item) }
+          }
+      
+          impl<ExtendT, I, T> SpecExtend<I> for ExtendT
+          where
+              ExtendT: Extend<T>,
+              I: Iterator<Item = T>,
+          {
+              default fn extend(&mut self, iter: I) {
+                  let (lower_bound, _) = iter.size_hint();
+                  if lower_bound > 0 {
+                      self.extend_reserve(lower_bound);
+                  }
+      
+                  iter.for_each(extender(self))
               }
           }
       
-          let (lower_bound, _) = iter.size_hint();
-          if lower_bound > 0 {
-              a.extend_reserve(lower_bound);
-              b.extend_reserve(lower_bound);
+          impl<ExtendT, I, T> SpecExtend<I> for ExtendT
+          where
+              ExtendT: Extend<T>,
+              I: TrustedLen<Item = T>,
+          {
+              fn extend(&mut self, iter: I) {
+                  let (lower_bound, upper_bound) = iter.size_hint();
+                  if lower_bound > 0 {
+                      self.extend_reserve(lower_bound);
+                  }
+      
+                  if upper_bound.is_none() {
+                      // We cannot reserve more than `usize::MAX` items, and this is likely to go out of memory anyway.
+                      iter.for_each(extender(self))
+                  } else {
+                      // SAFETY: We reserve enough space for the `size_hint`, and the iterator is
+                      // `TrustedLen` so its `size_hint` is exact.
+                      iter.for_each(unsafe { unchecked_extender(self) })
+                  }
+              }
           }
       
-          iter.fold((), extend(a, b));
+          SpecExtend::extend(collection, iter.into_iter());
       }
       *)
-      Definition default_extend_tuple (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition default_extend (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [ A; B; ExtendA; ExtendB; impl_Iterator_Item____A__B__ ], [ iter; a; b ] =>
+        | [], [ ExtendT; _ as I; T ], [ collection; iter ] =>
           ltac:(M.monadic
-            (let iter := M.alloc (| impl_Iterator_Item____A__B__, iter |) in
-            let a := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendA ], a |) in
-            let b := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendB ], b |) in
-            M.match_operator (|
-              Ty.tuple [],
-              M.alloc (|
-                Ty.tuple
-                  [
-                    Ty.path "usize";
-                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
-                  ],
+            (let collection := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendT ], collection |) in
+            let iter := M.alloc (| I, iter |) in
+            M.read (|
+              let~ _ : Ty.tuple [] :=
                 M.call_closure (|
-                  Ty.tuple
-                    [
-                      Ty.path "usize";
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
-                    ],
+                  Ty.tuple [],
                   M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    impl_Iterator_Item____A__B__,
+                    "core::iter::traits::collect::default_extend::SpecExtend",
+                    ExtendT,
                     [],
-                    [],
-                    "size_hint",
+                    [
+                      Ty.associated_in_trait
+                        "core::iter::traits::collect::IntoIterator"
+                        []
+                        []
+                        I
+                        "IntoIter"
+                    ],
+                    "extend",
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, iter |) ]
-                |)
-              |),
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                    let lower_bound := M.copy (| Ty.path "usize", γ0_0 |) in
-                    M.read (|
-                      let~ _ : Ty.tuple [] :=
-                        M.match_operator (|
-                          Ty.tuple [],
-                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ :=
-                                  M.use
-                                    (M.alloc (|
-                                      Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.gt,
-                                        [
-                                          M.read (| lower_bound |);
-                                          Value.Integer IntegerKind.Usize 0
-                                        ]
-                                      |)
-                                    |)) in
-                                let _ :=
-                                  is_constant_or_break_match (|
-                                    M.read (| γ |),
-                                    Value.Bool true
-                                  |) in
-                                M.read (|
-                                  let~ _ : Ty.tuple [] :=
-                                    M.call_closure (|
-                                      Ty.tuple [],
-                                      M.get_trait_method (|
-                                        "core::iter::traits::collect::Extend",
-                                        ExtendA,
-                                        [],
-                                        [ A ],
-                                        "extend_reserve",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| a |) |)
-                                        |);
-                                        M.read (| lower_bound |)
-                                      ]
-                                    |) in
-                                  let~ _ : Ty.tuple [] :=
-                                    M.call_closure (|
-                                      Ty.tuple [],
-                                      M.get_trait_method (|
-                                        "core::iter::traits::collect::Extend",
-                                        ExtendB,
-                                        [],
-                                        [ B ],
-                                        "extend_reserve",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| b |) |)
-                                        |);
-                                        M.read (| lower_bound |)
-                                      ]
-                                    |) in
-                                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                |)));
-                            fun γ => ltac:(M.monadic (Value.Tuple []))
-                          ]
-                        |) in
-                      let~ _ : Ty.tuple [] :=
-                        M.call_closure (|
-                          Ty.tuple [],
-                          M.get_trait_method (|
-                            "core::iter::traits::iterator::Iterator",
-                            impl_Iterator_Item____A__B__,
-                            [],
-                            [],
-                            "fold",
-                            [],
-                            [ Ty.tuple []; Ty.associated_unknown ]
-                          |),
-                          [
-                            M.read (| iter |);
-                            Value.Tuple [];
-                            M.call_closure (|
-                              Ty.associated_unknown,
-                              M.get_function (|
-                                "core::iter::traits::collect::default_extend_tuple.extend",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |)
-                              ]
-                            |)
-                          ]
-                        |) in
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                    |)))
-              ]
+                  [
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| collection |) |) |);
+                    M.call_closure (|
+                      Ty.associated_in_trait
+                        "core::iter::traits::collect::IntoIterator"
+                        []
+                        []
+                        I
+                        "IntoIter",
+                      M.get_trait_method (|
+                        "core::iter::traits::collect::IntoIterator",
+                        I,
+                        [],
+                        [],
+                        "into_iter",
+                        [],
+                        []
+                      |),
+                      [ M.read (| iter |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance Instance_IsFunction_default_extend_tuple :
-        M.IsFunction.C "core::iter::traits::collect::default_extend_tuple" default_extend_tuple.
+      Global Instance Instance_IsFunction_default_extend :
+        M.IsFunction.C "core::iter::traits::collect::default_extend" default_extend.
       Admitted.
-      Global Typeclasses Opaque default_extend_tuple.
+      Global Typeclasses Opaque default_extend.
       
-      Module default_extend_tuple.
+      Module default_extend.
+        (* Trait *)
+        (* Empty module 'SpecExtend' *)
+        
         (*
-            fn extend<'a, A, B>(
-                a: &'a mut impl Extend<A>,
-                b: &'a mut impl Extend<B>,
-            ) -> impl FnMut((), (A, B)) + 'a {
-                move |(), (t, u)| {
-                    a.extend_one(t);
-                    b.extend_one(u);
-                }
+            fn extender<ExtendT, T>(collection: &mut ExtendT) -> impl FnMut(T) + use<'_, ExtendT, T>
+            where
+                ExtendT: Extend<T>,
+            {
+                move |item| collection.extend_one(item)
             }
         *)
-        Definition extend (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        Definition extender (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
-          | [], [ A; B; impl_Extend_A_; impl_Extend_B_ ], [ a; b ] =>
+          | [], [ ExtendT; T ], [ collection ] =>
             ltac:(M.monadic
-              (let a := M.alloc (| Ty.apply (Ty.path "&mut") [] [ impl_Extend_A_ ], a |) in
-              let b := M.alloc (| Ty.apply (Ty.path "&mut") [] [ impl_Extend_B_ ], b |) in
+              (let collection :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendT ], collection |) in
               M.closure
                 (fun γ =>
                   ltac:(M.monadic
                     match γ with
-                    | [ α0; α1 ] =>
+                    | [ α0 ] =>
                       ltac:(M.monadic
                         (M.match_operator (|
                           Ty.tuple [],
-                          M.alloc (| Ty.tuple [], α0 |),
+                          M.alloc (| T, α0 |),
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (M.match_operator (|
+                                (let item := M.copy (| T, γ |) in
+                                M.call_closure (|
                                   Ty.tuple [],
-                                  M.alloc (| Ty.tuple [ A; B ], α1 |),
+                                  M.get_trait_method (|
+                                    "core::iter::traits::collect::Extend",
+                                    ExtendT,
+                                    [],
+                                    [ T ],
+                                    "extend_one",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                                        let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                        let t := M.copy (| A, γ0_0 |) in
-                                        let u := M.copy (| B, γ0_1 |) in
-                                        M.read (|
-                                          let~ _ : Ty.tuple [] :=
-                                            M.call_closure (|
-                                              Ty.tuple [],
-                                              M.get_trait_method (|
-                                                "core::iter::traits::collect::Extend",
-                                                impl_Extend_A_,
-                                                [],
-                                                [ A ],
-                                                "extend_one",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| a |) |)
-                                                |);
-                                                M.read (| t |)
-                                              ]
-                                            |) in
-                                          let~ _ : Ty.tuple [] :=
-                                            M.call_closure (|
-                                              Ty.tuple [],
-                                              M.get_trait_method (|
-                                                "core::iter::traits::collect::Extend",
-                                                impl_Extend_B_,
-                                                [],
-                                                [ B ],
-                                                "extend_one",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| b |) |)
-                                                |);
-                                                M.read (| u |)
-                                              ]
-                                            |) in
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                        |)))
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| collection |) |)
+                                    |);
+                                    M.read (| item |)
                                   ]
                                 |)))
                           ]
@@ -890,49 +830,685 @@ Module iter.
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
-        Global Instance Instance_IsFunction_extend :
-          M.IsFunction.C "core::iter::traits::collect::default_extend_tuple::extend" extend.
+        Global Instance Instance_IsFunction_extender :
+          M.IsFunction.C "core::iter::traits::collect::default_extend::extender" extender.
         Admitted.
-        Global Typeclasses Opaque extend.
-      End default_extend_tuple.
-      
-      (* Trait *)
-      (* Empty module 'SpecTupleExtend' *)
-      
-      Module Impl_core_iter_traits_collect_SpecTupleExtend_where_core_iter_traits_collect_Extend_ExtendA_A_where_core_iter_traits_collect_Extend_ExtendB_B_where_core_iter_traits_iterator_Iterator_Iter_ExtendA_ExtendB_for_Iter.
-        Definition Self (A B ExtendA ExtendB Iter : Ty.t) : Ty.t := Iter.
+        Global Typeclasses Opaque extender.
         
         (*
-            default fn extend(self, a: &mut ExtendA, b: &mut ExtendB) {
-                default_extend_tuple(self, a, b);
+            unsafe fn unchecked_extender<ExtendT, T>(
+                collection: &mut ExtendT,
+            ) -> impl FnMut(T) + use<'_, ExtendT, T>
+            where
+                ExtendT: Extend<T>,
+            {
+                // SAFETY: we make sure that there is enough space at the callsite of
+                // this function.
+                move |item| unsafe { collection.extend_one_unchecked(item) }
             }
         *)
+        Definition unchecked_extender (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ ExtendT; T ], [ collection ] =>
+            ltac:(M.monadic
+              (let collection :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendT ], collection |) in
+              M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.tuple [],
+                          M.alloc (| T, α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let item := M.copy (| T, γ |) in
+                                M.call_closure (|
+                                  Ty.tuple [],
+                                  M.get_trait_method (|
+                                    "core::iter::traits::collect::Extend",
+                                    ExtendT,
+                                    [],
+                                    [ T ],
+                                    "extend_one_unchecked",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| collection |) |)
+                                    |);
+                                    M.read (| item |)
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end))))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Global Instance Instance_IsFunction_unchecked_extender :
+          M.IsFunction.C
+            "core::iter::traits::collect::default_extend::unchecked_extender"
+            unchecked_extender.
+        Admitted.
+        Global Typeclasses Opaque unchecked_extender.
+        
+        Module Impl_core_iter_traits_collect_default_extend_SpecExtend_where_core_iter_traits_collect_Extend_ExtendT_T_where_core_iter_traits_iterator_Iterator_I_I_for_ExtendT.
+          Definition Self (ExtendT I T : Ty.t) : Ty.t := ExtendT.
+          
+          (*
+                  default fn extend(&mut self, iter: I) {
+                      let (lower_bound, _) = iter.size_hint();
+                      if lower_bound > 0 {
+                          self.extend_reserve(lower_bound);
+                      }
+          
+                      iter.for_each(extender(self))
+                  }
+          *)
+          Definition extend
+              (ExtendT I T : Ty.t)
+              (ε : list Value.t)
+              (τ : list Ty.t)
+              (α : list Value.t)
+              : M :=
+            let Self : Ty.t := Self ExtendT I T in
+            match ε, τ, α with
+            | [], [], [ self; iter ] =>
+              ltac:(M.monadic
+                (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendT ], self |) in
+                let iter := M.alloc (| I, iter |) in
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (|
+                    Ty.tuple
+                      [
+                        Ty.path "usize";
+                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                      ],
+                    M.call_closure (|
+                      Ty.tuple
+                        [
+                          Ty.path "usize";
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                        ],
+                      M.get_trait_method (|
+                        "core::iter::traits::iterator::Iterator",
+                        I,
+                        [],
+                        [],
+                        "size_hint",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, iter |) ]
+                    |)
+                  |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                        let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                        let lower_bound := M.copy (| Ty.path "usize", γ0_0 |) in
+                        M.read (|
+                          let~ _ : Ty.tuple [] :=
+                            M.match_operator (|
+                              Ty.tuple [],
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let γ :=
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.gt,
+                                          [
+                                            M.read (| lower_bound |);
+                                            Value.Integer IntegerKind.Usize 0
+                                          ]
+                                        |)
+                                      |) in
+                                    let _ :=
+                                      is_constant_or_break_match (|
+                                        M.read (| γ |),
+                                        Value.Bool true
+                                      |) in
+                                    M.read (|
+                                      let~ _ : Ty.tuple [] :=
+                                        M.call_closure (|
+                                          Ty.tuple [],
+                                          M.get_trait_method (|
+                                            "core::iter::traits::collect::Extend",
+                                            ExtendT,
+                                            [],
+                                            [ T ],
+                                            "extend_reserve",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |);
+                                            M.read (| lower_bound |)
+                                          ]
+                                        |) in
+                                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                    |)));
+                                fun γ => ltac:(M.monadic (Value.Tuple []))
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.tuple [],
+                            M.call_closure (|
+                              Ty.tuple [],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                I,
+                                [],
+                                [],
+                                "for_each",
+                                [],
+                                [ Ty.associated_unknown ]
+                              |),
+                              [
+                                M.read (| iter |);
+                                M.call_closure (|
+                                  Ty.associated_unknown,
+                                  M.get_function (|
+                                    "core::iter::traits::collect::default_extend.extender",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| self |) |)
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |)
+                        |)))
+                  ]
+                |)))
+            | _, _, _ => M.impossible "wrong number of arguments"
+            end.
+          
+          Axiom Implements :
+            forall (ExtendT I T : Ty.t),
+            M.IsTraitInstance
+              "core::iter::traits::collect::default_extend::SpecExtend"
+              (* Trait polymorphic consts *) []
+              (* Trait polymorphic types *) [ I ]
+              (Self ExtendT I T)
+              (* Instance *) [ ("extend", InstanceField.Method (extend ExtendT I T)) ].
+        End Impl_core_iter_traits_collect_default_extend_SpecExtend_where_core_iter_traits_collect_Extend_ExtendT_T_where_core_iter_traits_iterator_Iterator_I_I_for_ExtendT.
+        
+        Module Impl_core_iter_traits_collect_default_extend_SpecExtend_where_core_iter_traits_collect_Extend_ExtendT_T_where_core_iter_traits_marker_TrustedLen_I_I_for_ExtendT.
+          Definition Self (ExtendT I T : Ty.t) : Ty.t := ExtendT.
+          
+          (*
+                  fn extend(&mut self, iter: I) {
+                      let (lower_bound, upper_bound) = iter.size_hint();
+                      if lower_bound > 0 {
+                          self.extend_reserve(lower_bound);
+                      }
+          
+                      if upper_bound.is_none() {
+                          // We cannot reserve more than `usize::MAX` items, and this is likely to go out of memory anyway.
+                          iter.for_each(extender(self))
+                      } else {
+                          // SAFETY: We reserve enough space for the `size_hint`, and the iterator is
+                          // `TrustedLen` so its `size_hint` is exact.
+                          iter.for_each(unsafe { unchecked_extender(self) })
+                      }
+                  }
+          *)
+          Definition extend
+              (ExtendT I T : Ty.t)
+              (ε : list Value.t)
+              (τ : list Ty.t)
+              (α : list Value.t)
+              : M :=
+            let Self : Ty.t := Self ExtendT I T in
+            match ε, τ, α with
+            | [], [], [ self; iter ] =>
+              ltac:(M.monadic
+                (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendT ], self |) in
+                let iter := M.alloc (| I, iter |) in
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (|
+                    Ty.tuple
+                      [
+                        Ty.path "usize";
+                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                      ],
+                    M.call_closure (|
+                      Ty.tuple
+                        [
+                          Ty.path "usize";
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                        ],
+                      M.get_trait_method (|
+                        "core::iter::traits::iterator::Iterator",
+                        I,
+                        [],
+                        [],
+                        "size_hint",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, iter |) ]
+                    |)
+                  |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                        let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                        let lower_bound := M.copy (| Ty.path "usize", γ0_0 |) in
+                        let upper_bound :=
+                          M.copy (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                            γ0_1
+                          |) in
+                        M.read (|
+                          let~ _ : Ty.tuple [] :=
+                            M.match_operator (|
+                              Ty.tuple [],
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let γ :=
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.gt,
+                                          [
+                                            M.read (| lower_bound |);
+                                            Value.Integer IntegerKind.Usize 0
+                                          ]
+                                        |)
+                                      |) in
+                                    let _ :=
+                                      is_constant_or_break_match (|
+                                        M.read (| γ |),
+                                        Value.Bool true
+                                      |) in
+                                    M.read (|
+                                      let~ _ : Ty.tuple [] :=
+                                        M.call_closure (|
+                                          Ty.tuple [],
+                                          M.get_trait_method (|
+                                            "core::iter::traits::collect::Extend",
+                                            ExtendT,
+                                            [],
+                                            [ T ],
+                                            "extend_reserve",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |);
+                                            M.read (| lower_bound |)
+                                          ]
+                                        |) in
+                                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                    |)));
+                                fun γ => ltac:(M.monadic (Value.Tuple []))
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.tuple [],
+                            M.match_operator (|
+                              Ty.tuple [],
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let γ :=
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "usize" ],
+                                            "is_none",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.borrow (| Pointer.Kind.Ref, upper_bound |) ]
+                                        |)
+                                      |) in
+                                    let _ :=
+                                      is_constant_or_break_match (|
+                                        M.read (| γ |),
+                                        Value.Bool true
+                                      |) in
+                                    M.call_closure (|
+                                      Ty.tuple [],
+                                      M.get_trait_method (|
+                                        "core::iter::traits::iterator::Iterator",
+                                        I,
+                                        [],
+                                        [],
+                                        "for_each",
+                                        [],
+                                        [ Ty.associated_unknown ]
+                                      |),
+                                      [
+                                        M.read (| iter |);
+                                        M.call_closure (|
+                                          Ty.associated_unknown,
+                                          M.get_function (|
+                                            "core::iter::traits::collect::default_extend.extender",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)));
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.tuple [],
+                                      M.get_trait_method (|
+                                        "core::iter::traits::iterator::Iterator",
+                                        I,
+                                        [],
+                                        [],
+                                        "for_each",
+                                        [],
+                                        [ Ty.associated_unknown ]
+                                      |),
+                                      [
+                                        M.read (| iter |);
+                                        M.call_closure (|
+                                          Ty.associated_unknown,
+                                          M.get_function (|
+                                            "core::iter::traits::collect::default_extend.unchecked_extender",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)))
+                              ]
+                            |)
+                          |)
+                        |)))
+                  ]
+                |)))
+            | _, _, _ => M.impossible "wrong number of arguments"
+            end.
+          
+          Axiom Implements :
+            forall (ExtendT I T : Ty.t),
+            M.IsTraitInstance
+              "core::iter::traits::collect::default_extend::SpecExtend"
+              (* Trait polymorphic consts *) []
+              (* Trait polymorphic types *) [ I ]
+              (Self ExtendT I T)
+              (* Instance *) [ ("extend", InstanceField.Method (extend ExtendT I T)) ].
+        End Impl_core_iter_traits_collect_default_extend_SpecExtend_where_core_iter_traits_collect_Extend_ExtendT_T_where_core_iter_traits_marker_TrustedLen_I_I_for_ExtendT.
+      End default_extend.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_Tuple_A_B__for_Tuple_ExA_ExB_.
+        Definition Self (A B ExA ExB : Ty.t) : Ty.t := Ty.tuple [ ExA; ExB ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
         Definition extend
-            (A B ExtendA ExtendB Iter : Ty.t)
+            (A B ExA ExB : Ty.t)
             (ε : list Value.t)
             (τ : list Ty.t)
             (α : list Value.t)
             : M :=
-          let Self : Ty.t := Self A B ExtendA ExtendB Iter in
+          let Self : Ty.t := Self A B ExA ExB in
           match ε, τ, α with
-          | [], [], [ self; a; b ] =>
+          | [], [ T ], [ self; iter ] =>
             ltac:(M.monadic
-              (let self := M.alloc (| Iter, self |) in
-              let a := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendA ], a |) in
-              let b := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendB ], b |) in
+              (let self :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB ] ], self |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [ Ty.tuple [ ExA; ExB ]; T; Ty.tuple [ A; B ] ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B ExA ExB : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B ExA ExB in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB ] ], self |) in
+              let item := M.alloc (| Ty.tuple [ A; B ], item |) in
               M.read (|
                 let~ _ : Ty.tuple [] :=
                   M.call_closure (|
                     Ty.tuple [],
-                    M.get_function (|
-                      "core::iter::traits::collect::default_extend_tuple",
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
                       [],
-                      [ A; B; ExtendA; ExtendB; Iter ]
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
                     |),
                     [
-                      M.read (| self |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |)
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B ExA ExB : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B ExA ExB in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB ] ], self |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B ExA ExB : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B ExA ExB in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB ] ], self |) in
+              let item := M.alloc (| Ty.tuple [ A; B ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -941,278 +1517,6975 @@ Module iter.
           end.
         
         Axiom Implements :
-          forall (A B ExtendA ExtendB Iter : Ty.t),
+          forall (A B ExA ExB : Ty.t),
           M.IsTraitInstance
-            "core::iter::traits::collect::SpecTupleExtend"
+            "core::iter::traits::collect::Extend"
             (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) [ ExtendA; ExtendB ]
-            (Self A B ExtendA ExtendB Iter)
-            (* Instance *) [ ("extend", InstanceField.Method (extend A B ExtendA ExtendB Iter)) ].
-      End Impl_core_iter_traits_collect_SpecTupleExtend_where_core_iter_traits_collect_Extend_ExtendA_A_where_core_iter_traits_collect_Extend_ExtendB_B_where_core_iter_traits_iterator_Iterator_Iter_ExtendA_ExtendB_for_Iter.
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B ] ]
+            (Self A B ExA ExB)
+            (* Instance *)
+            [
+              ("extend", InstanceField.Method (extend A B ExA ExB));
+              ("extend_one", InstanceField.Method (extend_one A B ExA ExB));
+              ("extend_reserve", InstanceField.Method (extend_reserve A B ExA ExB));
+              ("extend_one_unchecked", InstanceField.Method (extend_one_unchecked A B ExA ExB))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_Tuple_A_B__for_Tuple_ExA_ExB_.
       
-      Module Impl_core_iter_traits_collect_SpecTupleExtend_where_core_iter_traits_collect_Extend_ExtendA_A_where_core_iter_traits_collect_Extend_ExtendB_B_where_core_iter_traits_marker_TrustedLen_Iter_ExtendA_ExtendB_for_Iter.
-        Definition Self (A B ExtendA ExtendB Iter : Ty.t) : Ty.t := Iter.
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_Tuple_A_B__for_Tuple_ExA_ExB_.
+        Definition Self (A B ExA ExB : Ty.t) : Ty.t := Ty.tuple [ ExA; ExB ].
         
         (*
-            fn extend(self, a: &mut ExtendA, b: &mut ExtendB) {
-                fn extend<'a, A, B>(
-                    a: &'a mut impl Extend<A>,
-                    b: &'a mut impl Extend<B>,
-                ) -> impl FnMut((), (A, B)) + 'a {
-                    // SAFETY: We reserve enough space for the `size_hint`, and the iterator is `TrustedLen`
-                    // so its `size_hint` is exact.
-                    move |(), (t, u)| unsafe {
-                        a.extend_one_unchecked(t);
-                        b.extend_one_unchecked(u);
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
                     }
-                }
-        
-                let (lower_bound, upper_bound) = self.size_hint();
-        
-                if upper_bound.is_none() {
-                    // We cannot reserve more than `usize::MAX` items, and this is likely to go out of memory anyway.
-                    default_extend_tuple(self, a, b);
-                    return;
-                }
-        
-                if lower_bound > 0 {
-                    a.extend_reserve(lower_bound);
-                    b.extend_reserve(lower_bound);
-                }
-        
-                self.fold((), extend(a, b));
-            }
         *)
-        Definition extend
-            (A B ExtendA ExtendB Iter : Ty.t)
+        Definition from_iter
+            (A B ExA ExB : Ty.t)
             (ε : list Value.t)
             (τ : list Ty.t)
             (α : list Value.t)
             : M :=
-          let Self : Ty.t := Self A B ExtendA ExtendB Iter in
+          let Self : Ty.t := Self A B ExA ExB in
           match ε, τ, α with
-          | [], [], [ self; a; b ] =>
+          | [], [ Iter ], [ iter ] =>
             ltac:(M.monadic
-              (let self := M.alloc (| Iter, self |) in
-              let a := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendA ], a |) in
-              let b := M.alloc (| Ty.apply (Ty.path "&mut") [] [ ExtendB ], b |) in
-              M.catch_return (Ty.tuple []) (|
-                ltac:(M.monadic
-                  (M.match_operator (|
-                    Ty.tuple [],
-                    M.alloc (|
-                      Ty.tuple
-                        [
-                          Ty.path "usize";
-                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
-                        ],
-                      M.call_closure (|
-                        Ty.tuple
-                          [
-                            Ty.path "usize";
-                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
-                          ],
-                        M.get_trait_method (|
-                          "core::iter::traits::iterator::Iterator",
-                          Iter,
-                          [],
-                          [],
-                          "size_hint",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                      |)
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
                     |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                          let lower_bound := M.copy (| Ty.path "usize", γ0_0 |) in
-                          let upper_bound :=
-                            M.copy (|
-                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                              γ0_1
-                            |) in
-                          M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.match_operator (|
-                                Ty.tuple [],
-                                M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ :=
-                                        M.use
-                                          (M.alloc (|
-                                            Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [ Ty.path "usize" ],
-                                                "is_none",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, upper_bound |) ]
-                                            |)
-                                          |)) in
-                                      let _ :=
-                                        is_constant_or_break_match (|
-                                          M.read (| γ |),
-                                          Value.Bool true
-                                        |) in
-                                      M.never_to_any (|
-                                        M.read (|
-                                          let~ _ : Ty.tuple [] :=
-                                            M.call_closure (|
-                                              Ty.tuple [],
-                                              M.get_function (|
-                                                "core::iter::traits::collect::default_extend_tuple",
-                                                [],
-                                                [ A; B; ExtendA; ExtendB; Iter ]
-                                              |),
-                                              [
-                                                M.read (| self |);
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| a |) |)
-                                                |);
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| b |) |)
-                                                |)
-                                              ]
-                                            |) in
-                                          M.return_ (| Value.Tuple [] |)
-                                        |)
-                                      |)));
-                                  fun γ => ltac:(M.monadic (Value.Tuple []))
-                                ]
-                              |) in
-                            let~ _ : Ty.tuple [] :=
-                              M.match_operator (|
-                                Ty.tuple [],
-                                M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ :=
-                                        M.use
-                                          (M.alloc (|
-                                            Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.gt,
-                                              [
-                                                M.read (| lower_bound |);
-                                                Value.Integer IntegerKind.Usize 0
-                                              ]
-                                            |)
-                                          |)) in
-                                      let _ :=
-                                        is_constant_or_break_match (|
-                                          M.read (| γ |),
-                                          Value.Bool true
-                                        |) in
-                                      M.read (|
-                                        let~ _ : Ty.tuple [] :=
-                                          M.call_closure (|
-                                            Ty.tuple [],
-                                            M.get_trait_method (|
-                                              "core::iter::traits::collect::Extend",
-                                              ExtendA,
-                                              [],
-                                              [ A ],
-                                              "extend_reserve",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| a |) |)
-                                              |);
-                                              M.read (| lower_bound |)
-                                            ]
-                                          |) in
-                                        let~ _ : Ty.tuple [] :=
-                                          M.call_closure (|
-                                            Ty.tuple [],
-                                            M.get_trait_method (|
-                                              "core::iter::traits::collect::Extend",
-                                              ExtendB,
-                                              [],
-                                              [ B ],
-                                              "extend_reserve",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| b |) |)
-                                              |);
-                                              M.read (| lower_bound |)
-                                            ]
-                                          |) in
-                                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                      |)));
-                                  fun γ => ltac:(M.monadic (Value.Tuple []))
-                                ]
-                              |) in
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "core::iter::traits::iterator::Iterator",
-                                  Iter,
-                                  [],
-                                  [],
-                                  "fold",
-                                  [],
-                                  [ Ty.tuple []; Ty.associated_unknown ]
-                                |),
-                                [
-                                  M.read (| self |);
-                                  Value.Tuple [];
-                                  M.call_closure (|
-                                    Ty.associated_unknown,
-                                    M.get_associated_function (| Self, "extend.extend", [], [] |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| a |) |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| b |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |) in
-                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)))
-                    ]
-                  |)))
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB ],
+                      [],
+                      [ Ty.tuple [ A; B ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
         Axiom Implements :
-          forall (A B ExtendA ExtendB Iter : Ty.t),
+          forall (A B ExA ExB : Ty.t),
           M.IsTraitInstance
-            "core::iter::traits::collect::SpecTupleExtend"
+            "core::iter::traits::collect::FromIterator"
             (* Trait polymorphic consts *) []
-            (* Trait polymorphic types *) [ ExtendA; ExtendB ]
-            (Self A B ExtendA ExtendB Iter)
-            (* Instance *) [ ("extend", InstanceField.Method (extend A B ExtendA ExtendB Iter)) ].
-      End Impl_core_iter_traits_collect_SpecTupleExtend_where_core_iter_traits_collect_Extend_ExtendA_A_where_core_iter_traits_collect_Extend_ExtendB_B_where_core_iter_traits_marker_TrustedLen_Iter_ExtendA_ExtendB_for_Iter.
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B ] ]
+            (Self A B ExA ExB)
+            (* Instance *) [ ("from_iter", InstanceField.Method (from_iter A B ExA ExB)) ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_Tuple_A_B__for_Tuple_ExA_ExB_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_Tuple_A_B_C__for_Tuple_ExA_ExB_ExC_.
+        Definition Self (A B C ExA ExB ExC : Ty.t) : Ty.t := Ty.tuple [ ExA; ExB; ExC ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C ExA ExB ExC : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C ExA ExB ExC in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC ] ], self |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [ Ty.tuple [ ExA; ExB; ExC ]; T; Ty.tuple [ A; B; C ] ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C ExA ExB ExC : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C ExA ExB ExC in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC ] ], self |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C ExA ExB ExC : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C ExA ExB ExC in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC ] ], self |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C ExA ExB ExC : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C ExA ExB ExC in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC ] ], self |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C ExA ExB ExC : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C ] ]
+            (Self A B C ExA ExB ExC)
+            (* Instance *)
+            [
+              ("extend", InstanceField.Method (extend A B C ExA ExB ExC));
+              ("extend_one", InstanceField.Method (extend_one A B C ExA ExB ExC));
+              ("extend_reserve", InstanceField.Method (extend_reserve A B C ExA ExB ExC));
+              ("extend_one_unchecked",
+                InstanceField.Method (extend_one_unchecked A B C ExA ExB ExC))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_Tuple_A_B_C__for_Tuple_ExA_ExB_ExC_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_Tuple_A_B_C__for_Tuple_ExA_ExB_ExC_.
+        Definition Self (A B C ExA ExB ExC : Ty.t) : Ty.t := Ty.tuple [ ExA; ExB; ExC ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C ExA ExB ExC : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C ExA ExB ExC in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB; ExC ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC ],
+                      [],
+                      [ Ty.tuple [ A; B; C ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C ExA ExB ExC : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C ] ]
+            (Self A B C ExA ExB ExC)
+            (* Instance *) [ ("from_iter", InstanceField.Method (from_iter A B C ExA ExB ExC)) ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_Tuple_A_B_C__for_Tuple_ExA_ExB_ExC_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_Tuple_A_B_C_D__for_Tuple_ExA_ExB_ExC_ExD_.
+        Definition Self (A B C D ExA ExB ExC ExD : Ty.t) : Ty.t := Ty.tuple [ ExA; ExB; ExC; ExD ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C D ExA ExB ExC ExD : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D ExA ExB ExC ExD in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD ] ],
+                  self
+                |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [ Ty.tuple [ ExA; ExB; ExC; ExD ]; T; Ty.tuple [ A; B; C; D ] ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C D ExA ExB ExC ExD : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D ExA ExB ExC ExD in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C D ExA ExB ExC ExD : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D ExA ExB ExC ExD in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD ] ],
+                  self
+                |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C D ExA ExB ExC ExD : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D ExA ExB ExC ExD in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D ExA ExB ExC ExD : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D ] ]
+            (Self A B C D ExA ExB ExC ExD)
+            (* Instance *)
+            [
+              ("extend", InstanceField.Method (extend A B C D ExA ExB ExC ExD));
+              ("extend_one", InstanceField.Method (extend_one A B C D ExA ExB ExC ExD));
+              ("extend_reserve", InstanceField.Method (extend_reserve A B C D ExA ExB ExC ExD));
+              ("extend_one_unchecked",
+                InstanceField.Method (extend_one_unchecked A B C D ExA ExB ExC ExD))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_Tuple_A_B_C_D__for_Tuple_ExA_ExB_ExC_ExD_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_Tuple_A_B_C_D__for_Tuple_ExA_ExB_ExC_ExD_.
+        Definition Self (A B C D ExA ExB ExC ExD : Ty.t) : Ty.t := Ty.tuple [ ExA; ExB; ExC; ExD ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C D ExA ExB ExC ExD : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D ExA ExB ExC ExD in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB; ExC; ExD ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC; ExD ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC; ExD ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC; ExD ],
+                      [],
+                      [ Ty.tuple [ A; B; C; D ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D ExA ExB ExC ExD : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D ] ]
+            (Self A B C D ExA ExB ExC ExD)
+            (* Instance *)
+            [ ("from_iter", InstanceField.Method (from_iter A B C D ExA ExB ExC ExD)) ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_Tuple_A_B_C_D__for_Tuple_ExA_ExB_ExC_ExD_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_Tuple_A_B_C_D_E__for_Tuple_ExA_ExB_ExC_ExD_ExE_.
+        Definition Self (A B C D E ExA ExB ExC ExD ExE : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C D E ExA ExB ExC ExD ExE : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E ExA ExB ExC ExD ExE in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE ] ],
+                  self
+                |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE ]; T; Ty.tuple [ A; B; C; D; E ] ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C D E ExA ExB ExC ExD ExE : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E ExA ExB ExC ExD ExE in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C D E ExA ExB ExC ExD ExE : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E ExA ExB ExC ExD ExE in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE ] ],
+                  self
+                |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C D E ExA ExB ExC ExD ExE : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E ExA ExB ExC ExD ExE in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E ExA ExB ExC ExD ExE : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E ] ]
+            (Self A B C D E ExA ExB ExC ExD ExE)
+            (* Instance *)
+            [
+              ("extend", InstanceField.Method (extend A B C D E ExA ExB ExC ExD ExE));
+              ("extend_one", InstanceField.Method (extend_one A B C D E ExA ExB ExC ExD ExE));
+              ("extend_reserve",
+                InstanceField.Method (extend_reserve A B C D E ExA ExB ExC ExD ExE));
+              ("extend_one_unchecked",
+                InstanceField.Method (extend_one_unchecked A B C D E ExA ExB ExC ExD ExE))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_Tuple_A_B_C_D_E__for_Tuple_ExA_ExB_ExC_ExD_ExE_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_Tuple_A_B_C_D_E__for_Tuple_ExA_ExB_ExC_ExD_ExE_.
+        Definition Self (A B C D E ExA ExB ExC ExD ExE : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C D E ExA ExB ExC ExD ExE : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E ExA ExB ExC ExD ExE in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB; ExC; ExD; ExE ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE ],
+                      [],
+                      [ Ty.tuple [ A; B; C; D; E ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E ExA ExB ExC ExD ExE : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E ] ]
+            (Self A B C D E ExA ExB ExC ExD ExE)
+            (* Instance *)
+            [ ("from_iter", InstanceField.Method (from_iter A B C D E ExA ExB ExC ExD ExE)) ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_Tuple_A_B_C_D_E__for_Tuple_ExA_ExB_ExC_ExD_ExE_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_Tuple_A_B_C_D_E_F__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_.
+        Definition Self (A B C D E F ExA ExB ExC ExD ExE ExF : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C D E F ExA ExB ExC ExD ExE ExF : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F ExA ExB ExC ExD ExE ExF in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ] ],
+                  self
+                |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ]; T; Ty.tuple [ A; B; C; D; E; F ] ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C D E F ExA ExB ExC ExD ExE ExF : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F ExA ExB ExC ExD ExE ExF in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C D E F ExA ExB ExC ExD ExE ExF : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F ExA ExB ExC ExD ExE ExF in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ] ],
+                  self
+                |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C D E F ExA ExB ExC ExD ExE ExF : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F ExA ExB ExC ExD ExE ExF in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F ExA ExB ExC ExD ExE ExF : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F ] ]
+            (Self A B C D E F ExA ExB ExC ExD ExE ExF)
+            (* Instance *)
+            [
+              ("extend", InstanceField.Method (extend A B C D E F ExA ExB ExC ExD ExE ExF));
+              ("extend_one", InstanceField.Method (extend_one A B C D E F ExA ExB ExC ExD ExE ExF));
+              ("extend_reserve",
+                InstanceField.Method (extend_reserve A B C D E F ExA ExB ExC ExD ExE ExF));
+              ("extend_one_unchecked",
+                InstanceField.Method (extend_one_unchecked A B C D E F ExA ExB ExC ExD ExE ExF))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_Tuple_A_B_C_D_E_F__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_Tuple_A_B_C_D_E_F__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_.
+        Definition Self (A B C D E F ExA ExB ExC ExD ExE ExF : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C D E F ExA ExB ExC ExD ExE ExF : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F ExA ExB ExC ExD ExE ExF in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF ],
+                      [],
+                      [ Ty.tuple [ A; B; C; D; E; F ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F ExA ExB ExC ExD ExE ExF : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F ] ]
+            (Self A B C D E F ExA ExB ExC ExD ExE ExF)
+            (* Instance *)
+            [ ("from_iter", InstanceField.Method (from_iter A B C D E F ExA ExB ExC ExD ExE ExF)) ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_Tuple_A_B_C_D_E_F__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_Tuple_A_B_C_D_E_F_G__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_.
+        Definition Self (A B C D E F G ExA ExB ExC ExD ExE ExF ExG : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C D E F G ExA ExB ExC ExD ExE ExF ExG : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G ExA ExB ExC ExD ExE ExF ExG in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ] ],
+                  self
+                |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ];
+                    T;
+                    Ty.tuple [ A; B; C; D; E; F; G ]
+                  ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C D E F G ExA ExB ExC ExD ExE ExF ExG : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G ExA ExB ExC ExD ExE ExF ExG in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C D E F G ExA ExB ExC ExD ExE ExF ExG : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G ExA ExB ExC ExD ExE ExF ExG in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ] ],
+                  self
+                |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C D E F G ExA ExB ExC ExD ExE ExF ExG : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G ExA ExB ExC ExD ExE ExF ExG in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G ExA ExB ExC ExD ExE ExF ExG : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G ] ]
+            (Self A B C D E F G ExA ExB ExC ExD ExE ExF ExG)
+            (* Instance *)
+            [
+              ("extend", InstanceField.Method (extend A B C D E F G ExA ExB ExC ExD ExE ExF ExG));
+              ("extend_one",
+                InstanceField.Method (extend_one A B C D E F G ExA ExB ExC ExD ExE ExF ExG));
+              ("extend_reserve",
+                InstanceField.Method (extend_reserve A B C D E F G ExA ExB ExC ExD ExE ExF ExG));
+              ("extend_one_unchecked",
+                InstanceField.Method
+                  (extend_one_unchecked A B C D E F G ExA ExB ExC ExD ExE ExF ExG))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_Tuple_A_B_C_D_E_F_G__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_Tuple_A_B_C_D_E_F_G__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_.
+        Definition Self (A B C D E F G ExA ExB ExC ExD ExE ExF ExG : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C D E F G ExA ExB ExC ExD ExE ExF ExG : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G ExA ExB ExC ExD ExE ExF ExG in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG ],
+                      [],
+                      [ Ty.tuple [ A; B; C; D; E; F; G ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G ExA ExB ExC ExD ExE ExF ExG : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G ] ]
+            (Self A B C D E F G ExA ExB ExC ExD ExE ExF ExG)
+            (* Instance *)
+            [
+              ("from_iter",
+                InstanceField.Method (from_iter A B C D E F G ExA ExB ExC ExD ExE ExF ExG))
+            ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_Tuple_A_B_C_D_E_F_G__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_Tuple_A_B_C_D_E_F_G_H__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_.
+        Definition Self (A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ] ],
+                  self
+                |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ];
+                    T;
+                    Ty.tuple [ A; B; C; D; E; F; G; H ]
+                  ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ] ],
+                  self
+                |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H ] ]
+            (Self A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH)
+            (* Instance *)
+            [
+              ("extend",
+                InstanceField.Method (extend A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH));
+              ("extend_one",
+                InstanceField.Method (extend_one A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH));
+              ("extend_reserve",
+                InstanceField.Method
+                  (extend_reserve A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH));
+              ("extend_one_unchecked",
+                InstanceField.Method
+                  (extend_one_unchecked A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_Tuple_A_B_C_D_E_F_G_H__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_Tuple_A_B_C_D_E_F_G_H__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_.
+        Definition Self (A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH ],
+                      [],
+                      [ Ty.tuple [ A; B; C; D; E; F; G; H ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H ] ]
+            (Self A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH)
+            (* Instance *)
+            [
+              ("from_iter",
+                InstanceField.Method (from_iter A B C D E F G H ExA ExB ExC ExD ExE ExF ExG ExH))
+            ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_Tuple_A_B_C_D_E_F_G_H__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_where_core_iter_traits_collect_Extend_ExI_I_Tuple_A_B_C_D_E_F_G_H_I__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_.
+        Definition Self (A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ] ],
+                  self
+                |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ];
+                    T;
+                    Ty.tuple [ A; B; C; D; E; F; G; H; I ]
+                  ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H; I ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 8 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ] ],
+                  self
+                |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H; I ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 8 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H; I ] ]
+            (Self A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI)
+            (* Instance *)
+            [
+              ("extend",
+                InstanceField.Method
+                  (extend A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI));
+              ("extend_one",
+                InstanceField.Method
+                  (extend_one A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI));
+              ("extend_reserve",
+                InstanceField.Method
+                  (extend_reserve A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI));
+              ("extend_one_unchecked",
+                InstanceField.Method
+                  (extend_one_unchecked A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_where_core_iter_traits_collect_Extend_ExI_I_Tuple_A_B_C_D_E_F_G_H_I__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_where_core_default_Default_ExI_where_core_iter_traits_collect_Extend_ExI_I_Tuple_A_B_C_D_E_F_G_H_I__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_.
+        Definition Self (A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI : Ty.t) : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI ],
+                      [],
+                      [ Ty.tuple [ A; B; C; D; E; F; G; H; I ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H; I ] ]
+            (Self A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI)
+            (* Instance *)
+            [
+              ("from_iter",
+                InstanceField.Method
+                  (from_iter A B C D E F G H I ExA ExB ExC ExD ExE ExF ExG ExH ExI))
+            ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_where_core_default_Default_ExI_where_core_iter_traits_collect_Extend_ExI_I_Tuple_A_B_C_D_E_F_G_H_I__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_where_core_iter_traits_collect_Extend_ExI_I_where_core_iter_traits_collect_Extend_ExJ_J_Tuple_A_B_C_D_E_F_G_H_I_J__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_.
+        Definition Self
+            (A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ : Ty.t)
+            : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ] ],
+                  self
+                |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ];
+                    T;
+                    Ty.tuple [ A; B; C; D; E; F; G; H; I; J ]
+                  ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H; I; J ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 8 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExJ,
+                      [],
+                      [ J ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 9 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 9 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ] ],
+                  self
+                |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExJ,
+                      [],
+                      [ J ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 9 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H; I; J ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 8 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExJ,
+                      [],
+                      [ J ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 9 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 9 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H; I; J ] ]
+            (Self A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ)
+            (* Instance *)
+            [
+              ("extend",
+                InstanceField.Method
+                  (extend A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ));
+              ("extend_one",
+                InstanceField.Method
+                  (extend_one A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ));
+              ("extend_reserve",
+                InstanceField.Method
+                  (extend_reserve A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ));
+              ("extend_one_unchecked",
+                InstanceField.Method
+                  (extend_one_unchecked
+                    A
+                    B
+                    C
+                    D
+                    E
+                    F
+                    G
+                    H
+                    I
+                    J
+                    ExA
+                    ExB
+                    ExC
+                    ExD
+                    ExE
+                    ExF
+                    ExG
+                    ExH
+                    ExI
+                    ExJ))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_where_core_iter_traits_collect_Extend_ExI_I_where_core_iter_traits_collect_Extend_ExJ_J_Tuple_A_B_C_D_E_F_G_H_I_J__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_where_core_default_Default_ExI_where_core_iter_traits_collect_Extend_ExI_I_where_core_default_Default_ExJ_where_core_iter_traits_collect_Extend_ExJ_J_Tuple_A_B_C_D_E_F_G_H_I_J__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_.
+        Definition Self
+            (A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ : Ty.t)
+            : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ ],
+                      [],
+                      [ Ty.tuple [ A; B; C; D; E; F; G; H; I; J ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H; I; J ] ]
+            (Self A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ)
+            (* Instance *)
+            [
+              ("from_iter",
+                InstanceField.Method
+                  (from_iter A B C D E F G H I J ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ))
+            ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_where_core_default_Default_ExI_where_core_iter_traits_collect_Extend_ExI_I_where_core_default_Default_ExJ_where_core_iter_traits_collect_Extend_ExJ_J_Tuple_A_B_C_D_E_F_G_H_I_J__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_where_core_iter_traits_collect_Extend_ExI_I_where_core_iter_traits_collect_Extend_ExJ_J_where_core_iter_traits_collect_Extend_ExK_K_Tuple_A_B_C_D_E_F_G_H_I_J_K__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_ExK_.
+        Definition Self
+            (A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK : Ty.t)
+            : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ] ],
+                  self
+                |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ];
+                    T;
+                    Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K ]
+                  ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 8 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExJ,
+                      [],
+                      [ J ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 9 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 9 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExK,
+                      [],
+                      [ K ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 10 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 10 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ] ],
+                  self
+                |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExJ,
+                      [],
+                      [ J ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 9 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExK,
+                      [],
+                      [ K ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 10 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 8 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExJ,
+                      [],
+                      [ J ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 9 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 9 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExK,
+                      [],
+                      [ K ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 10 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 10 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K ] ]
+            (Self A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK)
+            (* Instance *)
+            [
+              ("extend",
+                InstanceField.Method
+                  (extend A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK));
+              ("extend_one",
+                InstanceField.Method
+                  (extend_one A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK));
+              ("extend_reserve",
+                InstanceField.Method
+                  (extend_reserve
+                    A
+                    B
+                    C
+                    D
+                    E
+                    F
+                    G
+                    H
+                    I
+                    J
+                    K
+                    ExA
+                    ExB
+                    ExC
+                    ExD
+                    ExE
+                    ExF
+                    ExG
+                    ExH
+                    ExI
+                    ExJ
+                    ExK));
+              ("extend_one_unchecked",
+                InstanceField.Method
+                  (extend_one_unchecked
+                    A
+                    B
+                    C
+                    D
+                    E
+                    F
+                    G
+                    H
+                    I
+                    J
+                    K
+                    ExA
+                    ExB
+                    ExC
+                    ExD
+                    ExE
+                    ExF
+                    ExG
+                    ExH
+                    ExI
+                    ExJ
+                    ExK))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_where_core_iter_traits_collect_Extend_ExI_I_where_core_iter_traits_collect_Extend_ExJ_J_where_core_iter_traits_collect_Extend_ExK_K_Tuple_A_B_C_D_E_F_G_H_I_J_K__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_ExK_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_where_core_default_Default_ExI_where_core_iter_traits_collect_Extend_ExI_I_where_core_default_Default_ExJ_where_core_iter_traits_collect_Extend_ExJ_J_where_core_default_Default_ExK_where_core_iter_traits_collect_Extend_ExK_K_Tuple_A_B_C_D_E_F_G_H_I_J_K__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_ExK_.
+        Definition Self
+            (A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK : Ty.t)
+            : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res : Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK ],
+                      [],
+                      [ Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K ] ]
+            (Self A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK)
+            (* Instance *)
+            [
+              ("from_iter",
+                InstanceField.Method
+                  (from_iter A B C D E F G H I J K ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK))
+            ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_where_core_default_Default_ExI_where_core_iter_traits_collect_Extend_ExI_I_where_core_default_Default_ExJ_where_core_iter_traits_collect_Extend_ExJ_J_where_core_default_Default_ExK_where_core_iter_traits_collect_Extend_ExK_K_Tuple_A_B_C_D_E_F_G_H_I_J_K__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_ExK_.
+      
+      Module Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_where_core_iter_traits_collect_Extend_ExI_I_where_core_iter_traits_collect_Extend_ExJ_J_where_core_iter_traits_collect_Extend_ExK_K_where_core_iter_traits_collect_Extend_ExL_L_Tuple_A_B_C_D_E_F_G_H_I_J_K_L__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_ExK_ExL_.
+        Definition Self
+            (A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL : Ty.t)
+            : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ].
+        
+        (*
+                    fn extend<T: IntoIterator<Item = ($($ty,)+)>>(&mut self, iter: T) {
+                        default_extend(self, iter)
+                    }
+        *)
+        Definition extend
+            (A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL in
+          match ε, τ, α with
+          | [], [ T ], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ] ],
+                  self
+                |) in
+              let iter := M.alloc (| T, iter |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (|
+                  "core::iter::traits::collect::default_extend",
+                  [],
+                  [
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ];
+                    T;
+                    Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K; L ]
+                  ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| iter |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_one(&mut self, item: ($($ty,)+)) {
+                        $(self.$index.extend_one(item.$index);)+
+                    }
+        *)
+        Definition extend_one
+            (A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K; L ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 8 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExJ,
+                      [],
+                      [ J ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 9 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 9 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExK,
+                      [],
+                      [ K ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 10 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 10 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExL,
+                      [],
+                      [ L ],
+                      "extend_one",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 11 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 11 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    fn extend_reserve(&mut self, additional: usize) {
+                        $(self.$index.extend_reserve(additional);)+
+                    }
+        *)
+        Definition extend_reserve
+            (A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL in
+          match ε, τ, α with
+          | [], [], [ self; additional ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ] ],
+                  self
+                |) in
+              let additional := M.alloc (| Ty.path "usize", additional |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExJ,
+                      [],
+                      [ J ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 9 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExK,
+                      [],
+                      [ K ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 10 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExL,
+                      [],
+                      [ L ],
+                      "extend_reserve",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 11 |)
+                      |);
+                      M.read (| additional |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        (*
+                    unsafe fn extend_one_unchecked(&mut self, item: ($($ty,)+)) {
+                        // SAFETY: Those are our safety preconditions, and we correctly forward `extend_reserve`.
+                        unsafe {
+                            $(self.$index.extend_one_unchecked(item.$index);)+
+                        }
+                    }
+        *)
+        Definition extend_one_unchecked
+            (A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL in
+          match ε, τ, α with
+          | [], [], [ self; item ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ] ],
+                  self
+                |) in
+              let item := M.alloc (| Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K; L ], item |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExA,
+                      [],
+                      [ A ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExB,
+                      [],
+                      [ B ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExC,
+                      [],
+                      [ C ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 2 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 2 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExD,
+                      [],
+                      [ D ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 3 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 3 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExE,
+                      [],
+                      [ E ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 4 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 4 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExF,
+                      [],
+                      [ F ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 5 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 5 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExG,
+                      [],
+                      [ G ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 6 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 6 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExH,
+                      [],
+                      [ H ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 7 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 7 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExI,
+                      [],
+                      [ I ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 8 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 8 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExJ,
+                      [],
+                      [ J ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 9 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 9 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExK,
+                      [],
+                      [ K ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 10 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 10 |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      ExL,
+                      [],
+                      [ L ],
+                      "extend_one_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 11 |)
+                      |);
+                      M.read (| M.SubPointer.get_tuple_field (| item, 11 |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::Extend"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K; L ] ]
+            (Self A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL)
+            (* Instance *)
+            [
+              ("extend",
+                InstanceField.Method
+                  (extend A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL));
+              ("extend_one",
+                InstanceField.Method
+                  (extend_one
+                    A
+                    B
+                    C
+                    D
+                    E
+                    F
+                    G
+                    H
+                    I
+                    J
+                    K
+                    L
+                    ExA
+                    ExB
+                    ExC
+                    ExD
+                    ExE
+                    ExF
+                    ExG
+                    ExH
+                    ExI
+                    ExJ
+                    ExK
+                    ExL));
+              ("extend_reserve",
+                InstanceField.Method
+                  (extend_reserve
+                    A
+                    B
+                    C
+                    D
+                    E
+                    F
+                    G
+                    H
+                    I
+                    J
+                    K
+                    L
+                    ExA
+                    ExB
+                    ExC
+                    ExD
+                    ExE
+                    ExF
+                    ExG
+                    ExH
+                    ExI
+                    ExJ
+                    ExK
+                    ExL));
+              ("extend_one_unchecked",
+                InstanceField.Method
+                  (extend_one_unchecked
+                    A
+                    B
+                    C
+                    D
+                    E
+                    F
+                    G
+                    H
+                    I
+                    J
+                    K
+                    L
+                    ExA
+                    ExB
+                    ExC
+                    ExD
+                    ExE
+                    ExF
+                    ExG
+                    ExH
+                    ExI
+                    ExJ
+                    ExK
+                    ExL))
+            ].
+      End Impl_core_iter_traits_collect_Extend_where_core_iter_traits_collect_Extend_ExA_A_where_core_iter_traits_collect_Extend_ExB_B_where_core_iter_traits_collect_Extend_ExC_C_where_core_iter_traits_collect_Extend_ExD_D_where_core_iter_traits_collect_Extend_ExE_E_where_core_iter_traits_collect_Extend_ExF_F_where_core_iter_traits_collect_Extend_ExG_G_where_core_iter_traits_collect_Extend_ExH_H_where_core_iter_traits_collect_Extend_ExI_I_where_core_iter_traits_collect_Extend_ExJ_J_where_core_iter_traits_collect_Extend_ExK_K_where_core_iter_traits_collect_Extend_ExL_L_Tuple_A_B_C_D_E_F_G_H_I_J_K_L__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_ExK_ExL_.
+      
+      Module Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_where_core_default_Default_ExI_where_core_iter_traits_collect_Extend_ExI_I_where_core_default_Default_ExJ_where_core_iter_traits_collect_Extend_ExJ_J_where_core_default_Default_ExK_where_core_iter_traits_collect_Extend_ExK_K_where_core_default_Default_ExL_where_core_iter_traits_collect_Extend_ExL_L_Tuple_A_B_C_D_E_F_G_H_I_J_K_L__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_ExK_ExL_.
+        Definition Self
+            (A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL : Ty.t)
+            : Ty.t :=
+          Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ].
+        
+        (*
+                    fn from_iter<Iter: IntoIterator<Item = ($($ty,)+)>>(iter: Iter) -> Self {
+                        let mut res = Self::default();
+                        res.extend(iter);
+                        res
+                    }
+        *)
+        Definition from_iter
+            (A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t :=
+            Self A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL in
+          match ε, τ, α with
+          | [], [ Iter ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| Iter, iter |) in
+              M.read (|
+                let~ res :
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ] :=
+                  M.call_closure (|
+                    Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::Extend",
+                      Ty.tuple [ ExA; ExB; ExC; ExD; ExE; ExF; ExG; ExH; ExI; ExJ; ExK; ExL ],
+                      [],
+                      [ Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K; L ] ],
+                      "extend",
+                      [],
+                      [ Iter ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                  |) in
+                res
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL : Ty.t),
+          M.IsTraitInstance
+            "core::iter::traits::collect::FromIterator"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.tuple [ A; B; C; D; E; F; G; H; I; J; K; L ] ]
+            (Self A B C D E F G H I J K L ExA ExB ExC ExD ExE ExF ExG ExH ExI ExJ ExK ExL)
+            (* Instance *)
+            [
+              ("from_iter",
+                InstanceField.Method
+                  (from_iter
+                    A
+                    B
+                    C
+                    D
+                    E
+                    F
+                    G
+                    H
+                    I
+                    J
+                    K
+                    L
+                    ExA
+                    ExB
+                    ExC
+                    ExD
+                    ExE
+                    ExF
+                    ExG
+                    ExH
+                    ExI
+                    ExJ
+                    ExK
+                    ExL))
+            ].
+      End Impl_core_iter_traits_collect_FromIterator_where_core_default_Default_ExA_where_core_iter_traits_collect_Extend_ExA_A_where_core_default_Default_ExB_where_core_iter_traits_collect_Extend_ExB_B_where_core_default_Default_ExC_where_core_iter_traits_collect_Extend_ExC_C_where_core_default_Default_ExD_where_core_iter_traits_collect_Extend_ExD_D_where_core_default_Default_ExE_where_core_iter_traits_collect_Extend_ExE_E_where_core_default_Default_ExF_where_core_iter_traits_collect_Extend_ExF_F_where_core_default_Default_ExG_where_core_iter_traits_collect_Extend_ExG_G_where_core_default_Default_ExH_where_core_iter_traits_collect_Extend_ExH_H_where_core_default_Default_ExI_where_core_iter_traits_collect_Extend_ExI_I_where_core_default_Default_ExJ_where_core_iter_traits_collect_Extend_ExJ_J_where_core_default_Default_ExK_where_core_iter_traits_collect_Extend_ExK_K_where_core_default_Default_ExL_where_core_iter_traits_collect_Extend_ExL_L_Tuple_A_B_C_D_E_F_G_H_I_J_K_L__for_Tuple_ExA_ExB_ExC_ExD_ExE_ExF_ExG_ExH_ExI_ExJ_ExK_ExL_.
     End collect.
   End traits.
 End iter.

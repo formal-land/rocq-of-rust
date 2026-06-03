@@ -48,6 +48,18 @@ Module Impl_core_default_Default_for_updated_incrementer_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_updated_incrementer_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_updated_incrementer_AccountId.
+  Definition Self : Ty.t := Ty.path "updated_incrementer::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_updated_incrementer_AccountId.
+
 Module Impl_core_clone_Clone_for_updated_incrementer_AccountId.
   Definition Self : Ty.t := Ty.path "updated_incrementer::AccountId".
   
@@ -291,79 +303,153 @@ Module Impl_updated_incrementer_Incrementer.
                   Ty.tuple [],
                   M.get_function (| "std::io::stdio::_print", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
+                    M.read (|
+                      let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] :=
+                        Value.Tuple
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "updated_incrementer::Incrementer",
+                                "count"
+                              |)
+                            |)
+                          ] in
+                      let~ args :
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [ Ty.path "core::fmt::rt::Argument" ] :=
+                        Value.Array
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::rt::Argument",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::rt::Argument",
+                                "new_display",
+                                [],
+                                [ Ty.path "u32" ]
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                  |)
+                                |)
+                              ]
+                            |)
+                          ] in
+                      M.alloc (|
                         Ty.path "core::fmt::Arguments",
-                        "new_v1",
-                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new",
+                            [ Value.Integer IntegerKind.Usize 81; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  81
                                   [
-                                    mk_str (| "The new count is " |);
-                                    mk_str (|
-                                      ", it was modified using the updated `new_incrementer` code.
-"
-                                    |)
+                                    17;
+                                    84;
+                                    104;
+                                    101;
+                                    32;
+                                    110;
+                                    101;
+                                    119;
+                                    32;
+                                    99;
+                                    111;
+                                    117;
+                                    110;
+                                    116;
+                                    32;
+                                    105;
+                                    115;
+                                    32;
+                                    192;
+                                    60;
+                                    44;
+                                    32;
+                                    105;
+                                    116;
+                                    32;
+                                    119;
+                                    97;
+                                    115;
+                                    32;
+                                    109;
+                                    111;
+                                    100;
+                                    105;
+                                    102;
+                                    105;
+                                    101;
+                                    100;
+                                    32;
+                                    117;
+                                    115;
+                                    105;
+                                    110;
+                                    103;
+                                    32;
+                                    116;
+                                    104;
+                                    101;
+                                    32;
+                                    117;
+                                    112;
+                                    100;
+                                    97;
+                                    116;
+                                    101;
+                                    100;
+                                    32;
+                                    96;
+                                    110;
+                                    101;
+                                    119;
+                                    95;
+                                    105;
+                                    110;
+                                    99;
+                                    114;
+                                    101;
+                                    109;
+                                    101;
+                                    110;
+                                    116;
+                                    101;
+                                    114;
+                                    96;
+                                    32;
+                                    99;
+                                    111;
+                                    100;
+                                    101;
+                                    46;
+                                    10;
+                                    0
                                   ]
                               |)
-                            |)
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
+                            |);
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_display",
-                                        [],
-                                        [ Ty.path "u32" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "updated_incrementer::Incrementer",
-                                                "count"
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                              |)
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                             |)
-                          |)
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   ]
                 |) in
@@ -523,70 +609,107 @@ Module Impl_updated_incrementer_Incrementer.
                   Ty.tuple [],
                   M.get_function (| "std::io::stdio::_print", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Arguments",
-                        "new_v1",
-                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [ mk_str (| "Switched code hash to " |); mk_str (| ".
-" |) ]
-                              |)
+                    M.read (|
+                      let~ args :
+                          Ty.tuple
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                    [ Ty.path "u8" ]
+                                ]
+                            ] :=
+                        Value.Tuple [ M.borrow (| Pointer.Kind.Ref, code_hash |) ] in
+                      let~ args :
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [ Ty.path "core::fmt::rt::Argument" ] :=
+                        Value.Array
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::rt::Argument",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::rt::Argument",
+                                "new_debug",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                    [ Ty.path "u8" ]
+                                ]
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                  |)
+                                |)
+                              ]
                             |)
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
+                          ] in
+                      M.alloc (|
+                        Ty.path "core::fmt::Arguments",
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new",
+                            [ Value.Integer IntegerKind.Usize 28; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  28
                                   [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_debug",
-                                        [],
-                                        [
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 32 ]
-                                            [ Ty.path "u8" ]
-                                        ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.borrow (| Pointer.Kind.Ref, code_hash |) |)
-                                        |)
-                                      ]
-                                    |)
+                                    22;
+                                    83;
+                                    119;
+                                    105;
+                                    116;
+                                    99;
+                                    104;
+                                    101;
+                                    100;
+                                    32;
+                                    99;
+                                    111;
+                                    100;
+                                    101;
+                                    32;
+                                    104;
+                                    97;
+                                    115;
+                                    104;
+                                    32;
+                                    116;
+                                    111;
+                                    32;
+                                    192;
+                                    2;
+                                    46;
+                                    10;
+                                    0
                                   ]
                               |)
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                             |)
-                          |)
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   ]
                 |) in

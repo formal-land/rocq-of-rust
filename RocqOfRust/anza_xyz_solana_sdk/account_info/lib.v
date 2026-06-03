@@ -1049,12 +1049,11 @@ Module Impl_solana_account_info_AccountInfo.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "solana_account_info::AccountInfo",
-                      "is_signer"
-                    |)) in
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "solana_account_info::AccountInfo",
+                    "is_signer"
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::option::Option::Some"
@@ -3414,15 +3413,14 @@ Module Impl_solana_account_info_AccountInfo.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [ M.read (| new_len |); M.read (| old_len |) ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [ M.read (| new_len |); M.read (| old_len |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -3457,32 +3455,31 @@ Module Impl_solana_account_info_AccountInfo.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [
-                                  M.call_closure (|
+                              BinOp.gt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
                                     Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.path "usize",
-                                      "saturating_sub",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| new_len |); M.read (| original_data_len |) ]
-                                  |);
-                                  M.read (|
-                                    get_constant (|
-                                      "solana_account_info::MAX_PERMITTED_DATA_INCREASE",
-                                      Ty.path "usize"
-                                    |)
+                                    "saturating_sub",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| new_len |); M.read (| original_data_len |) ]
+                                |);
+                                M.read (|
+                                  get_constant (|
+                                    "solana_account_info::MAX_PERMITTED_DATA_INCREASE",
+                                    Ty.path "usize"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -3642,15 +3639,14 @@ Module Impl_solana_account_info_AccountInfo.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [ M.read (| len_increase |); Value.Integer IntegerKind.Usize 0 ]
-                              |)
-                            |)) in
+                              BinOp.gt,
+                              [ M.read (| len_increase |); Value.Integer IntegerKind.Usize 0 ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -4633,35 +4629,34 @@ Definition next_account_infos (ε : list Value.t) (τ : list Ty.t) (α : list Va
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.lt,
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "slice")
-                                      []
-                                      [ Ty.path "solana_account_info::AccountInfo" ],
-                                    "len",
-                                    [],
+                            BinOp.lt,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "slice")
                                     []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| accounts |) |)
-                                    |)
-                                  ]
-                                |);
-                                M.read (| count |)
-                              ]
-                            |)
-                          |)) in
+                                    [ Ty.path "solana_account_info::AccountInfo" ],
+                                  "len",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| accounts |) |)
+                                  |)
+                                ]
+                              |);
+                              M.read (| count |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.read (|
@@ -5170,8 +5165,10 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
-                    (* `OffsetOf` expression are not handled yet *)
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    get_constant (|
+                      "solana_account_info::check_type_assumptions_discriminant",
+                      Ty.path "usize"
+                    |)
                   |);
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -5195,24 +5192,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5316,38 +5312,37 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      UnOp.not,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialEq",
-                                            Ty.path "solana_address::Address",
-                                            [],
-                                            [ Ty.path "solana_address::Address" ],
-                                            "eq",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        M.get_trait_method (|
+                                          "core::cmp::PartialEq",
+                                          Ty.path "solana_address::Address",
+                                          [],
+                                          [ Ty.path "solana_address::Address" ],
+                                          "eq",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |);
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -5416,8 +5411,10 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
-                    (* `OffsetOf` expression are not handled yet *)
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    get_constant (|
+                      "solana_account_info::check_type_assumptions_discriminant",
+                      Ty.path "usize"
+                    |)
                   |);
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -5441,24 +5438,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5647,24 +5643,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      UnOp.not,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [
-                                            M.read (| M.deref (| M.read (| left_val |) |) |);
-                                            M.read (| M.deref (| M.read (| right_val |) |) |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.eq,
+                                        [
+                                          M.read (| M.deref (| M.read (| left_val |) |) |);
+                                          M.read (| M.deref (| M.read (| right_val |) |) |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -5730,8 +5725,10 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
-                    (* `OffsetOf` expression are not handled yet *)
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    get_constant (|
+                      "solana_account_info::check_type_assumptions_discriminant",
+                      Ty.path "usize"
+                    |)
                   |);
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -5755,24 +5752,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6065,38 +6061,37 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      UnOp.not,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialEq",
-                                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                            [],
-                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                            "eq",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        M.get_trait_method (|
+                                          "core::cmp::PartialEq",
+                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                          [],
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          "eq",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |);
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -6165,8 +6160,10 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
-                    (* `OffsetOf` expression are not handled yet *)
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    get_constant (|
+                      "solana_account_info::check_type_assumptions_discriminant",
+                      Ty.path "usize"
+                    |)
                   |);
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -6190,24 +6187,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6315,38 +6311,37 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      UnOp.not,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialEq",
-                                            Ty.path "solana_address::Address",
-                                            [],
-                                            [ Ty.path "solana_address::Address" ],
-                                            "eq",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        M.get_trait_method (|
+                                          "core::cmp::PartialEq",
+                                          Ty.path "solana_address::Address",
+                                          [],
+                                          [ Ty.path "solana_address::Address" ],
+                                          "eq",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |);
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -6417,8 +6412,10 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        (* `OffsetOf` expression are not handled yet *)
-                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                        get_constant (|
+                          "solana_account_info::check_type_assumptions_discriminant",
+                          Ty.path "usize"
+                        |)
                       |);
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6442,24 +6439,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      UnOp.not,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [
-                                            M.read (| M.deref (| M.read (| left_val |) |) |);
-                                            M.read (| M.deref (| M.read (| right_val |) |) |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.eq,
+                                        [
+                                          M.read (| M.deref (| M.read (| left_val |) |) |);
+                                          M.read (| M.deref (| M.read (| right_val |) |) |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -6552,24 +6548,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      UnOp.not,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [
-                                            M.read (| M.deref (| M.read (| left_val |) |) |);
-                                            M.read (| M.deref (| M.read (| right_val |) |) |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.eq,
+                                        [
+                                          M.read (| M.deref (| M.read (| left_val |) |) |);
+                                          M.read (| M.deref (| M.read (| right_val |) |) |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -6635,8 +6630,10 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
-                    (* `OffsetOf` expression are not handled yet *)
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    get_constant (|
+                      "solana_account_info::check_type_assumptions_discriminant",
+                      Ty.path "usize"
+                    |)
                   |);
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -6660,24 +6657,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6746,15 +6742,14 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [ M.read (| M.deref (| M.read (| is_signer_ptr |) |) |) ]
-                            |)
-                          |)) in
+                            UnOp.not,
+                            [ M.read (| M.deref (| M.read (| is_signer_ptr |) |) |) ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -6781,8 +6776,10 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
-                    (* `OffsetOf` expression are not handled yet *)
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    get_constant (|
+                      "solana_account_info::check_type_assumptions_discriminant",
+                      Ty.path "usize"
+                    |)
                   |);
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -6806,24 +6803,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6892,21 +6888,20 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [ M.read (| M.deref (| M.read (| is_writable_ptr |) |) |) ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                UnOp.not,
+                                [ M.read (| M.deref (| M.read (| is_writable_ptr |) |) |) ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -6933,8 +6928,10 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
-                    (* `OffsetOf` expression are not handled yet *)
-                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    get_constant (|
+                      "solana_account_info::check_type_assumptions_discriminant",
+                      Ty.path "usize"
+                    |)
                   |);
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -6958,24 +6955,23 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -7042,15 +7038,14 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
-                          [ M.read (| M.deref (| M.read (| executable_ptr |) |) |) ]
-                        |)
-                      |)) in
+                        UnOp.not,
+                        [ M.read (| M.deref (| M.read (| executable_ptr |) |) |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.never_to_any (|
                     M.call_closure (|

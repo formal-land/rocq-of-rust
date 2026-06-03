@@ -3,6 +3,32 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module array.
   Module iter.
+    Axiom InnerSized :
+      forall (N : Value.t) (T : Ty.t),
+      (Ty.apply (Ty.path "core::array::iter::InnerSized") [ N ] [ T ]) =
+        (Ty.apply
+          (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+          []
+          [
+            Ty.apply
+              (Ty.path "array")
+              [ N ]
+              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+          ]).
+    
+    Axiom InnerUnsized :
+      forall (T : Ty.t),
+      (Ty.apply (Ty.path "core::array::iter::InnerUnsized") [] [ T ]) =
+        (Ty.apply
+          (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+          []
+          [
+            Ty.apply
+              (Ty.path "slice")
+              []
+              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+          ]).
+    
     (* StructRecord
       {
         name := "IntoIter";
@@ -10,45 +36,30 @@ Module array.
         ty_params := [ "T" ];
         fields :=
           [
-            ("data",
+            ("inner",
               Ty.apply
-                (Ty.path "array")
-                [ N ]
-                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]);
-            ("alive", Ty.path "core::ops::index_range::IndexRange")
+                (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ N ]
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ]
+                ])
           ];
       } *)
     
-    Module Impl_core_iter_traits_collect_IntoIterator_for_array_N_T.
-      Definition Self (N : Value.t) (T : Ty.t) : Ty.t := Ty.apply (Ty.path "array") [ N ] [ T ].
-      
-      (*     type Item = T; *)
-      Definition _Item (N : Value.t) (T : Ty.t) : Ty.t := T.
-      
-      (*     type IntoIter = IntoIter<T, N>; *)
-      Definition _IntoIter (N : Value.t) (T : Ty.t) : Ty.t :=
+    Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_core_array_iter_IntoIter_N_T.
+      Definition Self (N : Value.t) (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ].
       
-      (*
-          fn into_iter(self) -> Self::IntoIter {
-              // SAFETY: The transmute here is actually safe. The docs of `MaybeUninit`
-              // promise:
-              //
-              // > `MaybeUninit<T>` is guaranteed to have the same size and alignment
-              // > as `T`.
-              //
-              // The docs even show a transmute from an array of `MaybeUninit<T>` to
-              // an array of `T`.
-              //
-              // With that, this initialization satisfies the invariants.
-              //
-              // FIXME: If normal `transmute` ever gets smart enough to allow this
-              // directly, use it instead of `transmute_unchecked`.
-              let data: [MaybeUninit<T>; N] = unsafe { transmute_unchecked(self) };
-              IntoIter { data, alive: IndexRange::zero_to(N) }
-          }
-      *)
-      Definition into_iter
+      (* Clone *)
+      Definition clone
           (N : Value.t)
           (T : Ty.t)
           (ε : list Value.t)
@@ -59,75 +70,380 @@ Module array.
         match ε, τ, α with
         | [], [], [ self ] =>
           ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "array") [ N ] [ T ], self |) in
-            M.read (|
-              let~ data :
-                  Ty.apply
-                    (Ty.path "array")
-                    [ N ]
-                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ] :=
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "array")
-                    [ N ]
-                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                  M.get_function (|
-                    "core::intrinsics::transmute_unchecked",
-                    [],
-                    [
-                      Ty.apply (Ty.path "array") [ N ] [ T ];
-                      Ty.apply
-                        (Ty.path "array")
-                        [ N ]
-                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                    ]
-                  |),
-                  [ M.read (| self |) ]
-                |) in
+            (let self :=
               M.alloc (|
-                Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
-                Value.mkStructRecord
-                  "core::array::iter::IntoIter"
-                  [ N ]
-                  [ T ]
-                  [
-                    ("data", M.read (| data |));
-                    ("alive",
-                      M.call_closure (|
-                        Ty.path "core::ops::index_range::IndexRange",
-                        M.get_associated_function (|
-                          Ty.path "core::ops::index_range::IndexRange",
-                          "zero_to",
-                          [],
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] ],
+                self
+              |) in
+            Value.mkStructRecord
+              "core::array::iter::IntoIter"
+              [ N ]
+              [ T ]
+              [
+                ("inner",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
                           []
-                        |),
-                        [ N ]
-                      |))
-                  ]
-              |)
-            |)))
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ N ]
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                          ]
+                      ],
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ N ]
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
+                            ]
+                        ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::array::iter::IntoIter",
+                              "inner"
+                            |)
+                          |)
+                        |)
+                      |)
+                    ]
+                  |))
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       Axiom Implements :
         forall (N : Value.t) (T : Ty.t),
         M.IsTraitInstance
-          "core::iter::traits::collect::IntoIterator"
+          "core::clone::Clone"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           (Self N T)
-          (* Instance *)
-          [
-            ("Item", InstanceField.Ty (_Item N T));
-            ("IntoIter", InstanceField.Ty (_IntoIter N T));
-            ("into_iter", InstanceField.Method (into_iter N T))
-          ].
-    End Impl_core_iter_traits_collect_IntoIterator_for_array_N_T.
+          (* Instance *) [ ("clone", InstanceField.Method (clone N T)) ].
+    End Impl_core_clone_Clone_where_core_clone_Clone_T_for_core_array_iter_IntoIter_N_T.
     
     Module Impl_core_array_iter_IntoIter_N_T.
       Definition Self (N : Value.t) (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ].
       
+      (*
+          fn unsize(&self) -> &InnerUnsized<T> {
+              self.inner.deref()
+          }
+      *)
+      Definition unsize
+          (N : Value.t)
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self N T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ]
+                ],
+              M.pointer_coercion
+                M.PointerCoercion.Unsize
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ N ]
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                      ]
+                  ])
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                      ]
+                  ]),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ N ]
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
+                            ]
+                        ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ N ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::array::iter::IntoIter",
+                            "inner"
+                          |)
+                        |)
+                      ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_unsize :
+        forall (N : Value.t) (T : Ty.t),
+        M.IsAssociatedFunction.C (Self N T) "unsize" (unsize N T).
+      Admitted.
+      Global Typeclasses Opaque unsize.
+      
+      (*
+          fn unsize_mut(&mut self) -> &mut InnerUnsized<T> {
+              self.inner.deref_mut()
+          }
+      *)
+      Definition unsize_mut
+          (N : Value.t)
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self N T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.MutRef,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                        ]
+                    ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ N ]
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                          ]
+                      ])
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                          ]
+                      ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ N ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ]
+                                ]
+                            ],
+                          M.get_trait_method (|
+                            "core::ops::deref::DerefMut",
+                            Ty.apply
+                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ N ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ]
+                              ],
+                            [],
+                            [],
+                            "deref_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::array::iter::IntoIter",
+                                "inner"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_unsize_mut :
+        forall (N : Value.t) (T : Ty.t),
+        M.IsAssociatedFunction.C (Self N T) "unsize_mut" (unsize_mut N T).
+      Admitted.
+      Global Typeclasses Opaque unsize_mut.
       (*
           pub fn new(array: [T; N]) -> Self {
               IntoIterator::into_iter(array)
@@ -174,7 +490,9 @@ Module array.
           ) -> Self {
               // SAFETY: one of our safety conditions is that the range is canonical.
               let alive = unsafe { IndexRange::new_unchecked(initialized.start, initialized.end) };
-              Self { data: buffer, alive }
+              // SAFETY: one of our safety condition is that these items are initialized.
+              let inner = unsafe { InnerSized::new_unchecked(alive, buffer) };
+              IntoIter { inner: ManuallyDrop::new(inner) }
           }
       *)
       Definition new_unchecked
@@ -228,13 +546,97 @@ Module array.
                     |)
                   ]
                 |) in
+              let~ inner :
+                  Ty.apply
+                    (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ N ]
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ] :=
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ N ]
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ N ]
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                      ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| alive |); M.read (| buffer |) ]
+                |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
                 Value.mkStructRecord
                   "core::array::iter::IntoIter"
                   [ N ]
                   [ T ]
-                  [ ("data", M.read (| buffer |)); ("alive", M.read (| alive |)) ]
+                  [
+                    ("inner",
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ N ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ N ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ]
+                                ]
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.read (| inner |) ]
+                      |))
+                  ]
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -248,12 +650,8 @@ Module array.
       
       (*
           pub const fn empty() -> Self {
-              let buffer = [const { MaybeUninit::uninit() }; N];
-              let initialized = 0..0;
-      
-              // SAFETY: We're telling it that none of the elements are initialized,
-              // which is trivially true. And ∀N: usize, 0 <= N.
-              unsafe { Self::new_unchecked(buffer, initialized) }
+              let inner = InnerSized::empty();
+              IntoIter { inner: ManuallyDrop::new(inner) }
           }
       *)
       Definition empty
@@ -268,42 +666,97 @@ Module array.
         | [], [], [] =>
           ltac:(M.monadic
             (M.read (|
-              let~ buffer :
+              let~ inner :
                   Ty.apply
-                    (Ty.path "array")
-                    [ N ]
-                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ] :=
-                lib.repeat (|
-                  M.read (|
-                    get_constant (|
-                      "core::array::iter::empty_discriminant",
-                      Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                    |)
-                  |),
-                  N
-                |) in
-              let~ initialized :
-                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] :=
-                Value.mkStructRecord
-                  "core::ops::range::Range"
-                  []
-                  [ Ty.path "usize" ]
-                  [
-                    ("start", Value.Integer IntegerKind.Usize 0);
-                    ("end_", Value.Integer IntegerKind.Usize 0)
-                  ] in
-              M.alloc (|
-                Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                    (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ N ]
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ] :=
                 M.call_closure (|
-                  Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                  Ty.apply
+                    (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ N ]
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ],
                   M.get_associated_function (|
-                    Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
-                    "new_unchecked",
+                    Ty.apply
+                      (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ N ]
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                      ],
+                    "empty",
                     [],
                     []
                   |),
-                  [ M.read (| buffer |); M.read (| initialized |) ]
-                |)
+                  []
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                Value.mkStructRecord
+                  "core::array::iter::IntoIter"
+                  [ N ]
+                  [ T ]
+                  [
+                    ("inner",
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ N ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ N ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ]
+                                ]
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.read (| inner |) ]
+                      |))
+                  ]
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -317,11 +770,7 @@ Module array.
       
       (*
           pub fn as_slice(&self) -> &[T] {
-              // SAFETY: We know that all elements within `alive` are properly initialized.
-              unsafe {
-                  let slice = self.data.get_unchecked(self.alive.clone());
-                  MaybeUninit::slice_assume_init_ref(slice)
-              }
+              self.unsize().as_slice()
           }
       *)
       Definition as_slice
@@ -343,118 +792,60 @@ Module array.
                   [ Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] ],
                 self
               |) in
-            M.read (|
-              let~ slice :
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "slice")
-                        []
-                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                    ] :=
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
                 M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "slice")
-                        []
-                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                    ],
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                   M.get_associated_function (|
                     Ty.apply
-                      (Ty.path "slice")
+                      (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
                       []
-                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                    "get_unchecked",
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                      ],
+                    "as_slice",
                     [],
-                    [ Ty.path "core::ops::index_range::IndexRange" ]
+                    []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
                           Ty.apply
-                            (Ty.path "slice")
+                            (Ty.path "&")
                             []
-                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ N ]
-                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::array::iter::IntoIter",
-                            "data"
-                          |)
+                            [
+                              Ty.apply
+                                (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ]
+                                ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                            "unsize",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                         |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.path "core::ops::index_range::IndexRange",
-                      M.get_trait_method (|
-                        "core::clone::Clone",
-                        Ty.path "core::ops::index_range::IndexRange",
-                        [],
-                        [],
-                        "clone",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::array::iter::IntoIter",
-                            "alive"
-                          |)
-                        |)
-                      ]
+                      |)
                     |)
                   ]
-                |) in
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                        "slice_assume_init_ref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
-                    |)
-                  |)
                 |)
               |)
             |)))
@@ -469,11 +860,7 @@ Module array.
       
       (*
           pub fn as_mut_slice(&mut self) -> &mut [T] {
-              // SAFETY: We know that all elements within `alive` are properly initialized.
-              unsafe {
-                  let slice = self.data.get_unchecked_mut(self.alive.clone());
-                  MaybeUninit::slice_assume_init_mut(slice)
-              }
+              self.unsize_mut().as_mut_slice()
           }
       *)
       Definition as_mut_slice
@@ -501,139 +888,58 @@ Module array.
                 M.borrow (|
                   Pointer.Kind.MutRef,
                   M.deref (|
-                    M.read (|
-                      let~ slice :
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "slice")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ]
-                            ] :=
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "slice")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ]
-                            ],
-                          M.get_associated_function (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "slice")
                               []
-                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                              ],
-                            "get_unchecked_mut",
-                            [],
-                            [ Ty.path "core::ops::index_range::IndexRange" ]
-                          |),
-                          [
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                          ],
+                        "as_mut_slice",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
                             M.call_closure (|
                               Ty.apply
                                 (Ty.path "&mut")
                                 []
                                 [
                                   Ty.apply
-                                    (Ty.path "slice")
+                                    (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        (Ty.path "slice")
                                         []
-                                        [ T ]
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ T ]
+                                        ]
                                     ]
                                 ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
-                                (Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ N ]
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                          []
-                                          [ T ]
-                                      ]
-                                  ])
-                                (Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "slice")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                          []
-                                          [ T ]
-                                      ]
-                                  ]),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::array::iter::IntoIter",
-                                    "data"
-                                  |)
-                                |)
-                              ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "core::ops::index_range::IndexRange",
-                              M.get_trait_method (|
-                                "core::clone::Clone",
-                                Ty.path "core::ops::index_range::IndexRange",
-                                [],
-                                [],
-                                "clone",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::array::iter::IntoIter",
-                                    "alive"
-                                  |)
-                                |)
-                              ]
-                            |)
-                          ]
-                        |) in
-                      M.alloc (|
-                        Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               M.get_associated_function (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                                "slice_assume_init_mut",
+                                Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                                "unsize_mut",
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
+                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
                               ]
                             |)
                           |)
                         |)
-                      |)
+                      ]
                     |)
                   |)
                 |)
@@ -649,6 +955,241 @@ Module array.
       Global Typeclasses Opaque as_mut_slice.
     End Impl_core_array_iter_IntoIter_N_T.
     
+    Module Impl_core_iter_traits_collect_IntoIterator_for_array_N_T.
+      Definition Self (N : Value.t) (T : Ty.t) : Ty.t := Ty.apply (Ty.path "array") [ N ] [ T ].
+      
+      (*     type Item = T; *)
+      Definition _Item (N : Value.t) (T : Ty.t) : Ty.t := T.
+      
+      (*     type IntoIter = IntoIter<T, N>; *)
+      Definition _IntoIter (N : Value.t) (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ].
+      
+      (*
+          fn into_iter(self) -> Self::IntoIter {
+              // SAFETY: The transmute here is actually safe. The docs of `MaybeUninit`
+              // promise:
+              //
+              // > `MaybeUninit<T>` is guaranteed to have the same size and alignment
+              // > as `T`.
+              //
+              // The docs even show a transmute from an array of `MaybeUninit<T>` to
+              // an array of `T`.
+              //
+              // With that, this initialization satisfies the invariants.
+              //
+              // FIXME: If normal `transmute` ever gets smart enough to allow this
+              // directly, use it instead of `transmute_unchecked`.
+              let data: [MaybeUninit<T>; N] = unsafe { transmute_unchecked(self) };
+              // SAFETY: The original array was entirely initialized and the the alive
+              // range we're passing here represents that fact.
+              let inner = unsafe { InnerSized::new_unchecked(IndexRange::zero_to(N), data) };
+              IntoIter { inner: ManuallyDrop::new(inner) }
+          }
+      *)
+      Definition into_iter
+          (N : Value.t)
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self N T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "array") [ N ] [ T ], self |) in
+            M.read (|
+              let~ data :
+                  Ty.apply
+                    (Ty.path "array")
+                    [ N ]
+                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ] :=
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "array")
+                    [ N ]
+                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                  M.get_function (|
+                    "core::intrinsics::transmute_unchecked",
+                    [],
+                    [
+                      Ty.apply (Ty.path "array") [ N ] [ T ];
+                      Ty.apply
+                        (Ty.path "array")
+                        [ N ]
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ]
+                  |),
+                  [ M.read (| self |) ]
+                |) in
+              let~ inner :
+                  Ty.apply
+                    (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ N ]
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ] :=
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ N ]
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                    ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ N ]
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                      ],
+                    "new_unchecked",
+                    [],
+                    []
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.path "core::ops::index_range::IndexRange",
+                      M.get_associated_function (|
+                        Ty.path "core::ops::index_range::IndexRange",
+                        "zero_to",
+                        [],
+                        []
+                      |),
+                      [ N ]
+                    |);
+                    M.read (| data |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                Value.mkStructRecord
+                  "core::array::iter::IntoIter"
+                  [ N ]
+                  [ T ]
+                  [
+                    ("inner",
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ N ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ N ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ]
+                                ]
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.read (| inner |) ]
+                      |))
+                  ]
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (N : Value.t) (T : Ty.t),
+        M.IsTraitInstance
+          "core::iter::traits::collect::IntoIterator"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self N T)
+          (* Instance *)
+          [
+            ("Item", InstanceField.Ty (_Item N T));
+            ("IntoIter", InstanceField.Ty (_IntoIter N T));
+            ("into_iter", InstanceField.Method (into_iter N T))
+          ].
+    End Impl_core_iter_traits_collect_IntoIterator_for_array_N_T.
+    
+    
+    Module Impl_core_default_Default_for_core_array_iter_IntoIter_N_T.
+      Definition Self (N : Value.t) (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ].
+      
+      (*
+          fn default() -> Self {
+              IntoIter::empty()
+          }
+      *)
+      Definition default
+          (N : Value.t)
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self N T in
+        match ε, τ, α with
+        | [], [], [] =>
+          ltac:(M.monadic
+            (M.call_closure (|
+              Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                "empty",
+                [],
+                []
+              |),
+              []
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (N : Value.t) (T : Ty.t),
+        M.IsTraitInstance
+          "core::default::Default"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self N T)
+          (* Instance *) [ ("default", InstanceField.Method (default N T)) ].
+    End Impl_core_default_Default_for_core_array_iter_IntoIter_N_T.
+    
     Module Impl_core_iter_traits_iterator_Iterator_for_core_array_iter_IntoIter_N_T.
       Definition Self (N : Value.t) (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ].
@@ -658,20 +1199,7 @@ Module array.
       
       (*
           fn next(&mut self) -> Option<Self::Item> {
-              // Get the next index from the front.
-              //
-              // Increasing `alive.start` by 1 maintains the invariant regarding
-              // `alive`. However, due to this change, for a short time, the alive
-              // zone is not `data[alive]` anymore, but `data[idx..alive.end]`.
-              self.alive.next().map(|idx| {
-                  // Read the element from the array.
-                  // SAFETY: `idx` is an index into the former "alive" region of the
-                  // array. Reading this element means that `data[idx]` is regarded as
-                  // dead now (i.e. do not touch). As `idx` was the start of the
-                  // alive-zone, the alive zone is now `data[alive]` again, restoring
-                  // all invariants.
-                  unsafe { self.data.get_unchecked(idx).assume_init_read() }
-              })
+              self.unsize_mut().next()
           }
       *)
       Definition next
@@ -696,157 +1224,49 @@ Module array.
             M.call_closure (|
               Ty.apply (Ty.path "core::option::Option") [] [ T ],
               M.get_associated_function (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                "map",
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                "next",
                 [],
-                [ T; Ty.function [ Ty.path "usize" ] T ]
+                []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.path "core::ops::index_range::IndexRange",
-                    [],
-                    [],
-                    "next",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::array::iter::IntoIter",
-                        "alive"
-                      |)
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            T,
-                            M.alloc (| Ty.path "usize", α0 |),
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
                             [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let idx := M.copy (| Ty.path "usize", γ |) in
-                                  M.call_closure (|
-                                    T,
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ T ],
-                                      "assume_init_read",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                  []
-                                                  [ T ]
-                                              ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              "get_unchecked",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::maybe_uninit::MaybeUninit")
-                                                          []
-                                                          [ T ]
-                                                      ]
-                                                  ],
-                                                M.pointer_coercion
-                                                  M.PointerCoercion.Unsize
-                                                  (Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ N ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::maybe_uninit::MaybeUninit")
-                                                            []
-                                                            [ T ]
-                                                        ]
-                                                    ])
-                                                  (Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "slice")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::maybe_uninit::MaybeUninit")
-                                                            []
-                                                            [ T ]
-                                                        ]
-                                                    ]),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "core::array::iter::IntoIter",
-                                                      "data"
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| idx |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)))
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
                             ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize_mut",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -854,8 +1274,7 @@ Module array.
       
       (*
           fn size_hint(&self) -> (usize, Option<usize>) {
-              let len = self.len();
-              (len, Some(len))
+              self.unsize().size_hint()
           }
       *)
       Definition size_hint
@@ -877,53 +1296,65 @@ Module array.
                   [ Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] ],
                 self
               |) in
-            M.read (|
-              let~ len : Ty.path "usize" :=
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_trait_method (|
-                    "core::iter::traits::exact_size::ExactSizeIterator",
-                    Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
-                    [],
-                    [],
-                    "len",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |) in
-              M.alloc (|
-                Ty.tuple
+            M.call_closure (|
+              Ty.tuple
+                [ Ty.path "usize"; Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                ],
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
                   [
-                    Ty.path "usize";
-                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
-                  ],
-                Value.Tuple
-                  [
-                    M.read (| len |);
-                    Value.StructTuple
-                      "core::option::Option::Some"
+                    Ty.apply
+                      (Ty.path "slice")
                       []
-                      [ Ty.path "usize" ]
-                      [ M.read (| len |) ]
-                  ]
-              |)
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                "size_hint",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
+                            ]
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (*
-          fn fold<Acc, Fold>(mut self, init: Acc, mut fold: Fold) -> Acc
+          fn fold<Acc, Fold>(mut self, init: Acc, fold: Fold) -> Acc
           where
               Fold: FnMut(Acc, Self::Item) -> Acc,
           {
-              let data = &mut self.data;
-              iter::ByRefSized(&mut self.alive).fold(init, |acc, idx| {
-                  // SAFETY: idx is obtained by folding over the `alive` range, which implies the
-                  // value is currently considered alive but as the range is being consumed each value
-                  // we read here will only be read once and then considered dead.
-                  fold(acc, unsafe { data.get_unchecked(idx).assume_init_read() })
-              })
+              self.unsize_mut().fold(init, fold)
           }
       *)
       Definition fold
@@ -941,217 +1372,139 @@ Module array.
               M.alloc (| Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ], self |) in
             let init := M.alloc (| Acc, init |) in
             let fold := M.alloc (| Fold, fold |) in
-            M.read (|
-              let~ data :
-                  Ty.apply
-                    (Ty.path "&mut")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ N ]
-                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                    ] :=
+            M.call_closure (|
+              Acc,
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                "fold",
+                [],
+                [ Acc; Fold ]
+              |),
+              [
                 M.borrow (|
                   Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::array::iter::IntoIter",
-                    "data"
-                  |)
-                |) in
-              M.alloc (|
-                Acc,
-                M.call_closure (|
-                  Acc,
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.apply
-                      (Ty.path "core::iter::adapters::by_ref_sized::ByRefSized")
-                      []
-                      [ Ty.path "core::ops::index_range::IndexRange" ],
-                    [],
-                    [],
-                    "fold",
-                    [],
-                    [ Acc; Ty.function [ Acc; Ty.path "usize" ] Acc ]
-                  |),
-                  [
-                    Value.StructTuple
-                      "core::iter::adapters::by_ref_sized::ByRefSized"
-                      []
-                      [ Ty.path "core::ops::index_range::IndexRange" ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                self,
-                                "core::array::iter::IntoIter",
-                                "alive"
-                              |)
-                            |)
-                          |)
-                        |)
-                      ];
-                    M.read (| init |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0; α1 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Acc,
-                                M.alloc (| Acc, α0 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let acc := M.copy (| Acc, γ |) in
-                                      M.match_operator (|
-                                        Acc,
-                                        M.alloc (| Ty.path "usize", α1 |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let idx := M.copy (| Ty.path "usize", γ |) in
-                                              M.call_closure (|
-                                                Acc,
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  Fold,
-                                                  [],
-                                                  [ Ty.tuple [ Acc; T ] ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, fold |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.read (| acc |);
-                                                      M.call_closure (|
-                                                        T,
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::maybe_uninit::MaybeUninit")
-                                                            []
-                                                            [ T ],
-                                                          "assume_init_read",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "core::mem::maybe_uninit::MaybeUninit")
-                                                                      []
-                                                                      [ T ]
-                                                                  ],
-                                                                M.get_associated_function (|
-                                                                  Ty.apply
-                                                                    (Ty.path "slice")
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::mem::maybe_uninit::MaybeUninit")
-                                                                        []
-                                                                        [ T ]
-                                                                    ],
-                                                                  "get_unchecked",
-                                                                  [],
-                                                                  [ Ty.path "usize" ]
-                                                                |),
-                                                                [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path "slice")
-                                                                          []
-                                                                          [
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::mem::maybe_uninit::MaybeUninit")
-                                                                              []
-                                                                              [ T ]
-                                                                          ]
-                                                                      ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.Unsize
-                                                                      (Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "array")
-                                                                            [ N ]
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "core::mem::maybe_uninit::MaybeUninit")
-                                                                                []
-                                                                                [ T ]
-                                                                            ]
-                                                                        ])
-                                                                      (Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "slice")
-                                                                            []
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "core::mem::maybe_uninit::MaybeUninit")
-                                                                                []
-                                                                                [ T ]
-                                                                            ]
-                                                                        ]),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| data |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |);
-                                                                  M.read (| idx |)
-                                                                ]
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)))
-                                        ]
-                                      |)))
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
                                 ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
-                  ]
-                |)
-              |)
+                            ]
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize_mut",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+                    |)
+                  |)
+                |);
+                M.read (| init |);
+                M.read (| fold |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+          fn try_fold<B, F, R>(&mut self, init: B, f: F) -> R
+          where
+              Self: Sized,
+              F: FnMut(B, Self::Item) -> R,
+              R: Try<Output = B>,
+          {
+              self.unsize_mut().try_fold(init, f)
+          }
+      *)
+      Definition try_fold
+          (N : Value.t)
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self N T in
+        match ε, τ, α with
+        | [], [ B; F; R ], [ self; init; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] ],
+                self
+              |) in
+            let init := M.alloc (| B, init |) in
+            let f := M.alloc (| F, f |) in
+            M.call_closure (|
+              R,
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                "try_fold",
+                [],
+                [ B; F; R ]
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
+                            ]
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize_mut",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |);
+                M.read (| init |);
+                M.read (| f |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -1226,18 +1579,7 @@ Module array.
       
       (*
           fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
-              // This also moves the start, which marks them as conceptually "dropped",
-              // so if anything goes bad then our drop impl won't double-free them.
-              let range_to_drop = self.alive.take_prefix(n);
-              let remaining = n - range_to_drop.len();
-      
-              // SAFETY: These elements are currently initialized, so it's fine to drop them.
-              unsafe {
-                  let slice = self.data.get_unchecked_mut(range_to_drop);
-                  ptr::drop_in_place(MaybeUninit::slice_assume_init_mut(slice));
-              }
-      
-              NonZero::new(remaining).map_or(Ok(()), Err)
+              self.unsize_mut().advance_by(n)
           }
       *)
       Definition advance_by
@@ -1260,81 +1602,39 @@ Module array.
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
-            M.read (|
-              let~ range_to_drop : Ty.path "core::ops::index_range::IndexRange" :=
-                M.call_closure (|
-                  Ty.path "core::ops::index_range::IndexRange",
-                  M.get_associated_function (|
-                    Ty.path "core::ops::index_range::IndexRange",
-                    "take_prefix",
-                    [],
-                    []
-                  |),
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.tuple [];
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                ],
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::array::iter::IntoIter",
-                        "alive"
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |) in
-              let~ remaining : Ty.path "usize" :=
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.sub,
-                  [
-                    M.read (| n |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.path "core::ops::index_range::IndexRange",
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, range_to_drop |) ]
-                    |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.read (|
-                  let~ slice :
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                        ] :=
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                "advance_by",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [
                           Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                        ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                        "get_unchecked_mut",
-                        [],
-                        [ Ty.path "core::ops::index_range::IndexRange" ]
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
                             []
                             [
                               Ty.apply
@@ -1342,154 +1642,20 @@ Module array.
                                 []
                                 [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
                                 ]
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ N ]
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ]
-                              ])
-                            (Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ]
-                              ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::array::iter::IntoIter",
-                                "data"
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.read (| range_to_drop |)
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.call_closure (|
-                      Ty.tuple [],
-                      M.get_function (|
-                        "core::ptr::drop_in_place",
-                        [],
-                        [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutPointer,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                                "slice_assume_init_mut",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
-                              ]
-                            |)
-                          |)
-                        |)
-                      ]
-                    |) in
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                |) in
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "core::result::Result")
-                  []
-                  [
-                    Ty.tuple [];
-                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                  ],
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.tuple [];
-                      Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::option::Option")
-                      []
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
-                    "map_or",
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.tuple [];
-                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                        ];
-                      Ty.function
-                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ]
-                        (Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                          ])
-                    ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
-                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
+                            ]
+                        ],
                       M.get_associated_function (|
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                        "new",
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize_mut",
                         [],
                         []
                       |),
-                      [ M.read (| remaining |) ]
-                    |);
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                      ]
-                      [ Value.Tuple [] ];
-                    M.constructor_as_closure
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                      ]
-                  ]
-                |)
-              |)
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |);
+                M.read (| n |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -1497,7 +1663,10 @@ Module array.
       (*
           unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
               // SAFETY: The caller must provide an idx that is in bound of the remainder.
-              unsafe { self.data.as_ptr().add(self.alive.start()).add(idx).cast::<T>().read() }
+              let elem_ref = unsafe { self.as_mut_slice().get_unchecked_mut(idx) };
+              // SAFETY: We only implement `TrustedRandomAccessNoCoerce` for types
+              // which are actually `Copy`, so cannot have multiple-drop issues.
+              unsafe { ptr::read(elem_ref) }
           }
       *)
       Definition __iterator_get_unchecked
@@ -1520,159 +1689,49 @@ Module array.
                 self
               |) in
             let idx := M.alloc (| Ty.path "usize", idx |) in
-            M.call_closure (|
-              T,
-              M.get_associated_function (| Ty.apply (Ty.path "*const") [] [ T ], "read", [], [] |),
-              [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ T ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "*const")
-                      []
-                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                    "cast",
-                    [],
-                    [ T ]
-                  |),
-                  [
+            M.read (|
+              let~ elem_ref : Ty.apply (Ty.path "&mut") [] [ T ] :=
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
                     M.call_closure (|
-                      Ty.apply
-                        (Ty.path "*const")
-                        []
-                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                      Ty.apply (Ty.path "&mut") [] [ T ],
                       M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "*const")
-                          []
-                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                        "add",
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "get_unchecked_mut",
                         [],
-                        []
+                        [ Ty.path "usize" ]
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "*const")
-                            []
-                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "*const")
-                              []
-                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                              ],
-                            "add",
-                            [],
-                            []
-                          |),
-                          [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
                             M.call_closure (|
-                              Ty.apply
-                                (Ty.path "*const")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ],
+                              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ],
-                                "as_ptr",
+                                Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                                "as_mut_slice",
                                 [],
                                 []
                               |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ T ]
-                                        ]
-                                    ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ N ]
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ]
-                                      ])
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ]
-                                      ]),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::array::iter::IntoIter",
-                                        "data"
-                                      |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.path "core::ops::index_range::IndexRange",
-                                "start",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::array::iter::IntoIter",
-                                    "alive"
-                                  |)
-                                |)
+                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
                               ]
                             |)
-                          ]
+                          |)
                         |);
                         M.read (| idx |)
                       ]
                     |)
-                  ]
+                  |)
+                |) in
+              M.alloc (|
+                T,
+                M.call_closure (|
+                  T,
+                  M.get_function (| "core::ptr::read", [], [ T ] |),
+                  [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| elem_ref |) |) |) ]
                 |)
-              ]
+              |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -1690,6 +1749,7 @@ Module array.
             ("next", InstanceField.Method (next N T));
             ("size_hint", InstanceField.Method (size_hint N T));
             ("fold", InstanceField.Method (fold N T));
+            ("try_fold", InstanceField.Method (try_fold N T));
             ("count", InstanceField.Method (count N T));
             ("last", InstanceField.Method (last N T));
             ("advance_by", InstanceField.Method (advance_by N T));
@@ -1703,20 +1763,7 @@ Module array.
       
       (*
           fn next_back(&mut self) -> Option<Self::Item> {
-              // Get the next index from the back.
-              //
-              // Decreasing `alive.end` by 1 maintains the invariant regarding
-              // `alive`. However, due to this change, for a short time, the alive
-              // zone is not `data[alive]` anymore, but `data[alive.start..=idx]`.
-              self.alive.next_back().map(|idx| {
-                  // Read the element from the array.
-                  // SAFETY: `idx` is an index into the former "alive" region of the
-                  // array. Reading this element means that `data[idx]` is regarded as
-                  // dead now (i.e. do not touch). As `idx` was the end of the
-                  // alive-zone, the alive zone is now `data[alive]` again, restoring
-                  // all invariants.
-                  unsafe { self.data.get_unchecked(idx).assume_init_read() }
-              })
+              self.unsize_mut().next_back()
           }
       *)
       Definition next_back
@@ -1741,174 +1788,60 @@ Module array.
             M.call_closure (|
               Ty.apply (Ty.path "core::option::Option") [] [ T ],
               M.get_associated_function (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                "map",
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                "next_back",
                 [],
-                [ T; Ty.function [ Ty.path "usize" ] T ]
+                []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                  M.get_trait_method (|
-                    "core::iter::traits::double_ended::DoubleEndedIterator",
-                    Ty.path "core::ops::index_range::IndexRange",
-                    [],
-                    [],
-                    "next_back",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::array::iter::IntoIter",
-                        "alive"
-                      |)
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            T,
-                            M.alloc (| Ty.path "usize", α0 |),
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
                             [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let idx := M.copy (| Ty.path "usize", γ |) in
-                                  M.call_closure (|
-                                    T,
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ T ],
-                                      "assume_init_read",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                  []
-                                                  [ T ]
-                                              ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              "get_unchecked",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::maybe_uninit::MaybeUninit")
-                                                          []
-                                                          [ T ]
-                                                      ]
-                                                  ],
-                                                M.pointer_coercion
-                                                  M.PointerCoercion.Unsize
-                                                  (Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ N ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::maybe_uninit::MaybeUninit")
-                                                            []
-                                                            [ T ]
-                                                        ]
-                                                    ])
-                                                  (Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "slice")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::maybe_uninit::MaybeUninit")
-                                                            []
-                                                            [ T ]
-                                                        ]
-                                                    ]),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "core::array::iter::IntoIter",
-                                                      "data"
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| idx |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)))
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
                             ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize_mut",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (*
-          fn rfold<Acc, Fold>(mut self, init: Acc, mut rfold: Fold) -> Acc
+          fn rfold<Acc, Fold>(mut self, init: Acc, rfold: Fold) -> Acc
           where
               Fold: FnMut(Acc, Self::Item) -> Acc,
           {
-              let data = &mut self.data;
-              iter::ByRefSized(&mut self.alive).rfold(init, |acc, idx| {
-                  // SAFETY: idx is obtained by folding over the `alive` range, which implies the
-                  // value is currently considered alive but as the range is being consumed each value
-                  // we read here will only be read once and then considered dead.
-                  rfold(acc, unsafe { data.get_unchecked(idx).assume_init_read() })
-              })
+              self.unsize_mut().rfold(init, rfold)
           }
       *)
       Definition rfold
@@ -1926,235 +1859,146 @@ Module array.
               M.alloc (| Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ], self |) in
             let init := M.alloc (| Acc, init |) in
             let rfold := M.alloc (| Fold, rfold |) in
-            M.read (|
-              let~ data :
-                  Ty.apply
-                    (Ty.path "&mut")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ N ]
-                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                    ] :=
+            M.call_closure (|
+              Acc,
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                "rfold",
+                [],
+                [ Acc; Fold ]
+              |),
+              [
                 M.borrow (|
                   Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::array::iter::IntoIter",
-                    "data"
-                  |)
-                |) in
-              M.alloc (|
-                Acc,
-                M.call_closure (|
-                  Acc,
-                  M.get_trait_method (|
-                    "core::iter::traits::double_ended::DoubleEndedIterator",
-                    Ty.apply
-                      (Ty.path "core::iter::adapters::by_ref_sized::ByRefSized")
-                      []
-                      [ Ty.path "core::ops::index_range::IndexRange" ],
-                    [],
-                    [],
-                    "rfold",
-                    [],
-                    [ Acc; Ty.function [ Acc; Ty.path "usize" ] Acc ]
-                  |),
-                  [
-                    Value.StructTuple
-                      "core::iter::adapters::by_ref_sized::ByRefSized"
-                      []
-                      [ Ty.path "core::ops::index_range::IndexRange" ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                self,
-                                "core::array::iter::IntoIter",
-                                "alive"
-                              |)
-                            |)
-                          |)
-                        |)
-                      ];
-                    M.read (| init |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0; α1 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Acc,
-                                M.alloc (| Acc, α0 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let acc := M.copy (| Acc, γ |) in
-                                      M.match_operator (|
-                                        Acc,
-                                        M.alloc (| Ty.path "usize", α1 |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let idx := M.copy (| Ty.path "usize", γ |) in
-                                              M.call_closure (|
-                                                Acc,
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  Fold,
-                                                  [],
-                                                  [ Ty.tuple [ Acc; T ] ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, rfold |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.read (| acc |);
-                                                      M.call_closure (|
-                                                        T,
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::maybe_uninit::MaybeUninit")
-                                                            []
-                                                            [ T ],
-                                                          "assume_init_read",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "core::mem::maybe_uninit::MaybeUninit")
-                                                                      []
-                                                                      [ T ]
-                                                                  ],
-                                                                M.get_associated_function (|
-                                                                  Ty.apply
-                                                                    (Ty.path "slice")
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::mem::maybe_uninit::MaybeUninit")
-                                                                        []
-                                                                        [ T ]
-                                                                    ],
-                                                                  "get_unchecked",
-                                                                  [],
-                                                                  [ Ty.path "usize" ]
-                                                                |),
-                                                                [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path "slice")
-                                                                          []
-                                                                          [
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::mem::maybe_uninit::MaybeUninit")
-                                                                              []
-                                                                              [ T ]
-                                                                          ]
-                                                                      ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.Unsize
-                                                                      (Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "array")
-                                                                            [ N ]
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "core::mem::maybe_uninit::MaybeUninit")
-                                                                                []
-                                                                                [ T ]
-                                                                            ]
-                                                                        ])
-                                                                      (Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "slice")
-                                                                            []
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "core::mem::maybe_uninit::MaybeUninit")
-                                                                                []
-                                                                                [ T ]
-                                                                            ]
-                                                                        ]),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| data |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |);
-                                                                  M.read (| idx |)
-                                                                ]
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)))
-                                        ]
-                                      |)))
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
                                 ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
-                  ]
-                |)
-              |)
+                            ]
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize_mut",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+                    |)
+                  |)
+                |);
+                M.read (| init |);
+                M.read (| rfold |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+          fn try_rfold<B, F, R>(&mut self, init: B, f: F) -> R
+          where
+              Self: Sized,
+              F: FnMut(B, Self::Item) -> R,
+              R: Try<Output = B>,
+          {
+              self.unsize_mut().try_rfold(init, f)
+          }
+      *)
+      Definition try_rfold
+          (N : Value.t)
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self N T in
+        match ε, τ, α with
+        | [], [ B; F; R ], [ self; init; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] ],
+                self
+              |) in
+            let init := M.alloc (| B, init |) in
+            let f := M.alloc (| F, f |) in
+            M.call_closure (|
+              R,
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                "try_rfold",
+                [],
+                [ B; F; R ]
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
+                            ]
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize_mut",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |);
+                M.read (| init |);
+                M.read (| f |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (*
           fn advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
-              // This also moves the end, which marks them as conceptually "dropped",
-              // so if anything goes bad then our drop impl won't double-free them.
-              let range_to_drop = self.alive.take_suffix(n);
-              let remaining = n - range_to_drop.len();
-      
-              // SAFETY: These elements are currently initialized, so it's fine to drop them.
-              unsafe {
-                  let slice = self.data.get_unchecked_mut(range_to_drop);
-                  ptr::drop_in_place(MaybeUninit::slice_assume_init_mut(slice));
-              }
-      
-              NonZero::new(remaining).map_or(Ok(()), Err)
+              self.unsize_mut().advance_back_by(n)
           }
       *)
       Definition advance_back_by
@@ -2177,81 +2021,39 @@ Module array.
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
-            M.read (|
-              let~ range_to_drop : Ty.path "core::ops::index_range::IndexRange" :=
-                M.call_closure (|
-                  Ty.path "core::ops::index_range::IndexRange",
-                  M.get_associated_function (|
-                    Ty.path "core::ops::index_range::IndexRange",
-                    "take_suffix",
-                    [],
-                    []
-                  |),
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.tuple [];
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                ],
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::array::iter::IntoIter",
-                        "alive"
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |) in
-              let~ remaining : Ty.path "usize" :=
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.sub,
-                  [
-                    M.read (| n |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.path "core::ops::index_range::IndexRange",
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, range_to_drop |) ]
-                    |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.read (|
-                  let~ slice :
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                        ] :=
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                "advance_back_by",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [
                           Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                        ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                        "get_unchecked_mut",
-                        [],
-                        [ Ty.path "core::ops::index_range::IndexRange" ]
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
                             []
                             [
                               Ty.apply
@@ -2259,154 +2061,20 @@ Module array.
                                 []
                                 [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
                                 ]
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ N ]
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ]
-                              ])
-                            (Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ]
-                              ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::array::iter::IntoIter",
-                                "data"
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.read (| range_to_drop |)
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.call_closure (|
-                      Ty.tuple [],
-                      M.get_function (|
-                        "core::ptr::drop_in_place",
-                        [],
-                        [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutPointer,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                                "slice_assume_init_mut",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
-                              ]
-                            |)
-                          |)
-                        |)
-                      ]
-                    |) in
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                |) in
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "core::result::Result")
-                  []
-                  [
-                    Ty.tuple [];
-                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                  ],
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.tuple [];
-                      Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::option::Option")
-                      []
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
-                    "map_or",
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.tuple [];
-                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                        ];
-                      Ty.function
-                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ]
-                        (Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                          ])
-                    ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
-                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
+                            ]
+                        ],
                       M.get_associated_function (|
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                        "new",
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize_mut",
                         [],
                         []
                       |),
-                      [ M.read (| remaining |) ]
-                    |);
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                      ]
-                      [ Value.Tuple [] ];
-                    M.constructor_as_closure
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                      ]
-                  ]
-                |)
-              |)
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |);
+                M.read (| n |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2422,6 +2090,7 @@ Module array.
           [
             ("next_back", InstanceField.Method (next_back N T));
             ("rfold", InstanceField.Method (rfold N T));
+            ("try_rfold", InstanceField.Method (try_rfold N T));
             ("advance_back_by", InstanceField.Method (advance_back_by N T))
           ].
     End Impl_core_iter_traits_double_ended_DoubleEndedIterator_for_core_array_iter_IntoIter_N_T.
@@ -2432,10 +2101,10 @@ Module array.
       
       (*
           fn drop(&mut self) {
-              // SAFETY: This is safe: `as_mut_slice` returns exactly the sub-slice
-              // of elements that have not been moved out yet and that remain
-              // to be dropped.
-              unsafe { ptr::drop_in_place(self.as_mut_slice()) }
+              if crate::mem::needs_drop::<T>() {
+                  // SAFETY: This is the only place where we drop this field.
+                  unsafe { ManuallyDrop::drop(&mut self.inner) }
+              }
           }
       *)
       Definition drop
@@ -2457,29 +2126,65 @@ Module array.
                   [ Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] ],
                 self
               |) in
-            M.call_closure (|
+            M.match_operator (|
               Ty.tuple [],
-              M.get_function (|
-                "core::ptr::drop_in_place",
-                [],
-                [ Ty.apply (Ty.path "slice") [] [ T ] ]
-              |),
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutPointer,
-                  M.deref (|
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_function (| "core::mem::needs_drop", [], [ T ] |),
+                          []
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                      Ty.tuple [],
                       M.get_associated_function (|
-                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
-                        "as_mut_slice",
+                        Ty.apply
+                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ N ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ],
+                        "drop",
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-                    |)
-                  |)
-                |)
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::array::iter::IntoIter",
+                                "inner"
+                              |)
+                            |)
+                          |)
+                        |)
+                      ]
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2501,7 +2206,7 @@ Module array.
       
       (*
           fn len(&self) -> usize {
-              self.alive.len()
+              self.inner.len()
           }
       *)
       Definition len
@@ -2526,7 +2231,15 @@ Module array.
             M.call_closure (|
               Ty.path "usize",
               M.get_associated_function (|
-                Ty.path "core::ops::index_range::IndexRange",
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "array")
+                      [ N ]
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
                 "len",
                 [],
                 []
@@ -2534,10 +2247,61 @@ Module array.
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::array::iter::IntoIter",
-                    "alive"
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ N ]
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
+                            ]
+                        ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ N ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::array::iter::IntoIter",
+                            "inner"
+                          |)
+                        |)
+                      ]
+                    |)
                   |)
                 |)
               ]
@@ -2547,7 +2311,7 @@ Module array.
       
       (*
           fn is_empty(&self) -> bool {
-              self.alive.is_empty()
+              self.inner.len() == 0
           }
       *)
       Definition is_empty
@@ -2571,24 +2335,91 @@ Module array.
               |) in
             M.call_closure (|
               Ty.path "bool",
-              M.get_trait_method (|
-                "core::iter::traits::exact_size::ExactSizeIterator",
-                Ty.path "core::ops::index_range::IndexRange",
-                [],
-                [],
-                "is_empty",
-                [],
-                []
-              |),
+              BinOp.eq,
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::array::iter::IntoIter",
-                    "alive"
-                  |)
-                |)
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ N ]
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                      ],
+                    "len",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ N ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ]
+                                ]
+                            ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ N ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ]
+                              ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::array::iter::IntoIter",
+                                "inner"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |);
+                Value.Integer IntegerKind.Usize 0
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2679,473 +2510,13 @@ Module array.
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method (value_MAY_HAVE_SIDE_EFFECT N T)) ].
     End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_where_core_array_iter_NonDrop_T_for_core_array_iter_IntoIter_N_T.
     
-    Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_core_array_iter_IntoIter_N_T.
-      Definition Self (N : Value.t) (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ].
-      
-      (*
-          fn clone(&self) -> Self {
-              // Note, we don't really need to match the exact same alive range, so
-              // we can just clone into offset 0 regardless of where `self` is.
-              let mut new =
-                  Self { data: [const { MaybeUninit::uninit() }; N], alive: IndexRange::zero_to(0) };
-      
-              // Clone all alive elements.
-              for (src, dst) in iter::zip(self.as_slice(), &mut new.data) {
-                  // Write a clone into the new array, then update its alive range.
-                  // If cloning panics, we'll correctly drop the previous items.
-                  dst.write(src.clone());
-                  // This addition cannot overflow as we're iterating a slice
-                  new.alive = IndexRange::zero_to(new.alive.end() + 1);
-              }
-      
-              new
-          }
-      *)
-      Definition clone
-          (N : Value.t)
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self N T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] ],
-                self
-              |) in
-            M.read (|
-              let~ new : Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ] :=
-                Value.mkStructRecord
-                  "core::array::iter::IntoIter"
-                  [ N ]
-                  [ T ]
-                  [
-                    ("data",
-                      lib.repeat (|
-                        M.read (|
-                          get_constant (|
-                            "core::array::iter::clone_discriminant",
-                            Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                          |)
-                        |),
-                        N
-                      |));
-                    ("alive",
-                      M.call_closure (|
-                        Ty.path "core::ops::index_range::IndexRange",
-                        M.get_associated_function (|
-                          Ty.path "core::ops::index_range::IndexRange",
-                          "zero_to",
-                          [],
-                          []
-                        |),
-                        [ Value.Integer IntegerKind.Usize 0 ]
-                      |))
-                  ] in
-              let~ _ : Ty.tuple [] :=
-                M.read (|
-                  M.use
-                    (M.alloc (|
-                      Ty.tuple [],
-                      M.match_operator (|
-                        Ty.tuple [],
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "core::iter::adapters::zip::Zip")
-                            []
-                            [
-                              Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ];
-                              Ty.apply
-                                (Ty.path "core::slice::iter::IterMut")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ]
-                            ],
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::iter::adapters::zip::Zip")
-                              []
-                              [
-                                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ];
-                                Ty.apply
-                                  (Ty.path "core::slice::iter::IterMut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ]
-                              ],
-                            M.get_trait_method (|
-                              "core::iter::traits::collect::IntoIterator",
-                              Ty.apply
-                                (Ty.path "core::iter::adapters::zip::Zip")
-                                []
-                                [
-                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ];
-                                  Ty.apply
-                                    (Ty.path "core::slice::iter::IterMut")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ T ]
-                                    ]
-                                ],
-                              [],
-                              [],
-                              "into_iter",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::iter::adapters::zip::Zip")
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ];
-                                    Ty.apply
-                                      (Ty.path "core::slice::iter::IterMut")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                          []
-                                          [ T ]
-                                      ]
-                                  ],
-                                M.get_function (|
-                                  "core::iter::adapters::zip::zip",
-                                  [],
-                                  [
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ N ]
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ]
-                                      ]
-                                  ]
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
-                                      "as_slice",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      new,
-                                      "core::array::iter::IntoIter",
-                                      "data"
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let~ iter :
-                                  Ty.apply
-                                    (Ty.path "core::iter::adapters::zip::Zip")
-                                    []
-                                    [
-                                      Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ];
-                                      Ty.apply
-                                        (Ty.path "core::slice::iter::IterMut")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ T ]
-                                        ]
-                                    ] :=
-                                M.read (| γ |) in
-                              M.read (|
-                                M.loop (|
-                                  Ty.tuple [],
-                                  ltac:(M.monadic
-                                    (let~ _ : Ty.tuple [] :=
-                                      M.match_operator (|
-                                        Ty.tuple [],
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [
-                                              Ty.tuple
-                                                [
-                                                  Ty.apply (Ty.path "&") [] [ T ];
-                                                  Ty.apply
-                                                    (Ty.path "&mut")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "core::mem::maybe_uninit::MaybeUninit")
-                                                        []
-                                                        [ T ]
-                                                    ]
-                                                ]
-                                            ],
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [
-                                                Ty.tuple
-                                                  [
-                                                    Ty.apply (Ty.path "&") [] [ T ];
-                                                    Ty.apply
-                                                      (Ty.path "&mut")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::maybe_uninit::MaybeUninit")
-                                                          []
-                                                          [ T ]
-                                                      ]
-                                                  ]
-                                              ],
-                                            M.get_trait_method (|
-                                              "core::iter::traits::iterator::Iterator",
-                                              Ty.apply
-                                                (Ty.path "core::iter::adapters::zip::Zip")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::Iter")
-                                                    []
-                                                    [ T ];
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::IterMut")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "core::mem::maybe_uninit::MaybeUninit")
-                                                        []
-                                                        [ T ]
-                                                    ]
-                                                ],
-                                              [],
-                                              [],
-                                              "next",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let _ :=
-                                                M.is_struct_tuple (|
-                                                  γ,
-                                                  "core::option::Option::None"
-                                                |) in
-                                              M.never_to_any (| M.read (| M.break (||) |) |)));
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let γ0_0 :=
-                                                M.SubPointer.get_struct_tuple_field (|
-                                                  γ,
-                                                  "core::option::Option::Some",
-                                                  0
-                                                |) in
-                                              let γ1_0 :=
-                                                M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                                              let γ1_1 :=
-                                                M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                                              let src :=
-                                                M.copy (|
-                                                  Ty.apply (Ty.path "&") [] [ T ],
-                                                  γ1_0
-                                                |) in
-                                              let dst :=
-                                                M.copy (|
-                                                  Ty.apply
-                                                    (Ty.path "&mut")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "core::mem::maybe_uninit::MaybeUninit")
-                                                        []
-                                                        [ T ]
-                                                    ],
-                                                  γ1_1
-                                                |) in
-                                              M.read (|
-                                                let~ _ : Ty.apply (Ty.path "&mut") [] [ T ] :=
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "&mut") [] [ T ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "core::mem::maybe_uninit::MaybeUninit")
-                                                        []
-                                                        [ T ],
-                                                      "write",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| dst |) |)
-                                                      |);
-                                                      M.call_closure (|
-                                                        T,
-                                                        M.get_trait_method (|
-                                                          "core::clone::Clone",
-                                                          T,
-                                                          [],
-                                                          [],
-                                                          "clone",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| src |) |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |) in
-                                                let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      new,
-                                                      "core::array::iter::IntoIter",
-                                                      "alive"
-                                                    |),
-                                                    M.call_closure (|
-                                                      Ty.path "core::ops::index_range::IndexRange",
-                                                      M.get_associated_function (|
-                                                        Ty.path
-                                                          "core::ops::index_range::IndexRange",
-                                                        "zero_to",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.add,
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "usize",
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "core::ops::index_range::IndexRange",
-                                                                "end",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    new,
-                                                                    "core::array::iter::IntoIter",
-                                                                    "alive"
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            Value.Integer IntegerKind.Usize 1
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |) in
-                                                M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                              |)))
-                                        ]
-                                      |) in
-                                    M.alloc (| Ty.tuple [], Value.Tuple [] |)))
-                                |)
-                              |)))
-                        ]
-                      |)
-                    |))
-                |) in
-              new
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (N : Value.t) (T : Ty.t),
-        M.IsTraitInstance
-          "core::clone::Clone"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self N T)
-          (* Instance *) [ ("clone", InstanceField.Method (clone N T)) ].
-    End Impl_core_clone_Clone_where_core_clone_Clone_T_for_core_array_iter_IntoIter_N_T.
-    
     Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_core_array_iter_IntoIter_N_T.
       Definition Self (N : Value.t) (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ].
       
       (*
           fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-              // Only print the elements that were not yielded yet: we cannot
-              // access the yielded elements anymore.
-              f.debug_tuple("IntoIter").field(&self.as_slice()).finish()
+              self.unsize().fmt(f)
           }
       *)
       Definition fmt
@@ -3174,101 +2545,54 @@ Module array.
                 (Ty.path "core::result::Result")
                 []
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-              M.get_associated_function (|
-                Ty.path "core::fmt::builders::DebugTuple",
-                "finish",
+              M.get_trait_method (|
+                "core::fmt::Debug",
+                Ty.apply
+                  (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                [],
+                [],
+                "fmt",
                 [],
                 []
               |),
               [
                 M.borrow (|
-                  Pointer.Kind.MutRef,
+                  Pointer.Kind.Ref,
                   M.deref (|
                     M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::iter_inner::PolymorphicIter")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
+                            ]
+                        ],
                       M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
+                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ],
+                        "unsize",
                         [],
                         []
                       |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.alloc (|
-                            Ty.path "core::fmt::builders::DebugTuple",
-                            M.call_closure (|
-                              Ty.path "core::fmt::builders::DebugTuple",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "debug_tuple",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "IntoIter" |) |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "core::array::iter::IntoIter")
-                                          [ N ]
-                                          [ T ],
-                                        "as_slice",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
                   |)
-                |)
+                |);
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

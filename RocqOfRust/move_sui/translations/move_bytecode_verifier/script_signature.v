@@ -89,29 +89,28 @@ Module script_signature.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| module |) |),
-                                      "move_binary_format::file_format::CompiledModule",
-                                      "version"
-                                    |)
-                                  |);
-                                  M.read (|
-                                    get_constant (|
-                                      "move_binary_format::file_format_common::VERSION_5",
-                                      Ty.path "u32"
-                                    |)
+                              BinOp.lt,
+                              [
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| module |) |),
+                                    "move_binary_format::file_format::CompiledModule",
+                                    "version"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |);
+                                M.read (|
+                                  get_constant (|
+                                    "move_binary_format::file_format_common::VERSION_5",
+                                    Ty.path "u32"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -1974,7 +1973,7 @@ Module script_signature.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use deprecated_logic in
+                        (let γ := deprecated_logic in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -2540,33 +2539,31 @@ Module script_signature.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.call_closure (|
-                                Ty.path "u32",
-                                M.get_associated_function (|
-                                  Ty.path "move_binary_format::file_format::CompiledModule",
-                                  "version",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |)
-                                ]
-                              |);
-                              M.read (|
-                                get_constant (|
-                                  "move_binary_format::file_format_common::VERSION_1",
-                                  Ty.path "u32"
-                                |)
+                          BinOp.le,
+                          [
+                            M.call_closure (|
+                              Ty.path "u32",
+                              M.get_associated_function (|
+                                Ty.path "move_binary_format::file_format::CompiledModule",
+                                "version",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
+                            |);
+                            M.read (|
+                              get_constant (|
+                                "move_binary_format::file_format_common::VERSION_1",
+                                Ty.path "u32"
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -3276,23 +3273,22 @@ Module script_signature.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
-                          Ty.path "bool",
-                          LogicalOp.or (|
-                            M.call_closure (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        LogicalOp.or (|
+                          M.call_closure (|
+                            Ty.path "bool",
+                            UnOp.not,
+                            [ M.read (| all_args_have_valid_type |) ]
+                          |),
+                          ltac:(M.monadic
+                            (M.call_closure (|
                               Ty.path "bool",
                               UnOp.not,
-                              [ M.read (| all_args_have_valid_type |) ]
-                            |),
-                            ltac:(M.monadic
-                              (M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [ M.read (| has_valid_return_type |) ]
-                              |)))
-                          |)
-                        |)) in
+                              [ M.read (| has_valid_return_type |) ]
+                            |)))
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"

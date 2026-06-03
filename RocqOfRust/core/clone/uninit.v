@@ -107,7 +107,7 @@ Module clone.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -165,28 +165,27 @@ Module clone.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    UnOp.not,
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        BinOp.eq,
-                                                        [
-                                                          M.read (|
-                                                            M.deref (| M.read (| left_val |) |)
-                                                          |);
-                                                          M.read (|
-                                                            M.deref (| M.read (| right_val |) |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)) in
+                                                  UnOp.not,
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.eq,
+                                                      [
+                                                        M.read (|
+                                                          M.deref (| M.read (| left_val |) |)
+                                                        |);
+                                                        M.read (|
+                                                          M.deref (| M.read (| right_val |) |)
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -238,39 +237,13 @@ Module clone.
                                                             Ty.path "core::fmt::Arguments",
                                                             M.get_associated_function (|
                                                               Ty.path "core::fmt::Arguments",
-                                                              "new_const",
-                                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                                              "from_str",
+                                                              [],
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.alloc (|
-                                                                      Ty.apply
-                                                                        (Ty.path "array")
-                                                                        [
-                                                                          Value.Integer
-                                                                            IntegerKind.Usize
-                                                                            1
-                                                                        ]
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [ Ty.path "str" ]
-                                                                        ],
-                                                                      Value.Array
-                                                                        [
-                                                                          mk_str (|
-                                                                            "clone_to_uninit() source and destination must have equal lengths"
-                                                                          |)
-                                                                        ]
-                                                                    |)
-                                                                  |)
-                                                                |)
+                                                              mk_str (|
+                                                                "clone_to_uninit() source and destination must have equal lengths"
                                                               |)
                                                             ]
                                                           |)
@@ -499,7 +472,7 @@ Module clone.
           ].
     End Impl_core_clone_uninit_CopySpec_where_core_clone_Clone_T_for_T.
     
-    Module Impl_core_clone_uninit_CopySpec_where_core_marker_Copy_T_for_T.
+    Module Impl_core_clone_uninit_CopySpec_where_core_clone_TrivialClone_T_for_T.
       Definition Self (T : Ty.t) : Ty.t := T.
       
       (*
@@ -522,7 +495,7 @@ Module clone.
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
-                  M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+                  M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                   [
                     M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| src |) |) |);
                     M.read (| dst |);
@@ -585,7 +558,7 @@ Module clone.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -643,28 +616,27 @@ Module clone.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    UnOp.not,
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        BinOp.eq,
-                                                        [
-                                                          M.read (|
-                                                            M.deref (| M.read (| left_val |) |)
-                                                          |);
-                                                          M.read (|
-                                                            M.deref (| M.read (| right_val |) |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)) in
+                                                  UnOp.not,
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.eq,
+                                                      [
+                                                        M.read (|
+                                                          M.deref (| M.read (| left_val |) |)
+                                                        |);
+                                                        M.read (|
+                                                          M.deref (| M.read (| right_val |) |)
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -716,39 +688,13 @@ Module clone.
                                                             Ty.path "core::fmt::Arguments",
                                                             M.get_associated_function (|
                                                               Ty.path "core::fmt::Arguments",
-                                                              "new_const",
-                                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                                              "from_str",
+                                                              [],
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.alloc (|
-                                                                      Ty.apply
-                                                                        (Ty.path "array")
-                                                                        [
-                                                                          Value.Integer
-                                                                            IntegerKind.Usize
-                                                                            1
-                                                                        ]
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [ Ty.path "str" ]
-                                                                        ],
-                                                                      Value.Array
-                                                                        [
-                                                                          mk_str (|
-                                                                            "clone_to_uninit() source and destination must have equal lengths"
-                                                                          |)
-                                                                        ]
-                                                                    |)
-                                                                  |)
-                                                                |)
+                                                              mk_str (|
+                                                                "clone_to_uninit() source and destination must have equal lengths"
                                                               |)
                                                             ]
                                                           |)
@@ -771,7 +717,7 @@ Module clone.
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
-                  M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+                  M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                   [
                     M.call_closure (|
                       Ty.apply (Ty.path "*const") [] [ T ],
@@ -813,7 +759,7 @@ Module clone.
             ("clone_one", InstanceField.Method (clone_one T));
             ("clone_slice", InstanceField.Method (clone_slice T))
           ].
-    End Impl_core_clone_uninit_CopySpec_where_core_marker_Copy_T_for_T.
+    End Impl_core_clone_uninit_CopySpec_where_core_clone_TrivialClone_T_for_T.
     
     (* StructRecord
       {
@@ -978,17 +924,11 @@ Module clone.
       
       (*
           fn drop(&mut self) {
-              let initialized_slice = ptr::slice_from_raw_parts_mut(
-                  MaybeUninit::slice_as_mut_ptr(self.data),
-                  self.initialized_len,
-              );
               // SAFETY:
               // * the pointer is valid because it was made from a mutable reference
               // * `initialized_len` counts the initialized elements as an invariant of this type,
               //   so each of the pointed-to elements is initialized and may be dropped.
-              unsafe {
-                  ptr::drop_in_place::<[T]>(initialized_slice);
-              }
+              unsafe { self.data[..self.initialized_len].assume_init_drop() };
           }
       *)
       Definition drop (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1005,53 +945,79 @@ Module clone.
                 self
               |) in
             M.read (|
-              let~ initialized_slice :
-                  Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                  M.get_function (| "core::ptr::slice_from_raw_parts_mut", [], [ T ] |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                        "slice_as_mut_ptr",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::clone::uninit::InitializingSlice",
-                                "data"
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::clone::uninit::InitializingSlice",
-                        "initialized_len"
-                      |)
-                    |)
-                  ]
-                |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
-                  M.get_function (|
-                    "core::ptr::drop_in_place",
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                    "assume_init_drop",
                     [],
-                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                    []
                   |),
-                  [ M.read (| initialized_slice |) ]
+                  [
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ]
+                            ],
+                          M.get_trait_method (|
+                            "core::ops::index::IndexMut",
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                              ],
+                            [],
+                            [ Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]
+                            ],
+                            "index_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::clone::uninit::InitializingSlice",
+                                    "data"
+                                  |)
+                                |)
+                              |)
+                            |);
+                            Value.mkStructRecord
+                              "core::ops::range::RangeTo"
+                              []
+                              [ Ty.path "usize" ]
+                              [
+                                ("end_",
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::clone::uninit::InitializingSlice",
+                                      "initialized_len"
+                                    |)
+                                  |))
+                              ]
+                          ]
+                        |)
+                      |)
+                    |)
+                  ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

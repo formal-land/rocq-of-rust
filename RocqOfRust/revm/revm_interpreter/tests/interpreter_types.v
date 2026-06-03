@@ -430,7 +430,7 @@ Module MemoryTrait.
   Definition slice (self : Self) (range : Range.t usize) : Synthetic :=
     Memory.slice self range.(Range.start) (range.(Range.end_) -i range.(Range.start)).
 
-  Definition slice_len (self : Self) (offset len : usize) : Synthetic1 :=
+  Definition slice_len (self : Self) (offset len : usize) : Synthetic :=
     Memory.slice self offset len.
 
   Definition resize (self : Self) (new_size : usize) : bool * Self :=

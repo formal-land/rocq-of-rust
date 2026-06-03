@@ -550,39 +550,35 @@ Module modexp.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          LogicalOp.and (|
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.le,
-                              [ M.read (| exp_length |); Value.Integer IntegerKind.U64 32 ]
-                            |),
-                            ltac:(M.monadic
-                              (M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  "is_zero",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| exp_highp |) |)
-                                  |)
-                                ]
-                              |)))
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [ M.read (| exp_length |); Value.Integer IntegerKind.U64 32 ]
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [],
+                            "is_zero",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| exp_highp |) |) |) ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -598,15 +594,14 @@ Module modexp.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.le,
-                                    [ M.read (| exp_length |); Value.Integer IntegerKind.U64 32 ]
-                                  |)
-                                |)) in
+                                  BinOp.le,
+                                  [ M.read (| exp_length |); Value.Integer IntegerKind.U64 32 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -655,18 +650,17 @@ Module modexp.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.gt,
-                                            [
-                                              M.read (| exp_length |);
-                                              Value.Integer IntegerKind.U64 32
-                                            ]
-                                          |)
-                                        |)) in
+                                          BinOp.gt,
+                                          [
+                                            M.read (| exp_length |);
+                                            Value.Integer IntegerKind.U64 32
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -881,15 +875,14 @@ Module modexp.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [ M.read (| min_gas |); M.read (| gas_limit |) ]
-                              |)
-                            |)) in
+                              BinOp.gt,
+                              [ M.read (| min_gas |); M.read (| gas_limit |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -1249,29 +1242,34 @@ Module modexp.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  LogicalOp.and (|
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.eq,
-                                                      [
-                                                        M.read (| base_len |);
-                                                        Value.Integer IntegerKind.Usize 0
-                                                      ]
-                                                    |),
-                                                    ltac:(M.monadic
-                                                      (M.call_closure (|
-                                                        Ty.path "bool",
-                                                        BinOp.eq,
-                                                        [
-                                                          M.read (| mod_len |);
-                                                          Value.Integer IntegerKind.Usize 0
-                                                        ]
-                                                      |)))
-                                                  |)
-                                                |)) in
+                                                  BinOp.eq,
+                                                  [
+                                                    M.read (| base_len |);
+                                                    Value.Integer IntegerKind.Usize 0
+                                                  ]
+                                                |)
+                                              |) in
+                                            let _ :=
+                                              is_constant_or_break_match (|
+                                                M.read (| γ |),
+                                                Value.Bool true
+                                              |) in
+                                            let γ :=
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.eq,
+                                                  [
+                                                    M.read (| mod_len |);
+                                                    Value.Integer IntegerKind.Usize 0
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -1785,18 +1783,17 @@ Module modexp.
                                                     fun γ =>
                                                       ltac:(M.monadic
                                                         (let γ :=
-                                                          M.use
-                                                            (M.alloc (|
+                                                          M.alloc (|
+                                                            Ty.path "bool",
+                                                            M.call_closure (|
                                                               Ty.path "bool",
-                                                              M.call_closure (|
-                                                                Ty.path "bool",
-                                                                BinOp.gt,
-                                                                [
-                                                                  M.read (| gas_cost |);
-                                                                  M.read (| gas_limit |)
-                                                                ]
-                                                              |)
-                                                            |)) in
+                                                              BinOp.gt,
+                                                              [
+                                                                M.read (| gas_cost |);
+                                                                M.read (| gas_limit |)
+                                                              ]
+                                                            |)
+                                                          |) in
                                                         let _ :=
                                                           is_constant_or_break_match (|
                                                             M.read (| γ |),
@@ -2168,11 +2165,10 @@ Module modexp.
                                                                         fun γ =>
                                                                           ltac:(M.monadic
                                                                             (let γ :=
-                                                                              M.use
-                                                                                (M.alloc (|
-                                                                                  Ty.path "bool",
-                                                                                  Value.Bool true
-                                                                                |)) in
+                                                                              M.alloc (|
+                                                                                Ty.path "bool",
+                                                                                Value.Bool true
+                                                                              |) in
                                                                             let _ :=
                                                                               is_constant_or_break_match (|
                                                                                 M.read (| γ |),
@@ -2298,39 +2294,38 @@ Module modexp.
                                                                                               ltac:(M.monadic
                                                                                                 (let
                                                                                                       γ :=
-                                                                                                  M.use
-                                                                                                    (M.alloc (|
+                                                                                                  M.alloc (|
+                                                                                                    Ty.path
+                                                                                                      "bool",
+                                                                                                    M.call_closure (|
                                                                                                       Ty.path
                                                                                                         "bool",
-                                                                                                      M.call_closure (|
-                                                                                                        Ty.path
-                                                                                                          "bool",
-                                                                                                        UnOp.not,
-                                                                                                        [
-                                                                                                          M.call_closure (|
-                                                                                                            Ty.path
-                                                                                                              "bool",
-                                                                                                            BinOp.eq,
-                                                                                                            [
-                                                                                                              M.read (|
-                                                                                                                M.deref (|
-                                                                                                                  M.read (|
-                                                                                                                    left_val
-                                                                                                                  |)
-                                                                                                                |)
-                                                                                                              |);
-                                                                                                              M.read (|
-                                                                                                                M.deref (|
-                                                                                                                  M.read (|
-                                                                                                                    right_val
-                                                                                                                  |)
+                                                                                                      UnOp.not,
+                                                                                                      [
+                                                                                                        M.call_closure (|
+                                                                                                          Ty.path
+                                                                                                            "bool",
+                                                                                                          BinOp.eq,
+                                                                                                          [
+                                                                                                            M.read (|
+                                                                                                              M.deref (|
+                                                                                                                M.read (|
+                                                                                                                  left_val
                                                                                                                 |)
                                                                                                               |)
-                                                                                                            ]
-                                                                                                          |)
-                                                                                                        ]
-                                                                                                      |)
-                                                                                                    |)) in
+                                                                                                            |);
+                                                                                                            M.read (|
+                                                                                                              M.deref (|
+                                                                                                                M.read (|
+                                                                                                                  right_val
+                                                                                                                |)
+                                                                                                              |)
+                                                                                                            |)
+                                                                                                          ]
+                                                                                                        |)
+                                                                                                      ]
+                                                                                                    |)
+                                                                                                  |) in
                                                                                                 let
                                                                                                       _ :=
                                                                                                   is_constant_or_break_match (|
@@ -3011,15 +3006,14 @@ Module modexp.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.le,
-                          [ M.read (| x |); Value.Integer IntegerKind.U64 64 ]
-                        |)
-                      |)) in
+                        BinOp.le,
+                        [ M.read (| x |); Value.Integer IntegerKind.U64 64 ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.call_closure (|
                     Ty.apply
@@ -3055,15 +3049,14 @@ Module modexp.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.le,
-                                  [ M.read (| x |); Value.Integer IntegerKind.U64 1024 ]
-                                |)
-                              |)) in
+                                BinOp.le,
+                                [ M.read (| x |); Value.Integer IntegerKind.U64 1024 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.call_closure (|
@@ -3653,22 +3646,21 @@ Module modexp.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  BinOp.Wrap.rem,
-                                  [ M.read (| max_length |); Value.Integer IntegerKind.U64 8 ]
-                                |);
-                                Value.Integer IntegerKind.U64 0
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.call_closure (|
+                                Ty.path "u64",
+                                BinOp.Wrap.rem,
+                                [ M.read (| max_length |); Value.Integer IntegerKind.U64 8 ]
+                              |);
+                              Value.Integer IntegerKind.U64 0
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
