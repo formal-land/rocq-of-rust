@@ -3,7 +3,7 @@ Require Import RocqOfRust.RocqOfRust.
 
 (*
 pub fn choose_u32(take_left: bool, left: u32, right: u32) -> u32 {
-    if take_left { left } else {right}
+    if take_left { left } else { right}
 }
 *)
 Definition choose_u32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
