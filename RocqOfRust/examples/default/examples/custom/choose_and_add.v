@@ -19,7 +19,7 @@ Definition choose_u32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
         [
           fun γ =>
             ltac:(M.monadic
-              (let γ := M.use take_left in
+              (let γ := take_left in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               M.read (| left |)));
           fun γ => ltac:(M.monadic (M.read (| right |)))
