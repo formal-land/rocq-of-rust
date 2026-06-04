@@ -112,15 +112,15 @@ Proof.
 Defined.
 Global Opaque run_JUMPDEST.
 
-Instance run_SELFDESTRUCT :
+Instance run_SELFDESTRUCT_REFUND :
   Run.Trait
-    gas.constants.value_SELFDESTRUCT [] [] []
+    gas.constants.value_SELFDESTRUCT_REFUND [] [] []
     ('* i64).
 Proof.
   constructor.
   run_symbolic.
 Defined.
-Global Opaque run_SELFDESTRUCT.
+Global Opaque run_SELFDESTRUCT_REFUND.
 
 Instance run_CREATE :
   Run.Trait
@@ -292,35 +292,65 @@ Proof.
 Defined.
 Global Opaque run_REFUND_SSTORE_CLEARS.
 
-Instance run_TRANSACTION_ZERO_DATA :
+Instance run_STANDARD_TOKEN_COST :
   Run.Trait
-    gas.constants.value_TRANSACTION_ZERO_DATA [] [] []
+    gas.constants.value_STANDARD_TOKEN_COST [] [] []
     ('* u64).
 Proof.
   constructor.
   run_symbolic.
 Defined.
-Global Opaque run_TRANSACTION_ZERO_DATA.
+Global Opaque run_STANDARD_TOKEN_COST.
 
-Instance run_TRANSACTION_NON_ZERO_DATA_INIT :
+Instance run_NON_ZERO_BYTE_DATA_COST :
   Run.Trait
-    gas.constants.value_TRANSACTION_NON_ZERO_DATA_INIT [] [] []
+    gas.constants.value_NON_ZERO_BYTE_DATA_COST [] [] []
     ('* u64).
 Proof.
   constructor.
   run_symbolic.
 Defined.
-Global Opaque run_TRANSACTION_NON_ZERO_DATA_INIT.
+Global Opaque run_NON_ZERO_BYTE_DATA_COST.
 
-Instance run_TRANSACTION_NON_ZERO_DATA_FRONTIER :
+Instance run_NON_ZERO_BYTE_MULTIPLIER :
   Run.Trait
-    gas.constants.value_TRANSACTION_NON_ZERO_DATA_FRONTIER [] [] []
+    gas.constants.value_NON_ZERO_BYTE_MULTIPLIER [] [] []
     ('* u64).
 Proof.
   constructor.
   run_symbolic.
 Defined.
-Global Opaque run_TRANSACTION_NON_ZERO_DATA_FRONTIER.
+Global Opaque run_NON_ZERO_BYTE_MULTIPLIER.
+
+Instance run_NON_ZERO_BYTE_DATA_COST_ISTANBUL :
+  Run.Trait
+    gas.constants.value_NON_ZERO_BYTE_DATA_COST_ISTANBUL [] [] []
+    ('* u64).
+Proof.
+  constructor.
+  run_symbolic.
+Defined.
+Global Opaque run_NON_ZERO_BYTE_DATA_COST_ISTANBUL.
+
+Instance run_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL :
+  Run.Trait
+    gas.constants.value_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL [] [] []
+    ('* u64).
+Proof.
+  constructor.
+  run_symbolic.
+Defined.
+Global Opaque run_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL.
+
+Instance run_TOTAL_COST_FLOOR_PER_TOKEN :
+  Run.Trait
+    gas.constants.value_TOTAL_COST_FLOOR_PER_TOKEN [] [] []
+    ('* u64).
+Proof.
+  constructor.
+  run_symbolic.
+Defined.
+Global Opaque run_TOTAL_COST_FLOOR_PER_TOKEN.
 
 Instance run_EOF_CREATE_GAS :
   Run.Trait
@@ -381,6 +411,26 @@ Proof.
   run_symbolic.
 Defined.
 Global Opaque run_WARM_STORAGE_READ_COST.
+
+Instance run_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL :
+  Run.Trait
+    gas.constants.value_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL [] [] []
+    ('* u64).
+Proof.
+  constructor.
+  run_symbolic.
+Defined.
+Global Opaque run_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL.
+
+Instance run_COLD_SLOAD_COST_ADDITIONAL :
+  Run.Trait
+    gas.constants.value_COLD_SLOAD_COST_ADDITIONAL [] [] []
+    ('* u64).
+Proof.
+  constructor.
+  run_symbolic.
+Defined.
+Global Opaque run_COLD_SLOAD_COST_ADDITIONAL.
 
 Instance run_WARM_SSTORE_RESET :
   Run.Trait

@@ -385,6 +385,109 @@ Module interpreter_action.
           (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
     End Impl_core_fmt_Debug_for_revm_interpreter_interpreter_action_create_inputs_CreateInputs.
     
+    Module Impl_core_default_Default_for_revm_interpreter_interpreter_action_create_inputs_CreateInputs.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter_action::create_inputs::CreateInputs".
+      
+      (* Default *)
+      Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [] =>
+          ltac:(M.monadic
+            (Value.mkStructRecord
+              "revm_interpreter::interpreter_action::create_inputs::CreateInputs"
+              []
+              []
+              [
+                ("caller",
+                  M.call_closure (|
+                    Ty.path "alloy_primitives::bits::address::Address",
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "alloy_primitives::bits::address::Address",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |));
+                ("scheme",
+                  M.call_closure (|
+                    Ty.path "revm_context_interface::cfg::CreateScheme",
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "revm_context_interface::cfg::CreateScheme",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |));
+                ("value",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |));
+                ("init_code",
+                  M.call_closure (|
+                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |));
+                ("gas_limit",
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |))
+              ]))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::default::Default"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("default", InstanceField.Method default) ].
+    End Impl_core_default_Default_for_revm_interpreter_interpreter_action_create_inputs_CreateInputs.
+    
     Module Impl_core_marker_StructuralPartialEq_for_revm_interpreter_interpreter_action_create_inputs_CreateInputs.
       Definition Self : Ty.t :=
         Ty.path "revm_interpreter::interpreter_action::create_inputs::CreateInputs".
@@ -860,6 +963,7 @@ Module interpreter_action.
                   CreateScheme::Create2 { salt } => self
                       .caller
                       .create2_from_code(salt.to_be_bytes(), &self.init_code),
+                  CreateScheme::Custom { address } => address,
               }
           }
       *)
@@ -978,7 +1082,18 @@ Module interpreter_action.
                           |)
                         |)
                       ]
-                    |)))
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_record_field (|
+                        γ,
+                        "revm_context_interface::cfg::CreateScheme::Custom",
+                        "address"
+                      |) in
+                    let address :=
+                      M.copy (| Ty.path "alloy_primitives::bits::address::Address", γ0_0 |) in
+                    M.read (| address |)))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

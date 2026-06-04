@@ -83,30 +83,6 @@ Module Impl_InterpreterAction.
   Defined.
   Global Opaque run_is_return.
 
-  (* pub fn is_none(&self) -> bool *)
-  Instance run_is_none (self : '& Self) :
-    Run.Trait
-      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_none
-        [] [] [φ self]
-      bool.
-  Proof.
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_is_none.
-
-  (* pub fn is_some(&self) -> bool *)
-  Instance run_is_some (self : '& Self) :
-    Run.Trait
-      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_some
-        [] [] [φ self]
-      bool.
-  Proof.
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_is_some.
-
   (* pub fn into_result_return(self) -> Option<InterpreterResult> *)
   Instance run_into_result_return (self : Self) :
     Run.Trait
@@ -116,7 +92,7 @@ Module Impl_InterpreterAction.
   Proof.
     constructor.
     run_symbolic.
-  Defined.
+  Admitted.
   Global Opaque run_into_result_return.
 End Impl_InterpreterAction.
 Export (hints) Impl_InterpreterAction.

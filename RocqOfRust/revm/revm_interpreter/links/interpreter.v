@@ -48,27 +48,24 @@ Module Impl_Interpreter.
   Defined.
   Global Opaque run_step.
 
-  (*
-  pub fn run<FN, H: Host>(
+    (*
+  pub fn run_plain<H: Host + ?Sized>(
       &mut self,
-      instruction_table: &[FN; 256],
+      instruction_table: &InstructionTable<IW, H>,
       host: &mut H,
   ) -> InterpreterAction
-  where
-      FN: CustomInstruction<Wire = IW, Host = H>,
   *)
-  Instance run_run
-      (IW H FN : Set) `{Link IW} `{Link H} `{Link FN}
+  Instance run_run_plain
+      (IW H : Set) `{Link IW} `{Link H}
       {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
       {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
-      {run_CustomInstruction_for_FN : CustomInstruction.Run FN IW IW_types H}
       (self : '&mut (Self IW run_InterpreterTypes_for_IW))
-      (instruction_table : '& (array.t FN {| Integer.value := 256 |}))
+      (instruction_table : '& (array.t (Instruction.t IW H IW_types) {| Integer.value := 256 |}))
       (host : '&mut H) :
     Run.Trait
-      (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.run (Φ IW))
+      (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.run_plain (Φ IW))
         []
-        [ Φ FN; Φ H ]
+        [ Φ H ]
         [ φ self; φ instruction_table; φ host ]
       InterpreterAction.t.
   Proof.
@@ -76,9 +73,7 @@ Module Impl_Interpreter.
     destruct run_InterpreterTypes_for_IW eqn:?.
     destruct run_LoopControl_for_Control.
     run_symbolic.
-    (* now eapply run_step.
-  Defined. *)
   Admitted.
-  Global Opaque run_run.
+  Global Opaque run_run_plain.
 End Impl_Interpreter.
 Export (hints) Impl_Interpreter.

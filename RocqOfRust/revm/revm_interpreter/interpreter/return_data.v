@@ -196,8 +196,8 @@ Module interpreter.
         Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl".
       
       (*
-          fn buffer(&self) -> &[u8] {
-              self.0.as_ref()
+          fn buffer(&self) -> &Bytes {
+              &self.0
           }
       *)
       Definition buffer (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -215,27 +215,13 @@ Module interpreter.
             M.borrow (|
               Pointer.Kind.Ref,
               M.deref (|
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                  M.get_trait_method (|
-                    "core::convert::AsRef",
-                    Ty.path "alloy_primitives::bytes_::Bytes",
-                    [],
-                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    "as_ref",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                        0
-                      |)
-                    |)
-                  ]
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                    0
+                  |)
                 |)
               |)
             |)))
@@ -243,13 +229,13 @@ Module interpreter.
         end.
       
       (*
-          fn buffer_mut(&mut self) -> &mut Bytes {
-              &mut self.0
+          fn set_buffer(&mut self, bytes: Bytes) {
+              self.0 = bytes;
           }
       *)
-      Definition buffer_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition set_buffer (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [ self ] =>
+        | [], [], [ self; bytes ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (|
@@ -259,23 +245,18 @@ Module interpreter.
                   [ Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl" ],
                 self
               |) in
-            M.borrow (|
-              Pointer.Kind.MutRef,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                        0
-                      |)
-                    |)
-                  |)
-                |)
-              |)
+            let bytes := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", bytes |) in
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.write (|
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                    0
+                  |),
+                  M.read (| bytes |)
+                |) in
+              M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -287,7 +268,7 @@ Module interpreter.
           (* Trait polymorphic types *) []
           Self
           (* Instance *)
-          [ ("buffer", InstanceField.Method buffer); ("buffer_mut", InstanceField.Method buffer_mut)
+          [ ("buffer", InstanceField.Method buffer); ("set_buffer", InstanceField.Method set_buffer)
           ].
     End Impl_revm_interpreter_interpreter_types_ReturnData_for_revm_interpreter_interpreter_return_data_ReturnDataImpl.
   End return_data.

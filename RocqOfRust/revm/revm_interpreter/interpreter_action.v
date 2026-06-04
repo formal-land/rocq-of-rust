@@ -10,6 +10,10 @@ Module interpreter_action.
     variants :=
       [
         {
+          name := "Empty";
+          item := StructTuple [];
+        };
+        {
           name := "Call";
           item :=
             StructTuple
@@ -36,32 +40,17 @@ Module interpreter_action.
                     Ty.path "alloc::alloc::Global"
                   ]
               ];
-        };
-        {
-          name := "EOFCreate";
-          item :=
-            StructTuple
-              [
-                Ty.apply
-                  (Ty.path "alloc::boxed::Box")
-                  []
-                  [
-                    Ty.path
-                      "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                    Ty.path "alloc::alloc::Global"
-                  ]
-              ];
         }
       ];
   }
   *)
   
+  Axiom IsDiscriminant_FrameInput_Empty :
+    M.IsDiscriminant "revm_interpreter::interpreter_action::FrameInput::Empty" 0.
   Axiom IsDiscriminant_FrameInput_Call :
-    M.IsDiscriminant "revm_interpreter::interpreter_action::FrameInput::Call" 0.
+    M.IsDiscriminant "revm_interpreter::interpreter_action::FrameInput::Call" 1.
   Axiom IsDiscriminant_FrameInput_Create :
-    M.IsDiscriminant "revm_interpreter::interpreter_action::FrameInput::Create" 1.
-  Axiom IsDiscriminant_FrameInput_EOFCreate :
-    M.IsDiscriminant "revm_interpreter::interpreter_action::FrameInput::EOFCreate" 2.
+    M.IsDiscriminant "revm_interpreter::interpreter_action::FrameInput::Create" 2.
   
   Module Impl_core_clone_Clone_for_revm_interpreter_interpreter_action_FrameInput.
     Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::FrameInput".
@@ -83,6 +72,19 @@ Module interpreter_action.
             Ty.path "revm_interpreter::interpreter_action::FrameInput",
             self,
             [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_interpreter::interpreter_action::FrameInput::Empty"
+                    |) in
+                  Value.StructTuple
+                    "revm_interpreter::interpreter_action::FrameInput::Empty"
+                    []
+                    []
+                    []));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -199,65 +201,6 @@ Module interpreter_action.
                         |),
                         [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
                       |)
-                    ]));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "revm_interpreter::interpreter_action::FrameInput::EOFCreate",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [
-                              Ty.path
-                                "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                              Ty.path "alloc::alloc::Global"
-                            ]
-                        ],
-                      γ1_0
-                    |) in
-                  Value.StructTuple
-                    "revm_interpreter::interpreter_action::FrameInput::EOFCreate"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.path
-                              "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_trait_method (|
-                          "core::clone::Clone",
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [
-                              Ty.path
-                                "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                              Ty.path "alloc::alloc::Global"
-                            ],
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
                     ]))
             ]
           |)))
@@ -298,6 +241,30 @@ Module interpreter_action.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             self,
             [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_interpreter::interpreter_action::FrameInput::Empty"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Empty" |) |) |)
+                    ]
+                  |)));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -431,81 +398,6 @@ Module interpreter_action.
                                     [
                                       Ty.path
                                         "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "revm_interpreter::interpreter_action::FrameInput::EOFCreate",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [
-                              Ty.path
-                                "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                              Ty.path "alloc::alloc::Global"
-                            ]
-                        ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_tuple_field1_finish",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EOFCreate" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.path
-                                        "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ]
@@ -808,109 +700,7 @@ Module interpreter_action.
                               M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
                             ]
                           |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
-                          let γ2_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ0_0,
-                              "revm_interpreter::interpreter_action::FrameInput::EOFCreate",
-                              0
-                            |) in
-                          let __self_0 :=
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.path
-                                        "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ],
-                              γ2_0
-                            |) in
-                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
-                          let γ2_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ0_1,
-                              "revm_interpreter::interpreter_action::FrameInput::EOFCreate",
-                              0
-                            |) in
-                          let __arg1_0 :=
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.path
-                                        "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ],
-                              γ2_0
-                            |) in
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialEq",
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.path
-                                        "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ],
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::boxed::Box")
-                                      []
-                                      [
-                                        Ty.path
-                                          "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                                        Ty.path "alloc::alloc::Global"
-                                      ]
-                                  ]
-                              ],
-                              "eq",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
-                            ]
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.never_to_any (|
-                            M.call_closure (|
-                              Ty.path "never",
-                              M.get_function (| "core::intrinsics::unreachable", [], [] |),
-                              []
-                            |)
-                          |)))
+                      fun γ => ltac:(M.monadic (Value.Bool true))
                     ]
                   |)))
               |)
@@ -957,6 +747,452 @@ Module interpreter_action.
                   (M.match_operator (|
                     Ty.tuple [],
                     Value.DeclaredButUndefined,
+                    [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::cmp::Eq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *)
+        [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
+  End Impl_core_cmp_Eq_for_revm_interpreter_interpreter_action_FrameInput.
+  
+  (* StructRecord
+    {
+      name := "FrameInit";
+      const_params := [];
+      ty_params := [];
+      fields :=
+        [
+          ("depth", Ty.path "usize");
+          ("memory", Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory");
+          ("frame_input", Ty.path "revm_interpreter::interpreter_action::FrameInput")
+        ];
+    } *)
+  
+  Module Impl_core_clone_Clone_for_revm_interpreter_interpreter_action_FrameInit.
+    Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::FrameInit".
+    
+    (* Clone *)
+    Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.path "revm_interpreter::interpreter_action::FrameInit" ],
+              self
+            |) in
+          Value.mkStructRecord
+            "revm_interpreter::interpreter_action::FrameInit"
+            []
+            []
+            [
+              ("depth",
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "usize",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter_action::FrameInit",
+                            "depth"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |));
+              ("memory",
+                M.call_closure (|
+                  Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter_action::FrameInit",
+                            "memory"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |));
+              ("frame_input",
+                M.call_closure (|
+                  Ty.path "revm_interpreter::interpreter_action::FrameInput",
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "revm_interpreter::interpreter_action::FrameInput",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter_action::FrameInit",
+                            "frame_input"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("clone", InstanceField.Method clone) ].
+  End Impl_core_clone_Clone_for_revm_interpreter_interpreter_action_FrameInit.
+  
+  Module Impl_core_fmt_Debug_for_revm_interpreter_interpreter_action_FrameInit.
+    Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::FrameInit".
+    
+    (* Debug *)
+    Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.path "revm_interpreter::interpreter_action::FrameInit" ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (|
+              Ty.path "core::fmt::Formatter",
+              "debug_struct_field3_finish",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FrameInit" |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "depth" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter_action::FrameInit",
+                          "depth"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "memory" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter_action::FrameInit",
+                          "memory"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "frame_input" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_interpreter::interpreter_action::FrameInit",
+                              "frame_input"
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+  End Impl_core_fmt_Debug_for_revm_interpreter_interpreter_action_FrameInit.
+  
+  Module Impl_core_marker_StructuralPartialEq_for_revm_interpreter_interpreter_action_FrameInit.
+    Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::FrameInit".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::StructuralPartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_StructuralPartialEq_for_revm_interpreter_interpreter_action_FrameInit.
+  
+  Module Impl_core_cmp_PartialEq_revm_interpreter_interpreter_action_FrameInit_for_revm_interpreter_interpreter_action_FrameInit.
+    Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::FrameInit".
+    
+    (* PartialEq *)
+    Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.path "revm_interpreter::interpreter_action::FrameInit" ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.path "revm_interpreter::interpreter_action::FrameInit" ],
+              other
+            |) in
+          LogicalOp.and (|
+            LogicalOp.and (|
+              M.call_closure (|
+                Ty.path "bool",
+                BinOp.eq,
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_interpreter::interpreter_action::FrameInit",
+                      "depth"
+                    |)
+                  |);
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_interpreter::interpreter_action::FrameInit",
+                      "depth"
+                    |)
+                  |)
+                ]
+              |),
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  M.get_trait_method (|
+                    "core::cmp::PartialEq",
+                    Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+                    [],
+                    [ Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ],
+                    "eq",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::interpreter_action::FrameInit",
+                        "memory"
+                      |)
+                    |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_interpreter::interpreter_action::FrameInit",
+                        "memory"
+                      |)
+                    |)
+                  ]
+                |)))
+            |),
+            ltac:(M.monadic
+              (M.call_closure (|
+                Ty.path "bool",
+                M.get_trait_method (|
+                  "core::cmp::PartialEq",
+                  Ty.path "revm_interpreter::interpreter_action::FrameInput",
+                  [],
+                  [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
+                  "eq",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_interpreter::interpreter_action::FrameInit",
+                      "frame_input"
+                    |)
+                  |);
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_interpreter::interpreter_action::FrameInit",
+                      "frame_input"
+                    |)
+                  |)
+                ]
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::cmp::PartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.path "revm_interpreter::interpreter_action::FrameInit" ]
+        Self
+        (* Instance *) [ ("eq", InstanceField.Method eq) ].
+  End Impl_core_cmp_PartialEq_revm_interpreter_interpreter_action_FrameInit_for_revm_interpreter_interpreter_action_FrameInit.
+  
+  Module Impl_core_cmp_Eq_for_revm_interpreter_interpreter_action_FrameInit.
+    Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::FrameInit".
+    
+    (* Eq *)
+    Definition assert_receiver_is_total_eq
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.path "revm_interpreter::interpreter_action::FrameInit" ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.tuple [],
+            Value.DeclaredButUndefined,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (M.match_operator (|
+                    Ty.tuple [],
+                    Value.DeclaredButUndefined,
                     [
                       fun γ =>
                         ltac:(M.monadic
@@ -980,7 +1216,7 @@ Module interpreter_action.
         Self
         (* Instance *)
         [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
-  End Impl_core_cmp_Eq_for_revm_interpreter_interpreter_action_FrameInput.
+  End Impl_core_cmp_Eq_for_revm_interpreter_interpreter_action_FrameInit.
   
   Module Impl_core_convert_AsMut_revm_interpreter_interpreter_action_FrameInput_for_revm_interpreter_interpreter_action_FrameInput.
     Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::FrameInput".
@@ -1031,12 +1267,7 @@ Module interpreter_action.
         };
         {
           name := "Return";
-          item :=
-            StructRecord [ ("result", Ty.path "revm_interpreter::interpreter::InterpreterResult") ];
-        };
-        {
-          name := "None";
-          item := StructTuple [];
+          item := StructTuple [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ];
         }
       ];
   }
@@ -1046,8 +1277,6 @@ Module interpreter_action.
     M.IsDiscriminant "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" 0.
   Axiom IsDiscriminant_InterpreterAction_Return :
     M.IsDiscriminant "revm_interpreter::interpreter_action::InterpreterAction::Return" 1.
-  Axiom IsDiscriminant_InterpreterAction_None :
-    M.IsDiscriminant "revm_interpreter::interpreter_action::InterpreterAction::None" 2.
   
   Module Impl_core_clone_Clone_for_revm_interpreter_interpreter_action_InterpreterAction.
     Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::InterpreterAction".
@@ -1109,10 +1338,10 @@ Module interpreter_action.
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
-                    M.SubPointer.get_struct_record_field (|
+                    M.SubPointer.get_struct_tuple_field (|
                       γ,
                       "revm_interpreter::interpreter_action::InterpreterAction::Return",
-                      "result"
+                      0
                     |) in
                   let __self_0 :=
                     M.alloc (|
@@ -1122,39 +1351,25 @@ Module interpreter_action.
                         [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
                       γ1_0
                     |) in
-                  Value.mkStructRecord
+                  Value.StructTuple
                     "revm_interpreter::interpreter_action::InterpreterAction::Return"
                     []
                     []
                     [
-                      ("result",
-                        M.call_closure (|
+                      M.call_closure (|
+                        Ty.path "revm_interpreter::interpreter::InterpreterResult",
+                        M.get_trait_method (|
+                          "core::clone::Clone",
                           Ty.path "revm_interpreter::interpreter::InterpreterResult",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
-                            Ty.path "revm_interpreter::interpreter::InterpreterResult",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |))
-                    ]));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_interpreter::interpreter_action::InterpreterAction::None"
-                    |) in
-                  Value.StructTuple
-                    "revm_interpreter::interpreter_action::InterpreterAction::None"
-                    []
-                    []
-                    []))
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |)
+                    ]))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1255,10 +1470,10 @@ Module interpreter_action.
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
-                    M.SubPointer.get_struct_record_field (|
+                    M.SubPointer.get_struct_tuple_field (|
                       γ,
                       "revm_interpreter::interpreter_action::InterpreterAction::Return",
-                      "result"
+                      0
                     |) in
                   let __self_0 :=
                     M.alloc (|
@@ -1275,14 +1490,13 @@ Module interpreter_action.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_associated_function (|
                       Ty.path "core::fmt::Formatter",
-                      "debug_struct_field1_finish",
+                      "debug_tuple_field1_finish",
                       [],
                       []
                     |),
                     [
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                       M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Return" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "result" |) |) |);
                       M.call_closure (|
                         Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                         M.pointer_coercion
@@ -1308,30 +1522,6 @@ Module interpreter_action.
                         ]
                       |)
                     ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_interpreter::interpreter_action::InterpreterAction::None"
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "None" |) |) |)
-                    ]
                   |)))
             ]
           |)))
@@ -1346,31 +1536,6 @@ Module interpreter_action.
         Self
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
   End Impl_core_fmt_Debug_for_revm_interpreter_interpreter_action_InterpreterAction.
-  
-  Module Impl_core_default_Default_for_revm_interpreter_interpreter_action_InterpreterAction.
-    Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::InterpreterAction".
-    
-    (* Default *)
-    Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.StructTuple
-            "revm_interpreter::interpreter_action::InterpreterAction::None"
-            []
-            []
-            []))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("default", InstanceField.Method default) ].
-  End Impl_core_default_Default_for_revm_interpreter_interpreter_action_InterpreterAction.
   
   Module Impl_core_marker_StructuralPartialEq_for_revm_interpreter_interpreter_action_InterpreterAction.
     Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter_action::InterpreterAction".
@@ -1519,10 +1684,10 @@ Module interpreter_action.
                           let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                           let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
                           let γ2_0 :=
-                            M.SubPointer.get_struct_record_field (|
+                            M.SubPointer.get_struct_tuple_field (|
                               γ0_0,
                               "revm_interpreter::interpreter_action::InterpreterAction::Return",
-                              "result"
+                              0
                             |) in
                           let __self_0 :=
                             M.alloc (|
@@ -1534,10 +1699,10 @@ Module interpreter_action.
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
-                            M.SubPointer.get_struct_record_field (|
+                            M.SubPointer.get_struct_tuple_field (|
                               γ0_1,
                               "revm_interpreter::interpreter_action::InterpreterAction::Return",
-                              "result"
+                              0
                             |) in
                           let __arg1_0 :=
                             M.alloc (|
@@ -1571,7 +1736,15 @@ Module interpreter_action.
                               M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
                             ]
                           |)));
-                      fun γ => ltac:(M.monadic (Value.Bool true))
+                      fun γ =>
+                        ltac:(M.monadic
+                          (M.never_to_any (|
+                            M.call_closure (|
+                              Ty.path "never",
+                              M.get_function (| "core::intrinsics::unreachable", [], [] |),
+                              []
+                            |)
+                          |)))
                     ]
                   |)))
               |)
@@ -1774,89 +1947,88 @@ Module interpreter_action.
     Global Typeclasses Opaque is_return.
     
     (*
-        pub fn is_none(&self) -> bool {
-            matches!(self, InterpreterAction::None)
+        pub fn gas_mut(&mut self) -> Option<&mut Gas> {
+            match self {
+                InterpreterAction::Return(result) => Some(&mut result.gas),
+                _ => None,
+            }
         }
     *)
-    Definition is_none (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition gas_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&")
+                (Ty.path "&mut")
                 []
                 [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ],
               self
             |) in
           M.match_operator (|
-            Ty.path "bool",
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_interpreter::gas::Gas" ] ],
             self,
             [
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
                       γ,
-                      "revm_interpreter::interpreter_action::InterpreterAction::None"
+                      "revm_interpreter::interpreter_action::InterpreterAction::Return",
+                      0
                     |) in
-                  Value.Bool true));
-              fun γ => ltac:(M.monadic (Value.Bool false))
+                  let result :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
+                      γ1_0
+                    |) in
+                  Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_interpreter::gas::Gas" ] ]
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| result |) |),
+                              "revm_interpreter::interpreter::InterpreterResult",
+                              "gas"
+                            |)
+                          |)
+                        |)
+                      |)
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::None"
+                    []
+                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_interpreter::gas::Gas" ] ]
+                    []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_is_none : M.IsAssociatedFunction.C Self "is_none" is_none.
+    Global Instance AssociatedFunction_gas_mut : M.IsAssociatedFunction.C Self "gas_mut" gas_mut.
     Admitted.
-    Global Typeclasses Opaque is_none.
-    
-    (*
-        pub fn is_some(&self) -> bool {
-            !self.is_none()
-        }
-    *)
-    Definition is_some (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ],
-              self
-            |) in
-          M.call_closure (|
-            Ty.path "bool",
-            UnOp.not,
-            [
-              M.call_closure (|
-                Ty.path "bool",
-                M.get_associated_function (|
-                  Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
-                  "is_none",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_is_some : M.IsAssociatedFunction.C Self "is_some" is_some.
-    Admitted.
-    Global Typeclasses Opaque is_some.
+    Global Typeclasses Opaque gas_mut.
     
     (*
         pub fn into_result_return(self) -> Option<InterpreterResult> {
             match self {
-                InterpreterAction::Return { result } => Some(result),
+                InterpreterAction::Return(result) => Some(result),
                 _ => None,
             }
         }
@@ -1877,10 +2049,10 @@ Module interpreter_action.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
-                    M.SubPointer.get_struct_record_field (|
+                    M.SubPointer.get_struct_tuple_field (|
                       γ,
                       "revm_interpreter::interpreter_action::InterpreterAction::Return",
-                      "result"
+                      0
                     |) in
                   let result :=
                     M.copy (| Ty.path "revm_interpreter::interpreter::InterpreterResult", γ0_0 |) in
@@ -1905,5 +2077,256 @@ Module interpreter_action.
       M.IsAssociatedFunction.C Self "into_result_return" into_result_return.
     Admitted.
     Global Typeclasses Opaque into_result_return.
+    
+    (*
+        pub fn instruction_result(&self) -> Option<InstructionResult> {
+            match self {
+                InterpreterAction::Return(result) => Some(result.result),
+                _ => None,
+            }
+        }
+    *)
+    Definition instruction_result (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ],
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_interpreter::interpreter_action::InterpreterAction::Return",
+                      0
+                    |) in
+                  let result :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
+                      γ1_0
+                    |) in
+                  Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ]
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| result |) |),
+                          "revm_interpreter::interpreter::InterpreterResult",
+                          "result"
+                        |)
+                      |)
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::None"
+                    []
+                    [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ]
+                    []))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_instruction_result :
+      M.IsAssociatedFunction.C Self "instruction_result" instruction_result.
+    Admitted.
+    Global Typeclasses Opaque instruction_result.
+    
+    (*
+        pub fn new_frame(frame_input: FrameInput) -> Self {
+            Self::NewFrame(frame_input)
+        }
+    *)
+    Definition new_frame (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ frame_input ] =>
+        ltac:(M.monadic
+          (let frame_input :=
+            M.alloc (| Ty.path "revm_interpreter::interpreter_action::FrameInput", frame_input |) in
+          Value.StructTuple
+            "revm_interpreter::interpreter_action::InterpreterAction::NewFrame"
+            []
+            []
+            [ M.read (| frame_input |) ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new_frame :
+      M.IsAssociatedFunction.C Self "new_frame" new_frame.
+    Admitted.
+    Global Typeclasses Opaque new_frame.
+    
+    (*
+        pub fn new_halt(result: InstructionResult, gas: Gas) -> Self {
+            Self::Return(InterpreterResult::new(result, Bytes::new(), gas))
+        }
+    *)
+    Definition new_halt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ result; gas ] =>
+        ltac:(M.monadic
+          (let result :=
+            M.alloc (|
+              Ty.path "revm_interpreter::instruction_result::InstructionResult",
+              result
+            |) in
+          let gas := M.alloc (| Ty.path "revm_interpreter::gas::Gas", gas |) in
+          Value.StructTuple
+            "revm_interpreter::interpreter_action::InterpreterAction::Return"
+            []
+            []
+            [
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::InterpreterResult",
+                M.get_associated_function (|
+                  Ty.path "revm_interpreter::interpreter::InterpreterResult",
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.read (| result |);
+                  M.call_closure (|
+                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      "new",
+                      [],
+                      []
+                    |),
+                    []
+                  |);
+                  M.read (| gas |)
+                ]
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new_halt : M.IsAssociatedFunction.C Self "new_halt" new_halt.
+    Admitted.
+    Global Typeclasses Opaque new_halt.
+    
+    (*
+        pub fn new_return(result: InstructionResult, output: Bytes, gas: Gas) -> Self {
+            Self::Return(InterpreterResult::new(result, output, gas))
+        }
+    *)
+    Definition new_return (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ result; output; gas ] =>
+        ltac:(M.monadic
+          (let result :=
+            M.alloc (|
+              Ty.path "revm_interpreter::instruction_result::InstructionResult",
+              result
+            |) in
+          let output := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", output |) in
+          let gas := M.alloc (| Ty.path "revm_interpreter::gas::Gas", gas |) in
+          Value.StructTuple
+            "revm_interpreter::interpreter_action::InterpreterAction::Return"
+            []
+            []
+            [
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::InterpreterResult",
+                M.get_associated_function (|
+                  Ty.path "revm_interpreter::interpreter::InterpreterResult",
+                  "new",
+                  [],
+                  []
+                |),
+                [ M.read (| result |); M.read (| output |); M.read (| gas |) ]
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new_return :
+      M.IsAssociatedFunction.C Self "new_return" new_return.
+    Admitted.
+    Global Typeclasses Opaque new_return.
+    
+    (*
+        pub fn new_stop() -> Self {
+            Self::Return(InterpreterResult::new(
+                InstructionResult::Stop,
+                Bytes::new(),
+                Gas::new(0),
+            ))
+        }
+    *)
+    Definition new_stop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.StructTuple
+            "revm_interpreter::interpreter_action::InterpreterAction::Return"
+            []
+            []
+            [
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::InterpreterResult",
+                M.get_associated_function (|
+                  Ty.path "revm_interpreter::interpreter::InterpreterResult",
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  Value.StructTuple
+                    "revm_interpreter::instruction_result::InstructionResult::Stop"
+                    []
+                    []
+                    [];
+                  M.call_closure (|
+                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      "new",
+                      [],
+                      []
+                    |),
+                    []
+                  |);
+                  M.call_closure (|
+                    Ty.path "revm_interpreter::gas::Gas",
+                    M.get_associated_function (|
+                      Ty.path "revm_interpreter::gas::Gas",
+                      "new",
+                      [],
+                      []
+                    |),
+                    [ Value.Integer IntegerKind.U64 0 ]
+                  |)
+                ]
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new_stop : M.IsAssociatedFunction.C Self "new_stop" new_stop.
+    Admitted.
+    Global Typeclasses Opaque new_stop.
   End Impl_revm_interpreter_interpreter_action_InterpreterAction.
 End interpreter_action.

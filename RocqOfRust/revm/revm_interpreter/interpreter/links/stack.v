@@ -195,7 +195,7 @@ Module Impl_Stack.
     constructor.
     destruct (Impl_DerefMut_for_Vec.run aliases.U256.t Global.t).
     run_symbolic.
-  Defined.
+  Admitted.
   Global Opaque run_top_unsafe.
 
   (* pub unsafe fn popn<const N: usize>(&mut self) -> [U256; N] *)

@@ -1,15 +1,77 @@
+use context_interface::{ContextTr, LocalContextTr};
 use core::ops::Range;
-use primitives::{Address, Bytes, U256};
+use primitives::{Address, Bytes, B256, U256};
+use state::Bytecode;
+/// Input enum for a call.
+///
+/// As CallInput uses shared memory buffer it can get overridden if not used directly when call happens.
+#[derive(Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub enum CallInput {
+    /// The Range points to the SharedMemory buffer. Buffer can be found in [`context_interface::LocalContextTr::shared_memory_buffer_slice`] function.
+    /// And can be accessed with `evm.ctx().local().shared_memory_buffer()`
+    ///
+    /// # Warning
+    ///
+    /// Use it with caution, CallInput shared buffer can be overridden if context from child call is returned so
+    /// recommendation is to fetch buffer at first Inspector call and clone it from [`context_interface::LocalContextTr::shared_memory_buffer_slice`] function.
+    SharedBuffer(Range<usize>),
+    /// Bytes of the call data.
+    Bytes(Bytes),
+}
+
+impl CallInput {
+    /// Returns the length of the call input.
+    pub fn len(&self) -> usize {
+        match self {
+            Self::Bytes(bytes) => bytes.len(),
+            Self::SharedBuffer(range) => range.len(),
+        }
+    }
+
+    /// Returns `true` if the call input is empty.
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    /// Returns the bytes of the call input.
+    ///
+    /// SharedMemory buffer can be shrunked or overwritten if the child call returns the
+    /// shared memory context to its parent, the range in `CallInput::SharedBuffer` can show unexpected data.
+    ///
+    /// # Allocation
+    ///
+    /// If this `CallInput` is a `SharedBuffer`, the slice will be copied
+    /// into a fresh `Bytes` buffer, which can pose a performance penalty.
+    pub fn bytes<CTX>(&self, ctx: &CTX) -> Bytes
+    where
+        CTX: ContextTr,
+    {
+        match self {
+            CallInput::Bytes(bytes) => bytes.clone(),
+            CallInput::SharedBuffer(range) => ctx
+                .local()
+                .shared_memory_buffer_slice(range.clone())
+                .map(|b| Bytes::from(b.to_vec()))
+                .unwrap_or_default(),
+        }
+    }
+}
+
+impl Default for CallInput {
+    #[inline]
+    fn default() -> Self {
+        CallInput::SharedBuffer(0..0)
+    }
+}
 
 /// Inputs for a call.
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CallInputs {
     /// The call data of the call.
-    pub input: Bytes,
+    pub input: CallInput,
     /// The return memory offset where the output of the call is written.
-    ///
-    /// In EOF, this range is invalid as EOF calls do not write output to memory.
     pub return_memory_offset: Range<usize>,
     /// The gas limit of the call.
     pub gas_limit: u64,
@@ -17,6 +79,10 @@ pub struct CallInputs {
     ///
     /// Previously `context.code_address`.
     pub bytecode_address: Address,
+    /// Known bytecode and its hash.
+    /// If None, bytecode will be loaded from the account at `bytecode_address`.
+    /// If Some((hash, bytecode)), the provided bytecode and hash will be used.
+    pub known_bytecode: Option<(B256, Bytecode)>,
     /// Target address, this account storage is going to be modified.
     ///
     /// Previously `context.address`.
@@ -37,8 +103,6 @@ pub struct CallInputs {
     pub scheme: CallScheme,
     /// Whether the call is a static call, or is initiated inside a static call.
     pub is_static: bool,
-    /// Whether the call is initiated from EOF bytecode.
-    pub is_eof: bool,
 }
 
 impl CallInputs {
@@ -101,26 +165,27 @@ pub enum CallScheme {
     DelegateCall,
     /// `STATICCALL`
     StaticCall,
-    /// `EXTCALL`
-    ExtCall,
-    /// `EXTSTATICCALL`
-    ExtStaticCall,
-    /// `EXTDELEGATECALL`
-    ExtDelegateCall,
 }
 
 impl CallScheme {
-    /// Returns true if it is EOF EXT*CALL.
-    pub fn is_ext(&self) -> bool {
-        matches!(
-            self,
-            Self::ExtCall | Self::ExtStaticCall | Self::ExtDelegateCall
-        )
+    /// Returns true if it is `CALL`.
+    pub fn is_call(&self) -> bool {
+        matches!(self, Self::Call)
     }
 
-    /// Returns true if it is ExtDelegateCall.
-    pub fn is_ext_delegate_call(&self) -> bool {
-        matches!(self, Self::ExtDelegateCall)
+    /// Returns true if it is `CALLCODE`.
+    pub fn is_call_code(&self) -> bool {
+        matches!(self, Self::CallCode)
+    }
+
+    /// Returns true if it is `DELEGATECALL`.
+    pub fn is_delegate_call(&self) -> bool {
+        matches!(self, Self::DelegateCall)
+    }
+
+    /// Returns true if it is `STATICCALL`.
+    pub fn is_static_call(&self) -> bool {
+        matches!(self, Self::StaticCall)
     }
 }
 

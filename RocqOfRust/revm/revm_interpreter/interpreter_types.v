@@ -3,10 +3,98 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module interpreter_types.
   (* Trait *)
-  (* Empty module 'Immediates' *)
+  Module Immediates.
+    Definition read_i16 (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          M.cast
+            (Ty.path "i16")
+            (M.call_closure (|
+              Ty.path "u16",
+              M.get_trait_method (|
+                "revm_interpreter::interpreter_types::Immediates",
+                Self,
+                [],
+                [],
+                "read_u16",
+                [],
+                []
+              |),
+              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            |))))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_read_i16 :
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::Immediates" "read_i16" read_i16.
+    Definition read_i8 (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          M.cast
+            (Ty.path "i8")
+            (M.call_closure (|
+              Ty.path "u8",
+              M.get_trait_method (|
+                "revm_interpreter::interpreter_types::Immediates",
+                Self,
+                [],
+                [],
+                "read_u8",
+                [],
+                []
+              |),
+              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            |))))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_read_i8 :
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::Immediates" "read_i8" read_i8.
+    Definition read_offset_i16
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; offset ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let offset := M.alloc (| Ty.path "isize", offset |) in
+          M.cast
+            (Ty.path "i16")
+            (M.call_closure (|
+              Ty.path "u16",
+              M.get_trait_method (|
+                "revm_interpreter::interpreter_types::Immediates",
+                Self,
+                [],
+                [],
+                "read_offset_u16",
+                [],
+                []
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| offset |)
+              ]
+            |))))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_read_offset_i16 :
+      M.IsProvidedMethod
+        "revm_interpreter::interpreter_types::Immediates"
+        "read_offset_i16"
+        read_offset_i16.
+  End Immediates.
   
   (* Trait *)
-  (* Empty module 'InputsTrait' *)
+  (* Empty module 'InputsTr' *)
   
   (* Trait *)
   (* Empty module 'LegacyBytecode' *)
@@ -15,7 +103,7 @@ Module interpreter_types.
   (* Empty module 'Jumps' *)
   
   (* Trait *)
-  Module MemoryTrait.
+  Module MemoryTr.
     Definition slice_len (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self; offset; len ] =>
@@ -24,14 +112,12 @@ Module interpreter_types.
           let offset := M.alloc (| Ty.path "usize", offset |) in
           let len := M.alloc (| Ty.path "usize", len |) in
           M.call_closure (|
-            Ty.associated_in_trait
-              "revm_interpreter::interpreter_types::MemoryTrait"
+            Ty.apply
+              (Ty.path "core::cell::Ref")
               []
-              []
-              Self
-              "{{anon_assoc}}",
+              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
             M.get_trait_method (|
-              "revm_interpreter::interpreter_types::MemoryTrait",
+              "revm_interpreter::interpreter_types::MemoryTr",
               Self,
               [],
               [],
@@ -60,14 +146,11 @@ Module interpreter_types.
       end.
     
     Axiom ProvidedMethod_slice_len :
-      M.IsProvidedMethod "revm_interpreter::interpreter_types::MemoryTrait" "slice_len" slice_len.
-  End MemoryTrait.
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::MemoryTr" "slice_len" slice_len.
+  End MemoryTr.
   
   (* Trait *)
-  (* Empty module 'EofContainer' *)
-  
-  (* Trait *)
-  Module SubRoutineStack.
+  Module StackTr.
     Definition is_empty (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self ] =>
@@ -80,7 +163,7 @@ Module interpreter_types.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::SubRoutineStack",
+                  "revm_interpreter::interpreter_types::StackTr",
                   Self,
                   [],
                   [],
@@ -97,41 +180,7 @@ Module interpreter_types.
       end.
     
     Axiom ProvidedMethod_is_empty :
-      M.IsProvidedMethod "revm_interpreter::interpreter_types::SubRoutineStack" "is_empty" is_empty.
-  End SubRoutineStack.
-  
-  (* Trait *)
-  Module StackTrait.
-    Definition is_empty (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          M.call_closure (|
-            Ty.path "bool",
-            BinOp.eq,
-            [
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::StackTrait",
-                  Self,
-                  [],
-                  [],
-                  "len",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |);
-              Value.Integer IntegerKind.Usize 0
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom ProvidedMethod_is_empty :
-      M.IsProvidedMethod "revm_interpreter::interpreter_types::StackTrait" "is_empty" is_empty.
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::StackTr" "is_empty" is_empty.
     Definition push_b256 (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self; value ] =>
@@ -148,7 +197,7 @@ Module interpreter_types.
           M.call_closure (|
             Ty.path "bool",
             M.get_trait_method (|
-              "revm_interpreter::interpreter_types::StackTrait",
+              "revm_interpreter::interpreter_types::StackTr",
               Self,
               [],
               [],
@@ -188,7 +237,7 @@ Module interpreter_types.
       end.
     
     Axiom ProvidedMethod_push_b256 :
-      M.IsProvidedMethod "revm_interpreter::interpreter_types::StackTrait" "push_b256" push_b256.
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::StackTr" "push_b256" push_b256.
     Definition top (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self ] =>
@@ -326,7 +375,7 @@ Module interpreter_types.
                       ]
                   ],
                 M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::StackTrait",
+                  "revm_interpreter::interpreter_types::StackTr",
                   Self,
                   [],
                   [],
@@ -417,7 +466,7 @@ Module interpreter_types.
       end.
     
     Axiom ProvidedMethod_top :
-      M.IsProvidedMethod "revm_interpreter::interpreter_types::StackTrait" "top" top.
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::StackTr" "top" top.
     Definition pop (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self ] =>
@@ -490,7 +539,7 @@ Module interpreter_types.
                       ]
                   ],
                 M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::StackTrait",
+                  "revm_interpreter::interpreter_types::StackTr",
                   Self,
                   [],
                   [],
@@ -553,7 +602,7 @@ Module interpreter_types.
       end.
     
     Axiom ProvidedMethod_pop :
-      M.IsProvidedMethod "revm_interpreter::interpreter_types::StackTrait" "pop" pop.
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::StackTr" "pop" pop.
     Definition pop_address
         (Self : Ty.t)
         (ε : list Value.t)
@@ -605,7 +654,7 @@ Module interpreter_types.
                       []
                   ],
                 M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::StackTrait",
+                  "revm_interpreter::interpreter_types::StackTr",
                   Self,
                   [],
                   [],
@@ -695,23 +744,243 @@ Module interpreter_types.
       end.
     
     Axiom ProvidedMethod_pop_address :
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::StackTr" "pop_address" pop_address.
+  End StackTr.
+  
+  (* Trait *)
+  Module ReturnData.
+    Definition clear (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (|
+                  "revm_interpreter::interpreter_types::ReturnData",
+                  Self,
+                  [],
+                  [],
+                  "set_buffer",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.call_closure (|
+                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      "new",
+                      [],
+                      []
+                    |),
+                    []
+                  |)
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_clear :
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::ReturnData" "clear" clear.
+  End ReturnData.
+  
+  (* Trait *)
+  Module LoopControl.
+    Definition is_end (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          M.call_closure (|
+            Ty.path "bool",
+            UnOp.not,
+            [
+              M.call_closure (|
+                Ty.path "bool",
+                M.get_trait_method (|
+                  "revm_interpreter::interpreter_types::LoopControl",
+                  Self,
+                  [],
+                  [],
+                  "is_not_end",
+                  [],
+                  []
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_is_end :
+      M.IsProvidedMethod "revm_interpreter::interpreter_types::LoopControl" "is_end" is_end.
+    Definition instruction_result
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
+                ],
+              "and_then",
+              [],
+              [
+                Ty.path "revm_interpreter::instruction_result::InstructionResult";
+                Ty.function
+                  [
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
+                  ]
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ])
+              ]
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ],
+                  "as_ref",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
+                          ],
+                        M.get_trait_method (|
+                          "revm_interpreter::interpreter_types::LoopControl",
+                          Self,
+                          [],
+                          [],
+                          "action",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |)
+                  |)
+                ]
+              |);
+              M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ],
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ],
+                            α0
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let action :=
+                                  M.copy (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.path
+                                          "revm_interpreter::interpreter_action::InterpreterAction"
+                                      ],
+                                    γ
+                                  |) in
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.path
+                                        "revm_interpreter::instruction_result::InstructionResult"
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.path
+                                      "revm_interpreter::interpreter_action::InterpreterAction",
+                                    "instruction_result",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| action |) |)
+                                    |)
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_instruction_result :
       M.IsProvidedMethod
-        "revm_interpreter::interpreter_types::StackTrait"
-        "pop_address"
-        pop_address.
-  End StackTrait.
-  
-  (* Trait *)
-  (* Empty module 'EofData' *)
-  
-  (* Trait *)
-  (* Empty module 'EofCodeInfo' *)
-  
-  (* Trait *)
-  (* Empty module 'ReturnData' *)
-  
-  (* Trait *)
-  (* Empty module 'LoopControl' *)
+        "revm_interpreter::interpreter_types::LoopControl"
+        "instruction_result"
+        instruction_result.
+  End LoopControl.
   
   (* Trait *)
   (* Empty module 'RuntimeFlag' *)

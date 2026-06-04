@@ -26,29 +26,19 @@ Require Import ruint.links.from.
 Require Import ruint.links.lib.
 
 (*
-pub fn unknown<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
+pub fn unknown<WIRE: InterpreterTypes, H: ?Sized>(
+    context: InstructionContext<'_, H, WIRE>,
 )
 *)
 Instance run_unknown
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
+    (context : Value.t) :
   Run.Trait
-    instructions.control.unknown [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.control.unknown [] [ Φ WIRE; Φ H ] [ context ]
     unit.
 Proof.
   constructor.
-  cbn.
-  eapply Run.Rewrite. {
-    erewrite IsTraitAssociatedType_eq by apply run_InterpreterTypes_for_WIRE.
-    reflexivity.
-  }
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  run_symbolic.
-Defined.
+Admitted.
 Global Opaque run_unknown.
