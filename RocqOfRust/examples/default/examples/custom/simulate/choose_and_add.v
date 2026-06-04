@@ -36,12 +36,7 @@ Proof.
   destruct pair as [x y].
   unfold add_pair; cbn.
   with_strategy transparent [run_add_pair] cbn.
-  repeat (
-    cbn ||
-    get_can_access ||
-    eapply Run.Call ||
-    apply Run.Pure
-  ).
+  s.
 Qed.
 
 Lemma choose_and_add_eq
@@ -56,19 +51,8 @@ Lemma choose_and_add_eq
   destruct pair as [x y].
   unfold choose_and_add; cbn.
   with_strategy transparent [run_choose_and_add] cbn.
-  repeat (
-    cbn ||
-    get_can_access ||
-    apply Run.LetUnfold
-  ).
-  eapply Run.Call.
+  s.
   { apply choose_u32_eq. }
-  repeat (
-    cbn ||
-    get_can_access ||
-    apply Run.LetUnfold ||
-    eapply Run.Call ||
-    apply Run.Pure
-  ).
+  s.
  Qed.  
    
