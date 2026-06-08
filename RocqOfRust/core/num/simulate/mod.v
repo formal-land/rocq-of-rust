@@ -43,6 +43,17 @@ Module Impl_u64.
   Proof.
   Admitted.
 
+  Definition checked_sub (self other : Self) : option Self :=
+  BinOp.Checked.sub self other.
+
+ Lemma checked_sub_eq (self other : Self) (stack : Stack.t) :
+  {{
+    SimulateM.eval_f (Impl_u64.run_checked_sub self other) stack 🌲
+    (Output.Success (checked_sub self other), stack)
+  }}.
+ Proof.
+ Admitted.
+
   Definition saturating_add (self rhs : Self) : Self :=
     {| Integer.value := Z.min (self.(Integer.value) + rhs.(Integer.value)) MAX.(Integer.value) |}.
 
@@ -52,7 +63,7 @@ Module Impl_u64.
       (Output.Success (saturating_add self rhs), stack)
     }}.
   Proof.
-  Admitted.
+  Admitted. 
 
   Definition saturating_sub (self rhs : Self) : Self :=
     {| Integer.value := Z.max (self.(Integer.value) - rhs.(Integer.value)) 0 |}.

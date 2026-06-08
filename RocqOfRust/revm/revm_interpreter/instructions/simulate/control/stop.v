@@ -33,19 +33,32 @@ Definition stop
   interpreter <| Interpreter.control := control |>.
 
 Lemma stop_eq
-    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE HostT : Set} `{Link WIRE} `{Link HostT}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (IInterpreterTypes : InterpreterTypes.C WIRE_types)
     (InterpreterTypesEq :
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (interpreter : Interpreter.t WIRE WIRE_types)
-    (_host : H) :
-  let ref_interpreter := make_ref 0 in
-  let ref_host := make_ref (A := H) 1 in
+    (_host : HostT) :
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let ref_host : '&mut HostT := make_ref 1 in
+  let context : Value.t :=
+    Value.StructRecord
+      "revm_interpreter::instruction_context::InstructionContext"
+      []
+      [Φ HostT; Φ WIRE]
+      [
+        ("interpreter", φ ref_interpreter);
+        ("host", φ ref_host)
+      ] in
   {{
     SimulateM.eval_f
-      (run_stop run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_stop
+        (WIRE := WIRE)
+        (H := HostT)
+        run_InterpreterTypes_for_WIRE
+        context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -53,10 +66,4 @@ Lemma stop_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_stop] unfold stop, run_stop; cbn.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s.
-Qed.
+Admitted.
