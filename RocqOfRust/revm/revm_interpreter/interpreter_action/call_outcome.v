@@ -11,7 +11,19 @@ Module interpreter_action.
         fields :=
           [
             ("result", Ty.path "revm_interpreter::interpreter::InterpreterResult");
-            ("memory_offset", Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
+            ("memory_offset", Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+            ("was_precompile_called", Ty.path "bool");
+            ("precompile_call_logs",
+              Ty.apply
+                (Ty.path "alloc::vec::Vec")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "alloy_primitives::log::Log")
+                    []
+                    [ Ty.path "alloy_primitives::log::LogData" ];
+                  Ty.path "alloc::alloc::Global"
+                ])
           ];
       } *)
     
@@ -92,6 +104,80 @@ Module interpreter_action.
                         |)
                       |)
                     ]
+                  |));
+                ("was_precompile_called",
+                  M.call_closure (|
+                    Ty.path "bool",
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                              "was_precompile_called"
+                            |)
+                          |)
+                        |)
+                      |)
+                    ]
+                  |));
+                ("precompile_call_logs",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::log::Log")
+                          []
+                          [ Ty.path "alloy_primitives::log::LogData" ];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::log::Log")
+                            []
+                            [ Ty.path "alloy_primitives::log::LogData" ];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                              "precompile_call_logs"
+                            |)
+                          |)
+                        |)
+                      |)
+                    ]
                   |))
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -132,7 +218,7 @@ Module interpreter_action.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (|
                 Ty.path "core::fmt::Formatter",
-                "debug_struct_field2_finish",
+                "debug_struct_field4_finish",
                 [],
                 []
               |),
@@ -173,11 +259,71 @@ Module interpreter_action.
                     (Ty.apply
                       (Ty.path "&")
                       []
+                      [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                            "memory_offset"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "was_precompile_called" |) |) |);
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                            "was_precompile_called"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "precompile_call_logs" |) |) |);
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
                       [
                         Ty.apply
                           (Ty.path "&")
                           []
-                          [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloy_primitives::log::Log")
+                                  []
+                                  [ Ty.path "alloy_primitives::log::LogData" ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ]
                       ])
                     (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                   [
@@ -190,14 +336,24 @@ Module interpreter_action.
                             Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloy_primitives::log::Log")
+                                      []
+                                      [ Ty.path "alloy_primitives::log::LogData" ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
                               ],
                             M.borrow (|
                               Pointer.Kind.Ref,
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
                                 "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
-                                "memory_offset"
+                                "precompile_call_logs"
                               |)
                             |)
                           |)
@@ -259,44 +415,120 @@ Module interpreter_action.
                 other
               |) in
             LogicalOp.and (|
-              M.call_closure (|
-                Ty.path "bool",
-                M.get_trait_method (|
-                  "core::cmp::PartialEq",
-                  Ty.path "revm_interpreter::interpreter::InterpreterResult",
-                  [],
-                  [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
-                  "eq",
-                  [],
-                  []
+              LogicalOp.and (|
+                LogicalOp.and (|
+                  M.call_closure (|
+                    Ty.path "bool",
+                    BinOp.eq,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                          "was_precompile_called"
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                          "was_precompile_called"
+                        |)
+                      |)
+                    ]
+                  |),
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.path "revm_interpreter::interpreter::InterpreterResult",
+                        [],
+                        [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
+                        "eq",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                            "result"
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| other |) |),
+                            "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                            "result"
+                          |)
+                        |)
+                      ]
+                    |)))
                 |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
-                      "result"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
-                      "result"
-                    |)
-                  |)
-                ]
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "bool",
+                    M.get_trait_method (|
+                      "core::cmp::PartialEq",
+                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                      [],
+                      [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
+                      "eq",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                          "memory_offset"
+                        |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
+                          "memory_offset"
+                        |)
+                      |)
+                    ]
+                  |)))
               |),
               ltac:(M.monadic
                 (M.call_closure (|
                   Ty.path "bool",
                   M.get_trait_method (|
                     "core::cmp::PartialEq",
-                    Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::log::Log")
+                          []
+                          [ Ty.path "alloy_primitives::log::LogData" ];
+                        Ty.path "alloc::alloc::Global"
+                      ],
                     [],
-                    [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::log::Log")
+                            []
+                            [ Ty.path "alloy_primitives::log::LogData" ];
+                          Ty.path "alloc::alloc::Global"
+                        ]
+                    ],
                     "eq",
                     [],
                     []
@@ -307,7 +539,7 @@ Module interpreter_action.
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
-                        "memory_offset"
+                        "precompile_call_logs"
                       |)
                     |);
                     M.borrow (|
@@ -315,7 +547,7 @@ Module interpreter_action.
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| other |) |),
                         "revm_interpreter::interpreter_action::call_outcome::CallOutcome",
-                        "memory_offset"
+                        "precompile_call_logs"
                       |)
                     |)
                   ]
@@ -364,7 +596,23 @@ Module interpreter_action.
                     (M.match_operator (|
                       Ty.tuple [],
                       Value.DeclaredButUndefined,
-                      [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.tuple [],
+                              Value.DeclaredButUndefined,
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.match_operator (|
+                                      Ty.tuple [],
+                                      Value.DeclaredButUndefined,
+                                      [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                                    |)))
+                              ]
+                            |)))
+                      ]
                     |)))
               ]
             |)))
@@ -390,6 +638,8 @@ Module interpreter_action.
               Self {
                   result,
                   memory_offset,
+                  was_precompile_called: false,
+                  precompile_call_logs: Vec::new(),
               }
           }
       *)
@@ -408,7 +658,40 @@ Module interpreter_action.
               "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
               []
               []
-              [ ("result", M.read (| result |)); ("memory_offset", M.read (| memory_offset |)) ]))
+              [
+                ("result", M.read (| result |));
+                ("memory_offset", M.read (| memory_offset |));
+                ("was_precompile_called", Value.Bool false);
+                ("precompile_call_logs",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::log::Log")
+                          []
+                          [ Ty.path "alloy_primitives::log::LogData" ];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::log::Log")
+                            []
+                            [ Ty.path "alloy_primitives::log::LogData" ];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    []
+                  |))
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       

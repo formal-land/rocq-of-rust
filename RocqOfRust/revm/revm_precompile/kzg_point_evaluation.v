@@ -5,12 +5,12 @@ Module kzg_point_evaluation.
   Definition value_POINT_EVALUATION (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.alloc (|
-        Ty.path "revm_precompile::PrecompileWithAddress",
-        Value.StructTuple
-          "revm_precompile::PrecompileWithAddress"
-          []
-          []
+        Ty.path "revm_precompile::Precompile",
+        M.call_closure (|
+          Ty.path "revm_precompile::Precompile",
+          M.get_associated_function (| Ty.path "revm_precompile::Precompile", "new", [], [] |),
           [
+            Value.StructTuple "revm_precompile::id::PrecompileId::KzgPointEvaluation" [] [] [];
             M.read (|
               get_constant (|
                 "revm_precompile::kzg_point_evaluation::ADDRESS",
@@ -20,7 +20,7 @@ Module kzg_point_evaluation.
             M.call_closure (|
               Ty.function
                 [
-                  Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                   Ty.path "u64"
                 ]
                 (Ty.apply
@@ -28,13 +28,13 @@ Module kzg_point_evaluation.
                   []
                   [
                     Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                    Ty.path "revm_precompile::interface::PrecompileError"
                   ]),
               M.pointer_coercion
                 M.PointerCoercion.ReifyFnPointer
                 (Ty.function
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                     Ty.path "u64"
                   ]
                   (Ty.apply
@@ -42,11 +42,11 @@ Module kzg_point_evaluation.
                     []
                     [
                       Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
+                      Ty.path "revm_precompile::interface::PrecompileError"
                     ]))
                 (Ty.function
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                     Ty.path "u64"
                   ]
                   (Ty.apply
@@ -54,11 +54,12 @@ Module kzg_point_evaluation.
                     []
                     [
                       Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
+                      Ty.path "revm_precompile::interface::PrecompileError"
                     ])),
               [ M.get_function (| "revm_precompile::kzg_point_evaluation::run", [], [] |) ]
             |)
           ]
+        |)
       |))).
   
   Global Instance Instance_IsConstant_value_POINT_EVALUATION :
@@ -117,7 +118,7 @@ Module kzg_point_evaluation.
             M.borrow (|
               Pointer.Kind.Ref,
               get_constant (|
-                "revm_precompile::kzg_point_evaluation::RETURN_VALUE::RES",
+                "revm_precompile::kzg_point_evaluation::RETURN_VALUE_discriminant",
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 64 ] [ Ty.path "u8" ]
               |)
             |)
@@ -131,31 +132,29 @@ Module kzg_point_evaluation.
   Global Typeclasses Opaque value_RETURN_VALUE.
   
   (*
-  pub fn run(input: &Bytes, gas_limit: u64) -> PrecompileResult {
+  pub fn run(input: &[u8], gas_limit: u64) -> PrecompileResult {
       if gas_limit < GAS_COST {
-          return Err(PrecompileError::OutOfGas.into());
+          return Err(PrecompileError::OutOfGas);
       }
   
       // Verify input length.
       if input.len() != 192 {
-          return Err(PrecompileError::BlobInvalidInputLength.into());
+          return Err(PrecompileError::BlobInvalidInputLength);
       }
   
       // Verify commitment matches versioned_hash
       let versioned_hash = &input[..32];
       let commitment = &input[96..144];
       if kzg_to_versioned_hash(commitment) != versioned_hash {
-          return Err(PrecompileError::BlobMismatchedVersion.into());
+          return Err(PrecompileError::BlobMismatchedVersion);
       }
   
       // Verify KZG proof with z and y in big endian format
-      let commitment = as_bytes48(commitment);
-      let z = as_bytes32(&input[32..64]);
-      let y = as_bytes32(&input[64..96]);
-      let proof = as_bytes48(&input[144..192]);
-      if !verify_kzg_proof(commitment, z, y, proof) {
-          return Err(PrecompileError::BlobVerifyKzgProofFailed.into());
-      }
+      let commitment: &[u8; 48] = commitment.try_into().unwrap();
+      let z = input[32..64].try_into().unwrap();
+      let y = input[64..96].try_into().unwrap();
+      let proof = input[144..192].try_into().unwrap();
+      crypto().verify_kzg_proof(z, y, commitment, proof)?;
   
       // Return FIELD_ELEMENTS_PER_BLOB and BLS_MODULUS as padded 32 byte big endian values
       Ok(PrecompileOutput::new(GAS_COST, RETURN_VALUE.into()))
@@ -167,7 +166,7 @@ Module kzg_point_evaluation.
       ltac:(M.monadic
         (let input :=
           M.alloc (|
-            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
             input
           |) in
         let gas_limit := M.alloc (| Ty.path "u64", gas_limit |) in
@@ -177,7 +176,7 @@ Module kzg_point_evaluation.
             []
             [
               Ty.path "revm_precompile::interface::PrecompileOutput";
-              Ty.path "revm_precompile::interface::PrecompileErrors"
+              Ty.path "revm_precompile::interface::PrecompileError"
             ]) (|
           ltac:(M.monadic
             (M.read (|
@@ -214,28 +213,14 @@ Module kzg_point_evaluation.
                                 []
                                 [
                                   Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  Ty.path "revm_precompile::interface::PrecompileError"
                                 ]
                                 [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::OutOfGas"
-                                        []
-                                        []
-                                        []
-                                    ]
-                                  |)
+                                  Value.StructTuple
+                                    "revm_precompile::interface::PrecompileError::OutOfGas"
+                                    []
+                                    []
+                                    []
                                 ]
                             |)
                           |)
@@ -260,7 +245,7 @@ Module kzg_point_evaluation.
                                 M.call_closure (|
                                   Ty.path "usize",
                                   M.get_associated_function (|
-                                    Ty.path "bytes::bytes::Bytes",
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
                                     "len",
                                     [],
                                     []
@@ -268,29 +253,7 @@ Module kzg_point_evaluation.
                                   [
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.path "bytes::bytes::Bytes" ],
-                                          M.get_trait_method (|
-                                            "core::ops::deref::Deref",
-                                            Ty.path "alloy_primitives::bytes_::Bytes",
-                                            [],
-                                            [],
-                                            "deref",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| input |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      |)
+                                      M.deref (| M.read (| input |) |)
                                     |)
                                   ]
                                 |);
@@ -307,28 +270,14 @@ Module kzg_point_evaluation.
                                 []
                                 [
                                   Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  Ty.path "revm_precompile::interface::PrecompileError"
                                 ]
                                 [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::BlobInvalidInputLength"
-                                        []
-                                        []
-                                        []
-                                    ]
-                                  |)
+                                  Value.StructTuple
+                                    "revm_precompile::interface::PrecompileError::BlobInvalidInputLength"
+                                    []
+                                    []
+                                    []
                                 ]
                             |)
                           |)
@@ -353,51 +302,7 @@ Module kzg_point_evaluation.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.path "bytes::bytes::Bytes",
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.path "alloy_primitives::bytes_::Bytes",
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| input |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |);
                         Value.mkStructRecord
                           "core::ops::range::RangeTo"
                           []
@@ -424,51 +329,7 @@ Module kzg_point_evaluation.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.path "bytes::bytes::Bytes",
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.path "alloy_primitives::bytes_::Bytes",
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| input |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |);
                         Value.mkStructRecord
                           "core::ops::range::Range"
                           []
@@ -550,28 +411,14 @@ Module kzg_point_evaluation.
                                 []
                                 [
                                   Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  Ty.path "revm_precompile::interface::PrecompileError"
                                 ]
                                 [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::BlobMismatchedVersion"
-                                        []
-                                        []
-                                        []
-                                    ]
-                                  |)
+                                  Value.StructTuple
+                                    "revm_precompile::interface::PrecompileError::BlobMismatchedVersion"
+                                    []
+                                    []
+                                    []
                                 ]
                             |)
                           |)
@@ -579,20 +426,169 @@ Module kzg_point_evaluation.
                     fun γ => ltac:(M.monadic (Value.Tuple []))
                   ]
                 |) in
-              let~ commitment : Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ] :=
+              let~ commitment :
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 48 ]
+                        [ Ty.path "u8" ]
+                    ] :=
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ],
-                  M.get_function (| "revm_precompile::kzg_point_evaluation::as_bytes48", [], [] |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| commitment |) |) |) ]
-                |) in
-              let~ z : Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ] :=
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ],
-                  M.get_function (| "revm_precompile::kzg_point_evaluation::as_bytes32", [], [] |),
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 48 ]
+                        [ Ty.path "u8" ]
+                    ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 48 ]
+                              [ Ty.path "u8" ]
+                          ];
+                        Ty.path "core::array::TryFromSliceError"
+                      ],
+                    "unwrap",
+                    [],
+                    []
+                  |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 48 ]
+                                [ Ty.path "u8" ]
+                            ];
+                          Ty.path "core::array::TryFromSliceError"
+                        ],
+                      M.get_trait_method (|
+                        "core::convert::TryInto",
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 48 ]
+                                [ Ty.path "u8" ]
+                            ]
+                        ],
+                        "try_into",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| commitment |) |) |) ]
+                    |)
+                  ]
+                |) in
+              let~ z :
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ] :=
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [ Ty.path "u8" ]
+                          ];
+                        Ty.path "core::array::TryFromSliceError"
+                      ],
+                    "unwrap",
+                    [],
+                    []
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ]
+                            ];
+                          Ty.path "core::array::TryFromSliceError"
+                        ],
+                      M.get_trait_method (|
+                        "core::convert::TryInto",
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ]
+                            ]
+                        ],
+                        "try_into",
+                        [],
+                        []
+                      |),
+                      [
                         M.borrow (|
                           Pointer.Kind.Ref,
                           M.deref (|
@@ -616,54 +612,7 @@ Module kzg_point_evaluation.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.path "bytes::bytes::Bytes",
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.path "bytes::bytes::Bytes" ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.path "alloy_primitives::bytes_::Bytes",
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| input |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |);
                                 Value.mkStructRecord
                                   "core::ops::range::Range"
                                   []
@@ -676,18 +625,90 @@ Module kzg_point_evaluation.
                             |)
                           |)
                         |)
-                      |)
+                      ]
                     |)
                   ]
                 |) in
-              let~ y : Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ] :=
+              let~ y :
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ] :=
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ],
-                  M.get_function (| "revm_precompile::kzg_point_evaluation::as_bytes32", [], [] |),
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [ Ty.path "u8" ]
+                          ];
+                        Ty.path "core::array::TryFromSliceError"
+                      ],
+                    "unwrap",
+                    [],
+                    []
+                  |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ]
+                            ];
+                          Ty.path "core::array::TryFromSliceError"
+                        ],
+                      M.get_trait_method (|
+                        "core::convert::TryInto",
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ]
+                            ]
+                        ],
+                        "try_into",
+                        [],
+                        []
+                      |),
+                      [
                         M.borrow (|
                           Pointer.Kind.Ref,
                           M.deref (|
@@ -711,54 +732,7 @@ Module kzg_point_evaluation.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.path "bytes::bytes::Bytes",
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.path "bytes::bytes::Bytes" ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.path "alloy_primitives::bytes_::Bytes",
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| input |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |);
                                 Value.mkStructRecord
                                   "core::ops::range::Range"
                                   []
@@ -771,18 +745,90 @@ Module kzg_point_evaluation.
                             |)
                           |)
                         |)
-                      |)
+                      ]
                     |)
                   ]
                 |) in
-              let~ proof : Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ] :=
+              let~ proof :
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 48 ]
+                        [ Ty.path "u8" ]
+                    ] :=
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ],
-                  M.get_function (| "revm_precompile::kzg_point_evaluation::as_bytes48", [], [] |),
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 48 ]
+                        [ Ty.path "u8" ]
+                    ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 48 ]
+                              [ Ty.path "u8" ]
+                          ];
+                        Ty.path "core::array::TryFromSliceError"
+                      ],
+                    "unwrap",
+                    [],
+                    []
+                  |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 48 ]
+                                [ Ty.path "u8" ]
+                            ];
+                          Ty.path "core::array::TryFromSliceError"
+                        ],
+                      M.get_trait_method (|
+                        "core::convert::TryInto",
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 48 ]
+                                [ Ty.path "u8" ]
+                            ]
+                        ],
+                        "try_into",
+                        [],
+                        []
+                      |),
+                      [
                         M.borrow (|
                           Pointer.Kind.Ref,
                           M.deref (|
@@ -806,54 +852,7 @@ Module kzg_point_evaluation.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.path "bytes::bytes::Bytes",
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.path "bytes::bytes::Bytes" ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.path "alloy_primitives::bytes_::Bytes",
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| input |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |);
                                 Value.mkStructRecord
                                   "core::ops::range::Range"
                                   []
@@ -866,83 +865,161 @@ Module kzg_point_evaluation.
                             |)
                           |)
                         |)
-                      |)
+                      ]
                     |)
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
                   Ty.tuple [],
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  M.alloc (|
+                    Ty.apply
+                      (Ty.path "core::ops::control_flow::ControlFlow")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "core::convert::Infallible";
+                            Ty.path "revm_precompile::interface::PrecompileError"
+                          ];
+                        Ty.tuple []
+                      ],
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "core::convert::Infallible";
+                              Ty.path "revm_precompile::interface::PrecompileError"
+                            ];
+                          Ty.tuple []
+                        ],
+                      M.get_trait_method (|
+                        "core::ops::try_trait::Try",
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.tuple []; Ty.path "revm_precompile::interface::PrecompileError" ],
+                        [],
+                        [],
+                        "branch",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "revm_precompile::interface::PrecompileError" ],
+                          M.get_trait_method (|
+                            "revm_precompile::interface::Crypto",
+                            Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ],
+                            [],
+                            [],
+                            "verify_kzg_proof",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ]
+                                    ],
+                                  M.get_function (| "revm_precompile::interface::crypto", [], [] |),
+                                  []
+                                |)
+                              |)
+                            |);
+                            M.read (| z |);
+                            M.read (| y |);
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| commitment |) |) |);
+                            M.read (| proof |)
+                          ]
+                        |)
+                      ]
+                    |)
+                  |),
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ :=
-                          M.alloc (|
-                            Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_function (|
-                                    "revm_precompile::kzg_point_evaluation::verify_kzg_proof",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| commitment |) |)
-                                    |);
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| z |) |) |);
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| y |) |) |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| proof |) |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                            |)
+                        (let γ0_0 :=
+                          M.SubPointer.get_struct_tuple_field (|
+                            γ,
+                            "core::ops::control_flow::ControlFlow::Break",
+                            0
                           |) in
-                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let residual :=
+                          M.copy (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "core::convert::Infallible";
+                                Ty.path "revm_precompile::interface::PrecompileError"
+                              ],
+                            γ0_0
+                          |) in
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ]
-                                [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileError"
+                                  ],
+                                M.get_trait_method (|
+                                  "core::ops::try_trait::FromResidual",
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
                                     [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed"
-                                        []
-                                        []
-                                        []
-                                    ]
-                                  |)
-                                ]
+                                      Ty.path "revm_precompile::interface::PrecompileOutput";
+                                      Ty.path "revm_precompile::interface::PrecompileError"
+                                    ],
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "revm_precompile::interface::PrecompileError"
+                                      ]
+                                  ],
+                                  "from_residual",
+                                  [],
+                                  []
+                                |),
+                                [ M.read (| residual |) ]
+                              |)
                             |)
                           |)
                         |)));
-                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ0_0 :=
+                          M.SubPointer.get_struct_tuple_field (|
+                            γ,
+                            "core::ops::control_flow::ControlFlow::Continue",
+                            0
+                          |) in
+                        let val := M.copy (| Ty.tuple [], γ0_0 |) in
+                        M.read (| val |)))
                   ]
                 |) in
               M.alloc (|
@@ -951,14 +1028,14 @@ Module kzg_point_evaluation.
                   []
                   [
                     Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                    Ty.path "revm_precompile::interface::PrecompileError"
                   ],
                 Value.StructTuple
                   "core::result::Result::Ok"
                   []
                   [
                     Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                    Ty.path "revm_precompile::interface::PrecompileError"
                   ]
                   [
                     M.call_closure (|
@@ -1033,7 +1110,7 @@ Module kzg_point_evaluation.
   
   (*
   pub fn kzg_to_versioned_hash(commitment: &[u8]) -> [u8; 32] {
-      let mut hash: [u8; 32] = Sha256::digest(commitment).into();
+      let mut hash = crypto().sha256(commitment);
       hash[0] = VERSIONED_HASH_VERSION_KZG;
       hash
   }
@@ -1053,161 +1130,29 @@ Module kzg_point_evaluation.
             M.call_closure (|
               Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
               M.get_trait_method (|
-                "core::convert::Into",
-                Ty.apply
-                  (Ty.path "generic_array::GenericArray")
-                  []
-                  [
-                    Ty.path "u8";
-                    Ty.apply
-                      (Ty.path "typenum::uint::UInt")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "typenum::uint::UInt")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "typenum::uint::UInt")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "typenum::uint::UInt")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "typenum::uint::UInt")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "typenum::uint::UInt")
-                                          []
-                                          [
-                                            Ty.path "typenum::uint::UTerm";
-                                            Ty.path "typenum::bit::B1"
-                                          ];
-                                        Ty.path "typenum::bit::B0"
-                                      ];
-                                    Ty.path "typenum::bit::B0"
-                                  ];
-                                Ty.path "typenum::bit::B0"
-                              ];
-                            Ty.path "typenum::bit::B0"
-                          ];
-                        Ty.path "typenum::bit::B0"
-                      ]
-                  ],
+                "revm_precompile::interface::Crypto",
+                Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ],
                 [],
-                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
-                ],
-                "into",
+                [],
+                "sha256",
                 [],
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "generic_array::GenericArray")
-                    []
-                    [
-                      Ty.path "u8";
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
                       Ty.apply
-                        (Ty.path "typenum::uint::UInt")
+                        (Ty.path "&")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "typenum::uint::UInt")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "typenum::uint::UInt")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "typenum::uint::UInt")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "typenum::uint::UInt")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "typenum::uint::UInt")
-                                            []
-                                            [
-                                              Ty.path "typenum::uint::UTerm";
-                                              Ty.path "typenum::bit::B1"
-                                            ];
-                                          Ty.path "typenum::bit::B0"
-                                        ];
-                                      Ty.path "typenum::bit::B0"
-                                    ];
-                                  Ty.path "typenum::bit::B0"
-                                ];
-                              Ty.path "typenum::bit::B0"
-                            ];
-                          Ty.path "typenum::bit::B0"
-                        ]
-                    ],
-                  M.get_trait_method (|
-                    "digest::digest::Digest",
-                    Ty.apply
-                      (Ty.path "digest::core_api::wrapper::CoreWrapper")
+                        [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ],
+                      M.get_function (| "revm_precompile::interface::crypto", [], [] |),
                       []
-                      [
-                        Ty.apply
-                          (Ty.path "digest::core_api::ct_variable::CtVariableCoreWrapper")
-                          []
-                          [
-                            Ty.path "sha2::core_api::Sha256VarCore";
-                            Ty.apply
-                              (Ty.path "typenum::uint::UInt")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "typenum::uint::UInt")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "typenum::uint::UInt")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "typenum::uint::UInt")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "typenum::uint::UInt")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "typenum::uint::UInt")
-                                                  []
-                                                  [
-                                                    Ty.path "typenum::uint::UTerm";
-                                                    Ty.path "typenum::bit::B1"
-                                                  ];
-                                                Ty.path "typenum::bit::B0"
-                                              ];
-                                            Ty.path "typenum::bit::B0"
-                                          ];
-                                        Ty.path "typenum::bit::B0"
-                                      ];
-                                    Ty.path "typenum::bit::B0"
-                                  ];
-                                Ty.path "typenum::bit::B0"
-                              ];
-                            Ty.path "sha2::OidSha256"
-                          ]
-                      ],
-                    [],
-                    [],
-                    "digest",
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ] ]
-                  |),
-                  [ M.read (| commitment |) ]
-                |)
+                    |)
+                  |)
+                |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| commitment |) |) |)
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -1233,16 +1178,27 @@ Module kzg_point_evaluation.
   Global Typeclasses Opaque kzg_to_versioned_hash.
   
   (*
-  pub fn verify_kzg_proof(commitment: &Bytes48, z: &Bytes32, y: &Bytes32, proof: &Bytes48) -> bool {
+  pub fn verify_kzg_proof(
+      commitment: &[u8; 48],
+      z: &[u8; 32],
+      y: &[u8; 32],
+      proof: &[u8; 48],
+  ) -> bool {
       cfg_if::cfg_if! {
           if #[cfg(feature = "c-kzg")] {
-              let kzg_settings = c_kzg::ethereum_kzg_settings();
-          } else if #[cfg(feature = "kzg-rs")] {
-              let env = kzg_rs::EnvKzgSettings::default();
-              let kzg_settings = env.get();
+              use c_kzg::{Bytes48, Bytes32};
+  
+              let as_bytes48 = |bytes: &[u8; 48]| -> &Bytes48 { unsafe { &*bytes.as_ptr().cast() } };
+              let as_bytes32 = |bytes: &[u8; 32]| -> &Bytes32 { unsafe { &*bytes.as_ptr().cast() } };
+  
+              let kzg_settings = c_kzg::ethereum_kzg_settings(8);
+              kzg_settings.verify_kzg_proof(as_bytes48(commitment), as_bytes32(z), as_bytes32(y), as_bytes48(proof)).unwrap_or(false)
+          } else if #[cfg(feature = "blst")] {
+              blst::verify_kzg_proof(commitment, z, y, proof)
+          } else {
+              arkworks::verify_kzg_proof(commitment, z, y, proof)
           }
       }
-      KzgProof::verify_kzg_proof(commitment, z, y, proof, kzg_settings).unwrap_or(false)
   }
   *)
   Definition verify_kzg_proof (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1251,22 +1207,283 @@ Module kzg_point_evaluation.
       ltac:(M.monadic
         (let commitment :=
           M.alloc (|
-            Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ],
+            Ty.apply
+              (Ty.path "&")
+              []
+              [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
+              ],
             commitment
           |) in
         let z :=
-          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ], z |) in
+          M.alloc (|
+            Ty.apply
+              (Ty.path "&")
+              []
+              [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+              ],
+            z
+          |) in
         let y :=
-          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ], y |) in
+          M.alloc (|
+            Ty.apply
+              (Ty.path "&")
+              []
+              [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+              ],
+            y
+          |) in
         let proof :=
-          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ], proof |) in
+          M.alloc (|
+            Ty.apply
+              (Ty.path "&")
+              []
+              [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
+              ],
+            proof
+          |) in
         M.read (|
+          let~ as_bytes48 :
+              Ty.function
+                [
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 48 ]
+                        [ Ty.path "u8" ]
+                    ]
+                ]
+                (Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ]) :=
+            M.closure
+              (fun γ =>
+                ltac:(M.monadic
+                  match γ with
+                  | [ α0 ] =>
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ],
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 48 ]
+                                [ Ty.path "u8" ]
+                            ],
+                          α0
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let bytes :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 48 ]
+                                        [ Ty.path "u8" ]
+                                    ],
+                                  γ
+                                |) in
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "*const")
+                                          []
+                                          [ Ty.path "c_kzg::bindings::Bytes48" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                          "cast",
+                                          [],
+                                          [ Ty.path "c_kzg::bindings::Bytes48" ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              "as_ptr",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                  ],
+                                                M.pointer_coercion
+                                                  M.PointerCoercion.Unsize
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 48 ]
+                                                        [ Ty.path "u8" ]
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ]),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| bytes |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |)))
+                        ]
+                      |)))
+                  | _ => M.impossible "wrong number of arguments"
+                  end)) in
+          let~ as_bytes32 :
+              Ty.function
+                [
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ]
+                ]
+                (Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ]) :=
+            M.closure
+              (fun γ =>
+                ltac:(M.monadic
+                  match γ with
+                  | [ α0 ] =>
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ],
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ]
+                            ],
+                          α0
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let bytes :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        [ Ty.path "u8" ]
+                                    ],
+                                  γ
+                                |) in
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "*const")
+                                          []
+                                          [ Ty.path "c_kzg::bindings::Bytes32" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                          "cast",
+                                          [],
+                                          [ Ty.path "c_kzg::bindings::Bytes32" ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              "as_ptr",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                  ],
+                                                M.pointer_coercion
+                                                  M.PointerCoercion.Unsize
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                                        [ Ty.path "u8" ]
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ]),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| bytes |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |)))
+                        ]
+                      |)))
+                  | _ => M.impossible "wrong number of arguments"
+                  end)) in
           let~ kzg_settings :
               Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::KZGSettings" ] :=
             M.call_closure (|
               Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::KZGSettings" ],
               M.get_function (| "c_kzg::ethereum_kzg_settings::ethereum_kzg_settings", [], [] |),
-              []
+              [ Value.Integer IntegerKind.U64 8 ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -1288,17 +1505,206 @@ Module kzg_point_evaluation.
                     []
                     [ Ty.path "bool"; Ty.path "c_kzg::bindings::Error" ],
                   M.get_associated_function (|
-                    Ty.path "c_kzg::bindings::KZGProof",
+                    Ty.path "c_kzg::bindings::KZGSettings",
                     "verify_kzg_proof",
                     [],
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| commitment |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| z |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| y |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| proof |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| kzg_settings |) |) |)
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| kzg_settings |) |) |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ],
+                          M.get_trait_method (|
+                            "core::ops::function::Fn",
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 48 ]
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ]
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ]),
+                            [],
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 48 ]
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]
+                            ],
+                            "call",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, as_bytes48 |);
+                            Value.Tuple
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| commitment |) |)
+                                |)
+                              ]
+                          ]
+                        |)
+                      |)
+                    |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ],
+                          M.get_trait_method (|
+                            "core::ops::function::Fn",
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ]
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ]),
+                            [],
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]
+                            ],
+                            "call",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, as_bytes32 |);
+                            Value.Tuple
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| z |) |) |) ]
+                          ]
+                        |)
+                      |)
+                    |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ],
+                          M.get_trait_method (|
+                            "core::ops::function::Fn",
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ]
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes32" ]),
+                            [],
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]
+                            ],
+                            "call",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, as_bytes32 |);
+                            Value.Tuple
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| y |) |) |) ]
+                          ]
+                        |)
+                      |)
+                    |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ],
+                          M.get_trait_method (|
+                            "core::ops::function::Fn",
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 48 ]
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ]
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "c_kzg::bindings::Bytes48" ]),
+                            [],
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 48 ]
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]
+                            ],
+                            "call",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, as_bytes48 |);
+                            Value.Tuple
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| proof |) |) |) ]
+                          ]
+                        |)
+                      |)
+                    |)
                   ]
                 |);
                 Value.Bool false
@@ -1313,276 +1719,4 @@ Module kzg_point_evaluation.
     M.IsFunction.C "revm_precompile::kzg_point_evaluation::verify_kzg_proof" verify_kzg_proof.
   Admitted.
   Global Typeclasses Opaque verify_kzg_proof.
-  
-  (*
-  pub fn as_array<const N: usize>(bytes: &[u8]) -> &[u8; N] {
-      bytes.try_into().expect("slice with incorrect length")
-  }
-  *)
-  Definition as_array (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [ N ], [], [ bytes ] =>
-      ltac:(M.monadic
-        (let bytes :=
-          M.alloc (|
-            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-            bytes
-          |) in
-        M.call_closure (|
-          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ],
-          M.get_associated_function (|
-            Ty.apply
-              (Ty.path "core::result::Result")
-              []
-              [
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ];
-                Ty.path "core::array::TryFromSliceError"
-              ],
-            "expect",
-            [],
-            []
-          |),
-          [
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [
-                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ];
-                  Ty.path "core::array::TryFromSliceError"
-                ],
-              M.get_trait_method (|
-                "core::convert::TryInto",
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                [],
-                [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ] ],
-                "try_into",
-                [],
-                []
-              |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |) ]
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (| mk_str (| "slice with incorrect length" |) |)
-            |)
-          ]
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_as_array :
-    M.IsFunction.C "revm_precompile::kzg_point_evaluation::as_array" as_array.
-  Admitted.
-  Global Typeclasses Opaque as_array.
-  
-  (*
-  pub fn as_bytes32(bytes: &[u8]) -> &Bytes32 {
-      // SAFETY: `#[repr(C)] Bytes32([u8; 32])`
-      unsafe { &*as_array::<32>(bytes).as_ptr().cast() }
-  }
-  *)
-  Definition as_bytes32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ bytes ] =>
-      ltac:(M.monadic
-        (let bytes :=
-          M.alloc (|
-            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-            bytes
-          |) in
-        M.borrow (|
-          Pointer.Kind.Ref,
-          M.deref (|
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "c_kzg::bindings::Bytes32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                    "cast",
-                    [],
-                    [ Ty.path "c_kzg::bindings::Bytes32" ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                        "as_ptr",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 32 ]
-                                  [ Ty.path "u8" ]
-                              ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 32 ]
-                                        [ Ty.path "u8" ]
-                                    ],
-                                  M.get_function (|
-                                    "revm_precompile::kzg_point_evaluation::as_array",
-                                    [ Value.Integer IntegerKind.Usize 32 ],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| bytes |) |)
-                                    |)
-                                  ]
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
-                    |)
-                  ]
-                |)
-              |)
-            |)
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_as_bytes32 :
-    M.IsFunction.C "revm_precompile::kzg_point_evaluation::as_bytes32" as_bytes32.
-  Admitted.
-  Global Typeclasses Opaque as_bytes32.
-  
-  (*
-  pub fn as_bytes48(bytes: &[u8]) -> &Bytes48 {
-      // SAFETY: `#[repr(C)] Bytes48([u8; 48])`
-      unsafe { &*as_array::<48>(bytes).as_ptr().cast() }
-  }
-  *)
-  Definition as_bytes48 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ bytes ] =>
-      ltac:(M.monadic
-        (let bytes :=
-          M.alloc (|
-            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-            bytes
-          |) in
-        M.borrow (|
-          Pointer.Kind.Ref,
-          M.deref (|
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "c_kzg::bindings::Bytes48" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                    "cast",
-                    [],
-                    [ Ty.path "c_kzg::bindings::Bytes48" ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                        "as_ptr",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 48 ]
-                                  [ Ty.path "u8" ]
-                              ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 48 ]
-                                        [ Ty.path "u8" ]
-                                    ],
-                                  M.get_function (|
-                                    "revm_precompile::kzg_point_evaluation::as_array",
-                                    [ Value.Integer IntegerKind.Usize 48 ],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| bytes |) |)
-                                    |)
-                                  ]
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
-                    |)
-                  ]
-                |)
-              |)
-            |)
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_as_bytes48 :
-    M.IsFunction.C "revm_precompile::kzg_point_evaluation::as_bytes48" as_bytes48.
-  Admitted.
-  Global Typeclasses Opaque as_bytes48.
 End kzg_point_evaluation.

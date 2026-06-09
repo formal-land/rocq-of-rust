@@ -7,147 +7,86 @@ Module transaction.
   
   (* Trait *)
   Module Transaction.
-    Definition legacy (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition total_blob_gas
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_fmt", [], [] |),
-              [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
+          M.call_closure (|
+            Ty.path "u64",
+            BinOp.Wrap.mul,
+            [
+              M.read (|
+                get_constant (| "revm_primitives::eip4844::GAS_PER_BLOB", Ty.path "u64" |)
+              |);
+              M.cast
+                (Ty.path "u64")
+                (M.call_closure (|
+                  Ty.path "usize",
                   M.get_associated_function (|
-                    Ty.path "core::fmt::Arguments",
-                    "from_str_nonconst",
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          []
+                      ],
+                    "len",
                     [],
                     []
                   |),
-                  [ mk_str (| "not implemented: legacy tx not supported" |) ]
-                |)
-              ]
-            |)
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                    []
+                                ]
+                            ],
+                          M.get_trait_method (|
+                            "revm_context_interface::transaction::Transaction",
+                            Self,
+                            [],
+                            [],
+                            "blob_versioned_hashes",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |))
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Axiom ProvidedMethod_legacy :
-      M.IsProvidedMethod "revm_context_interface::transaction::Transaction" "legacy" legacy.
-    Definition eip2930 (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_fmt", [], [] |),
-              [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
-                    Ty.path "core::fmt::Arguments",
-                    "from_str_nonconst",
-                    [],
-                    []
-                  |),
-                  [ mk_str (| "not implemented: Eip2930 tx not supported" |) ]
-                |)
-              ]
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom ProvidedMethod_eip2930 :
-      M.IsProvidedMethod "revm_context_interface::transaction::Transaction" "eip2930" eip2930.
-    Definition eip1559 (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_fmt", [], [] |),
-              [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
-                    Ty.path "core::fmt::Arguments",
-                    "from_str_nonconst",
-                    [],
-                    []
-                  |),
-                  [ mk_str (| "not implemented: Eip1559 tx not supported" |) ]
-                |)
-              ]
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom ProvidedMethod_eip1559 :
-      M.IsProvidedMethod "revm_context_interface::transaction::Transaction" "eip1559" eip1559.
-    Definition eip4844 (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_fmt", [], [] |),
-              [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
-                    Ty.path "core::fmt::Arguments",
-                    "from_str_nonconst",
-                    [],
-                    []
-                  |),
-                  [ mk_str (| "not implemented: Eip4844 tx not supported" |) ]
-                |)
-              ]
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom ProvidedMethod_eip4844 :
-      M.IsProvidedMethod "revm_context_interface::transaction::Transaction" "eip4844" eip4844.
-    Definition eip7702 (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_fmt", [], [] |),
-              [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
-                    Ty.path "core::fmt::Arguments",
-                    "from_str_nonconst",
-                    [],
-                    []
-                  |),
-                  [ mk_str (| "not implemented: Eip7702 tx not supported" |) ]
-                |)
-              ]
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom ProvidedMethod_eip7702 :
-      M.IsProvidedMethod "revm_context_interface::transaction::Transaction" "eip7702" eip7702.
-    Definition common_fields
+    Axiom ProvidedMethod_total_blob_gas :
+      M.IsProvidedMethod
+        "revm_context_interface::transaction::Transaction"
+        "total_blob_gas"
+        total_blob_gas.
+    Definition calc_max_data_fee
         (Self : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
@@ -159,600 +98,46 @@ Module transaction.
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
           M.call_closure (|
             Ty.apply
-              (Ty.path "&")
-              []
-              [
-                Ty.dyn
-                  [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-              ],
-            M.pointer_coercion
-              M.PointerCoercion.Unsize
-              (Ty.apply
-                (Ty.path "&")
-                []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                ])
-              (Ty.apply
-                (Ty.path "&")
-                []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                ]),
+              (Ty.path "ruint::Uint")
+              [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+              [],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "from",
+              [],
+              [ Ty.path "u128" ]
+            |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.dyn
-                          [
-                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                              [])
-                          ]
-                      ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.dyn
-                            [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                [])
-                            ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.dyn
-                            [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                [])
-                            ]
-                        ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.match_operator (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.dyn
-                                  [
-                                    ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                      [])
-                                  ]
-                              ],
-                            M.alloc (|
-                              Ty.path
-                                "revm_context_interface::transaction::transaction_type::TransactionType",
-                              M.call_closure (|
-                                Ty.path
-                                  "revm_context_interface::transaction::transaction_type::TransactionType",
-                                M.get_trait_method (|
-                                  "core::convert::Into",
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::Transaction"
-                                    []
-                                    []
-                                    Self
-                                    "TransactionType",
-                                  [],
-                                  [
-                                    Ty.path
-                                      "revm_context_interface::transaction::transaction_type::TransactionType"
-                                  ],
-                                  "into",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "TransactionType",
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::Transaction",
-                                      Self,
-                                      [],
-                                      [],
-                                      "tx_type",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let _ :=
-                                    M.is_struct_tuple (|
-                                      γ,
-                                      "revm_context_interface::transaction::transaction_type::TransactionType::Legacy"
-                                    |) in
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.dyn
-                                          [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                              [])
-                                          ]
-                                      ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.associated_in_trait
-                                            "revm_context_interface::transaction::Transaction"
-                                            []
-                                            []
-                                            Self
-                                            "Legacy"
-                                        ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.dyn
-                                            [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                                [])
-                                            ]
-                                        ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Legacy"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "legacy",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let _ :=
-                                    M.is_struct_tuple (|
-                                      γ,
-                                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930"
-                                    |) in
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.dyn
-                                          [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                              [])
-                                          ]
-                                      ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.associated_in_trait
-                                            "revm_context_interface::transaction::Transaction"
-                                            []
-                                            []
-                                            Self
-                                            "Eip2930"
-                                        ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.dyn
-                                            [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                                [])
-                                            ]
-                                        ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip2930"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip2930",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let _ :=
-                                    M.is_struct_tuple (|
-                                      γ,
-                                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559"
-                                    |) in
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.dyn
-                                          [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                              [])
-                                          ]
-                                      ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.associated_in_trait
-                                            "revm_context_interface::transaction::Transaction"
-                                            []
-                                            []
-                                            Self
-                                            "Eip1559"
-                                        ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.dyn
-                                            [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                                [])
-                                            ]
-                                        ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip1559"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip1559",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let _ :=
-                                    M.is_struct_tuple (|
-                                      γ,
-                                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
-                                    |) in
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.dyn
-                                          [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                              [])
-                                          ]
-                                      ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.associated_in_trait
-                                            "revm_context_interface::transaction::Transaction"
-                                            []
-                                            []
-                                            Self
-                                            "Eip4844"
-                                        ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.dyn
-                                            [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                                [])
-                                            ]
-                                        ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip4844"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip4844",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let _ :=
-                                    M.is_struct_tuple (|
-                                      γ,
-                                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702"
-                                    |) in
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.dyn
-                                          [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                              [])
-                                          ]
-                                      ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.associated_in_trait
-                                            "revm_context_interface::transaction::Transaction"
-                                            []
-                                            []
-                                            Self
-                                            "Eip7702"
-                                        ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.dyn
-                                            [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                                [])
-                                            ]
-                                        ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip7702"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip7702",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let _ :=
-                                    M.is_struct_tuple (|
-                                      γ,
-                                      "revm_context_interface::transaction::transaction_type::TransactionType::Custom"
-                                    |) in
-                                  M.never_to_any (|
-                                    M.call_closure (|
-                                      Ty.path "never",
-                                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Arguments",
-                                            "from_str_nonconst",
-                                            [],
-                                            []
-                                          |),
-                                          [ mk_str (| "not implemented: Custom tx not supported" |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)))
-                            ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                |)
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom ProvidedMethod_common_fields :
-      M.IsProvidedMethod
-        "revm_context_interface::transaction::Transaction"
-        "common_fields"
-        common_fields.
-    Definition max_fee (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          M.match_operator (|
-            Ty.path "u128",
-            M.alloc (|
-              Ty.path "revm_context_interface::transaction::transaction_type::TransactionType",
               M.call_closure (|
-                Ty.path "revm_context_interface::transaction::transaction_type::TransactionType",
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  Ty.associated_in_trait
-                    "revm_context_interface::transaction::Transaction"
-                    []
-                    []
-                    Self
-                    "TransactionType",
-                  [],
-                  [ Ty.path "revm_context_interface::transaction::transaction_type::TransactionType"
-                  ],
-                  "into",
-                  [],
-                  []
-                |),
+                Ty.path "u128",
+                M.get_associated_function (| Ty.path "u128", "saturating_mul", [], [] |),
                 [
+                  M.cast
+                    (Ty.path "u128")
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      M.get_trait_method (|
+                        "revm_context_interface::transaction::Transaction",
+                        Self,
+                        [],
+                        [],
+                        "total_blob_gas",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |));
                   M.call_closure (|
-                    Ty.associated_in_trait
-                      "revm_context_interface::transaction::Transaction"
-                      []
-                      []
-                      Self
-                      "TransactionType",
+                    Ty.path "u128",
                     M.get_trait_method (|
                       "revm_context_interface::transaction::Transaction",
                       Self,
                       [],
                       [],
-                      "tx_type",
+                      "max_fee_per_blob_gas",
                       [],
                       []
                     |),
@@ -760,310 +145,47 @@ Module transaction.
                   |)
                 ]
               |)
-            |),
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::transaction::transaction_type::TransactionType::Legacy"
-                    |) in
-                  M.call_closure (|
-                    Ty.path "u128",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::legacy::LegacyTx",
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        Self
-                        "Legacy",
-                      [],
-                      [],
-                      "gas_price",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Legacy"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "legacy",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930"
-                    |) in
-                  M.call_closure (|
-                    Ty.path "u128",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::eip2930::Eip2930Tx",
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        Self
-                        "Eip2930",
-                      [],
-                      [],
-                      "gas_price",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Eip2930"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "eip2930",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559"
-                    |) in
-                  M.call_closure (|
-                    Ty.path "u128",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        Self
-                        "Eip1559",
-                      [],
-                      [],
-                      "max_fee_per_gas",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Eip1559"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "eip1559",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
-                    |) in
-                  M.call_closure (|
-                    Ty.path "u128",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        Self
-                        "Eip4844",
-                      [],
-                      [],
-                      "max_fee_per_gas",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Eip4844"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "eip4844",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702"
-                    |) in
-                  M.call_closure (|
-                    Ty.path "u128",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        Self
-                        "Eip7702",
-                      [],
-                      [],
-                      "max_fee_per_gas",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Eip7702"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "eip7702",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::transaction::transaction_type::TransactionType::Custom"
-                    |) in
-                  M.never_to_any (|
-                    M.call_closure (|
-                      Ty.path "never",
-                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                      [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
-                            Ty.path "core::fmt::Arguments",
-                            "from_str_nonconst",
-                            [],
-                            []
-                          |),
-                          [ mk_str (| "not implemented: Custom tx not supported" |) ]
-                        |)
-                      ]
-                    |)
-                  |)))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Axiom ProvidedMethod_max_fee :
-      M.IsProvidedMethod "revm_context_interface::transaction::Transaction" "max_fee" max_fee.
+    Axiom ProvidedMethod_calc_max_data_fee :
+      M.IsProvidedMethod
+        "revm_context_interface::transaction::Transaction"
+        "calc_max_data_fee"
+        calc_max_data_fee.
+    Definition max_fee_per_gas
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          M.call_closure (|
+            Ty.path "u128",
+            M.get_trait_method (|
+              "revm_context_interface::transaction::Transaction",
+              Self,
+              [],
+              [],
+              "gas_price",
+              [],
+              []
+            |),
+            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_max_fee_per_gas :
+      M.IsProvidedMethod
+        "revm_context_interface::transaction::Transaction"
+        "max_fee_per_gas"
+        max_fee_per_gas.
     Definition effective_gas_price
         (Self : Ty.t)
         (ε : list Value.t)
@@ -1078,572 +200,172 @@ Module transaction.
           M.catch_return (Ty.path "u128") (|
             ltac:(M.monadic
               (M.read (|
-                let~ tx_type :
-                    Ty.path
-                      "revm_context_interface::transaction::transaction_type::TransactionType" :=
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u8",
+                                      M.get_trait_method (|
+                                        "revm_context_interface::transaction::Transaction",
+                                        Self,
+                                        [],
+                                        [],
+                                        "tx_type",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |)
+                                      ]
+                                    |);
+                                    M.cast
+                                      (Ty.path "u8")
+                                      (M.call_closure (|
+                                        Ty.path "u8",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (|
+                                            get_constant (|
+                                              "revm_context_interface::transaction::transaction_type::TransactionType::Legacy_discriminant",
+                                              Ty.path "u8"
+                                            |)
+                                          |);
+                                          Value.Integer IntegerKind.U8 0
+                                        ]
+                                      |))
+                                  ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "u8",
+                                        M.get_trait_method (|
+                                          "revm_context_interface::transaction::Transaction",
+                                          Self,
+                                          [],
+                                          [],
+                                          "tx_type",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.cast
+                                        (Ty.path "u8")
+                                        (M.call_closure (|
+                                          Ty.path "u8",
+                                          BinOp.Wrap.add,
+                                          [
+                                            M.read (|
+                                              get_constant (|
+                                                "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930_discriminant",
+                                                Ty.path "u8"
+                                              |)
+                                            |);
+                                            Value.Integer IntegerKind.U8 0
+                                          ]
+                                        |))
+                                    ]
+                                  |)))
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  M.get_trait_method (|
+                                    "revm_context_interface::transaction::Transaction",
+                                    Self,
+                                    [],
+                                    [],
+                                    "gas_price",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                let~ max_price : Ty.path "u128" :=
                   M.call_closure (|
-                    Ty.path
-                      "revm_context_interface::transaction::transaction_type::TransactionType",
+                    Ty.path "u128",
                     M.get_trait_method (|
-                      "core::convert::Into",
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        Self
-                        "TransactionType",
+                      "revm_context_interface::transaction::Transaction",
+                      Self,
                       [],
-                      [
-                        Ty.path
-                          "revm_context_interface::transaction::transaction_type::TransactionType"
-                      ],
-                      "into",
+                      [],
+                      "gas_price",
                       [],
                       []
                     |),
-                    [
-                      M.call_closure (|
-                        Ty.associated_in_trait
-                          "revm_context_interface::transaction::Transaction"
-                          []
-                          []
-                          Self
-                          "TransactionType",
-                        M.get_trait_method (|
-                          "revm_context_interface::transaction::Transaction",
-                          Self,
-                          [],
-                          [],
-                          "tx_type",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                      |)
-                    ]
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                   |) in
                 M.alloc (|
                   Ty.path "u128",
                   M.match_operator (|
                     Ty.path "u128",
                     M.alloc (|
-                      Ty.tuple [ Ty.path "u128"; Ty.path "u128" ],
-                      M.match_operator (|
-                        Ty.tuple [ Ty.path "u128"; Ty.path "u128" ],
-                        tx_type,
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let _ :=
-                                M.is_struct_tuple (|
-                                  γ,
-                                  "revm_context_interface::transaction::transaction_type::TransactionType::Legacy"
-                                |) in
-                              M.never_to_any (|
-                                M.read (|
-                                  M.return_ (|
-                                    M.call_closure (|
-                                      Ty.path "u128",
-                                      M.get_trait_method (|
-                                        "revm_context_interface::transaction::legacy::LegacyTx",
-                                        Ty.associated_in_trait
-                                          "revm_context_interface::transaction::Transaction"
-                                          []
-                                          []
-                                          Self
-                                          "Legacy",
-                                        [],
-                                        [],
-                                        "gas_price",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.associated_in_trait
-                                                    "revm_context_interface::transaction::Transaction"
-                                                    []
-                                                    []
-                                                    Self
-                                                    "Legacy"
-                                                ],
-                                              M.get_trait_method (|
-                                                "revm_context_interface::transaction::Transaction",
-                                                Self,
-                                                [],
-                                                [],
-                                                "legacy",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              |)));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let _ :=
-                                M.is_struct_tuple (|
-                                  γ,
-                                  "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930"
-                                |) in
-                              M.never_to_any (|
-                                M.read (|
-                                  M.return_ (|
-                                    M.call_closure (|
-                                      Ty.path "u128",
-                                      M.get_trait_method (|
-                                        "revm_context_interface::transaction::eip2930::Eip2930Tx",
-                                        Ty.associated_in_trait
-                                          "revm_context_interface::transaction::Transaction"
-                                          []
-                                          []
-                                          Self
-                                          "Eip2930",
-                                        [],
-                                        [],
-                                        "gas_price",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.associated_in_trait
-                                                    "revm_context_interface::transaction::Transaction"
-                                                    []
-                                                    []
-                                                    Self
-                                                    "Eip2930"
-                                                ],
-                                              M.get_trait_method (|
-                                                "revm_context_interface::transaction::Transaction",
-                                                Self,
-                                                [],
-                                                [],
-                                                "eip2930",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              |)));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let _ :=
-                                M.is_struct_tuple (|
-                                  γ,
-                                  "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559"
-                                |) in
-                              Value.Tuple
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                      Ty.associated_in_trait
-                                        "revm_context_interface::transaction::Transaction"
-                                        []
-                                        []
-                                        Self
-                                        "Eip1559",
-                                      [],
-                                      [],
-                                      "max_fee_per_gas",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip1559"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip1559",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                      Ty.associated_in_trait
-                                        "revm_context_interface::transaction::Transaction"
-                                        []
-                                        []
-                                        Self
-                                        "Eip1559",
-                                      [],
-                                      [],
-                                      "max_priority_fee_per_gas",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip1559"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip1559",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let _ :=
-                                M.is_struct_tuple (|
-                                  γ,
-                                  "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
-                                |) in
-                              Value.Tuple
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                      Ty.associated_in_trait
-                                        "revm_context_interface::transaction::Transaction"
-                                        []
-                                        []
-                                        Self
-                                        "Eip4844",
-                                      [],
-                                      [],
-                                      "max_fee_per_gas",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip4844"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip4844",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                      Ty.associated_in_trait
-                                        "revm_context_interface::transaction::Transaction"
-                                        []
-                                        []
-                                        Self
-                                        "Eip4844",
-                                      [],
-                                      [],
-                                      "max_priority_fee_per_gas",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip4844"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip4844",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let _ :=
-                                M.is_struct_tuple (|
-                                  γ,
-                                  "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702"
-                                |) in
-                              Value.Tuple
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                      Ty.associated_in_trait
-                                        "revm_context_interface::transaction::Transaction"
-                                        []
-                                        []
-                                        Self
-                                        "Eip7702",
-                                      [],
-                                      [],
-                                      "max_fee_per_gas",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip7702"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip7702",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                      Ty.associated_in_trait
-                                        "revm_context_interface::transaction::Transaction"
-                                        []
-                                        []
-                                        Self
-                                        "Eip7702",
-                                      [],
-                                      [],
-                                      "max_priority_fee_per_gas",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip7702"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip7702",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let _ :=
-                                M.is_struct_tuple (|
-                                  γ,
-                                  "revm_context_interface::transaction::transaction_type::TransactionType::Custom"
-                                |) in
-                              M.never_to_any (|
-                                M.call_closure (|
-                                  Ty.path "never",
-                                  M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::Arguments",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::Arguments",
-                                        "from_str_nonconst",
-                                        [],
-                                        []
-                                      |),
-                                      [ mk_str (| "not implemented: Custom tx not supported" |) ]
-                                    |)
-                                  ]
-                                |)
-                              |)))
-                        ]
+                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                        M.get_trait_method (|
+                          "revm_context_interface::transaction::Transaction",
+                          Self,
+                          [],
+                          [],
+                          "max_priority_fee_per_gas",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                       |)
                     |),
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                          let max_fee := M.copy (| Ty.path "u128", γ0_0 |) in
-                          let max_priority_fee := M.copy (| Ty.path "u128", γ0_1 |) in
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::option::Option::Some",
+                              0
+                            |) in
+                          let max_priority_fee := M.copy (| Ty.path "u128", γ0_0 |) in
                           M.call_closure (|
                             Ty.path "u128",
                             M.get_function (| "core::cmp::min", [], [ Ty.path "u128" ] |),
                             [
-                              M.read (| max_fee |);
+                              M.read (| max_price |);
                               M.call_closure (|
                                 Ty.path "u128",
                                 M.get_associated_function (|
@@ -1655,7 +377,9 @@ Module transaction.
                                 [ M.read (| base_fee |); M.read (| max_priority_fee |) ]
                               |)
                             ]
-                          |)))
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic (M.read (| M.return_ (| M.read (| max_price |) |) |)))
                     ]
                   |)
                 |)
@@ -1669,385 +393,7 @@ Module transaction.
         "revm_context_interface::transaction::Transaction"
         "effective_gas_price"
         effective_gas_price.
-    Definition kind (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          M.read (|
-            let~ tx_type :
-                Ty.path "revm_context_interface::transaction::transaction_type::TransactionType" :=
-              M.call_closure (|
-                Ty.path "revm_context_interface::transaction::transaction_type::TransactionType",
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  Ty.associated_in_trait
-                    "revm_context_interface::transaction::Transaction"
-                    []
-                    []
-                    Self
-                    "TransactionType",
-                  [],
-                  [ Ty.path "revm_context_interface::transaction::transaction_type::TransactionType"
-                  ],
-                  "into",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
-                    Ty.associated_in_trait
-                      "revm_context_interface::transaction::Transaction"
-                      []
-                      []
-                      Self
-                      "TransactionType",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::Transaction",
-                      Self,
-                      [],
-                      [],
-                      "tx_type",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
-                ]
-              |) in
-            M.alloc (|
-              Ty.path "alloy_primitives::common::TxKind",
-              M.match_operator (|
-                Ty.path "alloy_primitives::common::TxKind",
-                tx_type,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Legacy"
-                        |) in
-                      M.call_closure (|
-                        Ty.path "alloy_primitives::common::TxKind",
-                        M.get_trait_method (|
-                          "revm_context_interface::transaction::legacy::LegacyTx",
-                          Ty.associated_in_trait
-                            "revm_context_interface::transaction::Transaction"
-                            []
-                            []
-                            Self
-                            "Legacy",
-                          [],
-                          [],
-                          "kind",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "Legacy"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::Transaction",
-                                  Self,
-                                  [],
-                                  [],
-                                  "legacy",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930"
-                        |) in
-                      M.call_closure (|
-                        Ty.path "alloy_primitives::common::TxKind",
-                        M.get_trait_method (|
-                          "revm_context_interface::transaction::eip2930::Eip2930Tx",
-                          Ty.associated_in_trait
-                            "revm_context_interface::transaction::Transaction"
-                            []
-                            []
-                            Self
-                            "Eip2930",
-                          [],
-                          [],
-                          "kind",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "Eip2930"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::Transaction",
-                                  Self,
-                                  [],
-                                  [],
-                                  "eip2930",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559"
-                        |) in
-                      M.call_closure (|
-                        Ty.path "alloy_primitives::common::TxKind",
-                        M.get_trait_method (|
-                          "revm_context_interface::transaction::eip1559::Eip1559Tx",
-                          Ty.associated_in_trait
-                            "revm_context_interface::transaction::Transaction"
-                            []
-                            []
-                            Self
-                            "Eip1559",
-                          [],
-                          [],
-                          "kind",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "Eip1559"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::Transaction",
-                                  Self,
-                                  [],
-                                  [],
-                                  "eip1559",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
-                        |) in
-                      Value.StructTuple
-                        "alloy_primitives::common::TxKind::Call"
-                        []
-                        []
-                        [
-                          M.call_closure (|
-                            Ty.path "alloy_primitives::bits::address::Address",
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::eip4844::Eip4844Tx",
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "Eip4844",
-                              [],
-                              [],
-                              "destination",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.associated_in_trait
-                                          "revm_context_interface::transaction::Transaction"
-                                          []
-                                          []
-                                          Self
-                                          "Eip4844"
-                                      ],
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::Transaction",
-                                      Self,
-                                      [],
-                                      [],
-                                      "eip4844",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702"
-                        |) in
-                      Value.StructTuple
-                        "alloy_primitives::common::TxKind::Call"
-                        []
-                        []
-                        [
-                          M.call_closure (|
-                            Ty.path "alloy_primitives::bits::address::Address",
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::eip7702::Eip7702Tx",
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "Eip7702",
-                              [],
-                              [],
-                              "destination",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.associated_in_trait
-                                          "revm_context_interface::transaction::Transaction"
-                                          []
-                                          []
-                                          Self
-                                          "Eip7702"
-                                      ],
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::Transaction",
-                                      Self,
-                                      [],
-                                      [],
-                                      "eip7702",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Custom"
-                        |) in
-                      M.never_to_any (|
-                        M.call_closure (|
-                          Ty.path "never",
-                          M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                          [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Arguments",
-                                "from_str_nonconst",
-                                [],
-                                []
-                              |),
-                              [ mk_str (| "not implemented: Custom tx not supported" |) ]
-                            |)
-                          ]
-                        |)
-                      |)))
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom ProvidedMethod_kind :
-      M.IsProvidedMethod "revm_context_interface::transaction::Transaction" "kind" kind.
-    Definition access_list
+    Definition max_balance_spending
         (Self : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
@@ -2057,512 +403,2282 @@ Module transaction.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          M.read (|
-            let~ tx_type :
-                Ty.path "revm_context_interface::transaction::transaction_type::TransactionType" :=
-              M.call_closure (|
-                Ty.path "revm_context_interface::transaction::transaction_type::TransactionType",
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  Ty.associated_in_trait
-                    "revm_context_interface::transaction::Transaction"
-                    []
-                    []
-                    Self
-                    "TransactionType",
-                  [],
-                  [ Ty.path "revm_context_interface::transaction::transaction_type::TransactionType"
-                  ],
-                  "into",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
-                    Ty.associated_in_trait
-                      "revm_context_interface::transaction::Transaction"
-                      []
-                      []
-                      Self
-                      "TransactionType",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::Transaction",
-                      Self,
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [];
+                Ty.path "revm_context_interface::result::InvalidTransaction"
+              ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ max_balance_spending :
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      [] :=
+                  M.match_operator (|
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
                       [],
-                      [],
-                      "tx_type",
-                      [],
-                      []
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "core::convert::Infallible";
+                              Ty.path "revm_context_interface::result::InvalidTransaction"
+                            ];
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "core::convert::Infallible";
+                                Ty.path "revm_context_interface::result::InvalidTransaction"
+                              ];
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.path "revm_context_interface::result::InvalidTransaction"
+                            ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [];
+                                Ty.path "revm_context_interface::result::InvalidTransaction"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    []
+                                ],
+                              "ok_or",
+                              [],
+                              [ Ty.path "revm_context_interface::result::InvalidTransaction" ]
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      []
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                                  "and_then",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      [];
+                                    Ty.function
+                                      [ Ty.path "u128" ]
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []
+                                        ])
+                                  ]
+                                |),
+                                [
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u128",
+                                      "checked_mul",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.cast
+                                        (Ty.path "u128")
+                                        (M.call_closure (|
+                                          Ty.path "u64",
+                                          M.get_trait_method (|
+                                            "revm_context_interface::transaction::Transaction",
+                                            Self,
+                                            [],
+                                            [],
+                                            "gas_limit",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
+                                        |));
+                                      M.call_closure (|
+                                        Ty.path "u128",
+                                        M.get_trait_method (|
+                                          "revm_context_interface::transaction::Transaction",
+                                          Self,
+                                          [],
+                                          [],
+                                          "max_fee_per_gas",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |);
+                                  M.closure
+                                    (fun γ =>
+                                      ltac:(M.monadic
+                                        match γ with
+                                        | [ α0 ] =>
+                                          ltac:(M.monadic
+                                            (M.match_operator (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ],
+                                              M.alloc (| Ty.path "u128", α0 |),
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let gas_cost :=
+                                                      M.copy (| Ty.path "u128", γ |) in
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            []
+                                                        ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [
+                                                            Value.Integer IntegerKind.Usize 256;
+                                                            Value.Integer IntegerKind.Usize 4
+                                                          ]
+                                                          [],
+                                                        "checked_add",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [
+                                                                Value.Integer IntegerKind.Usize 256;
+                                                                Value.Integer IntegerKind.Usize 4
+                                                              ]
+                                                              [],
+                                                            "from",
+                                                            [],
+                                                            [ Ty.path "u128" ]
+                                                          |),
+                                                          [ M.read (| gas_cost |) ]
+                                                        |);
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            [],
+                                                          M.get_trait_method (|
+                                                            "revm_context_interface::transaction::Transaction",
+                                                            Self,
+                                                            [],
+                                                            [],
+                                                            "value",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| self |) |)
+                                                            |)
+                                                          ]
+                                                        |)
+                                                      ]
+                                                    |)))
+                                              ]
+                                            |)))
+                                        | _ => M.impossible "wrong number of arguments"
+                                        end))
+                                ]
+                              |);
+                              Value.StructTuple
+                                "revm_context_interface::result::InvalidTransaction::OverflowPaymentInTransaction"
+                                []
+                                []
+                                []
+                            ]
+                          |)
+                        ]
+                      |)
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
-                ]
-              |) in
-            M.alloc (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::convert::Infallible";
+                                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                                ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [];
+                                      Ty.path "revm_context_interface::result::InvalidTransaction"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [];
+                                        Ty.path "revm_context_interface::result::InvalidTransaction"
+                                      ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path
+                                            "revm_context_interface::result::InvalidTransaction"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [],
+                              γ0_0
+                            |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.path "u8",
+                                  [],
+                                  [
+                                    Ty.path
+                                      "revm_context_interface::transaction::transaction_type::TransactionType"
+                                  ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.path "u8",
+                                      M.call_closure (|
+                                        Ty.path "u8",
+                                        M.get_trait_method (|
+                                          "revm_context_interface::transaction::Transaction",
+                                          Self,
+                                          [],
+                                          [],
+                                          "tx_type",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.path
+                                        "revm_context_interface::transaction::transaction_type::TransactionType",
+                                      Value.StructTuple
+                                        "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
+                                        []
+                                        []
+                                        []
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.read (|
+                            let~ data_fee :
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [] :=
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [],
+                                M.get_trait_method (|
+                                  "revm_context_interface::transaction::Transaction",
+                                  Self,
+                                  [],
+                                  [],
+                                  "calc_max_data_fee",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              |) in
+                            let~ _ : Ty.tuple [] :=
+                              M.write (|
+                                max_balance_spending,
+                                M.match_operator (|
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [],
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path
+                                              "revm_context_interface::result::InvalidTransaction"
+                                          ];
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ],
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::ops::control_flow::ControlFlow")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path
+                                                "revm_context_interface::result::InvalidTransaction"
+                                            ];
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::Try",
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [];
+                                            Ty.path
+                                              "revm_context_interface::result::InvalidTransaction"
+                                          ],
+                                        [],
+                                        [],
+                                        "branch",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                [];
+                                              Ty.path
+                                                "revm_context_interface::result::InvalidTransaction"
+                                            ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  []
+                                              ],
+                                            "ok_or",
+                                            [],
+                                            [
+                                              Ty.path
+                                                "revm_context_interface::result::InvalidTransaction"
+                                            ]
+                                          |),
+                                          [
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [],
+                                                "checked_add",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.read (| max_balance_spending |);
+                                                M.read (| data_fee |)
+                                              ]
+                                            |);
+                                            Value.StructTuple
+                                              "revm_context_interface::result::InvalidTransaction::OverflowPaymentInTransaction"
+                                              []
+                                              []
+                                              []
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::ops::control_flow::ControlFlow::Break",
+                                            0
+                                          |) in
+                                        let residual :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.path
+                                                  "revm_context_interface::result::InvalidTransaction"
+                                              ],
+                                            γ0_0
+                                          |) in
+                                        M.never_to_any (|
+                                          M.read (|
+                                            M.return_ (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [
+                                                        Value.Integer IntegerKind.Usize 256;
+                                                        Value.Integer IntegerKind.Usize 4
+                                                      ]
+                                                      [];
+                                                    Ty.path
+                                                      "revm_context_interface::result::InvalidTransaction"
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::ops::try_trait::FromResidual",
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [
+                                                          Value.Integer IntegerKind.Usize 256;
+                                                          Value.Integer IntegerKind.Usize 4
+                                                        ]
+                                                        [];
+                                                      Ty.path
+                                                        "revm_context_interface::result::InvalidTransaction"
+                                                    ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path
+                                                          "revm_context_interface::result::InvalidTransaction"
+                                                      ]
+                                                  ],
+                                                  "from_residual",
+                                                  [],
+                                                  []
+                                                |),
+                                                [ M.read (| residual |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |)));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::ops::control_flow::ControlFlow::Continue",
+                                            0
+                                          |) in
+                                        let val :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [],
+                                            γ0_0
+                                          |) in
+                                        M.read (| val |)))
+                                  ]
+                                |)
+                              |) in
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
                   Ty.apply
-                    (Ty.path "&")
+                    (Ty.path "core::result::Result")
                     []
                     [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        Self
-                        "AccessList"
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [];
+                      Ty.path "revm_context_interface::result::InvalidTransaction"
+                    ],
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [];
+                      Ty.path "revm_context_interface::result::InvalidTransaction"
                     ]
-                ],
-              M.match_operator (|
-                Ty.apply
-                  (Ty.path "core::option::Option")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.associated_in_trait
-                          "revm_context_interface::transaction::Transaction"
-                          []
-                          []
-                          Self
-                          "AccessList"
-                      ]
-                  ],
-                tx_type,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Legacy"
-                        |) in
-                      Value.StructTuple
-                        "core::option::Option::None"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        []));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930"
-                        |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "AccessList"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::eip2930::Eip2930Tx",
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::Transaction"
-                                    []
-                                    []
-                                    Self
-                                    "Eip2930",
-                                  [],
-                                  [],
-                                  "access_list",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "revm_context_interface::transaction::Transaction"
-                                              []
-                                              []
-                                              Self
-                                              "Eip2930"
-                                          ],
-                                        M.get_trait_method (|
-                                          "revm_context_interface::transaction::Transaction",
-                                          Self,
-                                          [],
-                                          [],
-                                          "eip2930",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)
-                          |)
-                        ]));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559"
-                        |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "AccessList"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::Transaction"
-                                    []
-                                    []
-                                    Self
-                                    "Eip1559",
-                                  [],
-                                  [],
-                                  "access_list",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "revm_context_interface::transaction::Transaction"
-                                              []
-                                              []
-                                              Self
-                                              "Eip1559"
-                                          ],
-                                        M.get_trait_method (|
-                                          "revm_context_interface::transaction::Transaction",
-                                          Self,
-                                          [],
-                                          [],
-                                          "eip1559",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)
-                          |)
-                        ]));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
-                        |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "AccessList"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::Transaction"
-                                    []
-                                    []
-                                    Self
-                                    "Eip4844",
-                                  [],
-                                  [],
-                                  "access_list",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "revm_context_interface::transaction::Transaction"
-                                              []
-                                              []
-                                              Self
-                                              "Eip4844"
-                                          ],
-                                        M.get_trait_method (|
-                                          "revm_context_interface::transaction::Transaction",
-                                          Self,
-                                          [],
-                                          [],
-                                          "eip4844",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)
-                          |)
-                        ]));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702"
-                        |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "AccessList"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::Transaction"
-                                    []
-                                    []
-                                    Self
-                                    "Eip7702",
-                                  [],
-                                  [],
-                                  "access_list",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "revm_context_interface::transaction::Transaction"
-                                              []
-                                              []
-                                              Self
-                                              "Eip7702"
-                                          ],
-                                        M.get_trait_method (|
-                                          "revm_context_interface::transaction::Transaction",
-                                          Self,
-                                          [],
-                                          [],
-                                          "eip7702",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)
-                          |)
-                        ]));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::transaction::transaction_type::TransactionType::Custom"
-                        |) in
-                      M.never_to_any (|
-                        M.call_closure (|
-                          Ty.path "never",
-                          M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                          [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Arguments",
-                                "from_str_nonconst",
-                                [],
-                                []
-                              |),
-                              [ mk_str (| "not implemented: Custom tx not supported" |) ]
-                            |)
-                          ]
-                        |)
-                      |)))
-                ]
-              |)
-            |)
+                    [ M.read (| max_balance_spending |) ]
+                |)
+              |)))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Axiom ProvidedMethod_access_list :
+    Axiom ProvidedMethod_max_balance_spending :
       M.IsProvidedMethod
         "revm_context_interface::transaction::Transaction"
-        "access_list"
-        access_list.
+        "max_balance_spending"
+        max_balance_spending.
+    Definition ensure_enough_balance
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; balance ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let balance :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              balance
+            |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "revm_context_interface::result::InvalidTransaction" ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ max_balance_spending :
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      [] :=
+                  M.match_operator (|
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      [],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "core::convert::Infallible";
+                              Ty.path "revm_context_interface::result::InvalidTransaction"
+                            ];
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "core::convert::Infallible";
+                                Ty.path "revm_context_interface::result::InvalidTransaction"
+                              ];
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.path "revm_context_interface::result::InvalidTransaction"
+                            ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [];
+                                Ty.path "revm_context_interface::result::InvalidTransaction"
+                              ],
+                            M.get_trait_method (|
+                              "revm_context_interface::transaction::Transaction",
+                              Self,
+                              [],
+                              [],
+                              "max_balance_spending",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::convert::Infallible";
+                                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                                ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.tuple [];
+                                      Ty.path "revm_context_interface::result::InvalidTransaction"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.tuple [];
+                                        Ty.path "revm_context_interface::result::InvalidTransaction"
+                                      ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path
+                                            "revm_context_interface::result::InvalidTransaction"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [],
+                              γ0_0
+                            |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialOrd",
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [],
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      []
+                                  ],
+                                  "gt",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, max_balance_spending |);
+                                  M.borrow (| Pointer.Kind.Ref, balance |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                Value.StructTuple
+                                  "core::result::Result::Err"
+                                  []
+                                  [
+                                    Ty.tuple [];
+                                    Ty.path "revm_context_interface::result::InvalidTransaction"
+                                  ]
+                                  [
+                                    Value.mkStructRecord
+                                      "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee"
+                                      []
+                                      []
+                                      [
+                                        ("fee",
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [];
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "alloc::boxed::Box")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    [];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ],
+                                              "new",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| max_balance_spending |) ]
+                                          |));
+                                        ("balance",
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [];
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "alloc::boxed::Box")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    [];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ],
+                                              "new",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| balance |) ]
+                                          |))
+                                      ]
+                                  ]
+                              |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "revm_context_interface::result::InvalidTransaction" ],
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [ Ty.tuple []; Ty.path "revm_context_interface::result::InvalidTransaction" ]
+                    [ Value.Tuple [] ]
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_ensure_enough_balance :
+      M.IsProvidedMethod
+        "revm_context_interface::transaction::Transaction"
+        "ensure_enough_balance"
+        ensure_enough_balance.
+    Definition effective_balance_spending
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; base_fee; blob_price ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+          let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [];
+                Ty.path "revm_context_interface::result::InvalidTransaction"
+              ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ effective_balance_spending :
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      [] :=
+                  M.match_operator (|
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      [],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "core::convert::Infallible";
+                              Ty.path "revm_context_interface::result::InvalidTransaction"
+                            ];
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "core::convert::Infallible";
+                                Ty.path "revm_context_interface::result::InvalidTransaction"
+                              ];
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.path "revm_context_interface::result::InvalidTransaction"
+                            ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [];
+                                Ty.path "revm_context_interface::result::InvalidTransaction"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    []
+                                ],
+                              "ok_or",
+                              [],
+                              [ Ty.path "revm_context_interface::result::InvalidTransaction" ]
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      []
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                                  "and_then",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      [];
+                                    Ty.function
+                                      [ Ty.path "u128" ]
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []
+                                        ])
+                                  ]
+                                |),
+                                [
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u128",
+                                      "checked_mul",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.cast
+                                        (Ty.path "u128")
+                                        (M.call_closure (|
+                                          Ty.path "u64",
+                                          M.get_trait_method (|
+                                            "revm_context_interface::transaction::Transaction",
+                                            Self,
+                                            [],
+                                            [],
+                                            "gas_limit",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
+                                        |));
+                                      M.call_closure (|
+                                        Ty.path "u128",
+                                        M.get_trait_method (|
+                                          "revm_context_interface::transaction::Transaction",
+                                          Self,
+                                          [],
+                                          [],
+                                          "effective_gas_price",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |);
+                                          M.read (| base_fee |)
+                                        ]
+                                      |)
+                                    ]
+                                  |);
+                                  M.closure
+                                    (fun γ =>
+                                      ltac:(M.monadic
+                                        match γ with
+                                        | [ α0 ] =>
+                                          ltac:(M.monadic
+                                            (M.match_operator (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ],
+                                              M.alloc (| Ty.path "u128", α0 |),
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let gas_cost :=
+                                                      M.copy (| Ty.path "u128", γ |) in
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            []
+                                                        ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [
+                                                            Value.Integer IntegerKind.Usize 256;
+                                                            Value.Integer IntegerKind.Usize 4
+                                                          ]
+                                                          [],
+                                                        "checked_add",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [
+                                                                Value.Integer IntegerKind.Usize 256;
+                                                                Value.Integer IntegerKind.Usize 4
+                                                              ]
+                                                              [],
+                                                            "from",
+                                                            [],
+                                                            [ Ty.path "u128" ]
+                                                          |),
+                                                          [ M.read (| gas_cost |) ]
+                                                        |);
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            [],
+                                                          M.get_trait_method (|
+                                                            "revm_context_interface::transaction::Transaction",
+                                                            Self,
+                                                            [],
+                                                            [],
+                                                            "value",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| self |) |)
+                                                            |)
+                                                          ]
+                                                        |)
+                                                      ]
+                                                    |)))
+                                              ]
+                                            |)))
+                                        | _ => M.impossible "wrong number of arguments"
+                                        end))
+                                ]
+                              |);
+                              Value.StructTuple
+                                "revm_context_interface::result::InvalidTransaction::OverflowPaymentInTransaction"
+                                []
+                                []
+                                []
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::convert::Infallible";
+                                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                                ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [];
+                                      Ty.path "revm_context_interface::result::InvalidTransaction"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [];
+                                        Ty.path "revm_context_interface::result::InvalidTransaction"
+                                      ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path
+                                            "revm_context_interface::result::InvalidTransaction"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [],
+                              γ0_0
+                            |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.path "u8",
+                                  [],
+                                  [
+                                    Ty.path
+                                      "revm_context_interface::transaction::transaction_type::TransactionType"
+                                  ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.path "u8",
+                                      M.call_closure (|
+                                        Ty.path "u8",
+                                        M.get_trait_method (|
+                                          "revm_context_interface::transaction::Transaction",
+                                          Self,
+                                          [],
+                                          [],
+                                          "tx_type",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.path
+                                        "revm_context_interface::transaction::transaction_type::TransactionType",
+                                      Value.StructTuple
+                                        "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
+                                        []
+                                        []
+                                        []
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.read (|
+                            let~ blob_gas : Ty.path "u128" :=
+                              M.cast
+                                (Ty.path "u128")
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  M.get_trait_method (|
+                                    "revm_context_interface::transaction::Transaction",
+                                    Self,
+                                    [],
+                                    [],
+                                    "total_blob_gas",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)) in
+                            let~ _ : Ty.tuple [] :=
+                              M.write (|
+                                effective_balance_spending,
+                                M.match_operator (|
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [],
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path
+                                              "revm_context_interface::result::InvalidTransaction"
+                                          ];
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ],
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::ops::control_flow::ControlFlow")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path
+                                                "revm_context_interface::result::InvalidTransaction"
+                                            ];
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::Try",
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [];
+                                            Ty.path
+                                              "revm_context_interface::result::InvalidTransaction"
+                                          ],
+                                        [],
+                                        [],
+                                        "branch",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                [];
+                                              Ty.path
+                                                "revm_context_interface::result::InvalidTransaction"
+                                            ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  []
+                                              ],
+                                            "ok_or",
+                                            [],
+                                            [
+                                              Ty.path
+                                                "revm_context_interface::result::InvalidTransaction"
+                                            ]
+                                          |),
+                                          [
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [],
+                                                "checked_add",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.read (| effective_balance_spending |);
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    [],
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [
+                                                        Value.Integer IntegerKind.Usize 256;
+                                                        Value.Integer IntegerKind.Usize 4
+                                                      ]
+                                                      [],
+                                                    "from",
+                                                    [],
+                                                    [ Ty.path "u128" ]
+                                                  |),
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "u128",
+                                                      M.get_associated_function (|
+                                                        Ty.path "u128",
+                                                        "saturating_mul",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.read (| blob_price |);
+                                                        M.read (| blob_gas |)
+                                                      ]
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |);
+                                            Value.StructTuple
+                                              "revm_context_interface::result::InvalidTransaction::OverflowPaymentInTransaction"
+                                              []
+                                              []
+                                              []
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::ops::control_flow::ControlFlow::Break",
+                                            0
+                                          |) in
+                                        let residual :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.path
+                                                  "revm_context_interface::result::InvalidTransaction"
+                                              ],
+                                            γ0_0
+                                          |) in
+                                        M.never_to_any (|
+                                          M.read (|
+                                            M.return_ (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [
+                                                        Value.Integer IntegerKind.Usize 256;
+                                                        Value.Integer IntegerKind.Usize 4
+                                                      ]
+                                                      [];
+                                                    Ty.path
+                                                      "revm_context_interface::result::InvalidTransaction"
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::ops::try_trait::FromResidual",
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [
+                                                          Value.Integer IntegerKind.Usize 256;
+                                                          Value.Integer IntegerKind.Usize 4
+                                                        ]
+                                                        [];
+                                                      Ty.path
+                                                        "revm_context_interface::result::InvalidTransaction"
+                                                    ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path
+                                                          "revm_context_interface::result::InvalidTransaction"
+                                                      ]
+                                                  ],
+                                                  "from_residual",
+                                                  [],
+                                                  []
+                                                |),
+                                                [ M.read (| residual |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |)));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::ops::control_flow::ControlFlow::Continue",
+                                            0
+                                          |) in
+                                        let val :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [],
+                                            γ0_0
+                                          |) in
+                                        M.read (| val |)))
+                                  ]
+                                |)
+                              |) in
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [];
+                      Ty.path "revm_context_interface::result::InvalidTransaction"
+                    ],
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [];
+                      Ty.path "revm_context_interface::result::InvalidTransaction"
+                    ]
+                    [ M.read (| effective_balance_spending |) ]
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_effective_balance_spending :
+      M.IsProvidedMethod
+        "revm_context_interface::transaction::Transaction"
+        "effective_balance_spending"
+        effective_balance_spending.
+    Definition gas_balance_spending
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; base_fee; blob_price ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+          let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [];
+                Ty.path "revm_context_interface::result::InvalidTransaction"
+              ]) (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::result::Result::Ok"
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ]
+                [
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      [],
+                    M.get_trait_method (|
+                      "core::ops::arith::Sub",
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [],
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ],
+                      "sub",
+                      [],
+                      []
+                    |),
+                    [
+                      M.match_operator (|
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          [],
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "core::ops::control_flow::ControlFlow")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::convert::Infallible";
+                                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                                ];
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ],
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::ops::control_flow::ControlFlow")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "core::convert::Infallible";
+                                    Ty.path "revm_context_interface::result::InvalidTransaction"
+                                  ];
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [];
+                                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                                ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      [];
+                                    Ty.path "revm_context_interface::result::InvalidTransaction"
+                                  ],
+                                M.get_trait_method (|
+                                  "revm_context_interface::transaction::Transaction",
+                                  Self,
+                                  [],
+                                  [],
+                                  "effective_balance_spending",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                                  M.read (| base_fee |);
+                                  M.read (| blob_price |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "revm_context_interface::result::InvalidTransaction"
+                                    ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            [];
+                                          Ty.path
+                                            "revm_context_interface::result::InvalidTransaction"
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [];
+                                            Ty.path
+                                              "revm_context_interface::result::InvalidTransaction"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path
+                                                "revm_context_interface::result::InvalidTransaction"
+                                            ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
+                                  |)
+                                |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [],
+                                  γ0_0
+                                |) in
+                              M.read (| val |)))
+                        ]
+                      |);
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          [],
+                        M.get_trait_method (|
+                          "revm_context_interface::transaction::Transaction",
+                          Self,
+                          [],
+                          [],
+                          "value",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    ]
+                  |)
+                ]))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_gas_balance_spending :
+      M.IsProvidedMethod
+        "revm_context_interface::transaction::Transaction"
+        "gas_balance_spending"
+        gas_balance_spending.
   End Transaction.
   
   Module underscore.
@@ -2570,51 +2686,22 @@ Module transaction.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _TransactionError (T : Ty.t) : Ty.t :=
+      Definition _AccessListItem (T : Ty.t) : Ty.t :=
         Ty.associated_in_trait
           "revm_context_interface::transaction::Transaction"
           []
           []
           T
-          "TransactionError".
+          "AccessListItem".
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _TransactionType (T : Ty.t) : Ty.t :=
+      Definition _Authorization (T : Ty.t) : Ty.t :=
         Ty.associated_in_trait
           "revm_context_interface::transaction::Transaction"
           []
           []
           T
-          "TransactionType".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _AccessList (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait
-          "revm_context_interface::transaction::Transaction"
-          []
-          []
-          T
-          "AccessList".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Legacy (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Legacy".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip2930 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip2930".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip1559 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip1559".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip4844 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip4844".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip7702 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip7702".
+          "Authorization".
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
       Definition tx_type (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2625,12 +2712,7 @@ Module transaction.
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
             M.call_closure (|
-              Ty.associated_in_trait
-                "revm_context_interface::transaction::Transaction"
-                []
-                []
-                T
-                "TransactionType",
+              Ty.path "u8",
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
@@ -2651,232 +2733,65 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition legacy (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition caller (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Legacy"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "legacy",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
+            M.call_closure (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "caller",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
                 |)
-              |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip2930 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition gas_limit (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip2930"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip2930",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "gas_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
                 |)
-              |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip1559 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip1559"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip1559",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip4844 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip4844"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip4844",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip7702 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip7702"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip7702",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition common_fields
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
+      Definition value (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -2885,101 +2800,22 @@ Module transaction.
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
             M.call_closure (|
               Ty.apply
-                (Ty.path "&")
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "value",
+                [],
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                  ])
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                  ]),
+              |),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.dyn
-                            [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                [])
-                            ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                  [])
-                              ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                  [])
-                              ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.dyn
-                                    [
-                                      ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                        [])
-                                    ]
-                                ],
-                              M.get_trait_method (|
-                                "revm_context_interface::transaction::Transaction",
-                                T,
-                                [],
-                                [],
-                                "common_fields",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
-                  |)
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
                 |)
               ]
             |)))
@@ -2987,7 +2823,128 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition max_fee (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition input (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                  M.get_trait_method (|
+                    "revm_context_interface::transaction::Transaction",
+                    T,
+                    [],
+                    [],
+                    "input",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition nonce (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "nonce",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition kind (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "alloy_primitives::common::TxKind",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "kind",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition chain_id (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "chain_id",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition gas_price (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -3001,7 +2958,344 @@ Module transaction.
                 T,
                 [],
                 [],
-                "max_fee",
+                "gas_price",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition access_list (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.associated_in_trait
+                    "revm_context_interface::transaction::Transaction"
+                    []
+                    []
+                    T
+                    "{{anon_assoc}}"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "access_list",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition blob_versioned_hashes
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            []
+                        ]
+                    ],
+                  M.get_trait_method (|
+                    "revm_context_interface::transaction::Transaction",
+                    T,
+                    [],
+                    [],
+                    "blob_versioned_hashes",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_fee_per_blob_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "u128",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_fee_per_blob_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition total_blob_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "total_blob_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition calc_max_data_fee
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "calc_max_data_fee",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition authorization_list_len
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "authorization_list_len",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition authorization_list
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.associated_in_trait
+                "revm_context_interface::transaction::Transaction"
+                []
+                []
+                T
+                "{{anon_assoc}}",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "authorization_list",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_fee_per_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "u128",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_fee_per_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_priority_fee_per_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_priority_fee_per_gas",
                 [],
                 []
               |),
@@ -3052,7 +3346,12 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition kind (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition max_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -3060,13 +3359,22 @@ Module transaction.
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
             M.call_closure (|
-              Ty.path "alloy_primitives::common::TxKind",
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
                 [],
                 [],
-                "kind",
+                "max_balance_spending",
                 [],
                 []
               |),
@@ -3081,36 +3389,37 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition access_list (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition ensure_enough_balance
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [], [ self ] =>
+        | [], [], [ self; balance ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            let balance :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                balance
+              |) in
             M.call_closure (|
               Ty.apply
-                (Ty.path "core::option::Option")
+                (Ty.path "core::result::Result")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "AccessList"
-                    ]
-                ],
+                [ Ty.tuple []; Ty.path "revm_context_interface::result::InvalidTransaction" ],
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
                 [],
                 [],
-                "access_list",
+                "ensure_enough_balance",
                 [],
                 []
               |),
@@ -3118,7 +3427,102 @@ Module transaction.
                 M.borrow (|
                   Pointer.Kind.Ref,
                   M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                |);
+                M.read (| balance |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition effective_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; base_fee; blob_price ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+            let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "effective_balance_spending",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| base_fee |);
+                M.read (| blob_price |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition gas_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; base_fee; blob_price ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+            let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "gas_balance_spending",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| base_fee |);
+                M.read (| blob_price |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3133,25 +3537,31 @@ Module transaction.
           (Self T)
           (* Instance *)
           [
-            ("TransactionError", InstanceField.Ty (_TransactionError T));
-            ("TransactionType", InstanceField.Ty (_TransactionType T));
-            ("AccessList", InstanceField.Ty (_AccessList T));
-            ("Legacy", InstanceField.Ty (_Legacy T));
-            ("Eip2930", InstanceField.Ty (_Eip2930 T));
-            ("Eip1559", InstanceField.Ty (_Eip1559 T));
-            ("Eip4844", InstanceField.Ty (_Eip4844 T));
-            ("Eip7702", InstanceField.Ty (_Eip7702 T));
+            ("AccessListItem", InstanceField.Ty (_AccessListItem T));
+            ("Authorization", InstanceField.Ty (_Authorization T));
             ("tx_type", InstanceField.Method (tx_type T));
-            ("legacy", InstanceField.Method (legacy T));
-            ("eip2930", InstanceField.Method (eip2930 T));
-            ("eip1559", InstanceField.Method (eip1559 T));
-            ("eip4844", InstanceField.Method (eip4844 T));
-            ("eip7702", InstanceField.Method (eip7702 T));
-            ("common_fields", InstanceField.Method (common_fields T));
-            ("max_fee", InstanceField.Method (max_fee T));
-            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("caller", InstanceField.Method (caller T));
+            ("gas_limit", InstanceField.Method (gas_limit T));
+            ("value", InstanceField.Method (value T));
+            ("input", InstanceField.Method (input T));
+            ("nonce", InstanceField.Method (nonce T));
             ("kind", InstanceField.Method (kind T));
-            ("access_list", InstanceField.Method (access_list T))
+            ("chain_id", InstanceField.Method (chain_id T));
+            ("gas_price", InstanceField.Method (gas_price T));
+            ("access_list", InstanceField.Method (access_list T));
+            ("blob_versioned_hashes", InstanceField.Method (blob_versioned_hashes T));
+            ("max_fee_per_blob_gas", InstanceField.Method (max_fee_per_blob_gas T));
+            ("total_blob_gas", InstanceField.Method (total_blob_gas T));
+            ("calc_max_data_fee", InstanceField.Method (calc_max_data_fee T));
+            ("authorization_list_len", InstanceField.Method (authorization_list_len T));
+            ("authorization_list", InstanceField.Method (authorization_list T));
+            ("max_fee_per_gas", InstanceField.Method (max_fee_per_gas T));
+            ("max_priority_fee_per_gas", InstanceField.Method (max_priority_fee_per_gas T));
+            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("max_balance_spending", InstanceField.Method (max_balance_spending T));
+            ("ensure_enough_balance", InstanceField.Method (ensure_enough_balance T));
+            ("effective_balance_spending", InstanceField.Method (effective_balance_spending T));
+            ("gas_balance_spending", InstanceField.Method (gas_balance_spending T))
           ].
     End Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_ref__T.
   End underscore.
@@ -3162,51 +3572,22 @@ Module transaction.
         Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _TransactionError (T : Ty.t) : Ty.t :=
+      Definition _AccessListItem (T : Ty.t) : Ty.t :=
         Ty.associated_in_trait
           "revm_context_interface::transaction::Transaction"
           []
           []
           T
-          "TransactionError".
+          "AccessListItem".
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _TransactionType (T : Ty.t) : Ty.t :=
+      Definition _Authorization (T : Ty.t) : Ty.t :=
         Ty.associated_in_trait
           "revm_context_interface::transaction::Transaction"
           []
           []
           T
-          "TransactionType".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _AccessList (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait
-          "revm_context_interface::transaction::Transaction"
-          []
-          []
-          T
-          "AccessList".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Legacy (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Legacy".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip2930 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip2930".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip1559 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip1559".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip4844 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip4844".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip7702 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip7702".
+          "Authorization".
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
       Definition tx_type (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3224,12 +3605,7 @@ Module transaction.
                 self
               |) in
             M.call_closure (|
-              Ty.associated_in_trait
-                "revm_context_interface::transaction::Transaction"
-                []
-                []
-                T
-                "TransactionType",
+              Ty.path "u8",
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
@@ -3250,7 +3626,7 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition legacy (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition caller (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -3264,44 +3640,29 @@ Module transaction.
                   ],
                 self
               |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Legacy"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "legacy",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
+            M.call_closure (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "caller",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
                 |)
-              |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip2930 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition gas_limit (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -3315,202 +3676,29 @@ Module transaction.
                   ],
                 self
               |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip2930"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip2930",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "gas_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
                 |)
-              |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip1559 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip1559"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip1559",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip4844 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip4844"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip4844",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip7702 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip7702"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip7702",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition common_fields
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
+      Definition value (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -3526,101 +3714,22 @@ Module transaction.
               |) in
             M.call_closure (|
               Ty.apply
-                (Ty.path "&")
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "value",
+                [],
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                  ])
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                  ]),
+              |),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.dyn
-                            [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                [])
-                            ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                  [])
-                              ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                  [])
-                              ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.dyn
-                                    [
-                                      ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                        [])
-                                    ]
-                                ],
-                              M.get_trait_method (|
-                                "revm_context_interface::transaction::Transaction",
-                                T,
-                                [],
-                                [],
-                                "common_fields",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
-                  |)
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
                 |)
               ]
             |)))
@@ -3628,7 +3737,156 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition max_fee (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition input (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                  M.get_trait_method (|
+                    "revm_context_interface::transaction::Transaction",
+                    T,
+                    [],
+                    [],
+                    "input",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition nonce (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "nonce",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition kind (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "alloy_primitives::common::TxKind",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "kind",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition chain_id (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "chain_id",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition gas_price (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -3649,7 +3907,407 @@ Module transaction.
                 T,
                 [],
                 [],
-                "max_fee",
+                "gas_price",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition access_list (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.associated_in_trait
+                    "revm_context_interface::transaction::Transaction"
+                    []
+                    []
+                    T
+                    "{{anon_assoc}}"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "access_list",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition blob_versioned_hashes
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            []
+                        ]
+                    ],
+                  M.get_trait_method (|
+                    "revm_context_interface::transaction::Transaction",
+                    T,
+                    [],
+                    [],
+                    "blob_versioned_hashes",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_fee_per_blob_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u128",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_fee_per_blob_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition total_blob_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "total_blob_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition calc_max_data_fee
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "calc_max_data_fee",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition authorization_list_len
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "authorization_list_len",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition authorization_list
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.associated_in_trait
+                "revm_context_interface::transaction::Transaction"
+                []
+                []
+                T
+                "{{anon_assoc}}",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "authorization_list",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_fee_per_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u128",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_fee_per_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_priority_fee_per_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_priority_fee_per_gas",
                 [],
                 []
               |),
@@ -3707,43 +4365,12 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition kind (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.call_closure (|
-              Ty.path "alloy_primitives::common::TxKind",
-              M.get_trait_method (|
-                "revm_context_interface::transaction::Transaction",
-                T,
-                [],
-                [],
-                "kind",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition access_list (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition max_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -3759,27 +4386,21 @@ Module transaction.
               |) in
             M.call_closure (|
               Ty.apply
-                (Ty.path "core::option::Option")
+                (Ty.path "core::result::Result")
                 []
                 [
                   Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "AccessList"
-                    ]
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
                 ],
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
                 [],
                 [],
-                "access_list",
+                "max_balance_spending",
                 [],
                 []
               |),
@@ -3788,6 +4409,167 @@ Module transaction.
                   Pointer.Kind.Ref,
                   M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
                 |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition ensure_enough_balance
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; balance ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let balance :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                balance
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "revm_context_interface::result::InvalidTransaction" ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "ensure_enough_balance",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| balance |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition effective_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; base_fee; blob_price ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+            let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "effective_balance_spending",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| base_fee |);
+                M.read (| blob_price |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition gas_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; base_fee; blob_price ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+            let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "gas_balance_spending",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| base_fee |);
+                M.read (| blob_price |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3802,25 +4584,31 @@ Module transaction.
           (Self T)
           (* Instance *)
           [
-            ("TransactionError", InstanceField.Ty (_TransactionError T));
-            ("TransactionType", InstanceField.Ty (_TransactionType T));
-            ("AccessList", InstanceField.Ty (_AccessList T));
-            ("Legacy", InstanceField.Ty (_Legacy T));
-            ("Eip2930", InstanceField.Ty (_Eip2930 T));
-            ("Eip1559", InstanceField.Ty (_Eip1559 T));
-            ("Eip4844", InstanceField.Ty (_Eip4844 T));
-            ("Eip7702", InstanceField.Ty (_Eip7702 T));
+            ("AccessListItem", InstanceField.Ty (_AccessListItem T));
+            ("Authorization", InstanceField.Ty (_Authorization T));
             ("tx_type", InstanceField.Method (tx_type T));
-            ("legacy", InstanceField.Method (legacy T));
-            ("eip2930", InstanceField.Method (eip2930 T));
-            ("eip1559", InstanceField.Method (eip1559 T));
-            ("eip4844", InstanceField.Method (eip4844 T));
-            ("eip7702", InstanceField.Method (eip7702 T));
-            ("common_fields", InstanceField.Method (common_fields T));
-            ("max_fee", InstanceField.Method (max_fee T));
-            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("caller", InstanceField.Method (caller T));
+            ("gas_limit", InstanceField.Method (gas_limit T));
+            ("value", InstanceField.Method (value T));
+            ("input", InstanceField.Method (input T));
+            ("nonce", InstanceField.Method (nonce T));
             ("kind", InstanceField.Method (kind T));
-            ("access_list", InstanceField.Method (access_list T))
+            ("chain_id", InstanceField.Method (chain_id T));
+            ("gas_price", InstanceField.Method (gas_price T));
+            ("access_list", InstanceField.Method (access_list T));
+            ("blob_versioned_hashes", InstanceField.Method (blob_versioned_hashes T));
+            ("max_fee_per_blob_gas", InstanceField.Method (max_fee_per_blob_gas T));
+            ("total_blob_gas", InstanceField.Method (total_blob_gas T));
+            ("calc_max_data_fee", InstanceField.Method (calc_max_data_fee T));
+            ("authorization_list_len", InstanceField.Method (authorization_list_len T));
+            ("authorization_list", InstanceField.Method (authorization_list T));
+            ("max_fee_per_gas", InstanceField.Method (max_fee_per_gas T));
+            ("max_priority_fee_per_gas", InstanceField.Method (max_priority_fee_per_gas T));
+            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("max_balance_spending", InstanceField.Method (max_balance_spending T));
+            ("ensure_enough_balance", InstanceField.Method (ensure_enough_balance T));
+            ("effective_balance_spending", InstanceField.Method (effective_balance_spending T));
+            ("gas_balance_spending", InstanceField.Method (gas_balance_spending T))
           ].
     End Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
   End underscore_1.
@@ -3831,51 +4619,22 @@ Module transaction.
         Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _TransactionError (T : Ty.t) : Ty.t :=
+      Definition _AccessListItem (T : Ty.t) : Ty.t :=
         Ty.associated_in_trait
           "revm_context_interface::transaction::Transaction"
           []
           []
           T
-          "TransactionError".
+          "AccessListItem".
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _TransactionType (T : Ty.t) : Ty.t :=
+      Definition _Authorization (T : Ty.t) : Ty.t :=
         Ty.associated_in_trait
           "revm_context_interface::transaction::Transaction"
           []
           []
           T
-          "TransactionType".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _AccessList (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait
-          "revm_context_interface::transaction::Transaction"
-          []
-          []
-          T
-          "AccessList".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Legacy (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Legacy".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip2930 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip2930".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip1559 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip1559".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip4844 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip4844".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip7702 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip7702".
+          "Authorization".
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
       Definition tx_type (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3893,12 +4652,7 @@ Module transaction.
                 self
               |) in
             M.call_closure (|
-              Ty.associated_in_trait
-                "revm_context_interface::transaction::Transaction"
-                []
-                []
-                T
-                "TransactionType",
+              Ty.path "u8",
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
@@ -3936,7 +4690,7 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition legacy (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition caller (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -3950,61 +4704,46 @@ Module transaction.
                   ],
                 self
               |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
+            M.call_closure (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "caller",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
                         []
-                        []
-                        T
-                        "Legacy"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "legacy",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
-                  ]
+                  |)
                 |)
-              |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip2930 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition gas_limit (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -4018,270 +4757,46 @@ Module transaction.
                   ],
                 self
               |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "gas_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
                         []
-                        []
-                        T
-                        "Eip2930"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip2930",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
-                  ]
+                  |)
                 |)
-              |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip1559 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip1559"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip1559",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip4844 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip4844"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip4844",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip7702 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip7702"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip7702",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition common_fields
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
+      Definition value (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -4297,121 +4812,37 @@ Module transaction.
               |) in
             M.call_closure (|
               Ty.apply
-                (Ty.path "&")
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "value",
+                [],
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                  ])
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                  ]),
+              |),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
                   M.deref (|
                     M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
                         []
-                        [
-                          Ty.dyn
-                            [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                [])
-                            ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                  [])
-                              ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                  [])
-                              ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.dyn
-                                    [
-                                      ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                        [])
-                                    ]
-                                ],
-                              M.get_trait_method (|
-                                "revm_context_interface::transaction::Transaction",
-                                T,
-                                [],
-                                [],
-                                "common_fields",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ T ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply
-                                          (Ty.path "alloc::sync::Arc")
-                                          []
-                                          [ T; Ty.path "alloc::alloc::Global" ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |)
-                      ]
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
                   |)
                 |)
@@ -4421,7 +4852,224 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition max_fee (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition input (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                  M.get_trait_method (|
+                    "revm_context_interface::transaction::Transaction",
+                    T,
+                    [],
+                    [],
+                    "input",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition nonce (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "nonce",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition kind (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "alloy_primitives::common::TxKind",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "kind",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition chain_id (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "chain_id",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition gas_price (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -4442,7 +5090,560 @@ Module transaction.
                 T,
                 [],
                 [],
-                "max_fee",
+                "gas_price",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition access_list (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.associated_in_trait
+                    "revm_context_interface::transaction::Transaction"
+                    []
+                    []
+                    T
+                    "{{anon_assoc}}"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "access_list",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition blob_versioned_hashes
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            []
+                        ]
+                    ],
+                  M.get_trait_method (|
+                    "revm_context_interface::transaction::Transaction",
+                    T,
+                    [],
+                    [],
+                    "blob_versioned_hashes",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_fee_per_blob_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u128",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_fee_per_blob_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition total_blob_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "total_blob_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition calc_max_data_fee
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "calc_max_data_fee",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition authorization_list_len
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "authorization_list_len",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition authorization_list
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.associated_in_trait
+                "revm_context_interface::transaction::Transaction"
+                []
+                []
+                T
+                "{{anon_assoc}}",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "authorization_list",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_fee_per_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u128",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_fee_per_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_priority_fee_per_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_priority_fee_per_gas",
                 [],
                 []
               |),
@@ -4534,7 +5735,12 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition kind (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition max_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -4549,13 +5755,22 @@ Module transaction.
                 self
               |) in
             M.call_closure (|
-              Ty.path "alloy_primitives::common::TxKind",
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
                 [],
                 [],
-                "kind",
+                "max_balance_spending",
                 [],
                 []
               |),
@@ -4587,10 +5802,15 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition access_list (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition ensure_enough_balance
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [], [ self ] =>
+        | [], [], [ self; balance ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (|
@@ -4601,29 +5821,25 @@ Module transaction.
                   ],
                 self
               |) in
+            let balance :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                balance
+              |) in
             M.call_closure (|
               Ty.apply
-                (Ty.path "core::option::Option")
+                (Ty.path "core::result::Result")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "AccessList"
-                    ]
-                ],
+                [ Ty.tuple []; Ty.path "revm_context_interface::result::InvalidTransaction" ],
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
                 [],
                 [],
-                "access_list",
+                "ensure_enough_balance",
                 [],
                 []
               |),
@@ -4648,7 +5864,150 @@ Module transaction.
                       [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
                   |)
-                |)
+                |);
+                M.read (| balance |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition effective_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; base_fee; blob_price ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+            let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "effective_balance_spending",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |);
+                M.read (| base_fee |);
+                M.read (| blob_price |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition gas_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; base_fee; blob_price ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+            let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "gas_balance_spending",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |);
+                M.read (| base_fee |);
+                M.read (| blob_price |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4663,25 +6022,31 @@ Module transaction.
           (Self T)
           (* Instance *)
           [
-            ("TransactionError", InstanceField.Ty (_TransactionError T));
-            ("TransactionType", InstanceField.Ty (_TransactionType T));
-            ("AccessList", InstanceField.Ty (_AccessList T));
-            ("Legacy", InstanceField.Ty (_Legacy T));
-            ("Eip2930", InstanceField.Ty (_Eip2930 T));
-            ("Eip1559", InstanceField.Ty (_Eip1559 T));
-            ("Eip4844", InstanceField.Ty (_Eip4844 T));
-            ("Eip7702", InstanceField.Ty (_Eip7702 T));
+            ("AccessListItem", InstanceField.Ty (_AccessListItem T));
+            ("Authorization", InstanceField.Ty (_Authorization T));
             ("tx_type", InstanceField.Method (tx_type T));
-            ("legacy", InstanceField.Method (legacy T));
-            ("eip2930", InstanceField.Method (eip2930 T));
-            ("eip1559", InstanceField.Method (eip1559 T));
-            ("eip4844", InstanceField.Method (eip4844 T));
-            ("eip7702", InstanceField.Method (eip7702 T));
-            ("common_fields", InstanceField.Method (common_fields T));
-            ("max_fee", InstanceField.Method (max_fee T));
-            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("caller", InstanceField.Method (caller T));
+            ("gas_limit", InstanceField.Method (gas_limit T));
+            ("value", InstanceField.Method (value T));
+            ("input", InstanceField.Method (input T));
+            ("nonce", InstanceField.Method (nonce T));
             ("kind", InstanceField.Method (kind T));
-            ("access_list", InstanceField.Method (access_list T))
+            ("chain_id", InstanceField.Method (chain_id T));
+            ("gas_price", InstanceField.Method (gas_price T));
+            ("access_list", InstanceField.Method (access_list T));
+            ("blob_versioned_hashes", InstanceField.Method (blob_versioned_hashes T));
+            ("max_fee_per_blob_gas", InstanceField.Method (max_fee_per_blob_gas T));
+            ("total_blob_gas", InstanceField.Method (total_blob_gas T));
+            ("calc_max_data_fee", InstanceField.Method (calc_max_data_fee T));
+            ("authorization_list_len", InstanceField.Method (authorization_list_len T));
+            ("authorization_list", InstanceField.Method (authorization_list T));
+            ("max_fee_per_gas", InstanceField.Method (max_fee_per_gas T));
+            ("max_priority_fee_per_gas", InstanceField.Method (max_priority_fee_per_gas T));
+            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("max_balance_spending", InstanceField.Method (max_balance_spending T));
+            ("ensure_enough_balance", InstanceField.Method (ensure_enough_balance T));
+            ("effective_balance_spending", InstanceField.Method (effective_balance_spending T));
+            ("gas_balance_spending", InstanceField.Method (gas_balance_spending T))
           ].
     End Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
   End underscore_2.
@@ -4692,51 +6057,22 @@ Module transaction.
         Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ].
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _TransactionError (T : Ty.t) : Ty.t :=
+      Definition _AccessListItem (T : Ty.t) : Ty.t :=
         Ty.associated_in_trait
           "revm_context_interface::transaction::Transaction"
           []
           []
           T
-          "TransactionError".
+          "AccessListItem".
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _TransactionType (T : Ty.t) : Ty.t :=
+      Definition _Authorization (T : Ty.t) : Ty.t :=
         Ty.associated_in_trait
           "revm_context_interface::transaction::Transaction"
           []
           []
           T
-          "TransactionType".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _AccessList (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait
-          "revm_context_interface::transaction::Transaction"
-          []
-          []
-          T
-          "AccessList".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Legacy (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Legacy".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip2930 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip2930".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip1559 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip1559".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip4844 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip4844".
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition _Eip7702 (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::transaction::Transaction" [] [] T "Eip7702".
+          "Authorization".
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
       Definition tx_type (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -4753,12 +6089,7 @@ Module transaction.
                 self
               |) in
             M.call_closure (|
-              Ty.associated_in_trait
-                "revm_context_interface::transaction::Transaction"
-                []
-                []
-                T
-                "TransactionType",
+              Ty.path "u8",
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
@@ -4793,7 +6124,7 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition legacy (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition caller (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -4806,61 +6137,43 @@ Module transaction.
                   [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
                 self
               |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
+            M.call_closure (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "caller",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
                         []
-                        []
-                        T
-                        "Legacy"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "legacy",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
-                  ]
+                  |)
                 |)
-              |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip2930 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition gas_limit (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -4873,267 +6186,43 @@ Module transaction.
                   [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
                 self
               |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "gas_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
                         []
-                        []
-                        T
-                        "Eip2930"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip2930",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
-                  ]
+                  |)
                 |)
-              |)
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip1559 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip1559"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip1559",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip4844 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip4844"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip4844",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition eip7702 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "Eip7702"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::Transaction",
-                    T,
-                    [],
-                    [],
-                    "eip7702",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition common_fields
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
+      Definition value (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -5148,121 +6237,34 @@ Module transaction.
               |) in
             M.call_closure (|
               Ty.apply
-                (Ty.path "&")
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "value",
+                [],
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                  ])
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
-                  ]),
+              |),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
                   M.deref (|
                     M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
                         []
-                        [
-                          Ty.dyn
-                            [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                [])
-                            ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                  [])
-                              ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                  [])
-                              ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.dyn
-                                    [
-                                      ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                                        [])
-                                    ]
-                                ],
-                              M.get_trait_method (|
-                                "revm_context_interface::transaction::Transaction",
-                                T,
-                                [],
-                                [],
-                                "common_fields",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ T ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply
-                                          (Ty.path "alloc::rc::Rc")
-                                          []
-                                          [ T; Ty.path "alloc::alloc::Global" ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |)
-                      ]
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
                   |)
                 |)
@@ -5272,7 +6274,211 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition max_fee (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition input (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                  M.get_trait_method (|
+                    "revm_context_interface::transaction::Transaction",
+                    T,
+                    [],
+                    [],
+                    "input",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition nonce (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "nonce",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition kind (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "alloy_primitives::common::TxKind",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "kind",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition chain_id (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "chain_id",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition gas_price (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -5292,7 +6498,527 @@ Module transaction.
                 T,
                 [],
                 [],
-                "max_fee",
+                "gas_price",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition access_list (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.associated_in_trait
+                    "revm_context_interface::transaction::Transaction"
+                    []
+                    []
+                    T
+                    "{{anon_assoc}}"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "access_list",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition blob_versioned_hashes
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            []
+                        ]
+                    ],
+                  M.get_trait_method (|
+                    "revm_context_interface::transaction::Transaction",
+                    T,
+                    [],
+                    [],
+                    "blob_versioned_hashes",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_fee_per_blob_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u128",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_fee_per_blob_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition total_blob_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "total_blob_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition calc_max_data_fee
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "calc_max_data_fee",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition authorization_list_len
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "authorization_list_len",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition authorization_list
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.associated_in_trait
+                "revm_context_interface::transaction::Transaction"
+                []
+                []
+                T
+                "{{anon_assoc}}",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "authorization_list",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_fee_per_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u128",
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_fee_per_gas",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition max_priority_fee_per_gas
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "max_priority_fee_per_gas",
                 [],
                 []
               |),
@@ -5377,7 +7103,12 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition kind (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition max_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self ] =>
@@ -5391,13 +7122,22 @@ Module transaction.
                 self
               |) in
             M.call_closure (|
-              Ty.path "alloy_primitives::common::TxKind",
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
                 [],
                 [],
-                "kind",
+                "max_balance_spending",
                 [],
                 []
               |),
@@ -5426,10 +7166,15 @@ Module transaction.
         end.
       
       (* #[auto_impl(&, Box, Arc, Rc)] *)
-      Definition access_list (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition ensure_enough_balance
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [], [ self ] =>
+        | [], [], [ self; balance ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (|
@@ -5439,29 +7184,25 @@ Module transaction.
                   [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
                 self
               |) in
+            let balance :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                balance
+              |) in
             M.call_closure (|
               Ty.apply
-                (Ty.path "core::option::Option")
+                (Ty.path "core::result::Result")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::Transaction"
-                        []
-                        []
-                        T
-                        "AccessList"
-                    ]
-                ],
+                [ Ty.tuple []; Ty.path "revm_context_interface::result::InvalidTransaction" ],
               M.get_trait_method (|
                 "revm_context_interface::transaction::Transaction",
                 T,
                 [],
                 [],
-                "access_list",
+                "ensure_enough_balance",
                 [],
                 []
               |),
@@ -5483,7 +7224,142 @@ Module transaction.
                       [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
                   |)
-                |)
+                |);
+                M.read (| balance |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition effective_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; base_fee; blob_price ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+            let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "effective_balance_spending",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |);
+                M.read (| base_fee |);
+                M.read (| blob_price |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, Box, Arc, Rc)] *)
+      Definition gas_balance_spending
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; base_fee; blob_price ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                self
+              |) in
+            let base_fee := M.alloc (| Ty.path "u128", base_fee |) in
+            let blob_price := M.alloc (| Ty.path "u128", blob_price |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [];
+                  Ty.path "revm_context_interface::result::InvalidTransaction"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::transaction::Transaction",
+                T,
+                [],
+                [],
+                "gas_balance_spending",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |);
+                M.read (| base_fee |);
+                M.read (| blob_price |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5498,472 +7374,32 @@ Module transaction.
           (Self T)
           (* Instance *)
           [
-            ("TransactionError", InstanceField.Ty (_TransactionError T));
-            ("TransactionType", InstanceField.Ty (_TransactionType T));
-            ("AccessList", InstanceField.Ty (_AccessList T));
-            ("Legacy", InstanceField.Ty (_Legacy T));
-            ("Eip2930", InstanceField.Ty (_Eip2930 T));
-            ("Eip1559", InstanceField.Ty (_Eip1559 T));
-            ("Eip4844", InstanceField.Ty (_Eip4844 T));
-            ("Eip7702", InstanceField.Ty (_Eip7702 T));
+            ("AccessListItem", InstanceField.Ty (_AccessListItem T));
+            ("Authorization", InstanceField.Ty (_Authorization T));
             ("tx_type", InstanceField.Method (tx_type T));
-            ("legacy", InstanceField.Method (legacy T));
-            ("eip2930", InstanceField.Method (eip2930 T));
-            ("eip1559", InstanceField.Method (eip1559 T));
-            ("eip4844", InstanceField.Method (eip4844 T));
-            ("eip7702", InstanceField.Method (eip7702 T));
-            ("common_fields", InstanceField.Method (common_fields T));
-            ("max_fee", InstanceField.Method (max_fee T));
-            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("caller", InstanceField.Method (caller T));
+            ("gas_limit", InstanceField.Method (gas_limit T));
+            ("value", InstanceField.Method (value T));
+            ("input", InstanceField.Method (input T));
+            ("nonce", InstanceField.Method (nonce T));
             ("kind", InstanceField.Method (kind T));
-            ("access_list", InstanceField.Method (access_list T))
+            ("chain_id", InstanceField.Method (chain_id T));
+            ("gas_price", InstanceField.Method (gas_price T));
+            ("access_list", InstanceField.Method (access_list T));
+            ("blob_versioned_hashes", InstanceField.Method (blob_versioned_hashes T));
+            ("max_fee_per_blob_gas", InstanceField.Method (max_fee_per_blob_gas T));
+            ("total_blob_gas", InstanceField.Method (total_blob_gas T));
+            ("calc_max_data_fee", InstanceField.Method (calc_max_data_fee T));
+            ("authorization_list_len", InstanceField.Method (authorization_list_len T));
+            ("authorization_list", InstanceField.Method (authorization_list T));
+            ("max_fee_per_gas", InstanceField.Method (max_fee_per_gas T));
+            ("max_priority_fee_per_gas", InstanceField.Method (max_priority_fee_per_gas T));
+            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("max_balance_spending", InstanceField.Method (max_balance_spending T));
+            ("ensure_enough_balance", InstanceField.Method (ensure_enough_balance T));
+            ("effective_balance_spending", InstanceField.Method (effective_balance_spending T));
+            ("gas_balance_spending", InstanceField.Method (gas_balance_spending T))
           ].
     End Impl_revm_context_interface_transaction_Transaction_where_revm_context_interface_transaction_Transaction_T_where_core_marker_Sized_T_for_alloc_rc_Rc_T_alloc_alloc_Global.
   End underscore_3.
-  
-  (* Trait *)
-  (* Empty module 'TransactionGetter' *)
-  
-  Module underscore_4.
-    Module Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_ref__T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Transaction (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait
-          "revm_context_interface::transaction::TransactionGetter"
-          []
-          []
-          T
-          "Transaction".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition tx (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::TransactionGetter"
-                        []
-                        []
-                        T
-                        "Transaction"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::TransactionGetter",
-                    T,
-                    [],
-                    [],
-                    "tx",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::transaction::TransactionGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Transaction", InstanceField.Ty (_Transaction T)); ("tx", InstanceField.Method (tx T))
-          ].
-    End Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_ref__T.
-  End underscore_4.
-  
-  Module underscore_5.
-    Module Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Transaction (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait
-          "revm_context_interface::transaction::TransactionGetter"
-          []
-          []
-          T
-          "Transaction".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition tx (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::TransactionGetter"
-                        []
-                        []
-                        T
-                        "Transaction"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::TransactionGetter",
-                    T,
-                    [],
-                    [],
-                    "tx",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::transaction::TransactionGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Transaction", InstanceField.Ty (_Transaction T)); ("tx", InstanceField.Method (tx T))
-          ].
-    End Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
-  End underscore_5.
-  
-  Module underscore_6.
-    Module Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-      Definition Self (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Transaction (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait
-          "revm_context_interface::transaction::TransactionGetter"
-          []
-          []
-          T
-          "Transaction".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition tx (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::TransactionGetter"
-                        []
-                        []
-                        T
-                        "Transaction"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::TransactionGetter",
-                    T,
-                    [],
-                    [],
-                    "tx",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::transaction::TransactionGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Transaction", InstanceField.Ty (_Transaction T)); ("tx", InstanceField.Method (tx T))
-          ].
-    End Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-  End underscore_6.
-  
-  Module underscore_7.
-    Module Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-      Definition Self (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Transaction (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait
-          "revm_context_interface::transaction::TransactionGetter"
-          []
-          []
-          T
-          "Transaction".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition tx (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::transaction::TransactionGetter"
-                        []
-                        []
-                        T
-                        "Transaction"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::transaction::TransactionGetter",
-                    T,
-                    [],
-                    [],
-                    "tx",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::transaction::TransactionGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Transaction", InstanceField.Ty (_Transaction T)); ("tx", InstanceField.Method (tx T))
-          ].
-    End Impl_revm_context_interface_transaction_TransactionGetter_where_revm_context_interface_transaction_TransactionGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-  End underscore_7.
-  
-  (* Trait *)
-  (* Empty module 'TransactionSetter' *)
-  
-  Module Impl_revm_context_interface_transaction_TransactionSetter_where_revm_context_interface_transaction_TransactionSetter_T_for_ref_mut_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
-    
-    (*
-        fn set_tx(&mut self, block: <Self as TransactionGetter>::Transaction) {
-            ( **self).set_tx(block)
-        }
-    *)
-    Definition set_tx (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self; block ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-              self
-            |) in
-          let block :=
-            M.alloc (|
-              Ty.associated_in_trait
-                "revm_context_interface::transaction::TransactionGetter"
-                []
-                []
-                (Ty.apply (Ty.path "&mut") [] [ T ])
-                "Transaction",
-              block
-            |) in
-          M.call_closure (|
-            Ty.tuple [],
-            M.get_trait_method (|
-              "revm_context_interface::transaction::TransactionSetter",
-              T,
-              [],
-              [],
-              "set_tx",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| block |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "revm_context_interface::transaction::TransactionSetter"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("set_tx", InstanceField.Method (set_tx T)) ].
-  End Impl_revm_context_interface_transaction_TransactionSetter_where_revm_context_interface_transaction_TransactionSetter_T_for_ref_mut_T.
-  
-  Module Impl_revm_context_interface_transaction_TransactionSetter_where_revm_context_interface_transaction_TransactionSetter_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
-    
-    (*
-        fn set_tx(&mut self, block: <Self as TransactionGetter>::Transaction) {
-            ( **self).set_tx(block)
-        }
-    *)
-    Definition set_tx (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self; block ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ] ],
-              self
-            |) in
-          let block :=
-            M.alloc (|
-              Ty.associated_in_trait
-                "revm_context_interface::transaction::TransactionGetter"
-                []
-                []
-                (Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ])
-                "Transaction",
-              block
-            |) in
-          M.call_closure (|
-            Ty.tuple [],
-            M.get_trait_method (|
-              "revm_context_interface::transaction::TransactionSetter",
-              T,
-              [],
-              [],
-              "set_tx",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| block |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "revm_context_interface::transaction::TransactionSetter"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("set_tx", InstanceField.Method (set_tx T)) ].
-  End Impl_revm_context_interface_transaction_TransactionSetter_where_revm_context_interface_transaction_TransactionSetter_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
 End transaction.

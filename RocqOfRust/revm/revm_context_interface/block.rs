@@ -1,24 +1,26 @@
+//! Block related types and functions.
+//!
+//! [`Block`] trait is used to retrieve block information required for execution.
 pub mod blob;
 
-pub use blob::{calc_blob_gasprice, calc_excess_blob_gas, BlobExcessGasAndPrice};
+pub use blob::{calc_blob_gasprice, BlobExcessGasAndPrice};
 
 use auto_impl::auto_impl;
 use primitives::{Address, B256, U256};
-use std::boxed::Box;
 
 /// Trait for retrieving block information required for execution.
 #[auto_impl(&, &mut, Box, Arc)]
 pub trait Block {
     /// The number of ancestor blocks of this block (block height).
-    fn number(&self) -> u64;
+    fn number(&self) -> U256;
 
-    /// Beneficiary (Coinbase, miner) is a address that have signed the block.
+    /// Beneficiary (Coinbase, miner) is an address that has signed the block.
     ///
     /// This is the receiver address of priority gas rewards.
     fn beneficiary(&self) -> Address;
 
     /// The timestamp of the block in seconds since the UNIX epoch.
-    fn timestamp(&self) -> u64;
+    fn timestamp(&self) -> U256;
 
     /// The gas limit of the block.
     fn gas_limit(&self) -> u64;
@@ -43,8 +45,6 @@ pub trait Block {
     fn prevrandao(&self) -> Option<B256>;
 
     /// Excess blob gas and blob gasprice.
-    /// See also [`calc_excess_blob_gas`]
-    /// and [`calc_blob_gasprice`].
     ///
     /// Incorporated as part of the Cancun upgrade via [EIP-4844].
     ///
@@ -67,28 +67,5 @@ pub trait Block {
     /// [EIP-4844]: https://eips.ethereum.org/EIPS/eip-4844
     fn blob_excess_gas(&self) -> Option<u64> {
         self.blob_excess_gas_and_price().map(|a| a.excess_blob_gas)
-    }
-}
-
-#[auto_impl(&, &mut, Box, Arc)]
-pub trait BlockGetter {
-    type Block: Block;
-
-    fn block(&self) -> &Self::Block;
-}
-
-pub trait BlockSetter: BlockGetter {
-    fn set_block(&mut self, block: <Self as BlockGetter>::Block);
-}
-
-impl<T: BlockSetter> BlockSetter for &mut T {
-    fn set_block(&mut self, block: <Self as BlockGetter>::Block) {
-        (**self).set_block(block)
-    }
-}
-
-impl<T: BlockSetter> BlockSetter for Box<T> {
-    fn set_block(&mut self, block: <Self as BlockGetter>::Block) {
-        (**self).set_block(block)
     }
 }

@@ -61,7 +61,7 @@ Module transaction.
     Axiom IsDiscriminant_TransactionType_Custom :
       M.IsDiscriminant
         "revm_context_interface::transaction::transaction_type::TransactionType::Custom"
-        5.
+        255.
     
     Module Impl_core_clone_TrivialClone_for_revm_context_interface_transaction_transaction_type_TransactionType.
       Definition Self : Ty.t :=
@@ -263,9 +263,9 @@ Module transaction.
                 other
               |) in
             M.read (|
-              let~ __self_discr : Ty.path "isize" :=
+              let~ __self_discr : Ty.path "u8" :=
                 M.call_closure (|
-                  Ty.path "isize",
+                  Ty.path "u8",
                   M.get_function (|
                     "core::intrinsics::discriminant_value",
                     [],
@@ -276,9 +276,9 @@ Module transaction.
                   |),
                   [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                 |) in
-              let~ __arg1_discr : Ty.path "isize" :=
+              let~ __arg1_discr : Ty.path "u8" :=
                 M.call_closure (|
-                  Ty.path "isize",
+                  Ty.path "u8",
                   M.get_function (|
                     "core::intrinsics::discriminant_value",
                     [],
@@ -367,9 +367,9 @@ Module transaction.
               |) in
             let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
             M.read (|
-              let~ __self_discr : Ty.path "isize" :=
+              let~ __self_discr : Ty.path "u8" :=
                 M.call_closure (|
-                  Ty.path "isize",
+                  Ty.path "u8",
                   M.get_function (|
                     "core::intrinsics::discriminant_value",
                     [],
@@ -386,7 +386,7 @@ Module transaction.
                   Ty.tuple [],
                   M.get_trait_method (|
                     "core::hash::Hash",
-                    Ty.path "isize",
+                    Ty.path "u8",
                     [],
                     [],
                     "hash",
@@ -414,5 +414,317 @@ Module transaction.
           Self
           (* Instance *) [ ("hash", InstanceField.Method hash) ].
     End Impl_core_hash_Hash_for_revm_context_interface_transaction_transaction_type_TransactionType.
+    
+    Module Impl_revm_context_interface_transaction_transaction_type_TransactionType.
+      Definition Self : Ty.t :=
+        Ty.path "revm_context_interface::transaction::transaction_type::TransactionType".
+      
+      (*
+          pub fn is_legacy(&self) -> bool {
+              matches!(self, Self::Legacy)
+          }
+      *)
+      Definition is_legacy (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_context_interface::transaction::transaction_type::TransactionType"
+                  ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "bool",
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let _ :=
+                      M.is_struct_tuple (|
+                        γ,
+                        "revm_context_interface::transaction::transaction_type::TransactionType::Legacy"
+                      |) in
+                    Value.Bool true));
+                fun γ => ltac:(M.monadic (Value.Bool false))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_legacy :
+        M.IsAssociatedFunction.C Self "is_legacy" is_legacy.
+      Admitted.
+      Global Typeclasses Opaque is_legacy.
+      
+      (*
+          pub fn is_custom(&self) -> bool {
+              matches!(self, Self::Custom)
+          }
+      *)
+      Definition is_custom (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_context_interface::transaction::transaction_type::TransactionType"
+                  ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "bool",
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let _ :=
+                      M.is_struct_tuple (|
+                        γ,
+                        "revm_context_interface::transaction::transaction_type::TransactionType::Custom"
+                      |) in
+                    Value.Bool true));
+                fun γ => ltac:(M.monadic (Value.Bool false))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_custom :
+        M.IsAssociatedFunction.C Self "is_custom" is_custom.
+      Admitted.
+      Global Typeclasses Opaque is_custom.
+    End Impl_revm_context_interface_transaction_transaction_type_TransactionType.
+    
+    Module Impl_core_cmp_PartialEq_u8_for_revm_context_interface_transaction_transaction_type_TransactionType.
+      Definition Self : Ty.t :=
+        Ty.path "revm_context_interface::transaction::transaction_type::TransactionType".
+      
+      (*
+          fn eq(&self, other: &u8) -> bool {
+              ( *self as u8) == *other
+          }
+      *)
+      Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_context_interface::transaction::transaction_type::TransactionType"
+                  ],
+                self
+              |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.eq,
+              [
+                M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |));
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::PartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u8" ]
+          Self
+          (* Instance *) [ ("eq", InstanceField.Method eq) ].
+    End Impl_core_cmp_PartialEq_u8_for_revm_context_interface_transaction_transaction_type_TransactionType.
+    
+    Module Impl_core_cmp_PartialEq_revm_context_interface_transaction_transaction_type_TransactionType_for_u8.
+      Definition Self : Ty.t := Ty.path "u8".
+      
+      (*
+          fn eq(&self, other: &TransactionType) -> bool {
+              *self == ( *other as u8)
+          }
+      *)
+      Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], self |) in
+            let other :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_context_interface::transaction::transaction_type::TransactionType"
+                  ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.eq,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| other |) |) |))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::PartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *)
+          [ Ty.path "revm_context_interface::transaction::transaction_type::TransactionType" ]
+          Self
+          (* Instance *) [ ("eq", InstanceField.Method eq) ].
+    End Impl_core_cmp_PartialEq_revm_context_interface_transaction_transaction_type_TransactionType_for_u8.
+    
+    Module Impl_core_convert_From_revm_context_interface_transaction_transaction_type_TransactionType_for_u8.
+      Definition Self : Ty.t := Ty.path "u8".
+      
+      (*
+          fn from(tx_type: TransactionType) -> u8 {
+              tx_type as u8
+          }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ tx_type ] =>
+          ltac:(M.monadic
+            (let tx_type :=
+              M.alloc (|
+                Ty.path "revm_context_interface::transaction::transaction_type::TransactionType",
+                tx_type
+              |) in
+            M.cast (Ty.path "u8") (M.read (| tx_type |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *)
+          [ Ty.path "revm_context_interface::transaction::transaction_type::TransactionType" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_revm_context_interface_transaction_transaction_type_TransactionType_for_u8.
+    
+    Module Impl_core_convert_From_u8_for_revm_context_interface_transaction_transaction_type_TransactionType.
+      Definition Self : Ty.t :=
+        Ty.path "revm_context_interface::transaction::transaction_type::TransactionType".
+      
+      (*
+          fn from(value: u8) -> Self {
+              match value {
+                  0 => Self::Legacy,
+                  1 => Self::Eip2930,
+                  2 => Self::Eip1559,
+                  3 => Self::Eip4844,
+                  4 => Self::Eip7702,
+                  _ => Self::Custom,
+              }
+          }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ value ] =>
+          ltac:(M.monadic
+            (let value := M.alloc (| Ty.path "u8", value |) in
+            M.match_operator (|
+              Ty.path "revm_context_interface::transaction::transaction_type::TransactionType",
+              value,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ :=
+                      is_constant_or_break_match (|
+                        M.read (| γ |),
+                        Value.Integer IntegerKind.U8 0
+                      |) in
+                    Value.StructTuple
+                      "revm_context_interface::transaction::transaction_type::TransactionType::Legacy"
+                      []
+                      []
+                      []));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ :=
+                      is_constant_or_break_match (|
+                        M.read (| γ |),
+                        Value.Integer IntegerKind.U8 1
+                      |) in
+                    Value.StructTuple
+                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930"
+                      []
+                      []
+                      []));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ :=
+                      is_constant_or_break_match (|
+                        M.read (| γ |),
+                        Value.Integer IntegerKind.U8 2
+                      |) in
+                    Value.StructTuple
+                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559"
+                      []
+                      []
+                      []));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ :=
+                      is_constant_or_break_match (|
+                        M.read (| γ |),
+                        Value.Integer IntegerKind.U8 3
+                      |) in
+                    Value.StructTuple
+                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
+                      []
+                      []
+                      []));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ :=
+                      is_constant_or_break_match (|
+                        M.read (| γ |),
+                        Value.Integer IntegerKind.U8 4
+                      |) in
+                    Value.StructTuple
+                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702"
+                      []
+                      []
+                      []));
+                fun γ =>
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "revm_context_interface::transaction::transaction_type::TransactionType::Custom"
+                      []
+                      []
+                      []))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u8" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_u8_for_revm_context_interface_transaction_transaction_type_TransactionType.
   End transaction_type.
 End transaction.

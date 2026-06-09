@@ -416,8 +416,8 @@ Module block.
         Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice".
       
       (*
-          pub fn new(excess_blob_gas: u64) -> Self {
-              let blob_gasprice = calc_blob_gasprice(excess_blob_gas);
+          pub fn new(excess_blob_gas: u64, blob_base_fee_update_fraction: u64) -> Self {
+              let blob_gasprice = calc_blob_gasprice(excess_blob_gas, blob_base_fee_update_fraction);
               Self {
                   excess_blob_gas,
                   blob_gasprice,
@@ -426,9 +426,11 @@ Module block.
       *)
       Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [ excess_blob_gas ] =>
+        | [], [], [ excess_blob_gas; blob_base_fee_update_fraction ] =>
           ltac:(M.monadic
             (let excess_blob_gas := M.alloc (| Ty.path "u64", excess_blob_gas |) in
+            let blob_base_fee_update_fraction :=
+              M.alloc (| Ty.path "u64", blob_base_fee_update_fraction |) in
             M.read (|
               let~ blob_gasprice : Ty.path "u128" :=
                 M.call_closure (|
@@ -438,7 +440,7 @@ Module block.
                     [],
                     []
                   |),
-                  [ M.read (| excess_blob_gas |) ]
+                  [ M.read (| excess_blob_gas |); M.read (| blob_base_fee_update_fraction |) ]
                 |) in
               M.alloc (|
                 Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice",
@@ -458,74 +460,115 @@ Module block.
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
       Admitted.
       Global Typeclasses Opaque new.
+      
+      (*
+          pub fn new_with_spec(excess_blob_gas: u64, spec: SpecId) -> Self {
+              Self::new(
+                  excess_blob_gas,
+                  if spec.is_enabled_in(SpecId::PRAGUE) {
+                      BLOB_BASE_FEE_UPDATE_FRACTION_PRAGUE
+                  } else {
+                      BLOB_BASE_FEE_UPDATE_FRACTION_CANCUN
+                  },
+              )
+          }
+      *)
+      Definition new_with_spec (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ excess_blob_gas; spec ] =>
+          ltac:(M.monadic
+            (let excess_blob_gas := M.alloc (| Ty.path "u64", excess_blob_gas |) in
+            let spec := M.alloc (| Ty.path "revm_primitives::hardfork::SpecId", spec |) in
+            M.call_closure (|
+              Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice",
+              M.get_associated_function (|
+                Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice",
+                "new",
+                [],
+                []
+              |),
+              [
+                M.read (| excess_blob_gas |);
+                M.match_operator (|
+                  Ty.path "u64",
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_associated_function (|
+                                Ty.path "revm_primitives::hardfork::SpecId",
+                                "is_enabled_in",
+                                [],
+                                []
+                              |),
+                              [
+                                M.read (| spec |);
+                                Value.StructTuple
+                                  "revm_primitives::hardfork::SpecId::PRAGUE"
+                                  []
+                                  []
+                                  []
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.read (|
+                          get_constant (|
+                            "revm_primitives::eip4844::BLOB_BASE_FEE_UPDATE_FRACTION_PRAGUE",
+                            Ty.path "u64"
+                          |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (M.read (|
+                          get_constant (|
+                            "revm_primitives::eip4844::BLOB_BASE_FEE_UPDATE_FRACTION_CANCUN",
+                            Ty.path "u64"
+                          |)
+                        |)))
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_new_with_spec :
+        M.IsAssociatedFunction.C Self "new_with_spec" new_with_spec.
+      Admitted.
+      Global Typeclasses Opaque new_with_spec.
     End Impl_revm_context_interface_block_blob_BlobExcessGasAndPrice.
     
     (*
-    pub fn calc_excess_blob_gas(parent_excess_blob_gas: u64, parent_blob_gas_used: u64) -> u64 {
-        (parent_excess_blob_gas + parent_blob_gas_used).saturating_sub(TARGET_BLOB_GAS_PER_BLOCK)
-    }
-    *)
-    Definition calc_excess_blob_gas (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ parent_excess_blob_gas; parent_blob_gas_used ] =>
-        ltac:(M.monadic
-          (let parent_excess_blob_gas := M.alloc (| Ty.path "u64", parent_excess_blob_gas |) in
-          let parent_blob_gas_used := M.alloc (| Ty.path "u64", parent_blob_gas_used |) in
-          M.call_closure (|
-            Ty.path "u64",
-            M.get_associated_function (| Ty.path "u64", "saturating_sub", [], [] |),
-            [
-              M.call_closure (|
-                Ty.path "u64",
-                BinOp.Wrap.add,
-                [ M.read (| parent_excess_blob_gas |); M.read (| parent_blob_gas_used |) ]
-              |);
-              M.read (|
-                get_constant (|
-                  "revm_specification::eip4844::TARGET_BLOB_GAS_PER_BLOCK",
-                  Ty.path "u64"
-                |)
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_calc_excess_blob_gas :
-      M.IsFunction.C
-        "revm_context_interface::block::blob::calc_excess_blob_gas"
-        calc_excess_blob_gas.
-    Admitted.
-    Global Typeclasses Opaque calc_excess_blob_gas.
-    
-    (*
-    pub fn calc_blob_gasprice(excess_blob_gas: u64) -> u128 {
+    pub fn calc_blob_gasprice(excess_blob_gas: u64, blob_base_fee_update_fraction: u64) -> u128 {
         fake_exponential(
             MIN_BLOB_GASPRICE,
             excess_blob_gas,
-            BLOB_GASPRICE_UPDATE_FRACTION,
+            blob_base_fee_update_fraction,
         )
     }
     *)
     Definition calc_blob_gasprice (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ excess_blob_gas ] =>
+      | [], [], [ excess_blob_gas; blob_base_fee_update_fraction ] =>
         ltac:(M.monadic
           (let excess_blob_gas := M.alloc (| Ty.path "u64", excess_blob_gas |) in
+          let blob_base_fee_update_fraction :=
+            M.alloc (| Ty.path "u64", blob_base_fee_update_fraction |) in
           M.call_closure (|
             Ty.path "u128",
             M.get_function (| "revm_context_interface::block::blob::fake_exponential", [], [] |),
             [
               M.read (|
-                get_constant (| "revm_specification::eip4844::MIN_BLOB_GASPRICE", Ty.path "u64" |)
+                get_constant (| "revm_primitives::eip4844::MIN_BLOB_GASPRICE", Ty.path "u64" |)
               |);
               M.read (| excess_blob_gas |);
-              M.read (|
-                get_constant (|
-                  "revm_specification::eip4844::BLOB_GASPRICE_UPDATE_FRACTION",
-                  Ty.path "u64"
-                |)
-              |)
+              M.read (| blob_base_fee_update_fraction |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -535,6 +578,37 @@ Module block.
       M.IsFunction.C "revm_context_interface::block::blob::calc_blob_gasprice" calc_blob_gasprice.
     Admitted.
     Global Typeclasses Opaque calc_blob_gasprice.
+    
+    (*
+    pub fn get_base_fee_per_blob_gas(excess_blob_gas: u64, blob_base_fee_update_fraction: u64) -> u128 {
+        calc_blob_gasprice(excess_blob_gas, blob_base_fee_update_fraction)
+    }
+    *)
+    Definition get_base_fee_per_blob_gas
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ excess_blob_gas; blob_base_fee_update_fraction ] =>
+        ltac:(M.monadic
+          (let excess_blob_gas := M.alloc (| Ty.path "u64", excess_blob_gas |) in
+          let blob_base_fee_update_fraction :=
+            M.alloc (| Ty.path "u64", blob_base_fee_update_fraction |) in
+          M.call_closure (|
+            Ty.path "u128",
+            M.get_function (| "revm_context_interface::block::blob::calc_blob_gasprice", [], [] |),
+            [ M.read (| excess_blob_gas |); M.read (| blob_base_fee_update_fraction |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_get_base_fee_per_blob_gas :
+      M.IsFunction.C
+        "revm_context_interface::block::blob::get_base_fee_per_blob_gas"
+        get_base_fee_per_blob_gas.
+    Admitted.
+    Global Typeclasses Opaque get_base_fee_per_blob_gas.
     
     (*
     pub fn fake_exponential(factor: u64, numerator: u64, denominator: u64) -> u128 {

@@ -2,14 +2,176 @@
 Require Import RocqOfRust.RocqOfRust.
 
 Module bls12_381.
+  Axiom G1Point :
+    (Ty.path "revm_precompile::bls12_381::G1Point") =
+      (Ty.tuple
+        [
+          Ty.apply
+            (Ty.path "array")
+            [ M.unevaluated_const (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |)) ]
+            [ Ty.path "u8" ];
+          Ty.apply
+            (Ty.path "array")
+            [ M.unevaluated_const (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |)) ]
+            [ Ty.path "u8" ]
+        ]).
+  
+  Axiom G2Point :
+    (Ty.path "revm_precompile::bls12_381::G2Point") =
+      (Ty.tuple
+        [
+          Ty.apply
+            (Ty.path "array")
+            [ M.unevaluated_const (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |)) ]
+            [ Ty.path "u8" ];
+          Ty.apply
+            (Ty.path "array")
+            [ M.unevaluated_const (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |)) ]
+            [ Ty.path "u8" ];
+          Ty.apply
+            (Ty.path "array")
+            [ M.unevaluated_const (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |)) ]
+            [ Ty.path "u8" ];
+          Ty.apply
+            (Ty.path "array")
+            [ M.unevaluated_const (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |)) ]
+            [ Ty.path "u8" ]
+        ]).
+  
+  Axiom G1PointScalar :
+    (Ty.path "revm_precompile::bls12_381::G1PointScalar") =
+      (Ty.tuple
+        [
+          Ty.tuple
+            [
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ];
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ]
+            ];
+          Ty.apply
+            (Ty.path "array")
+            [
+              M.unevaluated_const
+                (mk_str (| "revm_precompile_bls12_381_G1PointScalar_discriminant" |))
+            ]
+            [ Ty.path "u8" ]
+        ]).
+  
+  Axiom G2PointScalar :
+    (Ty.path "revm_precompile::bls12_381::G2PointScalar") =
+      (Ty.tuple
+        [
+          Ty.tuple
+            [
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ];
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ];
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ];
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ]
+            ];
+          Ty.apply
+            (Ty.path "array")
+            [
+              M.unevaluated_const
+                (mk_str (| "revm_precompile_bls12_381_G2PointScalar_discriminant" |))
+            ]
+            [ Ty.path "u8" ]
+        ]).
+  
+  Axiom PairingPair :
+    (Ty.path "revm_precompile::bls12_381::PairingPair") =
+      (Ty.tuple
+        [
+          Ty.tuple
+            [
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ];
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ]
+            ];
+          Ty.tuple
+            [
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ];
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ];
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ];
+              Ty.apply
+                (Ty.path "array")
+                [
+                  M.unevaluated_const
+                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                ]
+                [ Ty.path "u8" ]
+            ]
+        ]).
+  
   (*
-  pub fn precompiles() -> impl Iterator<Item = PrecompileWithAddress> {
+  pub fn precompiles() -> impl Iterator<Item = Precompile> {
       [
           g1_add::PRECOMPILE,
-          g1_mul::PRECOMPILE,
           g1_msm::PRECOMPILE,
           g2_add::PRECOMPILE,
-          g2_mul::PRECOMPILE,
           g2_msm::PRECOMPILE,
           pairing::PRECOMPILE,
           map_fp_to_g1::PRECOMPILE,
@@ -25,14 +187,14 @@ Module bls12_381.
         (M.call_closure (|
           Ty.apply
             (Ty.path "core::array::iter::IntoIter")
-            [ Value.Integer IntegerKind.Usize 9 ]
-            [ Ty.path "revm_precompile::PrecompileWithAddress" ],
+            [ Value.Integer IntegerKind.Usize 7 ]
+            [ Ty.path "revm_precompile::Precompile" ],
           M.get_trait_method (|
             "core::iter::traits::collect::IntoIterator",
             Ty.apply
               (Ty.path "array")
-              [ Value.Integer IntegerKind.Usize 9 ]
-              [ Ty.path "revm_precompile::PrecompileWithAddress" ],
+              [ Value.Integer IntegerKind.Usize 7 ]
+              [ Ty.path "revm_precompile::Precompile" ],
             [],
             [],
             "into_iter",
@@ -45,55 +207,43 @@ Module bls12_381.
                 M.read (|
                   get_constant (|
                     "revm_precompile::bls12_381::g1_add::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::g1_mul::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
+                    Ty.path "revm_precompile::Precompile"
                   |)
                 |);
                 M.read (|
                   get_constant (|
                     "revm_precompile::bls12_381::g1_msm::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
+                    Ty.path "revm_precompile::Precompile"
                   |)
                 |);
                 M.read (|
                   get_constant (|
                     "revm_precompile::bls12_381::g2_add::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::g2_mul::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
+                    Ty.path "revm_precompile::Precompile"
                   |)
                 |);
                 M.read (|
                   get_constant (|
                     "revm_precompile::bls12_381::g2_msm::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
+                    Ty.path "revm_precompile::Precompile"
                   |)
                 |);
                 M.read (|
                   get_constant (|
                     "revm_precompile::bls12_381::pairing::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
+                    Ty.path "revm_precompile::Precompile"
                   |)
                 |);
                 M.read (|
                   get_constant (|
                     "revm_precompile::bls12_381::map_fp_to_g1::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
+                    Ty.path "revm_precompile::Precompile"
                   |)
                 |);
                 M.read (|
                   get_constant (|
                     "revm_precompile::bls12_381::map_fp2_to_g2::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
+                    Ty.path "revm_precompile::Precompile"
                   |)
                 |)
               ]

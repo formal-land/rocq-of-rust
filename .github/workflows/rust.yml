@@ -100,51 +100,34 @@ jobs:
           startGroup "Translate Revm"
             cd third-party/revm
             cp ../../rust-toolchain ./
-            cd crates
-            # We compile each library twice to avoid errors. TODO: investigate why this is needed
-            # bytecode
-            cd bytecode
-            cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust --with-json
-            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_bytecode/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
-            cd ..
-            # context/interface
-            cd context/interface
-            cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust --with-json
-            rsync -rcv src/ ../../../../../RocqOfRust/revm/revm_context_interface/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
+
+            translate_revm_crate() {
+              crate_path="$1"
+              output_path="$2"
+
+              (
+                cd "$crate_path"
+                cargo rocq-of-rust
+                touch src/lib.rs
+                cargo rocq-of-rust --with-json
+                mkdir -p "$output_path"
+                rsync -rcv src/ "$output_path/" \
+                  --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
+              )
+            }
+
+            translate_revm_crate crates/bytecode ../../../../RocqOfRust/revm/revm_bytecode
+            translate_revm_crate crates/context ../../../../RocqOfRust/revm/revm_context
+            translate_revm_crate crates/context/interface ../../../../../RocqOfRust/revm/revm_context_interface
+            translate_revm_crate crates/database/interface ../../../../../RocqOfRust/revm/revm_database_interface
+            translate_revm_crate crates/handler ../../../../RocqOfRust/revm/revm_handler
+            translate_revm_crate crates/interpreter ../../../../RocqOfRust/revm/revm_interpreter
+            translate_revm_crate crates/precompile ../../../../RocqOfRust/revm/revm_precompile
+            translate_revm_crate crates/primitives ../../../../RocqOfRust/revm/revm_primitives
+            translate_revm_crate crates/revm ../../../../RocqOfRust/revm/revm
+            translate_revm_crate crates/state ../../../../RocqOfRust/revm/revm_state
+
             cd ../..
-            # interpreter
-            cd interpreter
-            cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust --with-json
-            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_interpreter/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
-            cd ..
-            # precompile
-            cd precompile
-            cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust --with-json
-            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_precompile/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
-            cd ..
-            # primitives
-            cd primitives
-            cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust --with-json
-            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_primitives/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
-            cd ..
-            # specification
-            cd specification
-            cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust --with-json
-            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_specification/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
-            cd ..
-            cd ../../..
           endGroup
           startGroup "Translate ruint"
             cd third-party/uint

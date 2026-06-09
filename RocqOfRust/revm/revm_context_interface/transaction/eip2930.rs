@@ -1,21 +1,19 @@
-use super::{AccessListTrait, CommonTxFields};
+//! EIP-2930 Access list transaction interface.
 use auto_impl::auto_impl;
-use primitives::TxKind;
+use primitives::{Address, B256};
 
-/// EIP-2930: Optional access lists
+/// Access list type is introduced in EIP-2930, and every
+/// transaction after it contains access list.
+///
+/// **Note**: Iterator over access list returns account address and storage slot keys that
+/// are warm loaded before transaction execution.
+///
+/// Number of account and storage slots is used to calculate initial tx gas cost.
 #[auto_impl(&, Box, Arc, Rc)]
-pub trait Eip2930Tx: CommonTxFields {
-    type AccessList: AccessListTrait;
+pub trait AccessListItemTr {
+    /// Returns account address.
+    fn address(&self) -> &Address;
 
-    /// The chain ID of the chain the transaction is intended for.
-    fn chain_id(&self) -> u64;
-
-    /// The gas price of the transaction.
-    fn gas_price(&self) -> u128;
-
-    /// The kind of transaction.
-    fn kind(&self) -> TxKind;
-
-    /// The access list of the transaction.
-    fn access_list(&self) -> &Self::AccessList;
+    /// Returns storage slot keys.
+    fn storage_slots(&self) -> impl Iterator<Item = &B256>;
 }

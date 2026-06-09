@@ -7,18 +7,18 @@ Module instructions.
       (*
       pub fn get_memory_input_and_out_ranges(
           interpreter: &mut Interpreter<impl InterpreterTypes>,
-      ) -> Option<(Bytes, Range<usize>)> {
+      ) -> Option<(Range<usize>, Range<usize>)> {
           popn!([in_offset, in_len, out_offset, out_len], interpreter, None);
       
-          let in_range = resize_memory(interpreter, in_offset, in_len)?;
+          let mut in_range = resize_memory(interpreter, in_offset, in_len)?;
       
-          let mut input = Bytes::new();
           if !in_range.is_empty() {
-              input = Bytes::copy_from_slice(interpreter.memory.slice(in_range).as_ref());
+              let offset = interpreter.memory.local_memory_offset();
+              in_range = in_range.start.saturating_add(offset)..in_range.end.saturating_add(offset);
           }
       
           let ret_range = resize_memory(interpreter, out_offset, out_len)?;
-          Some((input, ret_range))
+          Some((in_range, ret_range))
       }
       *)
       Definition get_memory_input_and_out_ranges
@@ -49,7 +49,7 @@ Module instructions.
                 [
                   Ty.tuple
                     [
-                      Ty.path "alloy_primitives::bytes_::Bytes";
+                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ];
                       Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
                     ]
                 ]) (|
@@ -61,7 +61,7 @@ Module instructions.
                     [
                       Ty.tuple
                         [
-                          Ty.path "alloy_primitives::bytes_::Bytes";
+                          Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ];
                           Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
                         ]
                     ],
@@ -102,7 +102,7 @@ Module instructions.
                             ]
                         ],
                       M.get_trait_method (|
-                        "revm_interpreter::interpreter_types::StackTrait",
+                        "revm_interpreter::interpreter_types::StackTr",
                         Ty.associated_in_trait
                           "revm_interpreter::interpreter_types::InterpreterTypes"
                           []
@@ -289,7 +289,10 @@ Module instructions.
                                               [
                                                 Ty.tuple
                                                   [
-                                                    Ty.path "alloy_primitives::bytes_::Bytes";
+                                                    Ty.apply
+                                                      (Ty.path "core::ops::range::Range")
+                                                      []
+                                                      [ Ty.path "usize" ];
                                                     Ty.apply
                                                       (Ty.path "core::ops::range::Range")
                                                       []
@@ -304,7 +307,10 @@ Module instructions.
                                                 [
                                                   Ty.tuple
                                                     [
-                                                      Ty.path "alloy_primitives::bytes_::Bytes";
+                                                      Ty.apply
+                                                        (Ty.path "core::ops::range::Range")
+                                                        []
+                                                        [ Ty.path "usize" ];
                                                       Ty.apply
                                                         (Ty.path "core::ops::range::Range")
                                                         []
@@ -346,17 +352,6 @@ Module instructions.
                                     M.read (| val |)))
                               ]
                             |) in
-                          let~ input : Ty.path "alloy_primitives::bytes_::Bytes" :=
-                            M.call_closure (|
-                              Ty.path "alloy_primitives::bytes_::Bytes",
-                              M.get_associated_function (|
-                                Ty.path "alloy_primitives::bytes_::Bytes",
-                                "new",
-                                [],
-                                []
-                              |),
-                              []
-                            |) in
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
                               Ty.tuple [],
@@ -393,148 +388,83 @@ Module instructions.
                                         Value.Bool true
                                       |) in
                                     M.read (|
+                                      let~ offset : Ty.path "usize" :=
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_trait_method (|
+                                            "revm_interpreter::interpreter_types::MemoryTr",
+                                            Ty.associated_in_trait
+                                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                                              []
+                                              []
+                                              impl_InterpreterTypes
+                                              "Memory",
+                                            [],
+                                            [],
+                                            "local_memory_offset",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| interpreter |) |),
+                                                "revm_interpreter::interpreter::Interpreter",
+                                                "memory"
+                                              |)
+                                            |)
+                                          ]
+                                        |) in
                                       let~ _ : Ty.tuple [] :=
                                         M.write (|
-                                          input,
-                                          M.call_closure (|
-                                            Ty.path "alloy_primitives::bytes_::Bytes",
-                                            M.get_associated_function (|
-                                              Ty.path "alloy_primitives::bytes_::Bytes",
-                                              "copy_from_slice",
-                                              [],
-                                              []
-                                            |),
+                                          in_range,
+                                          Value.mkStructRecord
+                                            "core::ops::range::Range"
+                                            []
+                                            [ Ty.path "usize" ]
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::convert::AsRef",
-                                                      Ty.apply
-                                                        (Ty.path "slice")
-                                                        []
-                                                        [ Ty.path "u8" ],
-                                                      [],
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ],
-                                                      "as_ref",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "slice")
-                                                                  []
-                                                                  [ Ty.path "u8" ]
-                                                              ],
-                                                            M.get_trait_method (|
-                                                              "core::ops::deref::Deref",
-                                                              Ty.associated_in_trait
-                                                                "revm_interpreter::interpreter_types::MemoryTrait"
-                                                                []
-                                                                []
-                                                                (Ty.associated_in_trait
-                                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                                  []
-                                                                  []
-                                                                  impl_InterpreterTypes
-                                                                  "Memory")
-                                                                "{{anon_assoc}}",
-                                                              [],
-                                                              [],
-                                                              "deref",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.alloc (|
-                                                                  Ty.associated_in_trait
-                                                                    "revm_interpreter::interpreter_types::MemoryTrait"
-                                                                    []
-                                                                    []
-                                                                    (Ty.associated_in_trait
-                                                                      "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                                      []
-                                                                      []
-                                                                      impl_InterpreterTypes
-                                                                      "Memory")
-                                                                    "{{anon_assoc}}",
-                                                                  M.call_closure (|
-                                                                    Ty.associated_in_trait
-                                                                      "revm_interpreter::interpreter_types::MemoryTrait"
-                                                                      []
-                                                                      []
-                                                                      (Ty.associated_in_trait
-                                                                        "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                                        []
-                                                                        []
-                                                                        impl_InterpreterTypes
-                                                                        "Memory")
-                                                                      "{{anon_assoc}}",
-                                                                    M.get_trait_method (|
-                                                                      "revm_interpreter::interpreter_types::MemoryTrait",
-                                                                      Ty.associated_in_trait
-                                                                        "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                                        []
-                                                                        []
-                                                                        impl_InterpreterTypes
-                                                                        "Memory",
-                                                                      [],
-                                                                      [],
-                                                                      "slice",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.SubPointer.get_struct_record_field (|
-                                                                          M.deref (|
-                                                                            M.read (| interpreter |)
-                                                                          |),
-                                                                          "revm_interpreter::interpreter::Interpreter",
-                                                                          "memory"
-                                                                        |)
-                                                                      |);
-                                                                      M.read (| in_range |)
-                                                                    ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |)
-                                                        |)
+                                              ("start",
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.path "usize",
+                                                    "saturating_add",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        in_range,
+                                                        "core::ops::range::Range",
+                                                        "start"
                                                       |)
-                                                    ]
-                                                  |)
-                                                |)
-                                              |)
+                                                    |);
+                                                    M.read (| offset |)
+                                                  ]
+                                                |));
+                                              ("end_",
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.path "usize",
+                                                    "saturating_add",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        in_range,
+                                                        "core::ops::range::Range",
+                                                        "end"
+                                                      |)
+                                                    |);
+                                                    M.read (| offset |)
+                                                  ]
+                                                |))
                                             ]
-                                          |)
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -645,7 +575,10 @@ Module instructions.
                                               [
                                                 Ty.tuple
                                                   [
-                                                    Ty.path "alloy_primitives::bytes_::Bytes";
+                                                    Ty.apply
+                                                      (Ty.path "core::ops::range::Range")
+                                                      []
+                                                      [ Ty.path "usize" ];
                                                     Ty.apply
                                                       (Ty.path "core::ops::range::Range")
                                                       []
@@ -660,7 +593,10 @@ Module instructions.
                                                 [
                                                   Ty.tuple
                                                     [
-                                                      Ty.path "alloy_primitives::bytes_::Bytes";
+                                                      Ty.apply
+                                                        (Ty.path "core::ops::range::Range")
+                                                        []
+                                                        [ Ty.path "usize" ];
                                                       Ty.apply
                                                         (Ty.path "core::ops::range::Range")
                                                         []
@@ -709,7 +645,10 @@ Module instructions.
                               [
                                 Ty.tuple
                                   [
-                                    Ty.path "alloy_primitives::bytes_::Bytes";
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ];
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
@@ -722,14 +661,17 @@ Module instructions.
                               [
                                 Ty.tuple
                                   [
-                                    Ty.path "alloy_primitives::bytes_::Bytes";
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ];
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
                                       [ Ty.path "usize" ]
                                   ]
                               ]
-                              [ Value.Tuple [ M.read (| input |); M.read (| ret_range |) ] ]
+                              [ Value.Tuple [ M.read (| in_range |); M.read (| ret_range |) ] ]
                           |)
                         |)));
                     fun γ =>
@@ -738,34 +680,20 @@ Module instructions.
                           let~ _ : Ty.tuple [] :=
                             M.call_closure (|
                               Ty.tuple [],
-                              M.get_trait_method (|
-                                "revm_interpreter::interpreter_types::LoopControl",
-                                Ty.associated_in_trait
-                                  "revm_interpreter::interpreter_types::InterpreterTypes"
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "revm_interpreter::interpreter::Interpreter")
                                   []
-                                  []
-                                  impl_InterpreterTypes
-                                  "Control",
-                                [],
-                                [],
-                                "set_instruction_result",
+                                  [ impl_InterpreterTypes ],
+                                "halt_underflow",
                                 [],
                                 []
                               |),
                               [
                                 M.borrow (|
                                   Pointer.Kind.MutRef,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| interpreter |) |),
-                                    "revm_interpreter::interpreter::Interpreter",
-                                    "control"
-                                  |)
-                                |);
-                                Value.StructTuple
-                                  "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                  []
-                                  []
-                                  []
+                                  M.deref (| M.read (| interpreter |) |)
+                                |)
                               ]
                             |) in
                           M.return_ (|
@@ -775,7 +703,10 @@ Module instructions.
                               [
                                 Ty.tuple
                                   [
-                                    Ty.path "alloy_primitives::bytes_::Bytes";
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ];
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
@@ -1009,28 +940,20 @@ Module instructions.
                                             let~ _ : Ty.tuple [] :=
                                               M.call_closure (|
                                                 Ty.tuple [],
-                                                M.get_trait_method (|
-                                                  "revm_interpreter::interpreter_types::LoopControl",
-                                                  Ty.associated_in_trait
-                                                    "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "revm_interpreter::interpreter::Interpreter")
                                                     []
-                                                    []
-                                                    impl_InterpreterTypes
-                                                    "Control",
-                                                  [],
-                                                  [],
-                                                  "set_instruction_result",
+                                                    [ impl_InterpreterTypes ],
+                                                  "halt",
                                                   [],
                                                   []
                                                 |),
                                                 [
                                                   M.borrow (|
                                                     Pointer.Kind.MutRef,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| interpreter |) |),
-                                                      "revm_interpreter::interpreter::Interpreter",
-                                                      "control"
-                                                    |)
+                                                    M.deref (| M.read (| interpreter |) |)
                                                   |);
                                                   Value.StructTuple
                                                     "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG"
@@ -1259,29 +1182,21 @@ Module instructions.
                                                         let~ _ : Ty.tuple [] :=
                                                           M.call_closure (|
                                                             Ty.tuple [],
-                                                            M.get_trait_method (|
-                                                              "revm_interpreter::interpreter_types::LoopControl",
-                                                              Ty.associated_in_trait
-                                                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                            M.get_associated_function (|
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "revm_interpreter::interpreter::Interpreter")
                                                                 []
-                                                                []
-                                                                impl_InterpreterTypes
-                                                                "Control",
-                                                              [],
-                                                              [],
-                                                              "set_instruction_result",
+                                                                [ impl_InterpreterTypes ],
+                                                              "halt",
                                                               [],
                                                               []
                                                             |),
                                                             [
                                                               M.borrow (|
                                                                 Pointer.Kind.MutRef,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (|
-                                                                    M.read (| interpreter |)
-                                                                  |),
-                                                                  "revm_interpreter::interpreter::Interpreter",
-                                                                  "control"
+                                                                M.deref (|
+                                                                  M.read (| interpreter |)
                                                                 |)
                                                               |);
                                                               Value.StructTuple
@@ -1322,167 +1237,93 @@ Module instructions.
                                         |)))
                                   ]
                                 |) in
-                              let~ words_num : Ty.path "usize" :=
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_function (|
-                                    "revm_interpreter::interpreter::shared_memory::num_words",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.path "usize",
-                                        "saturating_add",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| offset |); M.read (| len |) ]
-                                    |)
-                                  ]
-                                |) in
                               let~ _ : Ty.tuple [] :=
                                 M.match_operator (|
                                   Ty.tuple [],
-                                  M.alloc (|
-                                    Ty.path "revm_interpreter::gas::MemoryExtensionResult",
-                                    M.call_closure (|
-                                      Ty.path "revm_interpreter::gas::MemoryExtensionResult",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_memory_expansion",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
-                                                []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  impl_InterpreterTypes
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (| words_num |)
-                                      ]
-                                    |)
-                                  |),
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let _ :=
-                                          M.is_struct_tuple (|
-                                            γ,
-                                            "revm_interpreter::gas::MemoryExtensionResult::Extended"
-                                          |) in
-                                        M.read (|
-                                          let~ _ : Ty.path "bool" :=
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
                                             M.call_closure (|
                                               Ty.path "bool",
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::MemoryTrait",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  impl_InterpreterTypes
-                                                  "Memory",
-                                                [],
-                                                [],
-                                                "resize",
-                                                [],
-                                                []
-                                              |),
+                                              UnOp.not,
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "memory"
-                                                  |)
-                                                |);
                                                 M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.mul,
+                                                  Ty.path "bool",
+                                                  M.get_function (|
+                                                    "revm_interpreter::interpreter::shared_memory::resize_memory",
+                                                    [],
+                                                    [
+                                                      Ty.associated_in_trait
+                                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                        []
+                                                        []
+                                                        impl_InterpreterTypes
+                                                        "Memory"
+                                                    ]
+                                                  |),
                                                   [
-                                                    M.read (| words_num |);
-                                                    Value.Integer IntegerKind.Usize 32
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| interpreter |) |),
+                                                            "revm_interpreter::interpreter::Interpreter",
+                                                            "gas"
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |);
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| interpreter |) |),
+                                                            "revm_interpreter::interpreter::Interpreter",
+                                                            "memory"
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |);
+                                                    M.read (| offset |);
+                                                    M.read (| len |)
                                                   ]
                                                 |)
                                               ]
-                                            |) in
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let _ :=
-                                          M.is_struct_tuple (|
-                                            γ,
-                                            "revm_interpreter::gas::MemoryExtensionResult::OutOfGas"
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
                                           |) in
                                         M.never_to_any (|
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
                                               M.call_closure (|
                                                 Ty.tuple [],
-                                                M.get_trait_method (|
-                                                  "revm_interpreter::interpreter_types::LoopControl",
-                                                  Ty.associated_in_trait
-                                                    "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "revm_interpreter::interpreter::Interpreter")
                                                     []
-                                                    []
-                                                    impl_InterpreterTypes
-                                                    "Control",
-                                                  [],
-                                                  [],
-                                                  "set_instruction_result",
+                                                    [ impl_InterpreterTypes ],
+                                                  "halt_memory_oog",
                                                   [],
                                                   []
                                                 |),
                                                 [
                                                   M.borrow (|
                                                     Pointer.Kind.MutRef,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| interpreter |) |),
-                                                      "revm_interpreter::interpreter::Interpreter",
-                                                      "control"
-                                                    |)
-                                                  |);
-                                                  Value.StructTuple
-                                                    "revm_interpreter::instruction_result::InstructionResult::MemoryOOG"
-                                                    []
-                                                    []
-                                                    []
+                                                    M.deref (| M.read (| interpreter |) |)
+                                                  |)
                                                 ]
                                               |) in
                                             M.return_ (|
@@ -1499,14 +1340,7 @@ Module instructions.
                                             |)
                                           |)
                                         |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let _ :=
-                                          M.is_struct_tuple (|
-                                            γ,
-                                            "revm_interpreter::gas::MemoryExtensionResult::Same"
-                                          |) in
-                                        Value.Tuple []))
+                                    fun γ => ltac:(M.monadic (Value.Tuple []))
                                   ]
                                 |) in
                               offset
@@ -1556,97 +1390,128 @@ Module instructions.
       Global Typeclasses Opaque resize_memory.
       
       (*
-      pub fn calc_call_gas(
-          interpreter: &mut Interpreter<impl InterpreterTypes>,
-          account_load: AccountLoad,
-          has_transfer: bool,
-          local_gas_limit: u64,
-      ) -> Option<u64> {
-          let call_cost = gas::call_cost(
-              interpreter.runtime_flag.spec_id(),
-              has_transfer,
-              account_load,
-          );
-          gas!(interpreter, call_cost, None);
+      pub fn load_acc_and_calc_gas<H: Host + ?Sized>(
+          context: &mut InstructionContext<'_, H, impl InterpreterTypes>,
+          to: Address,
+          transfers_value: bool,
+          create_empty_account: bool,
+          stack_gas_limit: u64,
+      ) -> Option<(u64, Bytecode, B256)> {
+          let spec = context.interpreter.runtime_flag.spec_id();
+          // calculate static gas first. For berlin hardfork it will take warm gas.
+          let static_gas = calc_call_static_gas(spec, transfers_value);
+          gas!(context.interpreter, static_gas, None);
+      
+          // load account delegated and deduct dynamic gas.
+          let (gas, bytecode, code_hash) =
+              load_account_delegated_handle_error(context, to, transfers_value, create_empty_account)?;
+          let interpreter = &mut context.interpreter;
+      
+          // deduct dynamic gas.
+          gas!(interpreter, gas, None);
       
           // EIP-150: Gas cost changes for IO-heavy operations
-          let gas_limit = if interpreter.runtime_flag.spec_id().is_enabled_in(TANGERINE) {
+          let mut gas_limit = if interpreter.runtime_flag.spec_id().is_enabled_in(TANGERINE) {
               // Take l64 part of gas_limit
-              min(
-                  interpreter.control.gas().remaining_63_of_64_parts(),
-                  local_gas_limit,
-              )
+              min(interpreter.gas.remaining_63_of_64_parts(), stack_gas_limit)
           } else {
-              local_gas_limit
+              stack_gas_limit
           };
       
-          Some(gas_limit)
+          gas!(interpreter, gas_limit, None);
+          // Add call stipend if there is value to be transferred.
+          if transfers_value {
+              gas_limit = gas_limit.saturating_add(gas::CALL_STIPEND);
+          }
+      
+          Some((gas_limit, bytecode, code_hash))
       }
       *)
-      Definition calc_call_gas (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition load_acc_and_calc_gas (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [],
-            [ impl_InterpreterTypes ],
-            [ interpreter; account_load; has_transfer; local_gas_limit ] =>
+            [ H; impl_InterpreterTypes ],
+            [ context; to; transfers_value; create_empty_account; stack_gas_limit ] =>
           ltac:(M.monadic
-            (let interpreter :=
+            (let context :=
               M.alloc (|
                 Ty.apply
                   (Ty.path "&mut")
                   []
                   [
                     Ty.apply
-                      (Ty.path "revm_interpreter::interpreter::Interpreter")
+                      (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                       []
-                      [ impl_InterpreterTypes ]
+                      [ H; impl_InterpreterTypes ]
                   ],
-                interpreter
+                context
               |) in
-            let account_load :=
-              M.alloc (|
-                Ty.path "revm_context_interface::journaled_state::AccountLoad",
-                account_load
-              |) in
-            let has_transfer := M.alloc (| Ty.path "bool", has_transfer |) in
-            let local_gas_limit := M.alloc (| Ty.path "u64", local_gas_limit |) in
-            M.catch_return (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ]) (|
+            let to := M.alloc (| Ty.path "alloy_primitives::bits::address::Address", to |) in
+            let transfers_value := M.alloc (| Ty.path "bool", transfers_value |) in
+            let create_empty_account := M.alloc (| Ty.path "bool", create_empty_account |) in
+            let stack_gas_limit := M.alloc (| Ty.path "u64", stack_gas_limit |) in
+            M.catch_return
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.tuple
+                    [
+                      Ty.path "u64";
+                      Ty.path "revm_bytecode::bytecode::Bytecode";
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        []
+                    ]
+                ]) (|
               ltac:(M.monadic
                 (M.read (|
-                  let~ call_cost : Ty.path "u64" :=
+                  let~ spec : Ty.path "revm_primitives::hardfork::SpecId" :=
+                    M.call_closure (|
+                      Ty.path "revm_primitives::hardfork::SpecId",
+                      M.get_trait_method (|
+                        "revm_interpreter::interpreter_types::RuntimeFlag",
+                        Ty.associated_in_trait
+                          "revm_interpreter::interpreter_types::InterpreterTypes"
+                          []
+                          []
+                          impl_InterpreterTypes
+                          "RuntimeFlag",
+                        [],
+                        [],
+                        "spec_id",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (|
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| context |) |),
+                                  "revm_interpreter::instruction_context::InstructionContext",
+                                  "interpreter"
+                                |)
+                              |)
+                            |),
+                            "revm_interpreter::interpreter::Interpreter",
+                            "runtime_flag"
+                          |)
+                        |)
+                      ]
+                    |) in
+                  let~ static_gas : Ty.path "u64" :=
                     M.call_closure (|
                       Ty.path "u64",
-                      M.get_function (| "revm_interpreter::gas::calc::call_cost", [], [] |),
-                      [
-                        M.call_closure (|
-                          Ty.path "revm_specification::hardfork::SpecId",
-                          M.get_trait_method (|
-                            "revm_interpreter::interpreter_types::RuntimeFlag",
-                            Ty.associated_in_trait
-                              "revm_interpreter::interpreter_types::InterpreterTypes"
-                              []
-                              []
-                              impl_InterpreterTypes
-                              "RuntimeFlag",
-                            [],
-                            [],
-                            "spec_id",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| interpreter |) |),
-                                "revm_interpreter::interpreter::Interpreter",
-                                "runtime_flag"
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.read (| has_transfer |);
-                        M.read (| account_load |)
-                      ]
+                      M.get_function (|
+                        "revm_interpreter::gas::calc::calc_call_static_gas",
+                        [],
+                        []
+                      |),
+                      [ M.read (| spec |); M.read (| transfers_value |) ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.match_operator (|
@@ -1673,40 +1538,21 @@ Module instructions.
                                       [
                                         M.borrow (|
                                           Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
-                                                []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  impl_InterpreterTypes
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| context |) |),
+                                                  "revm_interpreter::instruction_context::InstructionContext",
+                                                  "interpreter"
                                                 |)
-                                              ]
-                                            |)
+                                              |)
+                                            |),
+                                            "revm_interpreter::interpreter::Interpreter",
+                                            "gas"
                                           |)
                                         |);
-                                        M.read (| call_cost |)
+                                        M.read (| static_gas |)
                                       ]
                                     |)
                                   ]
@@ -1719,41 +1565,45 @@ Module instructions.
                                 let~ _ : Ty.tuple [] :=
                                   M.call_closure (|
                                     Ty.tuple [],
-                                    M.get_trait_method (|
-                                      "revm_interpreter::interpreter_types::LoopControl",
-                                      Ty.associated_in_trait
-                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "revm_interpreter::interpreter::Interpreter")
                                         []
-                                        []
-                                        impl_InterpreterTypes
-                                        "Control",
-                                      [],
-                                      [],
-                                      "set_instruction_result",
+                                        [ impl_InterpreterTypes ],
+                                      "halt_oog",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
                                         Pointer.Kind.MutRef,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| interpreter |) |),
-                                          "revm_interpreter::interpreter::Interpreter",
-                                          "control"
+                                        M.deref (|
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| context |) |),
+                                              "revm_interpreter::instruction_context::InstructionContext",
+                                              "interpreter"
+                                            |)
+                                          |)
                                         |)
-                                      |);
-                                      Value.StructTuple
-                                        "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                        []
-                                        []
-                                        []
+                                      |)
                                     ]
                                   |) in
                                 M.return_ (|
                                   Value.StructTuple
                                     "core::option::Option::None"
                                     []
-                                    [ Ty.path "u64" ]
+                                    [
+                                      Ty.tuple
+                                        [
+                                          Ty.path "u64";
+                                          Ty.path "revm_bytecode::bytecode::Bytecode";
+                                          Ty.apply
+                                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            []
+                                        ]
+                                    ]
                                     []
                                 |)
                               |)
@@ -1761,9 +1611,2138 @@ Module instructions.
                         fun γ => ltac:(M.monadic (Value.Tuple []))
                       ]
                     |) in
-                  let~ gas_limit : Ty.path "u64" :=
+                  M.alloc (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.path "u64";
+                            Ty.path "revm_bytecode::bytecode::Bytecode";
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          ]
+                      ],
                     M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.tuple
+                            [
+                              Ty.path "u64";
+                              Ty.path "revm_bytecode::bytecode::Bytecode";
+                              Ty.apply
+                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                []
+                            ]
+                        ],
+                      M.alloc (|
+                        Ty.tuple
+                          [
+                            Ty.path "u64";
+                            Ty.path "revm_bytecode::bytecode::Bytecode";
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          ],
+                        M.match_operator (|
+                          Ty.tuple
+                            [
+                              Ty.path "u64";
+                              Ty.path "revm_bytecode::bytecode::Bytecode";
+                              Ty.apply
+                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                []
+                            ],
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "core::ops::control_flow::ControlFlow")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "core::convert::Infallible" ];
+                                Ty.tuple
+                                  [
+                                    Ty.path "u64";
+                                    Ty.path "revm_bytecode::bytecode::Bytecode";
+                                    Ty.apply
+                                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      []
+                                  ]
+                              ],
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::ops::control_flow::ControlFlow")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "core::convert::Infallible" ];
+                                  Ty.tuple
+                                    [
+                                      Ty.path "u64";
+                                      Ty.path "revm_bytecode::bytecode::Bytecode";
+                                      Ty.apply
+                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        []
+                                    ]
+                                ],
+                              M.get_trait_method (|
+                                "core::ops::try_trait::Try",
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.tuple
+                                      [
+                                        Ty.path "u64";
+                                        Ty.path "revm_bytecode::bytecode::Bytecode";
+                                        Ty.apply
+                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                          []
+                                      ]
+                                  ],
+                                [],
+                                [],
+                                "branch",
+                                [],
+                                []
+                              |),
+                              [
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.tuple
+                                        [
+                                          Ty.path "u64";
+                                          Ty.path "revm_bytecode::bytecode::Bytecode";
+                                          Ty.apply
+                                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            []
+                                        ]
+                                    ],
+                                  M.get_function (|
+                                    "revm_interpreter::instructions::contract::call_helpers::load_account_delegated_handle_error",
+                                    [],
+                                    [ H; impl_InterpreterTypes ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| context |) |)
+                                    |);
+                                    M.read (| to |);
+                                    M.read (| transfers_value |);
+                                    M.read (| create_empty_account |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ0_0 :=
+                                  M.SubPointer.get_struct_tuple_field (|
+                                    γ,
+                                    "core::ops::control_flow::ControlFlow::Break",
+                                    0
+                                  |) in
+                                let residual :=
+                                  M.copy (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "core::convert::Infallible" ],
+                                    γ0_0
+                                  |) in
+                                M.never_to_any (|
+                                  M.read (|
+                                    M.return_ (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.tuple
+                                              [
+                                                Ty.path "u64";
+                                                Ty.path "revm_bytecode::bytecode::Bytecode";
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloy_primitives::bits::fixed::FixedBytes")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  []
+                                              ]
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::FromResidual",
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [
+                                              Ty.tuple
+                                                [
+                                                  Ty.path "u64";
+                                                  Ty.path "revm_bytecode::bytecode::Bytecode";
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloy_primitives::bits::fixed::FixedBytes")
+                                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                                    []
+                                                ]
+                                            ],
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::convert::Infallible" ]
+                                          ],
+                                          "from_residual",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.read (| residual |) ]
+                                      |)
+                                    |)
+                                  |)
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ0_0 :=
+                                  M.SubPointer.get_struct_tuple_field (|
+                                    γ,
+                                    "core::ops::control_flow::ControlFlow::Continue",
+                                    0
+                                  |) in
+                                let val :=
+                                  M.copy (|
+                                    Ty.tuple
+                                      [
+                                        Ty.path "u64";
+                                        Ty.path "revm_bytecode::bytecode::Bytecode";
+                                        Ty.apply
+                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                          []
+                                      ],
+                                    γ0_0
+                                  |) in
+                                M.read (| val |)))
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                            let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                            let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
+                            let gas := M.copy (| Ty.path "u64", γ0_0 |) in
+                            let bytecode :=
+                              M.copy (| Ty.path "revm_bytecode::bytecode::Bytecode", γ0_1 |) in
+                            let code_hash :=
+                              M.copy (|
+                                Ty.apply
+                                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                  [],
+                                γ0_2
+                              |) in
+                            M.read (|
+                              let~ interpreter :
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                            []
+                                            [ impl_InterpreterTypes ]
+                                        ]
+                                    ] :=
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| context |) |),
+                                    "revm_interpreter::instruction_context::InstructionContext",
+                                    "interpreter"
+                                  |)
+                                |) in
+                              let~ _ : Ty.tuple [] :=
+                                M.match_operator (|
+                                  Ty.tuple [],
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              UnOp.not,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  M.get_associated_function (|
+                                                    Ty.path "revm_interpreter::gas::Gas",
+                                                    "record_cost",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (|
+                                                          M.read (|
+                                                            M.deref (| M.read (| interpreter |) |)
+                                                          |)
+                                                        |),
+                                                        "revm_interpreter::interpreter::Interpreter",
+                                                        "gas"
+                                                      |)
+                                                    |);
+                                                    M.read (| gas |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.never_to_any (|
+                                          M.read (|
+                                            let~ _ : Ty.tuple [] :=
+                                              M.call_closure (|
+                                                Ty.tuple [],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "revm_interpreter::interpreter::Interpreter")
+                                                    []
+                                                    [ impl_InterpreterTypes ],
+                                                  "halt_oog",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.read (|
+                                                        M.deref (| M.read (| interpreter |) |)
+                                                      |)
+                                                    |)
+                                                  |)
+                                                ]
+                                              |) in
+                                            M.return_ (|
+                                              Value.StructTuple
+                                                "core::option::Option::None"
+                                                []
+                                                [
+                                                  Ty.tuple
+                                                    [
+                                                      Ty.path "u64";
+                                                      Ty.path "revm_bytecode::bytecode::Bytecode";
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloy_primitives::bits::fixed::FixedBytes")
+                                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                                        []
+                                                    ]
+                                                ]
+                                                []
+                                            |)
+                                          |)
+                                        |)));
+                                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                                  ]
+                                |) in
+                              let~ gas_limit : Ty.path "u64" :=
+                                M.match_operator (|
+                                  Ty.path "u64",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "revm_primitives::hardfork::SpecId",
+                                                "is_enabled_in",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "revm_primitives::hardfork::SpecId",
+                                                  M.get_trait_method (|
+                                                    "revm_interpreter::interpreter_types::RuntimeFlag",
+                                                    Ty.associated_in_trait
+                                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                      []
+                                                      []
+                                                      impl_InterpreterTypes
+                                                      "RuntimeFlag",
+                                                    [],
+                                                    [],
+                                                    "spec_id",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (|
+                                                          M.read (|
+                                                            M.deref (| M.read (| interpreter |) |)
+                                                          |)
+                                                        |),
+                                                        "revm_interpreter::interpreter::Interpreter",
+                                                        "runtime_flag"
+                                                      |)
+                                                    |)
+                                                  ]
+                                                |);
+                                                Value.StructTuple
+                                                  "revm_primitives::hardfork::SpecId::TANGERINE"
+                                                  []
+                                                  []
+                                                  []
+                                              ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          M.get_function (|
+                                            "core::cmp::min",
+                                            [],
+                                            [ Ty.path "u64" ]
+                                          |),
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "u64",
+                                              M.get_associated_function (|
+                                                Ty.path "revm_interpreter::gas::Gas",
+                                                "remaining_63_of_64_parts",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (|
+                                                      M.read (|
+                                                        M.deref (| M.read (| interpreter |) |)
+                                                      |)
+                                                    |),
+                                                    "revm_interpreter::interpreter::Interpreter",
+                                                    "gas"
+                                                  |)
+                                                |)
+                                              ]
+                                            |);
+                                            M.read (| stack_gas_limit |)
+                                          ]
+                                        |)));
+                                    fun γ => ltac:(M.monadic (M.read (| stack_gas_limit |)))
+                                  ]
+                                |) in
+                              let~ _ : Ty.tuple [] :=
+                                M.match_operator (|
+                                  Ty.tuple [],
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              UnOp.not,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  M.get_associated_function (|
+                                                    Ty.path "revm_interpreter::gas::Gas",
+                                                    "record_cost",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (|
+                                                          M.read (|
+                                                            M.deref (| M.read (| interpreter |) |)
+                                                          |)
+                                                        |),
+                                                        "revm_interpreter::interpreter::Interpreter",
+                                                        "gas"
+                                                      |)
+                                                    |);
+                                                    M.read (| gas_limit |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.never_to_any (|
+                                          M.read (|
+                                            let~ _ : Ty.tuple [] :=
+                                              M.call_closure (|
+                                                Ty.tuple [],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "revm_interpreter::interpreter::Interpreter")
+                                                    []
+                                                    [ impl_InterpreterTypes ],
+                                                  "halt_oog",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.read (|
+                                                        M.deref (| M.read (| interpreter |) |)
+                                                      |)
+                                                    |)
+                                                  |)
+                                                ]
+                                              |) in
+                                            M.return_ (|
+                                              Value.StructTuple
+                                                "core::option::Option::None"
+                                                []
+                                                [
+                                                  Ty.tuple
+                                                    [
+                                                      Ty.path "u64";
+                                                      Ty.path "revm_bytecode::bytecode::Bytecode";
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloy_primitives::bits::fixed::FixedBytes")
+                                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                                        []
+                                                    ]
+                                                ]
+                                                []
+                                            |)
+                                          |)
+                                        |)));
+                                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                                  ]
+                                |) in
+                              let~ _ : Ty.tuple [] :=
+                                M.match_operator (|
+                                  Ty.tuple [],
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ := transfers_value in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (|
+                                          let~ _ : Ty.tuple [] :=
+                                            M.write (|
+                                              gas_limit,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                M.get_associated_function (|
+                                                  Ty.path "u64",
+                                                  "saturating_add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.read (| gas_limit |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_interpreter::gas::constants::CALL_STIPEND",
+                                                      Ty.path "u64"
+                                                    |)
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
+                                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                        |)));
+                                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                                  ]
+                                |) in
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.tuple
+                                      [
+                                        Ty.path "u64";
+                                        Ty.path "revm_bytecode::bytecode::Bytecode";
+                                        Ty.apply
+                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                          []
+                                      ]
+                                  ],
+                                Value.StructTuple
+                                  "core::option::Option::Some"
+                                  []
+                                  [
+                                    Ty.tuple
+                                      [
+                                        Ty.path "u64";
+                                        Ty.path "revm_bytecode::bytecode::Bytecode";
+                                        Ty.apply
+                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                          []
+                                      ]
+                                  ]
+                                  [
+                                    Value.Tuple
+                                      [
+                                        M.read (| gas_limit |);
+                                        M.read (| bytecode |);
+                                        M.read (| code_hash |)
+                                      ]
+                                  ]
+                              |)
+                            |)))
+                      ]
+                    |)
+                  |)
+                |)))
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_load_acc_and_calc_gas :
+        M.IsFunction.C
+          "revm_interpreter::instructions::contract::call_helpers::load_acc_and_calc_gas"
+          load_acc_and_calc_gas.
+      Admitted.
+      Global Typeclasses Opaque load_acc_and_calc_gas.
+      
+      (*
+      pub fn load_account_delegated_handle_error<H: Host + ?Sized>(
+          context: &mut InstructionContext<'_, H, impl InterpreterTypes>,
+          to: Address,
+          transfers_value: bool,
+          create_empty_account: bool,
+      ) -> Option<(u64, Bytecode, B256)> {
+          // move this to static gas.
+          let remaining_gas = context.interpreter.gas.remaining();
+          match load_account_delegated(
+              context.host,
+              context.interpreter.runtime_flag.spec_id(),
+              remaining_gas,
+              to,
+              transfers_value,
+              create_empty_account,
+          ) {
+              Ok(out) => return Some(out),
+              Err(LoadError::ColdLoadSkipped) => {
+                  context.interpreter.halt_oog();
+              }
+              Err(LoadError::DBError) => {
+                  context.interpreter.halt_fatal();
+              }
+          }
+          None
+      }
+      *)
+      Definition load_account_delegated_handle_error
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        match ε, τ, α with
+        | [],
+            [ H; impl_InterpreterTypes ],
+            [ context; to; transfers_value; create_empty_account ] =>
+          ltac:(M.monadic
+            (let context :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                      []
+                      [ H; impl_InterpreterTypes ]
+                  ],
+                context
+              |) in
+            let to := M.alloc (| Ty.path "alloy_primitives::bits::address::Address", to |) in
+            let transfers_value := M.alloc (| Ty.path "bool", transfers_value |) in
+            let create_empty_account := M.alloc (| Ty.path "bool", create_empty_account |) in
+            M.catch_return
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.tuple
+                    [
+                      Ty.path "u64";
+                      Ty.path "revm_bytecode::bytecode::Bytecode";
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        []
+                    ]
+                ]) (|
+              ltac:(M.monadic
+                (M.read (|
+                  let~ remaining_gas : Ty.path "u64" :=
+                    M.call_closure (|
                       Ty.path "u64",
+                      M.get_associated_function (|
+                        Ty.path "revm_interpreter::gas::Gas",
+                        "remaining",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (|
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| context |) |),
+                                  "revm_interpreter::instruction_context::InstructionContext",
+                                  "interpreter"
+                                |)
+                              |)
+                            |),
+                            "revm_interpreter::interpreter::Interpreter",
+                            "gas"
+                          |)
+                        |)
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple
+                              [
+                                Ty.path "u64";
+                                Ty.path "revm_bytecode::bytecode::Bytecode";
+                                Ty.apply
+                                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                  []
+                              ];
+                            Ty.path "revm_context_interface::host::LoadError"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.path "u64";
+                                  Ty.path "revm_bytecode::bytecode::Bytecode";
+                                  Ty.apply
+                                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                    []
+                                ];
+                              Ty.path "revm_context_interface::host::LoadError"
+                            ],
+                          M.get_function (|
+                            "revm_interpreter::instructions::contract::call_helpers::load_account_delegated",
+                            [],
+                            [ H ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| context |) |),
+                                    "revm_interpreter::instruction_context::InstructionContext",
+                                    "host"
+                                  |)
+                                |)
+                              |)
+                            |);
+                            M.call_closure (|
+                              Ty.path "revm_primitives::hardfork::SpecId",
+                              M.get_trait_method (|
+                                "revm_interpreter::interpreter_types::RuntimeFlag",
+                                Ty.associated_in_trait
+                                  "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  []
+                                  []
+                                  impl_InterpreterTypes
+                                  "RuntimeFlag",
+                                [],
+                                [],
+                                "spec_id",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| context |) |),
+                                          "revm_interpreter::instruction_context::InstructionContext",
+                                          "interpreter"
+                                        |)
+                                      |)
+                                    |),
+                                    "revm_interpreter::interpreter::Interpreter",
+                                    "runtime_flag"
+                                  |)
+                                |)
+                              ]
+                            |);
+                            M.read (| remaining_gas |);
+                            M.read (| to |);
+                            M.read (| transfers_value |);
+                            M.read (| create_empty_account |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let out :=
+                              M.copy (|
+                                Ty.tuple
+                                  [
+                                    Ty.path "u64";
+                                    Ty.path "revm_bytecode::bytecode::Bytecode";
+                                    Ty.apply
+                                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      []
+                                  ],
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::option::Option::Some"
+                                    []
+                                    [
+                                      Ty.tuple
+                                        [
+                                          Ty.path "u64";
+                                          Ty.path "revm_bytecode::bytecode::Bytecode";
+                                          Ty.apply
+                                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            []
+                                        ]
+                                    ]
+                                    [ M.read (| out |) ]
+                                |)
+                              |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let _ :=
+                              M.is_struct_tuple (|
+                                γ0_0,
+                                "revm_context_interface::host::LoadError::ColdLoadSkipped"
+                              |) in
+                            M.read (|
+                              let~ _ : Ty.tuple [] :=
+                                M.call_closure (|
+                                  Ty.tuple [],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                      []
+                                      [ impl_InterpreterTypes ],
+                                    "halt_oog",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| context |) |),
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
+                                      |)
+                                    |)
+                                  ]
+                                |) in
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let _ :=
+                              M.is_struct_tuple (|
+                                γ0_0,
+                                "revm_context_interface::host::LoadError::DBError"
+                              |) in
+                            M.read (|
+                              let~ _ : Ty.tuple [] :=
+                                M.call_closure (|
+                                  Ty.tuple [],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                      []
+                                      [ impl_InterpreterTypes ],
+                                    "halt_fatal",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| context |) |),
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
+                                      |)
+                                    |)
+                                  ]
+                                |) in
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                            |)))
+                      ]
+                    |) in
+                  M.alloc (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.path "u64";
+                            Ty.path "revm_bytecode::bytecode::Bytecode";
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          ]
+                      ],
+                    Value.StructTuple
+                      "core::option::Option::None"
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.path "u64";
+                            Ty.path "revm_bytecode::bytecode::Bytecode";
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          ]
+                      ]
+                      []
+                  |)
+                |)))
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_load_account_delegated_handle_error :
+        M.IsFunction.C
+          "revm_interpreter::instructions::contract::call_helpers::load_account_delegated_handle_error"
+          load_account_delegated_handle_error.
+      Admitted.
+      Global Typeclasses Opaque load_account_delegated_handle_error.
+      
+      (*
+      pub fn load_account_delegated<H: Host + ?Sized>(
+          host: &mut H,
+          spec: SpecId,
+          remaining_gas: u64,
+          address: Address,
+          transfers_value: bool,
+          create_empty_account: bool,
+      ) -> Result<(u64, Bytecode, B256), LoadError> {
+          let mut cost = 0;
+          let is_berlin = spec.is_enabled_in(SpecId::BERLIN);
+          let is_spurious_dragon = spec.is_enabled_in(SpecId::SPURIOUS_DRAGON);
+      
+          let skip_cold_load = is_berlin && remaining_gas < COLD_ACCOUNT_ACCESS_COST_ADDITIONAL;
+          let account = host.load_account_info_skip_cold_load(address, true, skip_cold_load)?;
+          if is_berlin && account.is_cold {
+              cost += COLD_ACCOUNT_ACCESS_COST_ADDITIONAL;
+          }
+          let mut bytecode = account.code.clone().unwrap_or_default();
+          let mut code_hash = account.code_hash();
+          // New account cost, as account is empty there is no delegated account and we can return early.
+          if create_empty_account && account.is_empty {
+              cost += new_account_cost(is_spurious_dragon, transfers_value);
+              return Ok((cost, bytecode, code_hash));
+          }
+      
+          // load delegate code if account is EIP-7702
+          if let Some(Bytecode::Eip7702(code)) = &account.code {
+              // EIP-7702 is enabled after berlin hardfork.
+              cost += WARM_STORAGE_READ_COST;
+              if cost > remaining_gas {
+                  return Err(LoadError::ColdLoadSkipped);
+              }
+              let address = code.address();
+      
+              // skip cold load if there is enough gas to cover the cost.
+              let skip_cold_load = remaining_gas < cost + COLD_ACCOUNT_ACCESS_COST_ADDITIONAL;
+              let delegate_account =
+                  host.load_account_info_skip_cold_load(address, true, skip_cold_load)?;
+      
+              if delegate_account.is_cold {
+                  cost += COLD_ACCOUNT_ACCESS_COST_ADDITIONAL;
+              }
+              bytecode = delegate_account.code.clone().unwrap_or_default();
+              code_hash = delegate_account.code_hash();
+          }
+      
+          Ok((cost, bytecode, code_hash))
+      }
+      *)
+      Definition load_account_delegated (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [],
+            [ H ],
+            [ host; spec; remaining_gas; address; transfers_value; create_empty_account ] =>
+          ltac:(M.monadic
+            (let host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], host |) in
+            let spec := M.alloc (| Ty.path "revm_primitives::hardfork::SpecId", spec |) in
+            let remaining_gas := M.alloc (| Ty.path "u64", remaining_gas |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let transfers_value := M.alloc (| Ty.path "bool", transfers_value |) in
+            let create_empty_account := M.alloc (| Ty.path "bool", create_empty_account |) in
+            M.catch_return
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.tuple
+                    [
+                      Ty.path "u64";
+                      Ty.path "revm_bytecode::bytecode::Bytecode";
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        []
+                    ];
+                  Ty.path "revm_context_interface::host::LoadError"
+                ]) (|
+              ltac:(M.monadic
+                (M.read (|
+                  let~ cost : Ty.path "u64" := Value.Integer IntegerKind.U64 0 in
+                  let~ is_berlin : Ty.path "bool" :=
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_associated_function (|
+                        Ty.path "revm_primitives::hardfork::SpecId",
+                        "is_enabled_in",
+                        [],
+                        []
+                      |),
+                      [
+                        M.read (| spec |);
+                        Value.StructTuple "revm_primitives::hardfork::SpecId::BERLIN" [] [] []
+                      ]
+                    |) in
+                  let~ is_spurious_dragon : Ty.path "bool" :=
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_associated_function (|
+                        Ty.path "revm_primitives::hardfork::SpecId",
+                        "is_enabled_in",
+                        [],
+                        []
+                      |),
+                      [
+                        M.read (| spec |);
+                        Value.StructTuple
+                          "revm_primitives::hardfork::SpecId::SPURIOUS_DRAGON"
+                          []
+                          []
+                          []
+                      ]
+                    |) in
+                  let~ skip_cold_load : Ty.path "bool" :=
+                    LogicalOp.and (|
+                      M.read (| is_berlin |),
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.lt,
+                          [
+                            M.read (| remaining_gas |);
+                            M.read (|
+                              get_constant (|
+                                "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL",
+                                Ty.path "u64"
+                              |)
+                            |)
+                          ]
+                        |)))
+                    |) in
+                  let~ account :
+                      Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" :=
+                    M.match_operator (|
+                      Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "core::convert::Infallible";
+                                Ty.path "revm_context_interface::host::LoadError"
+                              ];
+                            Ty.path "revm_context_interface::journaled_state::AccountInfoLoad"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::ops::control_flow::ControlFlow")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::convert::Infallible";
+                                  Ty.path "revm_context_interface::host::LoadError"
+                                ];
+                              Ty.path "revm_context_interface::journaled_state::AccountInfoLoad"
+                            ],
+                          M.get_trait_method (|
+                            "core::ops::try_trait::Try",
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+                                Ty.path "revm_context_interface::host::LoadError"
+                              ],
+                            [],
+                            [],
+                            "branch",
+                            [],
+                            []
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path
+                                    "revm_context_interface::journaled_state::AccountInfoLoad";
+                                  Ty.path "revm_context_interface::host::LoadError"
+                                ],
+                              M.get_trait_method (|
+                                "revm_context_interface::host::Host",
+                                H,
+                                [],
+                                [],
+                                "load_account_info_skip_cold_load",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| host |) |) |);
+                                M.read (| address |);
+                                Value.Bool true;
+                                M.read (| skip_cold_load |)
+                              ]
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::ops::control_flow::ControlFlow::Break",
+                                0
+                              |) in
+                            let residual :=
+                              M.copy (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "core::convert::Infallible";
+                                    Ty.path "revm_context_interface::host::LoadError"
+                                  ],
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.tuple
+                                          [
+                                            Ty.path "u64";
+                                            Ty.path "revm_bytecode::bytecode::Bytecode";
+                                            Ty.apply
+                                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                              [ Value.Integer IntegerKind.Usize 32 ]
+                                              []
+                                          ];
+                                        Ty.path "revm_context_interface::host::LoadError"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::FromResidual",
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.tuple
+                                            [
+                                              Ty.path "u64";
+                                              Ty.path "revm_bytecode::bytecode::Bytecode";
+                                              Ty.apply
+                                                (Ty.path
+                                                  "alloy_primitives::bits::fixed::FixedBytes")
+                                                [ Value.Integer IntegerKind.Usize 32 ]
+                                                []
+                                            ];
+                                          Ty.path "revm_context_interface::host::LoadError"
+                                        ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path "revm_context_interface::host::LoadError"
+                                          ]
+                                      ],
+                                      "from_residual",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| residual |) ]
+                                  |)
+                                |)
+                              |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::ops::control_flow::ControlFlow::Continue",
+                                0
+                              |) in
+                            let val :=
+                              M.copy (|
+                                Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
+                                γ0_0
+                              |) in
+                            M.read (| val |)))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ := is_berlin in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            let γ :=
+                              M.SubPointer.get_struct_record_field (|
+                                account,
+                                "revm_context_interface::journaled_state::AccountInfoLoad",
+                                "is_cold"
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            M.read (|
+                              let~ _ : Ty.tuple [] :=
+                                let β := cost in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.add,
+                                    [
+                                      M.read (| β |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                |) in
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                            |)));
+                        fun γ => ltac:(M.monadic (Value.Tuple []))
+                      ]
+                    |) in
+                  let~ bytecode : Ty.path "revm_bytecode::bytecode::Bytecode" :=
+                    M.call_closure (|
+                      Ty.path "revm_bytecode::bytecode::Bytecode",
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "revm_bytecode::bytecode::Bytecode" ],
+                        "unwrap_or_default",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "revm_bytecode::bytecode::Bytecode" ],
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "revm_bytecode::bytecode::Bytecode" ],
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_state::account_info::AccountInfo" ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::Deref",
+                                      Ty.path
+                                        "revm_context_interface::journaled_state::AccountInfoLoad",
+                                      [],
+                                      [],
+                                      "deref",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.borrow (| Pointer.Kind.Ref, account |) ]
+                                  |)
+                                |),
+                                "revm_state::account_info::AccountInfo",
+                                "code"
+                              |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |) in
+                  let~ code_hash :
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [] :=
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [],
+                      M.get_associated_function (|
+                        Ty.path "revm_state::account_info::AccountInfo",
+                        "code_hash",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_state::account_info::AccountInfo" ],
+                              M.get_trait_method (|
+                                "core::ops::deref::Deref",
+                                Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
+                                [],
+                                [],
+                                "deref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, account |) ]
+                            |)
+                          |)
+                        |)
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ := create_empty_account in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            let γ :=
+                              M.SubPointer.get_struct_record_field (|
+                                account,
+                                "revm_context_interface::journaled_state::AccountInfoLoad",
+                                "is_empty"
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            M.never_to_any (|
+                              M.read (|
+                                let~ _ : Ty.tuple [] :=
+                                  let β := cost in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.add,
+                                      [
+                                        M.read (| β |);
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          M.get_function (|
+                                            "revm_interpreter::instructions::contract::call_helpers::new_account_cost",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.read (| is_spurious_dragon |);
+                                            M.read (| transfers_value |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    []
+                                    [
+                                      Ty.tuple
+                                        [
+                                          Ty.path "u64";
+                                          Ty.path "revm_bytecode::bytecode::Bytecode";
+                                          Ty.apply
+                                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            []
+                                        ];
+                                      Ty.path "revm_context_interface::host::LoadError"
+                                    ]
+                                    [
+                                      Value.Tuple
+                                        [
+                                          M.read (| cost |);
+                                          M.read (| bytecode |);
+                                          M.read (| code_hash |)
+                                        ]
+                                    ]
+                                |)
+                              |)
+                            |)));
+                        fun γ => ltac:(M.monadic (Value.Tuple []))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
+                                  ],
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "revm_state::account_info::AccountInfo" ],
+                                        M.get_trait_method (|
+                                          "core::ops::deref::Deref",
+                                          Ty.path
+                                            "revm_context_interface::journaled_state::AccountInfoLoad",
+                                          [],
+                                          [],
+                                          "deref",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.borrow (| Pointer.Kind.Ref, account |) ]
+                                      |)
+                                    |),
+                                    "revm_state::account_info::AccountInfo",
+                                    "code"
+                                  |)
+                                |)
+                              |) in
+                            let γ := M.deref (| M.read (| γ |) |) in
+                            let γ1_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::option::Option::Some",
+                                0
+                              |) in
+                            let γ2_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ1_0,
+                                "revm_bytecode::bytecode::Bytecode::Eip7702",
+                                0
+                              |) in
+                            let code :=
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
+                                γ2_0
+                              |) in
+                            M.read (|
+                              let~ _ : Ty.tuple [] :=
+                                let β := cost in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.add,
+                                    [
+                                      M.read (| β |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::WARM_STORAGE_READ_COST",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                |) in
+                              let~ _ : Ty.tuple [] :=
+                                M.match_operator (|
+                                  Ty.tuple [],
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.gt,
+                                              [ M.read (| cost |); M.read (| remaining_gas |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.never_to_any (|
+                                          M.read (|
+                                            M.return_ (|
+                                              Value.StructTuple
+                                                "core::result::Result::Err"
+                                                []
+                                                [
+                                                  Ty.tuple
+                                                    [
+                                                      Ty.path "u64";
+                                                      Ty.path "revm_bytecode::bytecode::Bytecode";
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloy_primitives::bits::fixed::FixedBytes")
+                                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                                        []
+                                                    ];
+                                                  Ty.path "revm_context_interface::host::LoadError"
+                                                ]
+                                                [
+                                                  Value.StructTuple
+                                                    "revm_context_interface::host::LoadError::ColdLoadSkipped"
+                                                    []
+                                                    []
+                                                    []
+                                                ]
+                                            |)
+                                          |)
+                                        |)));
+                                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                                  ]
+                                |) in
+                              let~ address : Ty.path "alloy_primitives::bits::address::Address" :=
+                                M.call_closure (|
+                                  Ty.path "alloy_primitives::bits::address::Address",
+                                  M.get_associated_function (|
+                                    Ty.path "revm_bytecode::eip7702::Eip7702Bytecode",
+                                    "address",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| code |) |) |)
+                                  ]
+                                |) in
+                              let~ skip_cold_load : Ty.path "bool" :=
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [
+                                    M.read (| remaining_gas |);
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.add,
+                                      [
+                                        M.read (| cost |);
+                                        M.read (|
+                                          get_constant (|
+                                            "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL",
+                                            Ty.path "u64"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |) in
+                              let~ delegate_account :
+                                  Ty.path
+                                    "revm_context_interface::journaled_state::AccountInfoLoad" :=
+                                M.match_operator (|
+                                  Ty.path
+                                    "revm_context_interface::journaled_state::AccountInfoLoad",
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path "revm_context_interface::host::LoadError"
+                                          ];
+                                        Ty.path
+                                          "revm_context_interface::journaled_state::AccountInfoLoad"
+                                      ],
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::ops::control_flow::ControlFlow")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path "revm_context_interface::host::LoadError"
+                                            ];
+                                          Ty.path
+                                            "revm_context_interface::journaled_state::AccountInfoLoad"
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::Try",
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path
+                                              "revm_context_interface::journaled_state::AccountInfoLoad";
+                                            Ty.path "revm_context_interface::host::LoadError"
+                                          ],
+                                        [],
+                                        [],
+                                        "branch",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path
+                                                "revm_context_interface::journaled_state::AccountInfoLoad";
+                                              Ty.path "revm_context_interface::host::LoadError"
+                                            ],
+                                          M.get_trait_method (|
+                                            "revm_context_interface::host::Host",
+                                            H,
+                                            [],
+                                            [],
+                                            "load_account_info_skip_cold_load",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| host |) |)
+                                            |);
+                                            M.read (| address |);
+                                            Value.Bool true;
+                                            M.read (| skip_cold_load |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::ops::control_flow::ControlFlow::Break",
+                                            0
+                                          |) in
+                                        let residual :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.path "revm_context_interface::host::LoadError"
+                                              ],
+                                            γ0_0
+                                          |) in
+                                        M.never_to_any (|
+                                          M.read (|
+                                            M.return_ (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.tuple
+                                                      [
+                                                        Ty.path "u64";
+                                                        Ty.path "revm_bytecode::bytecode::Bytecode";
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloy_primitives::bits::fixed::FixedBytes")
+                                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                                          []
+                                                      ];
+                                                    Ty.path
+                                                      "revm_context_interface::host::LoadError"
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::ops::try_trait::FromResidual",
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.tuple
+                                                        [
+                                                          Ty.path "u64";
+                                                          Ty.path
+                                                            "revm_bytecode::bytecode::Bytecode";
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloy_primitives::bits::fixed::FixedBytes")
+                                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                                            []
+                                                        ];
+                                                      Ty.path
+                                                        "revm_context_interface::host::LoadError"
+                                                    ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path
+                                                          "revm_context_interface::host::LoadError"
+                                                      ]
+                                                  ],
+                                                  "from_residual",
+                                                  [],
+                                                  []
+                                                |),
+                                                [ M.read (| residual |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |)));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::ops::control_flow::ControlFlow::Continue",
+                                            0
+                                          |) in
+                                        let val :=
+                                          M.copy (|
+                                            Ty.path
+                                              "revm_context_interface::journaled_state::AccountInfoLoad",
+                                            γ0_0
+                                          |) in
+                                        M.read (| val |)))
+                                  ]
+                                |) in
+                              let~ _ : Ty.tuple [] :=
+                                M.match_operator (|
+                                  Ty.tuple [],
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.SubPointer.get_struct_record_field (|
+                                            delegate_account,
+                                            "revm_context_interface::journaled_state::AccountInfoLoad",
+                                            "is_cold"
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (|
+                                          let~ _ : Ty.tuple [] :=
+                                            let β := cost in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.add,
+                                                [
+                                                  M.read (| β |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL",
+                                                      Ty.path "u64"
+                                                    |)
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
+                                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                        |)));
+                                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                                  ]
+                                |) in
+                              let~ _ : Ty.tuple [] :=
+                                M.write (|
+                                  bytecode,
+                                  M.call_closure (|
+                                    Ty.path "revm_bytecode::bytecode::Bytecode",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "revm_bytecode::bytecode::Bytecode" ],
+                                      "unwrap_or_default",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "revm_bytecode::bytecode::Bytecode" ],
+                                        M.get_trait_method (|
+                                          "core::clone::Clone",
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "revm_bytecode::bytecode::Bytecode" ],
+                                          [],
+                                          [],
+                                          "clone",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "revm_state::account_info::AccountInfo"
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::deref::Deref",
+                                                    Ty.path
+                                                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                                                    [],
+                                                    [],
+                                                    "deref",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      delegate_account
+                                                    |)
+                                                  ]
+                                                |)
+                                              |),
+                                              "revm_state::account_info::AccountInfo",
+                                              "code"
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
+                              let~ _ : Ty.tuple [] :=
+                                M.write (|
+                                  code_hash,
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [],
+                                    M.get_associated_function (|
+                                      Ty.path "revm_state::account_info::AccountInfo",
+                                      "code_hash",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "revm_state::account_info::AccountInfo" ],
+                                            M.get_trait_method (|
+                                              "core::ops::deref::Deref",
+                                              Ty.path
+                                                "revm_context_interface::journaled_state::AccountInfoLoad",
+                                              [],
+                                              [],
+                                              "deref",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, delegate_account |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                |) in
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                            |)));
+                        fun γ => ltac:(M.monadic (Value.Tuple []))
+                      ]
+                    |) in
+                  M.alloc (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.path "u64";
+                            Ty.path "revm_bytecode::bytecode::Bytecode";
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          ];
+                        Ty.path "revm_context_interface::host::LoadError"
+                      ],
+                    Value.StructTuple
+                      "core::result::Result::Ok"
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.path "u64";
+                            Ty.path "revm_bytecode::bytecode::Bytecode";
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          ];
+                        Ty.path "revm_context_interface::host::LoadError"
+                      ]
+                      [
+                        Value.Tuple
+                          [ M.read (| cost |); M.read (| bytecode |); M.read (| code_hash |) ]
+                      ]
+                  |)
+                |)))
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_load_account_delegated :
+        M.IsFunction.C
+          "revm_interpreter::instructions::contract::call_helpers::load_account_delegated"
+          load_account_delegated.
+      Admitted.
+      Global Typeclasses Opaque load_account_delegated.
+      
+      (*
+      pub fn new_account_cost(is_spurious_dragon: bool, transfers_value: bool) -> u64 {
+          // EIP-161: State trie clearing (invariant-preserving alternative)
+          // Pre-Spurious Dragon: always charge for new account
+          // Post-Spurious Dragon: only charge if value is transferred
+          if !is_spurious_dragon || transfers_value {
+              return NEWACCOUNT;
+          }
+          0
+      }
+      *)
+      Definition new_account_cost (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ is_spurious_dragon; transfers_value ] =>
+          ltac:(M.monadic
+            (let is_spurious_dragon := M.alloc (| Ty.path "bool", is_spurious_dragon |) in
+            let transfers_value := M.alloc (| Ty.path "bool", transfers_value |) in
+            M.catch_return (Ty.path "u64") (|
+              ltac:(M.monadic
+                (M.read (|
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
                       M.alloc (| Ty.tuple [], Value.Tuple [] |),
                       [
                         fun γ =>
@@ -1771,127 +3750,44 @@ Module instructions.
                             (let γ :=
                               M.alloc (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "revm_specification::hardfork::SpecId",
-                                    "is_enabled_in",
-                                    [],
-                                    []
+                                LogicalOp.or (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    UnOp.not,
+                                    [ M.read (| is_spurious_dragon |) ]
                                   |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "revm_specification::hardfork::SpecId",
-                                      M.get_trait_method (|
-                                        "revm_interpreter::interpreter_types::RuntimeFlag",
-                                        Ty.associated_in_trait
-                                          "revm_interpreter::interpreter_types::InterpreterTypes"
-                                          []
-                                          []
-                                          impl_InterpreterTypes
-                                          "RuntimeFlag",
-                                        [],
-                                        [],
-                                        "spec_id",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| interpreter |) |),
-                                            "revm_interpreter::interpreter::Interpreter",
-                                            "runtime_flag"
-                                          |)
-                                        |)
-                                      ]
-                                    |);
-                                    Value.StructTuple
-                                      "revm_specification::hardfork::SpecId::TANGERINE"
-                                      []
-                                      []
-                                      []
-                                  ]
+                                  ltac:(M.monadic (M.read (| transfers_value |)))
                                 |)
                               |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.call_closure (|
-                              Ty.path "u64",
-                              M.get_function (| "core::cmp::min", [], [ Ty.path "u64" ] |),
-                              [
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  M.get_associated_function (|
-                                    Ty.path "revm_interpreter::gas::Gas",
-                                    "remaining_63_of_64_parts",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [ Ty.path "revm_interpreter::gas::Gas" ],
-                                          M.get_trait_method (|
-                                            "revm_interpreter::interpreter_types::LoopControl",
-                                            Ty.associated_in_trait
-                                              "revm_interpreter::interpreter_types::InterpreterTypes"
-                                              []
-                                              []
-                                              impl_InterpreterTypes
-                                              "Control",
-                                            [],
-                                            [],
-                                            "gas",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| interpreter |) |),
-                                                "revm_interpreter::interpreter::Interpreter",
-                                                "control"
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      |)
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  M.read (|
+                                    get_constant (|
+                                      "revm_interpreter::gas::constants::NEWACCOUNT",
+                                      Ty.path "u64"
                                     |)
-                                  ]
-                                |);
-                                M.read (| local_gas_limit |)
-                              ]
+                                  |)
+                                |)
+                              |)
                             |)));
-                        fun γ => ltac:(M.monadic (M.read (| local_gas_limit |)))
+                        fun γ => ltac:(M.monadic (Value.Tuple []))
                       ]
                     |) in
-                  M.alloc (|
-                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "u64" ]
-                      [ M.read (| gas_limit |) ]
-                  |)
+                  M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 0 |)
                 |)))
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance Instance_IsFunction_calc_call_gas :
+      Global Instance Instance_IsFunction_new_account_cost :
         M.IsFunction.C
-          "revm_interpreter::instructions::contract::call_helpers::calc_call_gas"
-          calc_call_gas.
+          "revm_interpreter::instructions::contract::call_helpers::new_account_cost"
+          new_account_cost.
       Admitted.
-      Global Typeclasses Opaque calc_call_gas.
+      Global Typeclasses Opaque new_account_cost.
     End call_helpers.
   End contract.
 End instructions.

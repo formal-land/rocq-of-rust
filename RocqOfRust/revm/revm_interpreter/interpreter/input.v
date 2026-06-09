@@ -11,8 +11,13 @@ Module interpreter.
         fields :=
           [
             ("target_address", Ty.path "alloy_primitives::bits::address::Address");
+            ("bytecode_address",
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.path "alloy_primitives::bits::address::Address" ]);
             ("caller_address", Ty.path "alloy_primitives::bits::address::Address");
-            ("input", Ty.path "alloy_primitives::bytes_::Bytes");
+            ("input", Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput");
             ("call_value",
               Ty.apply
                 (Ty.path "ruint::Uint")
@@ -70,6 +75,40 @@ Module interpreter.
                       |)
                     ]
                   |));
+                ("bytecode_address",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "alloy_primitives::bits::address::Address" ],
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "alloy_primitives::bits::address::Address" ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_interpreter::interpreter::input::InputsImpl",
+                              "bytecode_address"
+                            |)
+                          |)
+                        |)
+                      |)
+                    ]
+                  |));
                 ("caller_address",
                   M.call_closure (|
                     Ty.path "alloy_primitives::bits::address::Address",
@@ -100,10 +139,10 @@ Module interpreter.
                   |));
                 ("input",
                   M.call_closure (|
-                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput",
                     M.get_trait_method (|
                       "core::clone::Clone",
-                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput",
                       [],
                       [],
                       "clone",
@@ -198,7 +237,7 @@ Module interpreter.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (|
                 Ty.path "core::fmt::Formatter",
-                "debug_struct_field4_finish",
+                "debug_struct_field5_finish",
                 [],
                 []
               |),
@@ -225,6 +264,37 @@ Module interpreter.
                             M.deref (| M.read (| self |) |),
                             "revm_interpreter::interpreter::input::InputsImpl",
                             "target_address"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "bytecode_address" |) |) |);
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "alloy_primitives::bits::address::Address" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::input::InputsImpl",
+                            "bytecode_address"
                           |)
                         |)
                       |)
@@ -262,7 +332,10 @@ Module interpreter.
                   Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ])
                     (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                   [
                     M.borrow (|
@@ -377,6 +450,26 @@ Module interpreter.
                     |),
                     []
                   |));
+                ("bytecode_address",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "alloy_primitives::bits::address::Address" ],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "alloy_primitives::bits::address::Address" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |));
                 ("caller_address",
                   M.call_closure (|
                     Ty.path "alloy_primitives::bits::address::Address",
@@ -393,10 +486,10 @@ Module interpreter.
                   |));
                 ("input",
                   M.call_closure (|
-                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput",
                     M.get_trait_method (|
                       "core::default::Default",
-                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput",
                       [],
                       [],
                       "default",
@@ -477,35 +570,76 @@ Module interpreter.
             LogicalOp.and (|
               LogicalOp.and (|
                 LogicalOp.and (|
-                  M.call_closure (|
-                    Ty.path "bool",
-                    M.get_trait_method (|
-                      "core::cmp::PartialEq",
-                      Ty.path "alloy_primitives::bits::address::Address",
-                      [],
-                      [ Ty.path "alloy_primitives::bits::address::Address" ],
-                      "eq",
-                      [],
-                      []
+                  LogicalOp.and (|
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.path "alloy_primitives::bits::address::Address",
+                        [],
+                        [ Ty.path "alloy_primitives::bits::address::Address" ],
+                        "eq",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::input::InputsImpl",
+                            "target_address"
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| other |) |),
+                            "revm_interpreter::interpreter::input::InputsImpl",
+                            "target_address"
+                          |)
+                        |)
+                      ]
                     |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::interpreter::input::InputsImpl",
-                          "target_address"
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| other |) |),
-                          "revm_interpreter::interpreter::input::InputsImpl",
-                          "target_address"
-                        |)
-                      |)
-                    ]
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "bool",
+                        M.get_trait_method (|
+                          "core::cmp::PartialEq",
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "alloy_primitives::bits::address::Address" ],
+                          [],
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "alloy_primitives::bits::address::Address" ]
+                          ],
+                          "eq",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_interpreter::interpreter::input::InputsImpl",
+                              "bytecode_address"
+                            |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| other |) |),
+                              "revm_interpreter::interpreter::input::InputsImpl",
+                              "bytecode_address"
+                            |)
+                          |)
+                        ]
+                      |)))
                   |),
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -544,9 +678,9 @@ Module interpreter.
                     Ty.path "bool",
                     M.get_trait_method (|
                       "core::cmp::PartialEq",
-                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput",
                       [],
-                      [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                      [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ],
                       "eq",
                       [],
                       []
@@ -659,7 +793,15 @@ Module interpreter.
                             (M.match_operator (|
                               Ty.tuple [],
                               Value.DeclaredButUndefined,
-                              [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.match_operator (|
+                                      Ty.tuple [],
+                                      Value.DeclaredButUndefined,
+                                      [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                                    |)))
+                              ]
                             |)))
                       ]
                     |)))
@@ -678,7 +820,7 @@ Module interpreter.
           [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
     End Impl_core_cmp_Eq_for_revm_interpreter_interpreter_input_InputsImpl.
     
-    Module Impl_revm_interpreter_interpreter_types_InputsTrait_for_revm_interpreter_interpreter_input_InputsImpl.
+    Module Impl_revm_interpreter_interpreter_types_InputsTr_for_revm_interpreter_interpreter_input_InputsImpl.
       Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter::input::InputsImpl".
       
       (*
@@ -736,7 +878,53 @@ Module interpreter.
         end.
       
       (*
-          fn input(&self) -> &[u8] {
+          fn bytecode_address(&self) -> Option<&Address> {
+              self.bytecode_address.as_ref()
+          }
+      *)
+      Definition bytecode_address (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::input::InputsImpl" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ]
+                ],
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "alloy_primitives::bits::address::Address" ],
+                "as_ref",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "revm_interpreter::interpreter::input::InputsImpl",
+                    "bytecode_address"
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+          fn input(&self) -> &CallInput {
               &self.input
           }
       *)
@@ -755,51 +943,13 @@ Module interpreter.
             M.borrow (|
               Pointer.Kind.Ref,
               M.deref (|
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                  M.get_trait_method (|
-                    "core::ops::deref::Deref",
-                    Ty.path "bytes::bytes::Bytes",
-                    [],
-                    [],
-                    "deref",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.path "alloy_primitives::bytes_::Bytes",
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "revm_interpreter::interpreter::input::InputsImpl",
-                                    "input"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |)
-                    |)
-                  ]
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "revm_interpreter::interpreter::input::InputsImpl",
+                    "input"
+                  |)
                 |)
               |)
             |)))
@@ -835,7 +985,7 @@ Module interpreter.
       
       Axiom Implements :
         M.IsTraitInstance
-          "revm_interpreter::interpreter_types::InputsTrait"
+          "revm_interpreter::interpreter_types::InputsTr"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
@@ -843,9 +993,10 @@ Module interpreter.
           [
             ("target_address", InstanceField.Method target_address);
             ("caller_address", InstanceField.Method caller_address);
+            ("bytecode_address", InstanceField.Method bytecode_address);
             ("input", InstanceField.Method input);
             ("call_value", InstanceField.Method call_value)
           ].
-    End Impl_revm_interpreter_interpreter_types_InputsTrait_for_revm_interpreter_interpreter_input_InputsImpl.
+    End Impl_revm_interpreter_interpreter_types_InputsTr_for_revm_interpreter_interpreter_input_InputsImpl.
   End input.
 End interpreter.

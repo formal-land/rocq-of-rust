@@ -2,6 +2,43 @@
 Require Import RocqOfRust.RocqOfRust.
 
 Module eip7702.
+  Definition value_EIP7702_MAGIC_HASH (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic
+      (M.alloc (|
+        Ty.apply
+          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+          [ Value.Integer IntegerKind.Usize 32 ]
+          [],
+        M.call_closure (|
+          Ty.apply
+            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+            [ Value.Integer IntegerKind.Usize 32 ]
+            [],
+          M.get_associated_function (|
+            Ty.apply
+              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+              [ Value.Integer IntegerKind.Usize 32 ]
+              [],
+            "new",
+            [],
+            []
+          |),
+          [
+            M.read (|
+              get_constant (|
+                "revm_bytecode::eip7702::EIP7702_MAGIC_HASH_discriminant",
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+              |)
+            |)
+          ]
+        |)
+      |))).
+  
+  Global Instance Instance_IsConstant_value_EIP7702_MAGIC_HASH :
+    M.IsFunction.C "revm_bytecode::eip7702::EIP7702_MAGIC_HASH" value_EIP7702_MAGIC_HASH.
+  Admitted.
+  Global Typeclasses Opaque value_EIP7702_MAGIC_HASH.
+  
   Definition value_EIP7702_MAGIC (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic (M.alloc (| Ty.path "u16", Value.Integer IntegerKind.U16 61185 |))).
   
@@ -14,25 +51,9 @@ Module eip7702.
     ltac:(M.monadic
       (M.alloc (|
         Ty.path "alloy_primitives::bytes_::Bytes",
-        M.alloc (|
-          Ty.path "alloy_primitives::bytes_::Bytes",
-          M.call_closure (|
-            Ty.path "alloy_primitives::bytes_::Bytes",
-            M.get_associated_function (|
-              Ty.path "alloy_primitives::bytes_::Bytes",
-              "from_static",
-              [],
-              []
-            |),
-            [
-              M.read (|
-                get_constant (|
-                  "revm_bytecode::eip7702::EIP7702_MAGIC_BYTES::STATIC_BYTES",
-                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                |)
-              |)
-            ]
-          |)
+        get_constant (|
+          "revm_bytecode::eip7702::EIP7702_MAGIC_BYTES_discriminant",
+          Ty.path "alloy_primitives::bytes_::Bytes"
         |)
       |))).
   
@@ -1004,7 +1025,7 @@ Module eip7702.
     
             Ok(Self {
                 delegated_address: Address::new(raw[3..].try_into().unwrap()),
-                version: EIP7702_VERSION,
+                version: raw[2],
                 raw,
             })
         }
@@ -1525,9 +1546,48 @@ Module eip7702.
                             |));
                           ("version",
                             M.read (|
-                              get_constant (|
-                                "revm_bytecode::eip7702::EIP7702_VERSION",
-                                Ty.path "u8"
+                              M.SubPointer.get_array_field (|
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::Deref",
+                                      Ty.path "bytes::bytes::Bytes",
+                                      [],
+                                      [],
+                                      "deref",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "bytes::bytes::Bytes" ],
+                                            M.get_trait_method (|
+                                              "core::ops::deref::Deref",
+                                              Ty.path "alloy_primitives::bytes_::Bytes",
+                                              [],
+                                              [],
+                                              "deref",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, raw |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                |),
+                                Value.Integer IntegerKind.Usize 2
                               |)
                             |));
                           ("raw", M.read (| raw |))
@@ -1774,6 +1834,34 @@ Module eip7702.
     Global Instance AssociatedFunction_address : M.IsAssociatedFunction.C Self "address" address.
     Admitted.
     Global Typeclasses Opaque address.
+    
+    (*
+        pub fn version(&self) -> u8 {
+            self.version
+        }
+    *)
+    Definition version (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
+              self
+            |) in
+          M.read (|
+            M.SubPointer.get_struct_record_field (|
+              M.deref (| M.read (| self |) |),
+              "revm_bytecode::eip7702::Eip7702Bytecode",
+              "version"
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_version : M.IsAssociatedFunction.C Self "version" version.
+    Admitted.
+    Global Typeclasses Opaque version.
   End Impl_revm_bytecode_eip7702_Eip7702Bytecode.
   
   (*

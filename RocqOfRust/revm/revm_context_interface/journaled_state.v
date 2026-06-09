@@ -3,7 +3,580 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module journaled_state.
   (* Trait *)
-  Module Journal.
+  Module JournalTr.
+    Definition sload (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; address; key ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          let key :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              key
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ];
+                Ty.associated_in_trait
+                  "revm_database_interface::Database"
+                  []
+                  []
+                  (Ty.associated_in_trait
+                    "revm_context_interface::journaled_state::JournalTr"
+                    []
+                    []
+                    Self
+                    "Database")
+                  "Error"
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ];
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [
+                      Ty.associated_in_trait
+                        "revm_database_interface::Database"
+                        []
+                        []
+                        (Ty.associated_in_trait
+                          "revm_context_interface::journaled_state::JournalTr"
+                          []
+                          []
+                          Self
+                          "Database")
+                        "Error"
+                    ]
+                ],
+              "map_err",
+              [],
+              [
+                Ty.associated_in_trait
+                  "revm_database_interface::Database"
+                  []
+                  []
+                  (Ty.associated_in_trait
+                    "revm_context_interface::journaled_state::JournalTr"
+                    []
+                    []
+                    Self
+                    "Database")
+                  "Error";
+                Ty.function
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "revm_database_interface::Database"
+                          []
+                          []
+                          (Ty.associated_in_trait
+                            "revm_context_interface::journaled_state::JournalTr"
+                            []
+                            []
+                            Self
+                            "Database")
+                          "Error"
+                      ]
+                  ]
+                  (Ty.associated_in_trait
+                    "revm_database_interface::Database"
+                    []
+                    []
+                    (Ty.associated_in_trait
+                      "revm_context_interface::journaled_state::JournalTr"
+                      []
+                      []
+                      Self
+                      "Database")
+                    "Error")
+              ]
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ];
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "revm_database_interface::Database"
+                          []
+                          []
+                          (Ty.associated_in_trait
+                            "revm_context_interface::journaled_state::JournalTr"
+                            []
+                            []
+                            Self
+                            "Database")
+                          "Error"
+                      ]
+                  ],
+                M.get_trait_method (|
+                  "revm_context_interface::journaled_state::JournalTr",
+                  Self,
+                  [],
+                  [],
+                  "sload_skip_cold_load",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| address |);
+                  M.read (| key |);
+                  Value.Bool false
+                ]
+              |);
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                  []
+                  [
+                    Ty.associated_in_trait
+                      "revm_database_interface::Database"
+                      []
+                      []
+                      (Ty.associated_in_trait
+                        "revm_context_interface::journaled_state::JournalTr"
+                        []
+                        []
+                        Self
+                        "Database")
+                      "Error"
+                  ],
+                "unwrap_db_error",
+                [],
+                []
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_sload :
+      M.IsProvidedMethod "revm_context_interface::journaled_state::JournalTr" "sload" sload.
+    Definition sstore (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; address; key; value ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          let key :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              key
+            |) in
+          let value :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              value
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [ Ty.path "revm_context_interface::context::SStoreResult" ];
+                Ty.associated_in_trait
+                  "revm_database_interface::Database"
+                  []
+                  []
+                  (Ty.associated_in_trait
+                    "revm_context_interface::journaled_state::JournalTr"
+                    []
+                    []
+                    Self
+                    "Database")
+                  "Error"
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::context::SStoreResult" ];
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [
+                      Ty.associated_in_trait
+                        "revm_database_interface::Database"
+                        []
+                        []
+                        (Ty.associated_in_trait
+                          "revm_context_interface::journaled_state::JournalTr"
+                          []
+                          []
+                          Self
+                          "Database")
+                        "Error"
+                    ]
+                ],
+              "map_err",
+              [],
+              [
+                Ty.associated_in_trait
+                  "revm_database_interface::Database"
+                  []
+                  []
+                  (Ty.associated_in_trait
+                    "revm_context_interface::journaled_state::JournalTr"
+                    []
+                    []
+                    Self
+                    "Database")
+                  "Error";
+                Ty.function
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "revm_database_interface::Database"
+                          []
+                          []
+                          (Ty.associated_in_trait
+                            "revm_context_interface::journaled_state::JournalTr"
+                            []
+                            []
+                            Self
+                            "Database")
+                          "Error"
+                      ]
+                  ]
+                  (Ty.associated_in_trait
+                    "revm_database_interface::Database"
+                    []
+                    []
+                    (Ty.associated_in_trait
+                      "revm_context_interface::journaled_state::JournalTr"
+                      []
+                      []
+                      Self
+                      "Database")
+                    "Error")
+              ]
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [ Ty.path "revm_context_interface::context::SStoreResult" ];
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "revm_database_interface::Database"
+                          []
+                          []
+                          (Ty.associated_in_trait
+                            "revm_context_interface::journaled_state::JournalTr"
+                            []
+                            []
+                            Self
+                            "Database")
+                          "Error"
+                      ]
+                  ],
+                M.get_trait_method (|
+                  "revm_context_interface::journaled_state::JournalTr",
+                  Self,
+                  [],
+                  [],
+                  "sstore_skip_cold_load",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| address |);
+                  M.read (| key |);
+                  M.read (| value |);
+                  Value.Bool false
+                ]
+              |);
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                  []
+                  [
+                    Ty.associated_in_trait
+                      "revm_database_interface::Database"
+                      []
+                      []
+                      (Ty.associated_in_trait
+                        "revm_context_interface::journaled_state::JournalTr"
+                        []
+                        []
+                        Self
+                        "Database")
+                      "Error"
+                  ],
+                "unwrap_db_error",
+                [],
+                []
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_sstore :
+      M.IsProvidedMethod "revm_context_interface::journaled_state::JournalTr" "sstore" sstore.
+    Definition load_account_code
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; address ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ];
+                Ty.associated_in_trait
+                  "revm_database_interface::Database"
+                  []
+                  []
+                  (Ty.associated_in_trait
+                    "revm_context_interface::journaled_state::JournalTr"
+                    []
+                    []
+                    Self
+                    "Database")
+                  "Error"
+              ],
+            M.get_trait_method (|
+              "revm_context_interface::journaled_state::JournalTr",
+              Self,
+              [],
+              [],
+              "load_account_with_code",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+              M.read (| address |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_load_account_code :
+      M.IsProvidedMethod
+        "revm_context_interface::journaled_state::JournalTr"
+        "load_account_code"
+        load_account_code.
+    Definition load_account_mut
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; address ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::account::JournaledAccount")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "revm_context_interface::journaled_state::JournalTr"
+                          []
+                          []
+                          Self
+                          "JournalEntry"
+                      ]
+                  ];
+                Ty.associated_in_trait
+                  "revm_database_interface::Database"
+                  []
+                  []
+                  (Ty.associated_in_trait
+                    "revm_context_interface::journaled_state::JournalTr"
+                    []
+                    []
+                    Self
+                    "Database")
+                  "Error"
+              ],
+            M.get_trait_method (|
+              "revm_context_interface::journaled_state::JournalTr",
+              Self,
+              [],
+              [],
+              "load_account_mut_optional_code",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+              M.read (| address |);
+              Value.Bool false
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_load_account_mut :
+      M.IsProvidedMethod
+        "revm_context_interface::journaled_state::JournalTr"
+        "load_account_mut"
+        load_account_mut.
+    Definition load_account_with_code_mut
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; address ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::account::JournaledAccount")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "revm_context_interface::journaled_state::JournalTr"
+                          []
+                          []
+                          Self
+                          "JournalEntry"
+                      ]
+                  ];
+                Ty.associated_in_trait
+                  "revm_database_interface::Database"
+                  []
+                  []
+                  (Ty.associated_in_trait
+                    "revm_context_interface::journaled_state::JournalTr"
+                    []
+                    []
+                    Self
+                    "Database")
+                  "Error"
+              ],
+            M.get_trait_method (|
+              "revm_context_interface::journaled_state::JournalTr",
+              Self,
+              [],
+              [],
+              "load_account_mut_optional_code",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+              M.read (| address |);
+              Value.Bool true
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_load_account_with_code_mut :
+      M.IsProvidedMethod
+        "revm_context_interface::journaled_state::JournalTr"
+        "load_account_with_code_mut"
+        load_account_with_code_mut.
     Definition set_code (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self; address; code ] =>
@@ -35,7 +608,7 @@ Module journaled_state.
               M.call_closure (|
                 Ty.tuple [],
                 M.get_trait_method (|
-                  "revm_context_interface::journaled_state::Journal",
+                  "revm_context_interface::journaled_state::JournalTr",
                   Self,
                   [],
                   [],
@@ -56,8 +629,2053 @@ Module journaled_state.
       end.
     
     Axiom ProvidedMethod_set_code :
-      M.IsProvidedMethod "revm_context_interface::journaled_state::Journal" "set_code" set_code.
-  End Journal.
+      M.IsProvidedMethod "revm_context_interface::journaled_state::JournalTr" "set_code" set_code.
+    Definition code (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; address ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                Ty.associated_in_trait
+                  "revm_database_interface::Database"
+                  []
+                  []
+                  (Ty.associated_in_trait
+                    "revm_context_interface::journaled_state::JournalTr"
+                    []
+                    []
+                    Self
+                    "Database")
+                  "Error"
+              ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ a :
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ] :=
+                  M.match_operator (|
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "core::convert::Infallible";
+                              Ty.associated_in_trait
+                                "revm_database_interface::Database"
+                                []
+                                []
+                                (Ty.associated_in_trait
+                                  "revm_context_interface::journaled_state::JournalTr"
+                                  []
+                                  []
+                                  Self
+                                  "Database")
+                                "Error"
+                            ];
+                          Ty.apply
+                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ]
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "core::convert::Infallible";
+                                Ty.associated_in_trait
+                                  "revm_database_interface::Database"
+                                  []
+                                  []
+                                  (Ty.associated_in_trait
+                                    "revm_context_interface::journaled_state::JournalTr"
+                                    []
+                                    []
+                                    Self
+                                    "Database")
+                                  "Error"
+                              ];
+                            Ty.apply
+                              (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ]
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ];
+                              Ty.associated_in_trait
+                                "revm_database_interface::Database"
+                                []
+                                []
+                                (Ty.associated_in_trait
+                                  "revm_context_interface::journaled_state::JournalTr"
+                                  []
+                                  []
+                                  Self
+                                  "Database")
+                                "Error"
+                            ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ];
+                                Ty.associated_in_trait
+                                  "revm_database_interface::Database"
+                                  []
+                                  []
+                                  (Ty.associated_in_trait
+                                    "revm_context_interface::journaled_state::JournalTr"
+                                    []
+                                    []
+                                    Self
+                                    "Database")
+                                  "Error"
+                              ],
+                            M.get_trait_method (|
+                              "revm_context_interface::journaled_state::JournalTr",
+                              Self,
+                              [],
+                              [],
+                              "load_account_with_code",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                              M.read (| address |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::convert::Infallible";
+                                  Ty.associated_in_trait
+                                    "revm_database_interface::Database"
+                                    []
+                                    []
+                                    (Ty.associated_in_trait
+                                      "revm_context_interface::journaled_state::JournalTr"
+                                      []
+                                      []
+                                      Self
+                                      "Database")
+                                    "Error"
+                                ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path
+                                          "revm_context_interface::journaled_state::StateLoad")
+                                        []
+                                        [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                                      Ty.associated_in_trait
+                                        "revm_database_interface::Database"
+                                        []
+                                        []
+                                        (Ty.associated_in_trait
+                                          "revm_context_interface::journaled_state::JournalTr"
+                                          []
+                                          []
+                                          Self
+                                          "Database")
+                                        "Error"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path
+                                            "revm_context_interface::journaled_state::StateLoad")
+                                          []
+                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                                        Ty.associated_in_trait
+                                          "revm_database_interface::Database"
+                                          []
+                                          []
+                                          (Ty.associated_in_trait
+                                            "revm_context_interface::journaled_state::JournalTr"
+                                            []
+                                            []
+                                            Self
+                                            "Database")
+                                          "Error"
+                                      ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.associated_in_trait
+                                            "revm_database_interface::Database"
+                                            []
+                                            []
+                                            (Ty.associated_in_trait
+                                              "revm_context_interface::journaled_state::JournalTr"
+                                              []
+                                              []
+                                              Self
+                                              "Database")
+                                            "Error"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ],
+                              γ0_0
+                            |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ code : Ty.path "alloy_primitives::bytes_::Bytes" :=
+                  M.call_closure (|
+                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    M.get_associated_function (|
+                      Ty.path "revm_bytecode::bytecode::Bytecode",
+                      "original_bytes",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_bytecode::bytecode::Bytecode" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
+                                ],
+                              "unwrap",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "revm_bytecode::bytecode::Bytecode" ],
+                                  "as_ref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.read (|
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "revm_state::Account" ]
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::ops::deref::Deref",
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "revm_context_interface::journaled_state::StateLoad")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.path "revm_state::Account" ]
+                                                    ],
+                                                  [],
+                                                  [],
+                                                  "deref",
+                                                  [],
+                                                  []
+                                                |),
+                                                [ M.borrow (| Pointer.Kind.Ref, a |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |),
+                                        "revm_state::Account",
+                                        "info"
+                                      |),
+                                      "revm_state::account_info::AccountInfo",
+                                      "code"
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |)
+                      |)
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.associated_in_trait
+                        "revm_database_interface::Database"
+                        []
+                        []
+                        (Ty.associated_in_trait
+                          "revm_context_interface::journaled_state::JournalTr"
+                          []
+                          []
+                          Self
+                          "Database")
+                        "Error"
+                    ],
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.associated_in_trait
+                        "revm_database_interface::Database"
+                        []
+                        []
+                        (Ty.associated_in_trait
+                          "revm_context_interface::journaled_state::JournalTr"
+                          []
+                          []
+                          Self
+                          "Database")
+                        "Error"
+                    ]
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                          []
+                          [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                            []
+                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (| code |);
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              a,
+                              "revm_context_interface::journaled_state::StateLoad",
+                              "is_cold"
+                            |)
+                          |)
+                        ]
+                      |)
+                    ]
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_code :
+      M.IsProvidedMethod "revm_context_interface::journaled_state::JournalTr" "code" code.
+    Definition code_hash (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; address ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      []
+                  ];
+                Ty.associated_in_trait
+                  "revm_database_interface::Database"
+                  []
+                  []
+                  (Ty.associated_in_trait
+                    "revm_context_interface::journaled_state::JournalTr"
+                    []
+                    []
+                    Self
+                    "Database")
+                  "Error"
+              ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ acc :
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ] :=
+                  M.match_operator (|
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "core::convert::Infallible";
+                              Ty.associated_in_trait
+                                "revm_database_interface::Database"
+                                []
+                                []
+                                (Ty.associated_in_trait
+                                  "revm_context_interface::journaled_state::JournalTr"
+                                  []
+                                  []
+                                  Self
+                                  "Database")
+                                "Error"
+                            ];
+                          Ty.apply
+                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ]
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "core::convert::Infallible";
+                                Ty.associated_in_trait
+                                  "revm_database_interface::Database"
+                                  []
+                                  []
+                                  (Ty.associated_in_trait
+                                    "revm_context_interface::journaled_state::JournalTr"
+                                    []
+                                    []
+                                    Self
+                                    "Database")
+                                  "Error"
+                              ];
+                            Ty.apply
+                              (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ]
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ];
+                              Ty.associated_in_trait
+                                "revm_database_interface::Database"
+                                []
+                                []
+                                (Ty.associated_in_trait
+                                  "revm_context_interface::journaled_state::JournalTr"
+                                  []
+                                  []
+                                  Self
+                                  "Database")
+                                "Error"
+                            ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ];
+                                Ty.associated_in_trait
+                                  "revm_database_interface::Database"
+                                  []
+                                  []
+                                  (Ty.associated_in_trait
+                                    "revm_context_interface::journaled_state::JournalTr"
+                                    []
+                                    []
+                                    Self
+                                    "Database")
+                                  "Error"
+                              ],
+                            M.get_trait_method (|
+                              "revm_context_interface::journaled_state::JournalTr",
+                              Self,
+                              [],
+                              [],
+                              "load_account_with_code",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                              M.read (| address |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::convert::Infallible";
+                                  Ty.associated_in_trait
+                                    "revm_database_interface::Database"
+                                    []
+                                    []
+                                    (Ty.associated_in_trait
+                                      "revm_context_interface::journaled_state::JournalTr"
+                                      []
+                                      []
+                                      Self
+                                      "Database")
+                                    "Error"
+                                ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path
+                                          "revm_context_interface::journaled_state::StateLoad")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            []
+                                        ];
+                                      Ty.associated_in_trait
+                                        "revm_database_interface::Database"
+                                        []
+                                        []
+                                        (Ty.associated_in_trait
+                                          "revm_context_interface::journaled_state::JournalTr"
+                                          []
+                                          []
+                                          Self
+                                          "Database")
+                                        "Error"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path
+                                            "revm_context_interface::journaled_state::StateLoad")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                              [ Value.Integer IntegerKind.Usize 32 ]
+                                              []
+                                          ];
+                                        Ty.associated_in_trait
+                                          "revm_database_interface::Database"
+                                          []
+                                          []
+                                          (Ty.associated_in_trait
+                                            "revm_context_interface::journaled_state::JournalTr"
+                                            []
+                                            []
+                                            Self
+                                            "Database")
+                                          "Error"
+                                      ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.associated_in_trait
+                                            "revm_database_interface::Database"
+                                            []
+                                            []
+                                            (Ty.associated_in_trait
+                                              "revm_context_interface::journaled_state::JournalTr"
+                                              []
+                                              []
+                                              Self
+                                              "Database")
+                                            "Error"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ],
+                              γ0_0
+                            |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_associated_function (|
+                                  Ty.path "revm_state::Account",
+                                  "is_empty",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "revm_state::Account" ]
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::ops::deref::Deref",
+                                              Ty.apply
+                                                (Ty.path
+                                                  "revm_context_interface::journaled_state::StateLoad")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "revm_state::Account" ]
+                                                ],
+                                              [],
+                                              [],
+                                              "deref",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, acc |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                Value.StructTuple
+                                  "core::result::Result::Ok"
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                          []
+                                      ];
+                                    Ty.associated_in_trait
+                                      "revm_database_interface::Database"
+                                      []
+                                      []
+                                      (Ty.associated_in_trait
+                                        "revm_context_interface::journaled_state::JournalTr"
+                                        []
+                                        []
+                                        Self
+                                        "Database")
+                                      "Error"
+                                  ]
+                                  [
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path
+                                          "revm_context_interface::journaled_state::StateLoad")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            []
+                                        ],
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path
+                                            "revm_context_interface::journaled_state::StateLoad")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                              [ Value.Integer IntegerKind.Usize 32 ]
+                                              []
+                                          ],
+                                        "new",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (|
+                                          get_associated_constant (|
+                                            Ty.apply
+                                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                              [ Value.Integer IntegerKind.Usize 32 ]
+                                              [],
+                                            "ZERO",
+                                            Ty.apply
+                                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                              [ Value.Integer IntegerKind.Usize 32 ]
+                                              []
+                                          |)
+                                        |);
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            acc,
+                                            "revm_context_interface::journaled_state::StateLoad",
+                                            "is_cold"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                              |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                let~ hash :
+                    Ty.apply
+                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [] :=
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (|
+                          M.read (|
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.apply
+                                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::Account" ] ],
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, acc |) ]
+                              |)
+                            |)
+                          |)
+                        |),
+                        "revm_state::Account",
+                        "info"
+                      |),
+                      "revm_state::account_info::AccountInfo",
+                      "code_hash"
+                    |)
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            []
+                        ];
+                      Ty.associated_in_trait
+                        "revm_database_interface::Database"
+                        []
+                        []
+                        (Ty.associated_in_trait
+                          "revm_context_interface::journaled_state::JournalTr"
+                          []
+                          []
+                          Self
+                          "Database")
+                        "Error"
+                    ],
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            []
+                        ];
+                      Ty.associated_in_trait
+                        "revm_database_interface::Database"
+                        []
+                        []
+                        (Ty.associated_in_trait
+                          "revm_context_interface::journaled_state::JournalTr"
+                          []
+                          []
+                          Self
+                          "Database")
+                        "Error"
+                    ]
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                []
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (| hash |);
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              acc,
+                              "revm_context_interface::journaled_state::StateLoad",
+                              "is_cold"
+                            |)
+                          |)
+                        ]
+                      |)
+                    ]
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_code_hash :
+      M.IsProvidedMethod "revm_context_interface::journaled_state::JournalTr" "code_hash" code_hash.
+    Definition clear (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (|
+              Ty.associated_in_trait
+                "revm_context_interface::journaled_state::JournalTr"
+                []
+                []
+                Self
+                "State",
+              M.call_closure (|
+                Ty.associated_in_trait
+                  "revm_context_interface::journaled_state::JournalTr"
+                  []
+                  []
+                  Self
+                  "State",
+                M.get_trait_method (|
+                  "revm_context_interface::journaled_state::JournalTr",
+                  Self,
+                  [],
+                  [],
+                  "finalize",
+                  [],
+                  []
+                |),
+                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+              |)
+            |),
+            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_clear :
+      M.IsProvidedMethod "revm_context_interface::journaled_state::JournalTr" "clear" clear.
+  End JournalTr.
+  
+  (*
+  Enum JournalLoadError
+  {
+    const_params := [];
+    ty_params := [ "E" ];
+    variants :=
+      [
+        {
+          name := "DBError";
+          item := StructTuple [ E ];
+        };
+        {
+          name := "ColdLoadSkipped";
+          item := StructTuple [];
+        }
+      ];
+  }
+  *)
+  
+  Axiom IsDiscriminant_JournalLoadError_DBError :
+    M.IsDiscriminant "revm_context_interface::journaled_state::JournalLoadError::DBError" 0.
+  Axiom IsDiscriminant_JournalLoadError_ColdLoadSkipped :
+    M.IsDiscriminant "revm_context_interface::journaled_state::JournalLoadError::ColdLoadSkipped" 1.
+  
+  Module Impl_core_marker_Copy_where_core_marker_Copy_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+    Definition Self (E : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ].
+    
+    Axiom Implements :
+      forall (E : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self E)
+        (* Instance *) [].
+  End Impl_core_marker_Copy_where_core_marker_Copy_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+  
+  Module Impl_core_clone_Clone_where_core_clone_Clone_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+    Definition Self (E : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ].
+    
+    (* Clone *)
+    Definition clone (E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [ E ]
+                ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ],
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                      0
+                    |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                  Value.StructTuple
+                    "revm_context_interface::journaled_state::JournalLoadError::DBError"
+                    []
+                    [ E ]
+                    [
+                      M.call_closure (|
+                        E,
+                        M.get_trait_method (| "core::clone::Clone", E, [], [], "clone", [], [] |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |)
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::ColdLoadSkipped"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::journaled_state::JournalLoadError::ColdLoadSkipped"
+                    []
+                    [ E ]
+                    []))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (E : Ty.t),
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self E)
+        (* Instance *) [ ("clone", InstanceField.Method (clone E)) ].
+  End Impl_core_clone_Clone_where_core_clone_Clone_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+  
+  Module Impl_core_fmt_Debug_where_core_fmt_Debug_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+    Definition Self (E : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ].
+    
+    (* Debug *)
+    Definition fmt (E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [ E ]
+                ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.match_operator (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                      0
+                    |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "debug_tuple_field1_finish",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DBError" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ E ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                          |)
+                        ]
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::ColdLoadSkipped"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ColdLoadSkipped" |) |) |)
+                    ]
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (E : Ty.t),
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self E)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt E)) ].
+  End Impl_core_fmt_Debug_where_core_fmt_Debug_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+  
+  Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_journaled_state_JournalLoadError_E.
+    Definition Self (E : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ].
+    
+    Axiom Implements :
+      forall (E : Ty.t),
+      M.IsTraitInstance
+        "core::marker::StructuralPartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self E)
+        (* Instance *) [].
+  End Impl_core_marker_StructuralPartialEq_for_revm_context_interface_journaled_state_JournalLoadError_E.
+  
+  Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_E_revm_context_interface_journaled_state_JournalLoadError_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+    Definition Self (E : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ].
+    
+    (* PartialEq *)
+    Definition eq (E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [ E ]
+                ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [ E ]
+                ],
+              other
+            |) in
+          M.read (|
+            let~ __self_discr : Ty.path "isize" :=
+              M.call_closure (|
+                Ty.path "isize",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
+                  [],
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                      []
+                      [ E ]
+                  ]
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              |) in
+            let~ __arg1_discr : Ty.path "isize" :=
+              M.call_closure (|
+                Ty.path "isize",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
+                  [],
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                      []
+                      [ E ]
+                  ]
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              |) in
+            M.alloc (|
+              Ty.path "bool",
+              LogicalOp.and (|
+                M.call_closure (|
+                  Ty.path "bool",
+                  BinOp.eq,
+                  [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
+                |),
+                ltac:(M.monadic
+                  (M.match_operator (|
+                    Ty.path "bool",
+                    M.alloc (|
+                      Ty.tuple
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path
+                                  "revm_context_interface::journaled_state::JournalLoadError")
+                                []
+                                [ E ]
+                            ];
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path
+                                  "revm_context_interface::journaled_state::JournalLoadError")
+                                []
+                                [ E ]
+                            ]
+                        ],
+                      Value.Tuple [ M.read (| self |); M.read (| other |) ]
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_0,
+                              "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                              0
+                            |) in
+                          let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_1,
+                              "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                              0
+                            |) in
+                          let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_trait_method (|
+                              "core::cmp::PartialEq",
+                              Ty.apply (Ty.path "&") [] [ E ],
+                              [],
+                              [ Ty.apply (Ty.path "&") [] [ E ] ],
+                              "eq",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                            ]
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Bool true))
+                    ]
+                  |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (E : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::PartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *)
+        [ Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ] ]
+        (Self E)
+        (* Instance *) [ ("eq", InstanceField.Method (eq E)) ].
+  End Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_E_revm_context_interface_journaled_state_JournalLoadError_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+  
+  Module Impl_core_cmp_Eq_where_core_cmp_Eq_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+    Definition Self (E : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ].
+    
+    (* Eq *)
+    Definition assert_receiver_is_total_eq
+        (E : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [ E ]
+                ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.tuple [],
+            Value.DeclaredButUndefined,
+            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (E : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::Eq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self E)
+        (* Instance *)
+        [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq E)) ].
+  End Impl_core_cmp_Eq_where_core_cmp_Eq_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+  
+  Module Impl_core_hash_Hash_where_core_hash_Hash_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+    Definition Self (E : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ].
+    
+    (* Hash *)
+    Definition hash (E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [ __H ], [ self; state ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [ E ]
+                ],
+              self
+            |) in
+          let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
+          M.read (|
+            let~ __self_discr : Ty.path "isize" :=
+              M.call_closure (|
+                Ty.path "isize",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
+                  [],
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                      []
+                      [ E ]
+                  ]
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              |) in
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (|
+                  "core::hash::Hash",
+                  Ty.path "isize",
+                  [],
+                  [],
+                  "hash",
+                  [],
+                  [ __H ]
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                  |);
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                ]
+              |) in
+            M.alloc (|
+              Ty.tuple [],
+              M.match_operator (|
+                Ty.tuple [],
+                self,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let γ1_0 :=
+                        M.SubPointer.get_struct_tuple_field (|
+                          γ,
+                          "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                          0
+                        |) in
+                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                      M.call_closure (|
+                        Ty.tuple [],
+                        M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ __H ] |),
+                        [
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
+                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                        ]
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (E : Ty.t),
+      M.IsTraitInstance
+        "core::hash::Hash"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self E)
+        (* Instance *) [ ("hash", InstanceField.Method (hash E)) ].
+  End Impl_core_hash_Hash_where_core_hash_Hash_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+  
+  Module Impl_revm_context_interface_journaled_state_JournalLoadError_E.
+    Definition Self (E : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ].
+    
+    (*
+        pub fn is_db_error(&self) -> bool {
+            matches!(self, JournalLoadError::DBError(_))
+        }
+    *)
+    Definition is_db_error (E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [ E ]
+                ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.path "bool",
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                      0
+                    |) in
+                  Value.Bool true));
+              fun γ => ltac:(M.monadic (Value.Bool false))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_is_db_error :
+      forall (E : Ty.t),
+      M.IsAssociatedFunction.C (Self E) "is_db_error" (is_db_error E).
+    Admitted.
+    Global Typeclasses Opaque is_db_error.
+    
+    (*
+        pub fn is_cold_load_skipped(&self) -> bool {
+            matches!(self, JournalLoadError::ColdLoadSkipped)
+        }
+    *)
+    Definition is_cold_load_skipped
+        (E : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                    []
+                    [ E ]
+                ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.path "bool",
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::ColdLoadSkipped"
+                    |) in
+                  Value.Bool true));
+              fun γ => ltac:(M.monadic (Value.Bool false))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_is_cold_load_skipped :
+      forall (E : Ty.t),
+      M.IsAssociatedFunction.C (Self E) "is_cold_load_skipped" (is_cold_load_skipped E).
+    Admitted.
+    Global Typeclasses Opaque is_cold_load_skipped.
+    
+    (*
+        pub fn take_db_error(self) -> Option<E> {
+            if let JournalLoadError::DBError(e) = self {
+                Some(e)
+            } else {
+                None
+            }
+        }
+    *)
+    Definition take_db_error (E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                []
+                [ E ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "core::option::Option") [] [ E ],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := self in
+                  let γ0_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                      0
+                    |) in
+                  let e := M.copy (| E, γ0_0 |) in
+                  Value.StructTuple "core::option::Option::Some" [] [ E ] [ M.read (| e |) ]));
+              fun γ => ltac:(M.monadic (Value.StructTuple "core::option::Option::None" [] [ E ] []))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_take_db_error :
+      forall (E : Ty.t),
+      M.IsAssociatedFunction.C (Self E) "take_db_error" (take_db_error E).
+    Admitted.
+    Global Typeclasses Opaque take_db_error.
+    
+    (*
+        pub fn unwrap_db_error(self) -> E {
+            if let JournalLoadError::DBError(e) = self {
+                e
+            } else {
+                panic!("Expected DBError");
+            }
+        }
+    *)
+    Definition unwrap_db_error
+        (E : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                []
+                [ E ],
+              self
+            |) in
+          M.match_operator (|
+            E,
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := self in
+                  let γ0_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                      0
+                    |) in
+                  let e := M.copy (| E, γ0_0 |) in
+                  M.read (| e |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "Expected DBError" |) ]
+                        |)
+                      ]
+                    |)
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_unwrap_db_error :
+      forall (E : Ty.t),
+      M.IsAssociatedFunction.C (Self E) "unwrap_db_error" (unwrap_db_error E).
+    Admitted.
+    Global Typeclasses Opaque unwrap_db_error.
+    
+    (*
+        pub fn into_parts(self) -> (LoadError, Option<E>) {
+            match self {
+                JournalLoadError::DBError(e) => (LoadError::DBError, Some(e)),
+                JournalLoadError::ColdLoadSkipped => (LoadError::ColdLoadSkipped, None),
+            }
+        }
+    *)
+    Definition into_parts (E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                []
+                [ E ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.tuple
+              [
+                Ty.path "revm_context_interface::host::LoadError";
+                Ty.apply (Ty.path "core::option::Option") [] [ E ]
+              ],
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                      0
+                    |) in
+                  let e := M.copy (| E, γ0_0 |) in
+                  Value.Tuple
+                    [
+                      Value.StructTuple "revm_context_interface::host::LoadError::DBError" [] [] [];
+                      Value.StructTuple "core::option::Option::Some" [] [ E ] [ M.read (| e |) ]
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::ColdLoadSkipped"
+                    |) in
+                  Value.Tuple
+                    [
+                      Value.StructTuple
+                        "revm_context_interface::host::LoadError::ColdLoadSkipped"
+                        []
+                        []
+                        [];
+                      Value.StructTuple "core::option::Option::None" [] [ E ] []
+                    ]))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_into_parts :
+      forall (E : Ty.t),
+      M.IsAssociatedFunction.C (Self E) "into_parts" (into_parts E).
+    Admitted.
+    Global Typeclasses Opaque into_parts.
+  End Impl_revm_context_interface_journaled_state_JournalLoadError_E.
+  
+  Module Impl_core_convert_From_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+    Definition Self (E : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ].
+    
+    (*
+        fn from(e: E) -> Self {
+            JournalLoadError::DBError(e)
+        }
+    *)
+    Definition from (E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ e ] =>
+        ltac:(M.monadic
+          (let e := M.alloc (| E, e |) in
+          Value.StructTuple
+            "revm_context_interface::journaled_state::JournalLoadError::DBError"
+            []
+            [ E ]
+            [ M.read (| e |) ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (E : Ty.t),
+      M.IsTraitInstance
+        "core::convert::From"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ E ]
+        (Self E)
+        (* Instance *) [ ("from", InstanceField.Method (from E)) ].
+  End Impl_core_convert_From_E_for_revm_context_interface_journaled_state_JournalLoadError_E.
+  
+  Module Impl_core_convert_From_revm_context_interface_journaled_state_JournalLoadError_E_for_revm_context_interface_host_LoadError.
+    Definition Self (E : Ty.t) : Ty.t := Ty.path "revm_context_interface::host::LoadError".
+    
+    (*
+        fn from(e: JournalLoadError<E>) -> Self {
+            match e {
+                JournalLoadError::DBError(_) => LoadError::DBError,
+                JournalLoadError::ColdLoadSkipped => LoadError::ColdLoadSkipped,
+            }
+        }
+    *)
+    Definition from (E : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self E in
+      match ε, τ, α with
+      | [], [], [ e ] =>
+        ltac:(M.monadic
+          (let e :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "revm_context_interface::journaled_state::JournalLoadError")
+                []
+                [ E ],
+              e
+            |) in
+          M.match_operator (|
+            Ty.path "revm_context_interface::host::LoadError",
+            e,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::DBError",
+                      0
+                    |) in
+                  Value.StructTuple "revm_context_interface::host::LoadError::DBError" [] [] []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::journaled_state::JournalLoadError::ColdLoadSkipped"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::host::LoadError::ColdLoadSkipped"
+                    []
+                    []
+                    []))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (E : Ty.t),
+      M.IsTraitInstance
+        "core::convert::From"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *)
+        [ Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalLoadError") [] [ E ] ]
+        (Self E)
+        (* Instance *) [ ("from", InstanceField.Method (from E)) ].
+  End Impl_core_convert_From_revm_context_interface_journaled_state_JournalLoadError_E_for_revm_context_interface_host_LoadError.
   
   (*
   Enum TransferError
@@ -439,6 +3057,60 @@ Module journaled_state.
         Self
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
   End Impl_core_fmt_Debug_for_revm_context_interface_journaled_state_JournalCheckpoint.
+  
+  Module Impl_core_default_Default_for_revm_context_interface_journaled_state_JournalCheckpoint.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::JournalCheckpoint".
+    
+    (* Default *)
+    Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.mkStructRecord
+            "revm_context_interface::journaled_state::JournalCheckpoint"
+            []
+            []
+            [
+              ("log_i",
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "usize",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
+                  []
+                |));
+              ("journal_i",
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "usize",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
+                  []
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("default", InstanceField.Method default) ].
+  End Impl_core_default_Default_for_revm_context_interface_journaled_state_JournalCheckpoint.
   
   Module Impl_core_marker_Copy_for_revm_context_interface_journaled_state_JournalCheckpoint.
     Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::JournalCheckpoint".
@@ -1240,11 +3912,8 @@ Module journaled_state.
       ty_params := [];
       fields :=
         [
-          ("load",
-            Ty.apply
-              (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-              []
-              [ Ty.tuple [] ]);
+          ("is_delegate_account_cold",
+            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ]);
           ("is_empty", Ty.path "bool")
         ];
     } *)
@@ -1270,18 +3939,12 @@ Module journaled_state.
             []
             []
             [
-              ("load",
+              ("is_delegate_account_cold",
                 M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.tuple [] ],
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
                   M.get_trait_method (|
                     "core::clone::Clone",
-                    Ty.apply
-                      (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                      []
-                      [ Ty.tuple [] ],
+                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
                     [],
                     [],
                     "clone",
@@ -1297,7 +3960,7 @@ Module journaled_state.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "revm_context_interface::journaled_state::AccountLoad",
-                            "load"
+                            "is_delegate_account_cold"
                           |)
                         |)
                       |)
@@ -1377,7 +4040,10 @@ Module journaled_state.
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AccountLoad" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "load" |) |) |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| mk_str (| "is_delegate_account_cold" |) |)
+              |);
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                 M.pointer_coercion
@@ -1385,12 +4051,7 @@ Module journaled_state.
                   (Ty.apply
                     (Ty.path "&")
                     []
-                    [
-                      Ty.apply
-                        (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                        []
-                        [ Ty.tuple [] ]
-                    ])
+                    [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                 [
                   M.borrow (|
@@ -1401,7 +4062,7 @@ Module journaled_state.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "revm_context_interface::journaled_state::AccountLoad",
-                          "load"
+                          "is_delegate_account_cold"
                         |)
                       |)
                     |)
@@ -1464,18 +4125,12 @@ Module journaled_state.
             []
             []
             [
-              ("load",
+              ("is_delegate_account_cold",
                 M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.tuple [] ],
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
                   M.get_trait_method (|
                     "core::default::Default",
-                    Ty.apply
-                      (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                      []
-                      [ Ty.tuple [] ],
+                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
                     [],
                     [],
                     "default",
@@ -1573,17 +4228,9 @@ Module journaled_state.
                 Ty.path "bool",
                 M.get_trait_method (|
                   "core::cmp::PartialEq",
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.tuple [] ],
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
                   [],
-                  [
-                    Ty.apply
-                      (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                      []
-                      [ Ty.tuple [] ]
-                  ],
+                  [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ],
                   "eq",
                   [],
                   []
@@ -1594,7 +4241,7 @@ Module journaled_state.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "revm_context_interface::journaled_state::AccountLoad",
-                      "load"
+                      "is_delegate_account_cold"
                     |)
                   |);
                   M.borrow (|
@@ -1602,7 +4249,7 @@ Module journaled_state.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| other |) |),
                       "revm_context_interface::journaled_state::AccountLoad",
-                      "load"
+                      "is_delegate_account_cold"
                     |)
                   |)
                 ]
@@ -1667,130 +4314,28 @@ Module journaled_state.
         [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
   End Impl_core_cmp_Eq_for_revm_context_interface_journaled_state_AccountLoad.
   
-  Module Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_AccountLoad.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountLoad".
-    
-    (*     type Target = Eip7702CodeLoad<()>; *)
-    Definition _Target : Ty.t :=
-      Ty.apply
-        (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-        []
-        [ Ty.tuple [] ].
-    
-    (*
-        fn deref(&self) -> &Self::Target {
-            &self.load
-        }
-    *)
-    Definition deref (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (|
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::journaled_state::AccountLoad",
-                  "load"
-                |)
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::ops::deref::Deref"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *)
-        [ ("Target", InstanceField.Ty _Target); ("deref", InstanceField.Method deref) ].
-  End Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_AccountLoad.
-  
-  Module Impl_core_ops_deref_DerefMut_for_revm_context_interface_journaled_state_AccountLoad.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountLoad".
-    
-    (*
-        fn deref_mut(&mut self) -> &mut Self::Target {
-            &mut self.load
-        }
-    *)
-    Definition deref_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.MutRef,
-            M.deref (|
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_context_interface::journaled_state::AccountLoad",
-                      "load"
-                    |)
-                  |)
-                |)
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::ops::deref::DerefMut"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("deref_mut", InstanceField.Method deref_mut) ].
-  End Impl_core_ops_deref_DerefMut_for_revm_context_interface_journaled_state_AccountLoad.
-  
   (* StructRecord
     {
-      name := "Eip7702CodeLoad";
+      name := "AccountInfoLoad";
       const_params := [];
-      ty_params := [ "T" ];
+      ty_params := [];
       fields :=
         [
-          ("state_load",
-            Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ]);
-          ("is_delegate_account_cold",
-            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ])
+          ("account",
+            Ty.apply
+              (Ty.path "alloc::borrow::Cow")
+              []
+              [ Ty.path "revm_state::account_info::AccountInfo" ]);
+          ("is_cold", Ty.path "bool");
+          ("is_empty", Ty.path "bool")
         ];
     } *)
   
-  Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ].
+  Module Impl_core_clone_Clone_for_revm_context_interface_journaled_state_AccountInfoLoad.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad".
     
     (* Clone *)
-    Definition clone (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
+    Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -1799,28 +4344,26 @@ Module journaled_state.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ T ]
-                ],
+                [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
               self
             |) in
           Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
+            "revm_context_interface::journaled_state::AccountInfoLoad"
             []
-            [ T ]
+            []
             [
-              ("state_load",
+              ("account",
                 M.call_closure (|
-                  Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
+                  Ty.apply
+                    (Ty.path "alloc::borrow::Cow")
+                    []
+                    [ Ty.path "revm_state::account_info::AccountInfo" ],
                   M.get_trait_method (|
                     "core::clone::Clone",
                     Ty.apply
-                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      (Ty.path "alloc::borrow::Cow")
                       []
-                      [ T ],
+                      [ Ty.path "revm_state::account_info::AccountInfo" ],
                     [],
                     [],
                     "clone",
@@ -1835,20 +4378,20 @@ Module journaled_state.
                           Pointer.Kind.Ref,
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
-                            "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                            "state_load"
+                            "revm_context_interface::journaled_state::AccountInfoLoad",
+                            "account"
                           |)
                         |)
                       |)
                     |)
                   ]
                 |));
-              ("is_delegate_account_cold",
+              ("is_cold",
                 M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
+                  Ty.path "bool",
                   M.get_trait_method (|
                     "core::clone::Clone",
-                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
+                    Ty.path "bool",
                     [],
                     [],
                     "clone",
@@ -1863,8 +4406,36 @@ Module journaled_state.
                           Pointer.Kind.Ref,
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
-                            "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                            "is_delegate_account_cold"
+                            "revm_context_interface::journaled_state::AccountInfoLoad",
+                            "is_cold"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |));
+              ("is_empty",
+                M.call_closure (|
+                  Ty.path "bool",
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::journaled_state::AccountInfoLoad",
+                            "is_empty"
                           |)
                         |)
                       |)
@@ -1876,22 +4447,19 @@ Module journaled_state.
       end.
     
     Axiom Implements :
-      forall (T : Ty.t),
       M.IsTraitInstance
         "core::clone::Clone"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
-  End Impl_core_clone_Clone_where_core_clone_Clone_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
+        Self
+        (* Instance *) [ ("clone", InstanceField.Method clone) ].
+  End Impl_core_clone_Clone_for_revm_context_interface_journaled_state_AccountInfoLoad.
   
-  Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ].
+  Module Impl_core_fmt_Debug_for_revm_context_interface_journaled_state_AccountInfoLoad.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad".
     
     (* Debug *)
-    Definition fmt (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
+    Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self; f ] =>
         ltac:(M.monadic
@@ -1900,12 +4468,7 @@ Module journaled_state.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ T ]
-                ],
+                [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
               self
             |) in
           let f :=
@@ -1917,14 +4480,14 @@ Module journaled_state.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (|
               Ty.path "core::fmt::Formatter",
-              "debug_struct_field2_finish",
+              "debug_struct_field3_finish",
               [],
               []
             |),
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Eip7702CodeLoad" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "state_load" |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AccountInfoLoad" |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "account" |) |) |);
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                 M.pointer_coercion
@@ -1934,9 +4497,9 @@ Module journaled_state.
                     []
                     [
                       Ty.apply
-                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        (Ty.path "alloc::borrow::Cow")
                         []
-                        [ T ]
+                        [ Ty.path "revm_state::account_info::AccountInfo" ]
                     ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                 [
@@ -1947,31 +4510,43 @@ Module journaled_state.
                         Pointer.Kind.Ref,
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
-                          "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                          "state_load"
+                          "revm_context_interface::journaled_state::AccountInfoLoad",
+                          "account"
                         |)
                       |)
                     |)
                   |)
                 ]
               |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| mk_str (| "is_delegate_account_cold" |) |)
-              |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_cold" |) |) |);
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ]
-                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::journaled_state::AccountInfoLoad",
+                          "is_cold"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_empty" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                 [
                   M.borrow (|
@@ -1980,16 +4555,13 @@ Module journaled_state.
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ],
+                          Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
                           M.borrow (|
                             Pointer.Kind.Ref,
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
-                              "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                              "is_delegate_account_cold"
+                              "revm_context_interface::journaled_state::AccountInfoLoad",
+                              "is_empty"
                             |)
                           |)
                         |)
@@ -2004,39 +4576,39 @@ Module journaled_state.
       end.
     
     Axiom Implements :
-      forall (T : Ty.t),
       M.IsTraitInstance
         "core::fmt::Debug"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("fmt", InstanceField.Method (fmt T)) ].
-  End Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
+        Self
+        (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+  End Impl_core_fmt_Debug_for_revm_context_interface_journaled_state_AccountInfoLoad.
   
-  Module Impl_core_default_Default_where_core_default_Default_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ].
+  Module Impl_core_default_Default_for_revm_context_interface_journaled_state_AccountInfoLoad.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad".
     
     (* Default *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
+    Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
           (Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
+            "revm_context_interface::journaled_state::AccountInfoLoad"
             []
-            [ T ]
+            []
             [
-              ("state_load",
+              ("account",
                 M.call_closure (|
-                  Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
+                  Ty.apply
+                    (Ty.path "alloc::borrow::Cow")
+                    []
+                    [ Ty.path "revm_state::account_info::AccountInfo" ],
                   M.get_trait_method (|
                     "core::default::Default",
                     Ty.apply
-                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      (Ty.path "alloc::borrow::Cow")
                       []
-                      [ T ],
+                      [ Ty.path "revm_state::account_info::AccountInfo" ],
                     [],
                     [],
                     "default",
@@ -2045,12 +4617,26 @@ Module journaled_state.
                   |),
                   []
                 |));
-              ("is_delegate_account_cold",
+              ("is_cold",
                 M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
+                  Ty.path "bool",
                   M.get_trait_method (|
                     "core::default::Default",
-                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
+                  []
+                |));
+              ("is_empty",
+                M.call_closure (|
+                  Ty.path "bool",
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "bool",
                     [],
                     [],
                     "default",
@@ -2064,36 +4650,31 @@ Module journaled_state.
       end.
     
     Axiom Implements :
-      forall (T : Ty.t),
       M.IsTraitInstance
         "core::default::Default"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-  End Impl_core_default_Default_where_core_default_Default_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
+        Self
+        (* Instance *) [ ("default", InstanceField.Method default) ].
+  End Impl_core_default_Default_for_revm_context_interface_journaled_state_AccountInfoLoad.
   
-  Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ].
+  Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_journaled_state_AccountInfoLoad.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad".
     
     Axiom Implements :
-      forall (T : Ty.t),
       M.IsTraitInstance
         "core::marker::StructuralPartialEq"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self T)
+        Self
         (* Instance *) [].
-  End Impl_core_marker_StructuralPartialEq_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
+  End Impl_core_marker_StructuralPartialEq_for_revm_context_interface_journaled_state_AccountInfoLoad.
   
-  Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_T_revm_context_interface_journaled_state_Eip7702CodeLoad_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ].
+  Module Impl_core_cmp_PartialEq_revm_context_interface_journaled_state_AccountInfoLoad_for_revm_context_interface_journaled_state_AccountInfoLoad.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad".
     
     (* PartialEq *)
-    Definition eq (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
+    Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self; other ] =>
         ltac:(M.monadic
@@ -2102,12 +4683,7 @@ Module journaled_state.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ T ]
-                ],
+                [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
               self
             |) in
           let other :=
@@ -2115,54 +4691,69 @@ Module journaled_state.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ T ]
-                ],
+                [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
               other
             |) in
           LogicalOp.and (|
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_trait_method (|
-                "core::cmp::PartialEq",
-                Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
-                [],
-                [ Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ]
-                ],
-                "eq",
-                [],
-                []
+            LogicalOp.and (|
+              M.call_closure (|
+                Ty.path "bool",
+                BinOp.eq,
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                      "is_cold"
+                    |)
+                  |);
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                      "is_cold"
+                    |)
+                  |)
+                ]
               |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                    "state_load"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                    "state_load"
-                  |)
-                |)
-              ]
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  BinOp.eq,
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context_interface::journaled_state::AccountInfoLoad",
+                        "is_empty"
+                      |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_context_interface::journaled_state::AccountInfoLoad",
+                        "is_empty"
+                      |)
+                    |)
+                  ]
+                |)))
             |),
             ltac:(M.monadic
               (M.call_closure (|
                 Ty.path "bool",
                 M.get_trait_method (|
                   "core::cmp::PartialEq",
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
+                  Ty.apply
+                    (Ty.path "alloc::borrow::Cow")
+                    []
+                    [ Ty.path "revm_state::account_info::AccountInfo" ],
                   [],
-                  [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ],
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::borrow::Cow")
+                      []
+                      [ Ty.path "revm_state::account_info::AccountInfo" ]
+                  ],
                   "eq",
                   [],
                   []
@@ -2172,16 +4763,16 @@ Module journaled_state.
                     Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
-                      "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                      "is_delegate_account_cold"
+                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                      "account"
                     |)
                   |);
                   M.borrow (|
                     Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| other |) |),
-                      "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                      "is_delegate_account_cold"
+                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                      "account"
                     |)
                   |)
                 ]
@@ -2191,28 +4782,24 @@ Module journaled_state.
       end.
     
     Axiom Implements :
-      forall (T : Ty.t),
       M.IsTraitInstance
         "core::cmp::PartialEq"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *)
-        [ Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ] ]
-        (Self T)
-        (* Instance *) [ ("eq", InstanceField.Method (eq T)) ].
-  End Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_T_revm_context_interface_journaled_state_Eip7702CodeLoad_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
+        [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ]
+        Self
+        (* Instance *) [ ("eq", InstanceField.Method eq) ].
+  End Impl_core_cmp_PartialEq_revm_context_interface_journaled_state_AccountInfoLoad_for_revm_context_interface_journaled_state_AccountInfoLoad.
   
-  Module Impl_core_cmp_Eq_where_core_cmp_Eq_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ].
+  Module Impl_core_cmp_Eq_for_revm_context_interface_journaled_state_AccountInfoLoad.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad".
     
     (* Eq *)
     Definition assert_receiver_is_total_eq
-        (T : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self T in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -2221,12 +4808,7 @@ Module journaled_state.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ T ]
-                ],
+                [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
               self
             |) in
           M.match_operator (|
@@ -2246,703 +4828,149 @@ Module journaled_state.
       end.
     
     Axiom Implements :
-      forall (T : Ty.t),
       M.IsTraitInstance
         "core::cmp::Eq"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self T)
+        Self
         (* Instance *)
-        [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq T)) ].
-  End Impl_core_cmp_Eq_where_core_cmp_Eq_T_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
+        [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
+  End Impl_core_cmp_Eq_for_revm_context_interface_journaled_state_AccountInfoLoad.
   
-  Module Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ].
-    
-    (*     type Target = StateLoad<T>; *)
-    Definition _Target (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ].
+  Module Impl_revm_context_interface_journaled_state_AccountInfoLoad.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad".
     
     (*
-        fn deref(&self) -> &Self::Target {
-            &self.state_load
-        }
-    *)
-    Definition deref (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ T ]
-                ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (|
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                  "state_load"
-                |)
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::ops::deref::Deref"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *)
-        [ ("Target", InstanceField.Ty (_Target T)); ("deref", InstanceField.Method (deref T)) ].
-  End Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-  
-  Module Impl_core_ops_deref_DerefMut_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ].
-    
-    (*
-        fn deref_mut(&mut self) -> &mut Self::Target {
-            &mut self.state_load
-        }
-    *)
-    Definition deref_mut (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ T ]
-                ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.MutRef,
-            M.deref (|
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                      "state_load"
-                    |)
-                  |)
-                |)
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::ops::deref::DerefMut"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("deref_mut", InstanceField.Method (deref_mut T)) ].
-  End Impl_core_ops_deref_DerefMut_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-  
-  Module Impl_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [ T ].
-    
-    (*
-        pub fn new_state_load(state_load: StateLoad<T>) -> Self {
+        pub fn new(account: &'a AccountInfo, is_cold: bool, is_empty: bool) -> Self {
             Self {
-                state_load,
-                is_delegate_account_cold: None,
+                account: Cow::Borrowed(account),
+                is_cold,
+                is_empty,
             }
         }
     *)
-    Definition new_state_load
-        (T : Ty.t)
-        (ε : list Value.t)
-        (τ : list Ty.t)
-        (α : list Value.t)
-        : M :=
-      let Self : Ty.t := Self T in
+    Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ state_load ] =>
+      | [], [], [ account; is_cold; is_empty ] =>
         ltac:(M.monadic
-          (let state_load :=
+          (let account :=
             M.alloc (|
-              Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
-              state_load
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::account_info::AccountInfo" ],
+              account
             |) in
-          Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
-            []
-            [ T ]
-            [
-              ("state_load", M.read (| state_load |));
-              ("is_delegate_account_cold",
-                Value.StructTuple "core::option::Option::None" [] [ Ty.path "bool" ] [])
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_new_state_load :
-      forall (T : Ty.t),
-      M.IsAssociatedFunction.C (Self T) "new_state_load" (new_state_load T).
-    Admitted.
-    Global Typeclasses Opaque new_state_load.
-    
-    (*
-        pub fn new_not_delegated(data: T, is_cold: bool) -> Self {
-            Self {
-                state_load: StateLoad::new(data, is_cold),
-                is_delegate_account_cold: None,
-            }
-        }
-    *)
-    Definition new_not_delegated
-        (T : Ty.t)
-        (ε : list Value.t)
-        (τ : list Ty.t)
-        (α : list Value.t)
-        : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ data; is_cold ] =>
-        ltac:(M.monadic
-          (let data := M.alloc (| T, data |) in
           let is_cold := M.alloc (| Ty.path "bool", is_cold |) in
+          let is_empty := M.alloc (| Ty.path "bool", is_empty |) in
           Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
+            "revm_context_interface::journaled_state::AccountInfoLoad"
             []
-            [ T ]
+            []
             [
-              ("state_load",
-                M.call_closure (|
-                  Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                      []
-                      [ T ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| data |); M.read (| is_cold |) ]
-                |));
-              ("is_delegate_account_cold",
-                Value.StructTuple "core::option::Option::None" [] [ Ty.path "bool" ] [])
+              ("account",
+                Value.StructTuple
+                  "alloc::borrow::Cow::Borrowed"
+                  []
+                  [ Ty.path "revm_state::account_info::AccountInfo" ]
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account |) |) |) ]);
+              ("is_cold", M.read (| is_cold |));
+              ("is_empty", M.read (| is_empty |))
             ]))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_new_not_delegated :
-      forall (T : Ty.t),
-      M.IsAssociatedFunction.C (Self T) "new_not_delegated" (new_not_delegated T).
-    Admitted.
-    Global Typeclasses Opaque new_not_delegated.
-    
-    (*
-        pub fn into_components(self) -> (T, Eip7702CodeLoad<()>) {
-            let is_cold = self.is_cold;
-            (
-                self.state_load.data,
-                Eip7702CodeLoad {
-                    state_load: StateLoad::new((), is_cold),
-                    is_delegate_account_cold: self.is_delegate_account_cold,
-                },
-            )
-        }
-    *)
-    Definition into_components
-        (T : Ty.t)
-        (ε : list Value.t)
-        (τ : list Ty.t)
-        (α : list Value.t)
-        : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                []
-                [ T ],
-              self
-            |) in
-          M.read (|
-            let~ is_cold : Ty.path "bool" :=
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                            []
-                            [ T ]
-                        ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                          []
-                          [ T ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                    |)
-                  |),
-                  "revm_context_interface::journaled_state::StateLoad",
-                  "is_cold"
-                |)
-              |) in
-            M.alloc (|
-              Ty.tuple
-                [
-                  T;
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.tuple [] ]
-                ],
-              Value.Tuple
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                        "state_load"
-                      |),
-                      "revm_context_interface::journaled_state::StateLoad",
-                      "data"
-                    |)
-                  |);
-                  Value.mkStructRecord
-                    "revm_context_interface::journaled_state::Eip7702CodeLoad"
-                    []
-                    [ Ty.tuple [] ]
-                    [
-                      ("state_load",
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                            []
-                            [ Ty.tuple [] ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                              []
-                              [ Ty.tuple [] ],
-                            "new",
-                            [],
-                            []
-                          |),
-                          [ Value.Tuple []; M.read (| is_cold |) ]
-                        |));
-                      ("is_delegate_account_cold",
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            self,
-                            "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                            "is_delegate_account_cold"
-                          |)
-                        |))
-                    ]
-                ]
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_into_components :
-      forall (T : Ty.t),
-      M.IsAssociatedFunction.C (Self T) "into_components" (into_components T).
-    Admitted.
-    Global Typeclasses Opaque into_components.
-    
-    (*
-        pub fn set_delegate_load(&mut self, is_delegate_account_cold: bool) {
-            self.is_delegate_account_cold = Some(is_delegate_account_cold);
-        }
-    *)
-    Definition set_delegate_load
-        (T : Ty.t)
-        (ε : list Value.t)
-        (τ : list Ty.t)
-        (α : list Value.t)
-        : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self; is_delegate_account_cold ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ T ]
-                ],
-              self
-            |) in
-          let is_delegate_account_cold := M.alloc (| Ty.path "bool", is_delegate_account_cold |) in
-          M.read (|
-            let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                  "is_delegate_account_cold"
-                |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "bool" ]
-                  [ M.read (| is_delegate_account_cold |) ]
-              |) in
-            M.alloc (| Ty.tuple [], Value.Tuple [] |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_set_delegate_load :
-      forall (T : Ty.t),
-      M.IsAssociatedFunction.C (Self T) "set_delegate_load" (set_delegate_load T).
-    Admitted.
-    Global Typeclasses Opaque set_delegate_load.
-    
-    (*
-        pub fn new(state_load: StateLoad<T>, is_delegate_account_cold: bool) -> Self {
-            Self {
-                state_load,
-                is_delegate_account_cold: Some(is_delegate_account_cold),
-            }
-        }
-    *)
-    Definition new (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ state_load; is_delegate_account_cold ] =>
-        ltac:(M.monadic
-          (let state_load :=
-            M.alloc (|
-              Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
-              state_load
-            |) in
-          let is_delegate_account_cold := M.alloc (| Ty.path "bool", is_delegate_account_cold |) in
-          Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
-            []
-            [ T ]
-            [
-              ("state_load", M.read (| state_load |));
-              ("is_delegate_account_cold",
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "bool" ]
-                  [ M.read (| is_delegate_account_cold |) ])
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_new :
-      forall (T : Ty.t),
-      M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
     Admitted.
     Global Typeclasses Opaque new.
-  End Impl_revm_context_interface_journaled_state_Eip7702CodeLoad_T.
-  
-  Axiom JournalDBError :
-    forall (CTX : Ty.t),
-    (Ty.apply (Ty.path "revm_context_interface::journaled_state::JournalDBError") [] [ CTX ]) =
-      (Ty.associated_in_trait
-        "revm_database_interface::Database"
-        []
-        []
-        (Ty.associated_in_trait
-          "revm_context_interface::journaled_state::Journal"
-          []
-          []
-          (Ty.associated_in_trait
-            "revm_context_interface::journaled_state::JournalGetter"
-            []
-            []
-            CTX
-            "Journal")
-          "Database")
-        "Error").
-  
-  (* Trait *)
-  (* Empty module 'JournalGetter' *)
-  
-  Module Impl_revm_context_interface_journaled_state_JournalGetter_where_revm_context_interface_journaled_state_JournalGetter_T_for_ref_mut_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
-    
-    (*     type Journal = T::Journal; *)
-    Definition _Journal (T : Ty.t) : Ty.t :=
-      Ty.associated_in_trait
-        "revm_context_interface::journaled_state::JournalGetter"
-        []
-        []
-        T
-        "Journal".
     
     (*
-        fn journal(&mut self) -> &mut Self::Journal {
-            T::journal( *self)
+        pub fn into_state_load<F, O>(self, f: F) -> StateLoad<O>
+        where
+            F: FnOnce(Cow<'a, AccountInfo>) -> O,
+        {
+            StateLoad::new(f(self.account), self.is_cold)
         }
     *)
-    Definition journal (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
+    Definition into_state_load (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ self ] =>
+      | [], [ F; _ as O ], [ self; f ] =>
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+              Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
               self
             |) in
-          M.borrow (|
-            Pointer.Kind.MutRef,
-            M.deref (|
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&mut")
-                      []
-                      [
-                        Ty.associated_in_trait
-                          "revm_context_interface::journaled_state::JournalGetter"
-                          []
-                          []
-                          T
-                          "Journal"
-                      ],
-                    M.get_trait_method (|
-                      "revm_context_interface::journaled_state::JournalGetter",
-                      T,
-                      [],
-                      [],
-                      "journal",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                      |)
-                    ]
-                  |)
-                |)
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    (*
-        fn journal_ref(&self) -> &Self::Journal {
-            T::journal_ref( *self)
-        }
-    *)
-    Definition journal_ref (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ], self |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (|
+          let f := M.alloc (| F, f |) in
+          M.call_closure (|
+            Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ O ],
+            M.get_associated_function (|
+              Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ O ],
+              "new",
+              [],
+              []
+            |),
+            [
               M.call_closure (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.associated_in_trait
-                      "revm_context_interface::journaled_state::JournalGetter"
-                      []
-                      []
-                      T
-                      "Journal"
-                  ],
+                O,
                 M.get_trait_method (|
-                  "revm_context_interface::journaled_state::JournalGetter",
-                  T,
+                  "core::ops::function::FnOnce",
+                  F,
                   [],
-                  [],
-                  "journal_ref",
+                  [
+                    Ty.tuple
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::borrow::Cow")
+                          []
+                          [ Ty.path "revm_state::account_info::AccountInfo" ]
+                      ]
+                  ],
+                  "call_once",
                   [],
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |)
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "revm_context_interface::journaled_state::JournalGetter"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *)
-        [
-          ("Journal", InstanceField.Ty (_Journal T));
-          ("journal", InstanceField.Method (journal T));
-          ("journal_ref", InstanceField.Method (journal_ref T))
-        ].
-  End Impl_revm_context_interface_journaled_state_JournalGetter_where_revm_context_interface_journaled_state_JournalGetter_T_for_ref_mut_T.
-  
-  Module Impl_revm_context_interface_journaled_state_JournalGetter_where_revm_context_interface_journaled_state_JournalGetter_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
-    
-    (*     type Journal = T::Journal; *)
-    Definition _Journal (T : Ty.t) : Ty.t :=
-      Ty.associated_in_trait
-        "revm_context_interface::journaled_state::JournalGetter"
-        []
-        []
-        T
-        "Journal".
-    
-    (*
-        fn journal(&mut self) -> &mut Self::Journal {
-            T::journal(self.as_mut())
-        }
-    *)
-    Definition journal (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ] ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.MutRef,
-            M.deref (|
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&mut")
-                      []
-                      [
-                        Ty.associated_in_trait
-                          "revm_context_interface::journaled_state::JournalGetter"
-                          []
-                          []
-                          T
-                          "Journal"
-                      ],
-                    M.get_trait_method (|
-                      "revm_context_interface::journaled_state::JournalGetter",
-                      T,
-                      [],
-                      [],
-                      "journal",
-                      [],
-                      []
-                    |),
+                  M.read (| f |);
+                  Value.Tuple
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&mut") [] [ T ],
-                            M.get_trait_method (|
-                              "core::convert::AsMut",
-                              Ty.apply
-                                (Ty.path "alloc::boxed::Box")
-                                []
-                                [ T; Ty.path "alloc::alloc::Global" ],
-                              [],
-                              [ T ],
-                              "as_mut",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-                          |)
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "revm_context_interface::journaled_state::AccountInfoLoad",
+                          "account"
                         |)
                       |)
                     ]
-                  |)
+                ]
+              |);
+              M.read (|
+                M.SubPointer.get_struct_record_field (|
+                  self,
+                  "revm_context_interface::journaled_state::AccountInfoLoad",
+                  "is_cold"
                 |)
               |)
-            |)
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
+    Global Instance AssociatedFunction_into_state_load :
+      M.IsAssociatedFunction.C Self "into_state_load" into_state_load.
+    Admitted.
+    Global Typeclasses Opaque into_state_load.
+  End Impl_revm_context_interface_journaled_state_AccountInfoLoad.
+  
+  Module Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_AccountInfoLoad.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad".
+    
+    (*     type Target = AccountInfo; *)
+    Definition _Target : Ty.t := Ty.path "revm_state::account_info::AccountInfo".
+    
     (*
-        fn journal_ref(&self) -> &Self::Journal {
-            T::journal_ref(self.as_ref())
+        fn deref(&self) -> &Self::Target {
+            &self.account
         }
     *)
-    Definition journal_ref (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
+    Definition deref (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -2951,30 +4979,23 @@ Module journaled_state.
               Ty.apply
                 (Ty.path "&")
                 []
-                [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ] ],
+                [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
               self
             |) in
           M.borrow (|
             Pointer.Kind.Ref,
             M.deref (|
               M.call_closure (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.associated_in_trait
-                      "revm_context_interface::journaled_state::JournalGetter"
-                      []
-                      []
-                      T
-                      "Journal"
-                  ],
+                Ty.apply (Ty.path "&") [] [ Ty.path "revm_state::account_info::AccountInfo" ],
                 M.get_trait_method (|
-                  "revm_context_interface::journaled_state::JournalGetter",
-                  T,
+                  "core::ops::deref::Deref",
+                  Ty.apply
+                    (Ty.path "alloc::borrow::Cow")
+                    []
+                    [ Ty.path "revm_state::account_info::AccountInfo" ],
                   [],
                   [],
-                  "journal_ref",
+                  "deref",
                   [],
                   []
                 |),
@@ -2982,21 +5003,13 @@ Module journaled_state.
                   M.borrow (|
                     Pointer.Kind.Ref,
                     M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ T ],
-                        M.get_trait_method (|
-                          "core::convert::AsRef",
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [ T; Ty.path "alloc::alloc::Global" ],
-                          [],
-                          [ T ],
-                          "as_ref",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::journaled_state::AccountInfoLoad",
+                          "account"
+                        |)
                       |)
                     |)
                   |)
@@ -3008,17 +5021,12 @@ Module journaled_state.
       end.
     
     Axiom Implements :
-      forall (T : Ty.t),
       M.IsTraitInstance
-        "revm_context_interface::journaled_state::JournalGetter"
+        "core::ops::deref::Deref"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self T)
+        Self
         (* Instance *)
-        [
-          ("Journal", InstanceField.Ty (_Journal T));
-          ("journal", InstanceField.Method (journal T));
-          ("journal_ref", InstanceField.Method (journal_ref T))
-        ].
-  End Impl_revm_context_interface_journaled_state_JournalGetter_where_revm_context_interface_journaled_state_JournalGetter_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+        [ ("Target", InstanceField.Ty _Target); ("deref", InstanceField.Method deref) ].
+  End Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_AccountInfoLoad.
 End journaled_state.

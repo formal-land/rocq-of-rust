@@ -3,53 +3,118 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module result.
   (* Trait *)
-  (* Empty module 'HaltReasonTrait' *)
+  (* Empty module 'HaltReasonTr' *)
   
-  Module Impl_revm_context_interface_result_HaltReasonTrait_where_core_clone_Clone_HaltReasonT_where_core_fmt_Debug_HaltReasonT_where_core_cmp_PartialEq_HaltReasonT_where_core_cmp_Eq_HaltReasonT_where_core_convert_From_HaltReasonT_revm_context_interface_result_HaltReason_for_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t := HaltReasonT.
+  Module Impl_revm_context_interface_result_HaltReasonTr_where_core_clone_Clone_T_where_core_fmt_Debug_T_where_core_cmp_PartialEq_T_where_core_cmp_Eq_T_where_core_convert_From_T_revm_context_interface_result_HaltReason_for_T.
+    Definition Self (T : Ty.t) : Ty.t := T.
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (T : Ty.t),
       M.IsTraitInstance
-        "revm_context_interface::result::HaltReasonTrait"
+        "revm_context_interface::result::HaltReasonTr"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self HaltReasonT)
+        (Self T)
         (* Instance *) [].
-  End Impl_revm_context_interface_result_HaltReasonTrait_where_core_clone_Clone_HaltReasonT_where_core_fmt_Debug_HaltReasonT_where_core_cmp_PartialEq_HaltReasonT_where_core_cmp_Eq_HaltReasonT_where_core_convert_From_HaltReasonT_revm_context_interface_result_HaltReason_for_HaltReasonT.
+  End Impl_revm_context_interface_result_HaltReasonTr_where_core_clone_Clone_T_where_core_fmt_Debug_T_where_core_cmp_PartialEq_T_where_core_cmp_Eq_T_where_core_convert_From_T_revm_context_interface_result_HaltReason_for_T.
   
   (* StructRecord
     {
-      name := "ResultAndState";
+      name := "ExecResultAndState";
       const_params := [];
-      ty_params := [ "HaltReasonT" ];
-      fields :=
-        [
-          ("result",
-            Ty.apply
-              (Ty.path "revm_context_interface::result::ExecutionResult")
-              []
-              [ HaltReasonT ]);
-          ("state",
-            Ty.apply
-              (Ty.path "hashbrown::map::HashMap")
-              []
-              [
-                Ty.path "alloy_primitives::bits::address::Address";
-                Ty.path "revm_state::Account";
-                Ty.path "foldhash::seed::fast::RandomState";
-                Ty.path "hashbrown::raw::alloc::inner::Global"
-              ])
-        ];
+      ty_params := [ "R"; "S" ];
+      fields := [ ("result", R); ("state", S) ];
     } *)
   
-  Module Impl_core_fmt_Debug_where_core_fmt_Debug_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ResultAndState") [] [ HaltReasonT ].
+  Module Impl_core_clone_Clone_where_core_clone_Clone_R_where_core_clone_Clone_S_for_revm_context_interface_result_ExecResultAndState_R_S.
+    Definition Self (R S : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecResultAndState") [] [ R; S ].
+    
+    (* Clone *)
+    Definition clone (R S : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self R S in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::ExecResultAndState")
+                    []
+                    [ R; S ]
+                ],
+              self
+            |) in
+          Value.mkStructRecord
+            "revm_context_interface::result::ExecResultAndState"
+            []
+            [ R; S ]
+            [
+              ("result",
+                M.call_closure (|
+                  R,
+                  M.get_trait_method (| "core::clone::Clone", R, [], [], "clone", [], [] |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::result::ExecResultAndState",
+                            "result"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |));
+              ("state",
+                M.call_closure (|
+                  S,
+                  M.get_trait_method (| "core::clone::Clone", S, [], [], "clone", [], [] |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::result::ExecResultAndState",
+                            "state"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (R S : Ty.t),
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self R S)
+        (* Instance *) [ ("clone", InstanceField.Method (clone R S)) ].
+  End Impl_core_clone_Clone_where_core_clone_Clone_R_where_core_clone_Clone_S_for_revm_context_interface_result_ExecResultAndState_R_S.
+  
+  Module Impl_core_fmt_Debug_where_core_fmt_Debug_R_where_core_fmt_Debug_S_for_revm_context_interface_result_ExecResultAndState_R_S.
+    Definition Self (R S : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecResultAndState") [] [ R; S ].
     
     (* Debug *)
-    Definition fmt (HaltReasonT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self HaltReasonT in
+    Definition fmt (R S : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self R S in
       match ε, τ, α with
       | [], [], [ self; f ] =>
         ltac:(M.monadic
@@ -60,9 +125,9 @@ Module result.
                 []
                 [
                   Ty.apply
-                    (Ty.path "revm_context_interface::result::ResultAndState")
+                    (Ty.path "revm_context_interface::result::ExecResultAndState")
                     []
-                    [ HaltReasonT ]
+                    [ R; S ]
                 ],
               self
             |) in
@@ -81,21 +146,13 @@ Module result.
             |),
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ResultAndState" |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ExecResultAndState" |) |) |);
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "result" |) |) |);
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "revm_context_interface::result::ExecutionResult")
-                        []
-                        [ HaltReasonT ]
-                    ])
+                  (Ty.apply (Ty.path "&") [] [ R ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                 [
                   M.borrow (|
@@ -105,7 +162,7 @@ Module result.
                         Pointer.Kind.Ref,
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
-                          "revm_context_interface::result::ResultAndState",
+                          "revm_context_interface::result::ExecResultAndState",
                           "result"
                         |)
                       |)
@@ -118,25 +175,7 @@ Module result.
                 Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "hashbrown::map::HashMap")
-                            []
-                            [
-                              Ty.path "alloy_primitives::bits::address::Address";
-                              Ty.path "revm_state::Account";
-                              Ty.path "foldhash::seed::fast::RandomState";
-                              Ty.path "hashbrown::raw::alloc::inner::Global"
-                            ]
-                        ]
-                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ S ] ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                 [
                   M.borrow (|
@@ -145,25 +184,12 @@ Module result.
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "hashbrown::map::HashMap")
-                                []
-                                [
-                                  Ty.path "alloy_primitives::bits::address::Address";
-                                  Ty.path "revm_state::Account";
-                                  Ty.path "foldhash::seed::fast::RandomState";
-                                  Ty.path "hashbrown::raw::alloc::inner::Global"
-                                ]
-                            ],
+                          Ty.apply (Ty.path "&") [] [ S ],
                           M.borrow (|
                             Pointer.Kind.Ref,
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
-                              "revm_context_interface::result::ResultAndState",
+                              "revm_context_interface::result::ExecResultAndState",
                               "state"
                             |)
                           |)
@@ -179,161 +205,36 @@ Module result.
       end.
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (R S : Ty.t),
       M.IsTraitInstance
         "core::fmt::Debug"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self HaltReasonT)
-        (* Instance *) [ ("fmt", InstanceField.Method (fmt HaltReasonT)) ].
-  End Impl_core_fmt_Debug_where_core_fmt_Debug_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
+        (Self R S)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt R S)) ].
+  End Impl_core_fmt_Debug_where_core_fmt_Debug_R_where_core_fmt_Debug_S_for_revm_context_interface_result_ExecResultAndState_R_S.
   
-  Module Impl_core_clone_Clone_where_core_clone_Clone_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ResultAndState") [] [ HaltReasonT ].
-    
-    (* Clone *)
-    Definition clone
-        (HaltReasonT : Ty.t)
-        (ε : list Value.t)
-        (τ : list Ty.t)
-        (α : list Value.t)
-        : M :=
-      let Self : Ty.t := Self HaltReasonT in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::result::ResultAndState")
-                    []
-                    [ HaltReasonT ]
-                ],
-              self
-            |) in
-          Value.mkStructRecord
-            "revm_context_interface::result::ResultAndState"
-            []
-            [ HaltReasonT ]
-            [
-              ("result",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::result::ExecutionResult")
-                    []
-                    [ HaltReasonT ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.apply
-                      (Ty.path "revm_context_interface::result::ExecutionResult")
-                      []
-                      [ HaltReasonT ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::result::ResultAndState",
-                            "result"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("state",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "hashbrown::map::HashMap")
-                    []
-                    [
-                      Ty.path "alloy_primitives::bits::address::Address";
-                      Ty.path "revm_state::Account";
-                      Ty.path "foldhash::seed::fast::RandomState";
-                      Ty.path "hashbrown::raw::alloc::inner::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.apply
-                      (Ty.path "hashbrown::map::HashMap")
-                      []
-                      [
-                        Ty.path "alloy_primitives::bits::address::Address";
-                        Ty.path "revm_state::Account";
-                        Ty.path "foldhash::seed::fast::RandomState";
-                        Ty.path "hashbrown::raw::alloc::inner::Global"
-                      ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::result::ResultAndState",
-                            "state"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
+  Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_result_ExecResultAndState_R_S.
+    Definition Self (R S : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecResultAndState") [] [ R; S ].
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
-      M.IsTraitInstance
-        "core::clone::Clone"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self HaltReasonT)
-        (* Instance *) [ ("clone", InstanceField.Method (clone HaltReasonT)) ].
-  End Impl_core_clone_Clone_where_core_clone_Clone_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
-  
-  Module Impl_core_marker_StructuralPartialEq_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ResultAndState") [] [ HaltReasonT ].
-    
-    Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (R S : Ty.t),
       M.IsTraitInstance
         "core::marker::StructuralPartialEq"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self HaltReasonT)
+        (Self R S)
         (* Instance *) [].
-  End Impl_core_marker_StructuralPartialEq_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
+  End Impl_core_marker_StructuralPartialEq_for_revm_context_interface_result_ExecResultAndState_R_S.
   
-  Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_revm_context_interface_result_ResultAndState_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ResultAndState") [] [ HaltReasonT ].
+  Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_R_where_core_cmp_PartialEq_S_revm_context_interface_result_ExecResultAndState_R_S_for_revm_context_interface_result_ExecResultAndState_R_S.
+    Definition Self (R S : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecResultAndState") [] [ R; S ].
     
     (* PartialEq *)
-    Definition eq (HaltReasonT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self HaltReasonT in
+    Definition eq (R S : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self R S in
       match ε, τ, α with
       | [], [], [ self; other ] =>
         ltac:(M.monadic
@@ -344,9 +245,9 @@ Module result.
                 []
                 [
                   Ty.apply
-                    (Ty.path "revm_context_interface::result::ResultAndState")
+                    (Ty.path "revm_context_interface::result::ExecResultAndState")
                     []
-                    [ HaltReasonT ]
+                    [ R; S ]
                 ],
               self
             |) in
@@ -357,38 +258,22 @@ Module result.
                 []
                 [
                   Ty.apply
-                    (Ty.path "revm_context_interface::result::ResultAndState")
+                    (Ty.path "revm_context_interface::result::ExecResultAndState")
                     []
-                    [ HaltReasonT ]
+                    [ R; S ]
                 ],
               other
             |) in
           LogicalOp.and (|
             M.call_closure (|
               Ty.path "bool",
-              M.get_trait_method (|
-                "core::cmp::PartialEq",
-                Ty.apply
-                  (Ty.path "revm_context_interface::result::ExecutionResult")
-                  []
-                  [ HaltReasonT ],
-                [],
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::result::ExecutionResult")
-                    []
-                    [ HaltReasonT ]
-                ],
-                "eq",
-                [],
-                []
-              |),
+              M.get_trait_method (| "core::cmp::PartialEq", R, [], [ R ], "eq", [], [] |),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
                   M.SubPointer.get_struct_record_field (|
                     M.deref (| M.read (| self |) |),
-                    "revm_context_interface::result::ResultAndState",
+                    "revm_context_interface::result::ExecResultAndState",
                     "result"
                   |)
                 |);
@@ -396,7 +281,7 @@ Module result.
                   Pointer.Kind.Ref,
                   M.SubPointer.get_struct_record_field (|
                     M.deref (| M.read (| other |) |),
-                    "revm_context_interface::result::ResultAndState",
+                    "revm_context_interface::result::ExecResultAndState",
                     "result"
                   |)
                 |)
@@ -405,39 +290,13 @@ Module result.
             ltac:(M.monadic
               (M.call_closure (|
                 Ty.path "bool",
-                M.get_trait_method (|
-                  "core::cmp::PartialEq",
-                  Ty.apply
-                    (Ty.path "hashbrown::map::HashMap")
-                    []
-                    [
-                      Ty.path "alloy_primitives::bits::address::Address";
-                      Ty.path "revm_state::Account";
-                      Ty.path "foldhash::seed::fast::RandomState";
-                      Ty.path "hashbrown::raw::alloc::inner::Global"
-                    ],
-                  [],
-                  [
-                    Ty.apply
-                      (Ty.path "hashbrown::map::HashMap")
-                      []
-                      [
-                        Ty.path "alloy_primitives::bits::address::Address";
-                        Ty.path "revm_state::Account";
-                        Ty.path "foldhash::seed::fast::RandomState";
-                        Ty.path "hashbrown::raw::alloc::inner::Global"
-                      ]
-                  ],
-                  "eq",
-                  [],
-                  []
-                |),
+                M.get_trait_method (| "core::cmp::PartialEq", S, [], [ S ], "eq", [], [] |),
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
-                      "revm_context_interface::result::ResultAndState",
+                      "revm_context_interface::result::ExecResultAndState",
                       "state"
                     |)
                   |);
@@ -445,7 +304,7 @@ Module result.
                     Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| other |) |),
-                      "revm_context_interface::result::ResultAndState",
+                      "revm_context_interface::result::ExecResultAndState",
                       "state"
                     |)
                   |)
@@ -456,28 +315,28 @@ Module result.
       end.
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (R S : Ty.t),
       M.IsTraitInstance
         "core::cmp::PartialEq"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *)
-        [ Ty.apply (Ty.path "revm_context_interface::result::ResultAndState") [] [ HaltReasonT ] ]
-        (Self HaltReasonT)
-        (* Instance *) [ ("eq", InstanceField.Method (eq HaltReasonT)) ].
-  End Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_revm_context_interface_result_ResultAndState_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
+        [ Ty.apply (Ty.path "revm_context_interface::result::ExecResultAndState") [] [ R; S ] ]
+        (Self R S)
+        (* Instance *) [ ("eq", InstanceField.Method (eq R S)) ].
+  End Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_R_where_core_cmp_PartialEq_S_revm_context_interface_result_ExecResultAndState_R_S_for_revm_context_interface_result_ExecResultAndState_R_S.
   
-  Module Impl_core_cmp_Eq_where_core_cmp_Eq_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ResultAndState") [] [ HaltReasonT ].
+  Module Impl_core_cmp_Eq_where_core_cmp_Eq_R_where_core_cmp_Eq_S_for_revm_context_interface_result_ExecResultAndState_R_S.
+    Definition Self (R S : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecResultAndState") [] [ R; S ].
     
     (* Eq *)
     Definition assert_receiver_is_total_eq
-        (HaltReasonT : Ty.t)
+        (R S : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self R S in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -488,9 +347,9 @@ Module result.
                 []
                 [
                   Ty.apply
-                    (Ty.path "revm_context_interface::result::ResultAndState")
+                    (Ty.path "revm_context_interface::result::ExecResultAndState")
                     []
-                    [ HaltReasonT ]
+                    [ R; S ]
                 ],
               self
             |) in
@@ -511,24 +370,151 @@ Module result.
       end.
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (R S : Ty.t),
       M.IsTraitInstance
         "core::cmp::Eq"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self HaltReasonT)
+        (Self R S)
         (* Instance *)
-        [
-          ("assert_receiver_is_total_eq",
-            InstanceField.Method (assert_receiver_is_total_eq HaltReasonT))
-        ].
-  End Impl_core_cmp_Eq_where_core_cmp_Eq_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ResultAndState_HaltReasonT.
+        [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq R S)) ].
+  End Impl_core_cmp_Eq_where_core_cmp_Eq_R_where_core_cmp_Eq_S_for_revm_context_interface_result_ExecResultAndState_R_S.
+  
+  Module Impl_core_hash_Hash_where_core_hash_Hash_R_where_core_hash_Hash_S_for_revm_context_interface_result_ExecResultAndState_R_S.
+    Definition Self (R S : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecResultAndState") [] [ R; S ].
+    
+    (* Hash *)
+    Definition hash (R S : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self R S in
+      match ε, τ, α with
+      | [], [ __H ], [ self; state ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::ExecResultAndState")
+                    []
+                    [ R; S ]
+                ],
+              self
+            |) in
+          let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (| "core::hash::Hash", R, [], [], "hash", [], [ __H ] |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::result::ExecResultAndState",
+                          "result"
+                        |)
+                      |)
+                    |)
+                  |);
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                ]
+              |) in
+            M.alloc (|
+              Ty.tuple [],
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (| "core::hash::Hash", S, [], [], "hash", [], [ __H ] |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::result::ExecResultAndState",
+                          "state"
+                        |)
+                      |)
+                    |)
+                  |);
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (R S : Ty.t),
+      M.IsTraitInstance
+        "core::hash::Hash"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self R S)
+        (* Instance *) [ ("hash", InstanceField.Method (hash R S)) ].
+  End Impl_core_hash_Hash_where_core_hash_Hash_R_where_core_hash_Hash_S_for_revm_context_interface_result_ExecResultAndState_R_S.
+  
+  Axiom ResultAndState :
+    forall (H S : Ty.t),
+    (Ty.apply (Ty.path "revm_context_interface::result::ResultAndState") [] [ H; S ]) =
+      (Ty.apply
+        (Ty.path "revm_context_interface::result::ExecResultAndState")
+        []
+        [ Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ H ]; S ]).
+  
+  Axiom ResultVecAndState :
+    forall (R S : Ty.t),
+    (Ty.apply (Ty.path "revm_context_interface::result::ResultVecAndState") [] [ R; S ]) =
+      (Ty.apply
+        (Ty.path "revm_context_interface::result::ExecResultAndState")
+        []
+        [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ R; Ty.path "alloc::alloc::Global" ]; S ]).
+  
+  Module Impl_revm_context_interface_result_ExecResultAndState_R_S.
+    Definition Self (R S : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecResultAndState") [] [ R; S ].
+    
+    (*
+        pub fn new(result: R, state: S) -> Self {
+            Self { result, state }
+        }
+    *)
+    Definition new (R S : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self R S in
+      match ε, τ, α with
+      | [], [], [ result; state ] =>
+        ltac:(M.monadic
+          (let result := M.alloc (| R, result |) in
+          let state := M.alloc (| S, state |) in
+          Value.mkStructRecord
+            "revm_context_interface::result::ExecResultAndState"
+            []
+            [ R; S ]
+            [ ("result", M.read (| result |)); ("state", M.read (| state |)) ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new :
+      forall (R S : Ty.t),
+      M.IsAssociatedFunction.C (Self R S) "new" (new R S).
+    Admitted.
+    Global Typeclasses Opaque new.
+  End Impl_revm_context_interface_result_ExecResultAndState_R_S.
   
   (*
   Enum ExecutionResult
   {
     const_params := [];
-    ty_params := [ "HaltReasonT" ];
+    ty_params := [ "HaltReasonTy" ];
     variants :=
       [
         {
@@ -562,7 +548,7 @@ Module result.
         };
         {
           name := "Halt";
-          item := StructRecord [ ("reason", HaltReasonT); ("gas_used", Ty.path "u64") ];
+          item := StructRecord [ ("reason", HaltReasonTy); ("gas_used", Ty.path "u64") ];
         }
       ];
   }
@@ -575,18 +561,18 @@ Module result.
   Axiom IsDiscriminant_ExecutionResult_Halt :
     M.IsDiscriminant "revm_context_interface::result::ExecutionResult::Halt" 2.
   
-  Module Impl_core_clone_Clone_where_core_clone_Clone_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonT ].
+  Module Impl_core_clone_Clone_where_core_clone_Clone_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
+    Definition Self (HaltReasonTy : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonTy ].
     
     (* Clone *)
     Definition clone
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -599,12 +585,15 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
           M.match_operator (|
-            Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonT ],
+            Ty.apply
+              (Ty.path "revm_context_interface::result::ExecutionResult")
+              []
+              [ HaltReasonTy ],
             self,
             [
               fun γ =>
@@ -680,7 +669,7 @@ Module result.
                   Value.mkStructRecord
                     "revm_context_interface::result::ExecutionResult::Success"
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                     [
                       ("reason",
                         M.call_closure (|
@@ -795,7 +784,7 @@ Module result.
                   Value.mkStructRecord
                     "revm_context_interface::result::ExecutionResult::Revert"
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                     [
                       ("gas_used",
                         M.call_closure (|
@@ -841,19 +830,19 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Halt",
                       "gas_used"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonT ], γ1_0 |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ1_0 |) in
                   let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::ExecutionResult::Halt"
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                     [
                       ("reason",
                         M.call_closure (|
-                          HaltReasonT,
+                          HaltReasonTy,
                           M.get_trait_method (|
                             "core::clone::Clone",
-                            HaltReasonT,
+                            HaltReasonTy,
                             [],
                             [],
                             "clone",
@@ -883,22 +872,27 @@ Module result.
       end.
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (HaltReasonTy : Ty.t),
       M.IsTraitInstance
         "core::clone::Clone"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self HaltReasonT)
-        (* Instance *) [ ("clone", InstanceField.Method (clone HaltReasonT)) ].
-  End Impl_core_clone_Clone_where_core_clone_Clone_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
+        (Self HaltReasonTy)
+        (* Instance *) [ ("clone", InstanceField.Method (clone HaltReasonTy)) ].
+  End Impl_core_clone_Clone_where_core_clone_Clone_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
   
-  Module Impl_core_fmt_Debug_where_core_fmt_Debug_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonT ].
+  Module Impl_core_fmt_Debug_where_core_fmt_Debug_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
+    Definition Self (HaltReasonTy : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonTy ].
     
     (* Debug *)
-    Definition fmt (HaltReasonT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self HaltReasonT in
+    Definition fmt
+        (HaltReasonTy : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self; f ] =>
         ltac:(M.monadic
@@ -911,7 +905,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -1189,7 +1183,7 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Halt",
                       "gas_used"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonT ], γ1_0 |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ1_0 |) in
                   let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
                   M.call_closure (|
                     Ty.apply
@@ -1210,7 +1204,7 @@ Module result.
                         Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                         M.pointer_coercion
                           M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ HaltReasonT ])
+                          (Ty.apply (Ty.path "&") [] [ HaltReasonTy ])
                           (Ty.apply
                             (Ty.path "&")
                             []
@@ -1245,36 +1239,36 @@ Module result.
       end.
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (HaltReasonTy : Ty.t),
       M.IsTraitInstance
         "core::fmt::Debug"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self HaltReasonT)
-        (* Instance *) [ ("fmt", InstanceField.Method (fmt HaltReasonT)) ].
-  End Impl_core_fmt_Debug_where_core_fmt_Debug_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
+        (Self HaltReasonTy)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt HaltReasonTy)) ].
+  End Impl_core_fmt_Debug_where_core_fmt_Debug_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
   
-  Module Impl_core_marker_StructuralPartialEq_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonT ].
+  Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
+    Definition Self (HaltReasonTy : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonTy ].
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (HaltReasonTy : Ty.t),
       M.IsTraitInstance
         "core::marker::StructuralPartialEq"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self HaltReasonT)
+        (Self HaltReasonTy)
         (* Instance *) [].
-  End Impl_core_marker_StructuralPartialEq_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
+  End Impl_core_marker_StructuralPartialEq_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
   
-  Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_revm_context_interface_result_ExecutionResult_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonT ].
+  Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_HaltReasonTy_revm_context_interface_result_ExecutionResult_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
+    Definition Self (HaltReasonTy : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonTy ].
     
     (* PartialEq *)
-    Definition eq (HaltReasonT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self HaltReasonT in
+    Definition eq (HaltReasonTy : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self; other ] =>
         ltac:(M.monadic
@@ -1287,7 +1281,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -1300,7 +1294,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               other
             |) in
@@ -1315,7 +1309,7 @@ Module result.
                     Ty.apply
                       (Ty.path "revm_context_interface::result::ExecutionResult")
                       []
-                      [ HaltReasonT ]
+                      [ HaltReasonTy ]
                   ]
                 |),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
@@ -1330,7 +1324,7 @@ Module result.
                     Ty.apply
                       (Ty.path "revm_context_interface::result::ExecutionResult")
                       []
-                      [ HaltReasonT ]
+                      [ HaltReasonTy ]
                   ]
                 |),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
@@ -1356,7 +1350,7 @@ Module result.
                               Ty.apply
                                 (Ty.path "revm_context_interface::result::ExecutionResult")
                                 []
-                                [ HaltReasonT ]
+                                [ HaltReasonTy ]
                             ];
                           Ty.apply
                             (Ty.path "&")
@@ -1365,7 +1359,7 @@ Module result.
                               Ty.apply
                                 (Ty.path "revm_context_interface::result::ExecutionResult")
                                 []
-                                [ HaltReasonT ]
+                                [ HaltReasonTy ]
                             ]
                         ],
                       Value.Tuple [ M.read (| self |); M.read (| other |) ]
@@ -1765,7 +1759,7 @@ Module result.
                               "gas_used"
                             |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonT ], γ2_0 |) in
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ2_0 |) in
                           let __self_1 :=
                             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
@@ -1782,7 +1776,7 @@ Module result.
                               "gas_used"
                             |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonT ], γ2_0 |) in
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ2_0 |) in
                           let __arg1_1 :=
                             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
                           LogicalOp.and (|
@@ -1807,9 +1801,9 @@ Module result.
                                 Ty.path "bool",
                                 M.get_trait_method (|
                                   "core::cmp::PartialEq",
-                                  Ty.apply (Ty.path "&") [] [ HaltReasonT ],
+                                  Ty.apply (Ty.path "&") [] [ HaltReasonTy ],
                                   [],
-                                  [ Ty.apply (Ty.path "&") [] [ HaltReasonT ] ],
+                                  [ Ty.apply (Ty.path "&") [] [ HaltReasonTy ] ],
                                   "eq",
                                   [],
                                   []
@@ -1838,28 +1832,28 @@ Module result.
       end.
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (HaltReasonTy : Ty.t),
       M.IsTraitInstance
         "core::cmp::PartialEq"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *)
-        [ Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonT ] ]
-        (Self HaltReasonT)
-        (* Instance *) [ ("eq", InstanceField.Method (eq HaltReasonT)) ].
-  End Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_revm_context_interface_result_ExecutionResult_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
+        [ Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonTy ] ]
+        (Self HaltReasonTy)
+        (* Instance *) [ ("eq", InstanceField.Method (eq HaltReasonTy)) ].
+  End Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_HaltReasonTy_revm_context_interface_result_ExecutionResult_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
   
-  Module Impl_core_cmp_Eq_where_core_cmp_Eq_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonT ].
+  Module Impl_core_cmp_Eq_where_core_cmp_Eq_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
+    Definition Self (HaltReasonTy : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonTy ].
     
     (* Eq *)
     Definition assert_receiver_is_total_eq
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -1872,7 +1866,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -1925,31 +1919,31 @@ Module result.
       end.
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (HaltReasonTy : Ty.t),
       M.IsTraitInstance
         "core::cmp::Eq"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self HaltReasonT)
+        (Self HaltReasonTy)
         (* Instance *)
         [
           ("assert_receiver_is_total_eq",
-            InstanceField.Method (assert_receiver_is_total_eq HaltReasonT))
+            InstanceField.Method (assert_receiver_is_total_eq HaltReasonTy))
         ].
-  End Impl_core_cmp_Eq_where_core_cmp_Eq_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
+  End Impl_core_cmp_Eq_where_core_cmp_Eq_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
   
-  Module Impl_core_hash_Hash_where_core_hash_Hash_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonT ].
+  Module Impl_core_hash_Hash_where_core_hash_Hash_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
+    Definition Self (HaltReasonTy : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonTy ].
     
     (* Hash *)
     Definition hash
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [ __H ], [ self; state ] =>
         ltac:(M.monadic
@@ -1962,7 +1956,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -1978,7 +1972,7 @@ Module result.
                     Ty.apply
                       (Ty.path "revm_context_interface::result::ExecutionResult")
                       []
-                      [ HaltReasonT ]
+                      [ HaltReasonTy ]
                   ]
                 |),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
@@ -2255,7 +2249,7 @@ Module result.
                           "gas_used"
                         |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonT ], γ1_0 |) in
+                        M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ1_0 |) in
                       let __self_1 :=
                         M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
                       M.read (|
@@ -2264,7 +2258,7 @@ Module result.
                             Ty.tuple [],
                             M.get_trait_method (|
                               "core::hash::Hash",
-                              HaltReasonT,
+                              HaltReasonTy,
                               [],
                               [],
                               "hash",
@@ -2304,18 +2298,18 @@ Module result.
       end.
     
     Axiom Implements :
-      forall (HaltReasonT : Ty.t),
+      forall (HaltReasonTy : Ty.t),
       M.IsTraitInstance
         "core::hash::Hash"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self HaltReasonT)
-        (* Instance *) [ ("hash", InstanceField.Method (hash HaltReasonT)) ].
-  End Impl_core_hash_Hash_where_core_hash_Hash_HaltReasonT_where_revm_context_interface_result_HaltReasonTrait_HaltReasonT_for_revm_context_interface_result_ExecutionResult_HaltReasonT.
+        (Self HaltReasonTy)
+        (* Instance *) [ ("hash", InstanceField.Method (hash HaltReasonTy)) ].
+  End Impl_core_hash_Hash_where_core_hash_Hash_HaltReasonTy_for_revm_context_interface_result_ExecutionResult_HaltReasonTy.
   
-  Module Impl_revm_context_interface_result_ExecutionResult_HaltReasonT.
-    Definition Self (HaltReasonT : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonT ].
+  Module Impl_revm_context_interface_result_ExecutionResult_HaltReasonTy.
+    Definition Self (HaltReasonTy : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ HaltReasonTy ].
     
     (*
         pub fn is_success(&self) -> bool {
@@ -2323,12 +2317,12 @@ Module result.
         }
     *)
     Definition is_success
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -2341,7 +2335,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -2365,10 +2359,192 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_is_success :
-      forall (HaltReasonT : Ty.t),
-      M.IsAssociatedFunction.C (Self HaltReasonT) "is_success" (is_success HaltReasonT).
+      forall (HaltReasonTy : Ty.t),
+      M.IsAssociatedFunction.C (Self HaltReasonTy) "is_success" (is_success HaltReasonTy).
     Admitted.
     Global Typeclasses Opaque is_success.
+    
+    (*
+        pub fn map_haltreason<F, OHR>(self, op: F) -> ExecutionResult<OHR>
+        where
+            F: FnOnce(HaltReasonTy) -> OHR,
+        {
+            match self {
+                Self::Success {
+                    reason,
+                    gas_used,
+                    gas_refunded,
+                    logs,
+                    output,
+                } => ExecutionResult::Success {
+                    reason,
+                    gas_used,
+                    gas_refunded,
+                    logs,
+                    output,
+                },
+                Self::Revert { gas_used, output } => ExecutionResult::Revert { gas_used, output },
+                Self::Halt { reason, gas_used } => ExecutionResult::Halt {
+                    reason: op(reason),
+                    gas_used,
+                },
+            }
+        }
+    *)
+    Definition map_haltreason
+        (HaltReasonTy : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self HaltReasonTy in
+      match ε, τ, α with
+      | [], [ F; OHR ], [ self; op ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "revm_context_interface::result::ExecutionResult")
+                []
+                [ HaltReasonTy ],
+              self
+            |) in
+          let op := M.alloc (| F, op |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "revm_context_interface::result::ExecutionResult") [] [ OHR ],
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::ExecutionResult::Success",
+                      "reason"
+                    |) in
+                  let γ0_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::ExecutionResult::Success",
+                      "gas_used"
+                    |) in
+                  let γ0_2 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::ExecutionResult::Success",
+                      "gas_refunded"
+                    |) in
+                  let γ0_3 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::ExecutionResult::Success",
+                      "logs"
+                    |) in
+                  let γ0_4 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::ExecutionResult::Success",
+                      "output"
+                    |) in
+                  let reason :=
+                    M.copy (| Ty.path "revm_context_interface::result::SuccessReason", γ0_0 |) in
+                  let gas_used := M.copy (| Ty.path "u64", γ0_1 |) in
+                  let gas_refunded := M.copy (| Ty.path "u64", γ0_2 |) in
+                  let logs :=
+                    M.copy (|
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::log::Log")
+                            []
+                            [ Ty.path "alloy_primitives::log::LogData" ];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      γ0_3
+                    |) in
+                  let output :=
+                    M.copy (| Ty.path "revm_context_interface::result::Output", γ0_4 |) in
+                  Value.mkStructRecord
+                    "revm_context_interface::result::ExecutionResult::Success"
+                    []
+                    [ OHR ]
+                    [
+                      ("reason", M.read (| reason |));
+                      ("gas_used", M.read (| gas_used |));
+                      ("gas_refunded", M.read (| gas_refunded |));
+                      ("logs", M.read (| logs |));
+                      ("output", M.read (| output |))
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::ExecutionResult::Revert",
+                      "gas_used"
+                    |) in
+                  let γ0_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::ExecutionResult::Revert",
+                      "output"
+                    |) in
+                  let gas_used := M.copy (| Ty.path "u64", γ0_0 |) in
+                  let output := M.copy (| Ty.path "alloy_primitives::bytes_::Bytes", γ0_1 |) in
+                  Value.mkStructRecord
+                    "revm_context_interface::result::ExecutionResult::Revert"
+                    []
+                    [ OHR ]
+                    [ ("gas_used", M.read (| gas_used |)); ("output", M.read (| output |)) ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::ExecutionResult::Halt",
+                      "reason"
+                    |) in
+                  let γ0_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::ExecutionResult::Halt",
+                      "gas_used"
+                    |) in
+                  let reason := M.copy (| HaltReasonTy, γ0_0 |) in
+                  let gas_used := M.copy (| Ty.path "u64", γ0_1 |) in
+                  Value.mkStructRecord
+                    "revm_context_interface::result::ExecutionResult::Halt"
+                    []
+                    [ OHR ]
+                    [
+                      ("reason",
+                        M.call_closure (|
+                          OHR,
+                          M.get_trait_method (|
+                            "core::ops::function::FnOnce",
+                            F,
+                            [],
+                            [ Ty.tuple [ HaltReasonTy ] ],
+                            "call_once",
+                            [],
+                            []
+                          |),
+                          [ M.read (| op |); Value.Tuple [ M.read (| reason |) ] ]
+                        |));
+                      ("gas_used", M.read (| gas_used |))
+                    ]))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_map_haltreason :
+      forall (HaltReasonTy : Ty.t),
+      M.IsAssociatedFunction.C (Self HaltReasonTy) "map_haltreason" (map_haltreason HaltReasonTy).
+    Admitted.
+    Global Typeclasses Opaque map_haltreason.
     
     (*
         pub fn created_address(&self) -> Option<Address> {
@@ -2379,12 +2555,12 @@ Module result.
         }
     *)
     Definition created_address
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -2397,7 +2573,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -2478,8 +2654,8 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_created_address :
-      forall (HaltReasonT : Ty.t),
-      M.IsAssociatedFunction.C (Self HaltReasonT) "created_address" (created_address HaltReasonT).
+      forall (HaltReasonTy : Ty.t),
+      M.IsAssociatedFunction.C (Self HaltReasonTy) "created_address" (created_address HaltReasonTy).
     Admitted.
     Global Typeclasses Opaque created_address.
     
@@ -2489,12 +2665,12 @@ Module result.
         }
     *)
     Definition is_halt
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -2507,7 +2683,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -2531,8 +2707,8 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_is_halt :
-      forall (HaltReasonT : Ty.t),
-      M.IsAssociatedFunction.C (Self HaltReasonT) "is_halt" (is_halt HaltReasonT).
+      forall (HaltReasonTy : Ty.t),
+      M.IsAssociatedFunction.C (Self HaltReasonTy) "is_halt" (is_halt HaltReasonTy).
     Admitted.
     Global Typeclasses Opaque is_halt.
     
@@ -2546,12 +2722,12 @@ Module result.
         }
     *)
     Definition output
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -2564,7 +2740,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -2645,8 +2821,8 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_output :
-      forall (HaltReasonT : Ty.t),
-      M.IsAssociatedFunction.C (Self HaltReasonT) "output" (output HaltReasonT).
+      forall (HaltReasonTy : Ty.t),
+      M.IsAssociatedFunction.C (Self HaltReasonTy) "output" (output HaltReasonTy).
     Admitted.
     Global Typeclasses Opaque output.
     
@@ -2660,12 +2836,12 @@ Module result.
         }
     *)
     Definition into_output
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -2674,7 +2850,7 @@ Module result.
               Ty.apply
                 (Ty.path "revm_context_interface::result::ExecutionResult")
                 []
-                [ HaltReasonT ],
+                [ HaltReasonTy ],
               self
             |) in
           M.match_operator (|
@@ -2737,8 +2913,8 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_into_output :
-      forall (HaltReasonT : Ty.t),
-      M.IsAssociatedFunction.C (Self HaltReasonT) "into_output" (into_output HaltReasonT).
+      forall (HaltReasonTy : Ty.t),
+      M.IsAssociatedFunction.C (Self HaltReasonTy) "into_output" (into_output HaltReasonTy).
     Admitted.
     Global Typeclasses Opaque into_output.
     
@@ -2751,12 +2927,12 @@ Module result.
         }
     *)
     Definition logs
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -2769,7 +2945,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -2936,8 +3112,8 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_logs :
-      forall (HaltReasonT : Ty.t),
-      M.IsAssociatedFunction.C (Self HaltReasonT) "logs" (logs HaltReasonT).
+      forall (HaltReasonTy : Ty.t),
+      M.IsAssociatedFunction.C (Self HaltReasonTy) "logs" (logs HaltReasonTy).
     Admitted.
     Global Typeclasses Opaque logs.
     
@@ -2950,12 +3126,12 @@ Module result.
         }
     *)
     Definition into_logs
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -2964,7 +3140,7 @@ Module result.
               Ty.apply
                 (Ty.path "revm_context_interface::result::ExecutionResult")
                 []
-                [ HaltReasonT ],
+                [ HaltReasonTy ],
               self
             |) in
           M.match_operator (|
@@ -3039,8 +3215,8 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_into_logs :
-      forall (HaltReasonT : Ty.t),
-      M.IsAssociatedFunction.C (Self HaltReasonT) "into_logs" (into_logs HaltReasonT).
+      forall (HaltReasonTy : Ty.t),
+      M.IsAssociatedFunction.C (Self HaltReasonTy) "into_logs" (into_logs HaltReasonTy).
     Admitted.
     Global Typeclasses Opaque into_logs.
     
@@ -3054,12 +3230,12 @@ Module result.
         }
     *)
     Definition gas_used
-        (HaltReasonT : Ty.t)
+        (HaltReasonTy : Ty.t)
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      let Self : Ty.t := Self HaltReasonT in
+      let Self : Ty.t := Self HaltReasonTy in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -3072,7 +3248,7 @@ Module result.
                   Ty.apply
                     (Ty.path "revm_context_interface::result::ExecutionResult")
                     []
-                    [ HaltReasonT ]
+                    [ HaltReasonTy ]
                 ],
               self
             |) in
@@ -3129,11 +3305,11 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_gas_used :
-      forall (HaltReasonT : Ty.t),
-      M.IsAssociatedFunction.C (Self HaltReasonT) "gas_used" (gas_used HaltReasonT).
+      forall (HaltReasonTy : Ty.t),
+      M.IsAssociatedFunction.C (Self HaltReasonTy) "gas_used" (gas_used HaltReasonTy).
     Admitted.
     Global Typeclasses Opaque gas_used.
-  End Impl_revm_context_interface_result_ExecutionResult_HaltReasonT.
+  End Impl_revm_context_interface_result_ExecutionResult_HaltReasonTy.
   
   (*
   Enum Output
@@ -4240,10 +4416,6 @@ Module result.
         {
           name := "Custom";
           item := StructTuple [ Ty.path "alloc::string::String" ];
-        };
-        {
-          name := "Precompile";
-          item := StructTuple [ Ty.path "alloc::string::String" ];
         }
       ];
   }
@@ -4257,8 +4429,6 @@ Module result.
     M.IsDiscriminant "revm_context_interface::result::EVMError::Database" 2.
   Axiom IsDiscriminant_EVMError_Custom :
     M.IsDiscriminant "revm_context_interface::result::EVMError::Custom" 3.
-  Axiom IsDiscriminant_EVMError_Precompile :
-    M.IsDiscriminant "revm_context_interface::result::EVMError::Precompile" 4.
   
   Module Impl_core_fmt_Debug_where_core_fmt_Debug_DBError_where_core_fmt_Debug_TransactionError_for_revm_context_interface_result_EVMError_DBError_TransactionError.
     Definition Self (DBError TransactionError : Ty.t) : Ty.t :=
@@ -4493,55 +4663,6 @@ Module result.
                         ]
                       |)
                     ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "revm_context_interface::result::EVMError::Precompile",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_tuple_field1_finish",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Precompile" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
-                    ]
                   |)))
             ]
           |)))
@@ -4707,39 +4828,6 @@ Module result.
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::EVMError::Custom"
-                    []
-                    [ DBError; TransactionError ]
-                    [
-                      M.call_closure (|
-                        Ty.path "alloc::string::String",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
-                          Ty.path "alloc::string::String",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "revm_context_interface::result::EVMError::Precompile",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
-                    |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Precompile"
                     []
                     [ DBError; TransactionError ]
                     [
@@ -5080,50 +5168,6 @@ Module result.
                           |)));
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
-                          let γ2_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ0_0,
-                              "revm_context_interface::result::EVMError::Precompile",
-                              0
-                            |) in
-                          let __self_0 :=
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
-                            |) in
-                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
-                          let γ2_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ0_1,
-                              "revm_context_interface::result::EVMError::Precompile",
-                              0
-                            |) in
-                          let __arg1_0 :=
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
-                            |) in
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialEq",
-                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              [],
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ],
-                              "eq",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
-                            ]
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
                           (M.never_to_any (|
                             M.call_closure (|
                               Ty.path "never",
@@ -5232,6 +5276,88 @@ Module result.
         ].
   End Impl_core_cmp_Eq_where_core_cmp_Eq_DBError_where_core_cmp_Eq_TransactionError_for_revm_context_interface_result_EVMError_DBError_TransactionError.
   
+  Module Impl_core_convert_From_revm_context_interface_context_ContextError_DBError_for_revm_context_interface_result_EVMError_DBError_TransactionValidationErrorT.
+    Definition Self (DBError TransactionValidationErrorT : Ty.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "revm_context_interface::result::EVMError")
+        []
+        [ DBError; TransactionValidationErrorT ].
+    
+    (*
+        fn from(value: ContextError<DBError>) -> Self {
+            match value {
+                ContextError::Db(e) => Self::Database(e),
+                ContextError::Custom(e) => Self::Custom(e),
+            }
+        }
+    *)
+    Definition from
+        (DBError TransactionValidationErrorT : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self DBError TransactionValidationErrorT in
+      match ε, τ, α with
+      | [], [], [ value ] =>
+        ltac:(M.monadic
+          (let value :=
+            M.alloc (|
+              Ty.apply (Ty.path "revm_context_interface::context::ContextError") [] [ DBError ],
+              value
+            |) in
+          M.match_operator (|
+            Ty.apply
+              (Ty.path "revm_context_interface::result::EVMError")
+              []
+              [ DBError; TransactionValidationErrorT ],
+            value,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::context::ContextError::Db",
+                      0
+                    |) in
+                  let e := M.copy (| DBError, γ0_0 |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::EVMError::Database"
+                    []
+                    [ DBError; TransactionValidationErrorT ]
+                    [ M.read (| e |) ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::context::ContextError::Custom",
+                      0
+                    |) in
+                  let e := M.copy (| Ty.path "alloc::string::String", γ0_0 |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::EVMError::Custom"
+                    []
+                    [ DBError; TransactionValidationErrorT ]
+                    [ M.read (| e |) ]))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (DBError TransactionValidationErrorT : Ty.t),
+      M.IsTraitInstance
+        "core::convert::From"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *)
+        [ Ty.apply (Ty.path "revm_context_interface::context::ContextError") [] [ DBError ] ]
+        (Self DBError TransactionValidationErrorT)
+        (* Instance *)
+        [ ("from", InstanceField.Method (from DBError TransactionValidationErrorT)) ].
+  End Impl_core_convert_From_revm_context_interface_context_ContextError_DBError_for_revm_context_interface_result_EVMError_DBError_TransactionValidationErrorT.
+  
   Module Impl_core_convert_From_where_revm_database_interface_DBErrorMarker_DBError_DBError_for_revm_context_interface_result_EVMError_DBError_TX.
     Definition Self (DBError TX : Ty.t) : Ty.t :=
       Ty.apply (Ty.path "revm_context_interface::result::EVMError") [] [ DBError; TX ].
@@ -5306,20 +5432,17 @@ Module result.
         (* Instance *) [ ("from_string", InstanceField.Method (from_string DB TX)) ].
   End Impl_revm_context_interface_result_FromStringError_for_revm_context_interface_result_EVMError_DB_TX.
   
-  Module Impl_core_convert_From_revm_context_interface_result_InvalidTransaction_for_revm_context_interface_result_EVMError_DB_revm_context_interface_result_InvalidTransaction.
-    Definition Self (DB : Ty.t) : Ty.t :=
-      Ty.apply
-        (Ty.path "revm_context_interface::result::EVMError")
-        []
-        [ DB; Ty.path "revm_context_interface::result::InvalidTransaction" ].
+  Module Impl_core_convert_From_where_core_convert_From_TXE_revm_context_interface_result_InvalidTransaction_revm_context_interface_result_InvalidTransaction_for_revm_context_interface_result_EVMError_DB_TXE.
+    Definition Self (DB TXE : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::EVMError") [] [ DB; TXE ].
     
     (*
         fn from(value: InvalidTransaction) -> Self {
-            Self::Transaction(value)
+            Self::Transaction(TXE::from(value))
         }
     *)
-    Definition from (DB : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self DB in
+    Definition from (DB TXE : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self DB TXE in
       match ε, τ, α with
       | [], [], [ value ] =>
         ltac:(M.monadic
@@ -5328,21 +5451,35 @@ Module result.
           Value.StructTuple
             "revm_context_interface::result::EVMError::Transaction"
             []
-            [ DB; Ty.path "revm_context_interface::result::InvalidTransaction" ]
-            [ M.read (| value |) ]))
+            [ DB; TXE ]
+            [
+              M.call_closure (|
+                TXE,
+                M.get_trait_method (|
+                  "core::convert::From",
+                  TXE,
+                  [],
+                  [ Ty.path "revm_context_interface::result::InvalidTransaction" ],
+                  "from",
+                  [],
+                  []
+                |),
+                [ M.read (| value |) ]
+              |)
+            ]))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Axiom Implements :
-      forall (DB : Ty.t),
+      forall (DB TXE : Ty.t),
       M.IsTraitInstance
         "core::convert::From"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *)
         [ Ty.path "revm_context_interface::result::InvalidTransaction" ]
-        (Self DB)
-        (* Instance *) [ ("from", InstanceField.Method (from DB)) ].
-  End Impl_core_convert_From_revm_context_interface_result_InvalidTransaction_for_revm_context_interface_result_EVMError_DB_revm_context_interface_result_InvalidTransaction.
+        (Self DB TXE)
+        (* Instance *) [ ("from", InstanceField.Method (from DB TXE)) ].
+  End Impl_core_convert_From_where_core_convert_From_TXE_revm_context_interface_result_InvalidTransaction_revm_context_interface_result_InvalidTransaction_for_revm_context_interface_result_EVMError_DB_TXE.
   
   Module Impl_revm_context_interface_result_EVMError_DBError_TransactionValidationErrorT.
     Definition Self (DBError TransactionValidationErrorT : Ty.t) : Ty.t :=
@@ -5360,7 +5497,6 @@ Module result.
                 Self::Transaction(e) => EVMError::Transaction(e),
                 Self::Header(e) => EVMError::Header(e),
                 Self::Database(e) => EVMError::Database(op(e)),
-                Self::Precompile(e) => EVMError::Precompile(e),
                 Self::Custom(e) => EVMError::Custom(e),
             }
         }
@@ -5453,20 +5589,6 @@ Module result.
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (|
                       γ,
-                      "revm_context_interface::result::EVMError::Precompile",
-                      0
-                    |) in
-                  let e := M.copy (| Ty.path "alloc::string::String", γ0_0 |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Precompile"
-                    []
-                    [ E; TransactionValidationErrorT ]
-                    [ M.read (| e |) ]));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ0_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
                       "revm_context_interface::result::EVMError::Custom",
                       0
                     |) in
@@ -5504,7 +5626,7 @@ Module result.
                 Self::Transaction(e) => Some(e),
                 Self::Header(e) => Some(e),
                 Self::Database(e) => Some(e),
-                Self::Precompile(_) | Self::Custom(_) => None,
+                Self::Custom(_) => None,
             }
         }
     *)
@@ -5632,48 +5754,18 @@ Module result.
                     ]));
               fun γ =>
                 ltac:(M.monadic
-                  (M.find_or_pattern (Ty.tuple []) (|
-                    γ,
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ := M.deref (| M.read (| γ |) |) in
-                          let γ1_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "revm_context_interface::result::EVMError::Precompile",
-                              0
-                            |) in
-                          Value.Tuple []));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ := M.deref (| M.read (| γ |) |) in
-                          let γ1_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "revm_context_interface::result::EVMError::Custom",
-                              0
-                            |) in
-                          Value.Tuple []))
-                    ],
-                    fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [] =>
-                          ltac:(M.monadic
-                            (Value.StructTuple
-                              "core::option::Option::None"
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                              ]
-                              []))
-                        | _ => M.impossible "wrong number of arguments"
-                        end)
-                  |)))
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::result::EVMError::Custom",
+                      0
+                    |) in
+                  Value.StructTuple
+                    "core::option::Option::None"
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
+                    []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5703,7 +5795,7 @@ Module result.
                 Self::Transaction(e) => write!(f, "transaction validation error: {e}"),
                 Self::Header(e) => write!(f, "header validation error: {e}"),
                 Self::Database(e) => write!(f, "database error: {e}"),
-                Self::Precompile(e) | Self::Custom(e) => f.write_str(e),
+                Self::Custom(e) => f.write_str(e),
             }
         }
     *)
@@ -6108,86 +6200,50 @@ Module result.
                   |)));
               fun γ =>
                 ltac:(M.monadic
-                  (M.find_or_pattern
-                    (Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ]) (|
-                    γ,
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::result::EVMError::Custom",
+                      0
+                    |) in
+                  let e :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
+                      γ1_0
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
                     [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ := M.deref (| M.read (| γ |) |) in
-                          let γ1_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "revm_context_interface::result::EVMError::Precompile",
-                              0
-                            |) in
-                          let e :=
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ1_0
-                            |) in
-                          Value.Tuple [ e ]));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ := M.deref (| M.read (| γ |) |) in
-                          let γ1_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "revm_context_interface::result::EVMError::Custom",
-                              0
-                            |) in
-                          let e :=
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ1_0
-                            |) in
-                          Value.Tuple [ e ]))
-                    ],
-                    fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ e ] =>
-                          ltac:(M.monadic
-                            (M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "write_str",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.path "alloc::string::String",
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| e |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end)
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.path "alloc::string::String",
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
+                          |)
+                        |)
+                      |)
+                    ]
                   |)))
             ]
           |)))
@@ -6268,7 +6324,11 @@ Module result.
         };
         {
           name := "CallGasCostMoreThanGasLimit";
-          item := StructTuple [];
+          item := StructRecord [ ("initial_gas", Ty.path "u64"); ("gas_limit", Ty.path "u64") ];
+        };
+        {
+          name := "GasFloorMoreThanGasLimit";
+          item := StructRecord [ ("gas_floor", Ty.path "u64"); ("gas_limit", Ty.path "u64") ];
         };
         {
           name := "RejectCallerWithCode";
@@ -6328,6 +6388,14 @@ Module result.
           item := StructTuple [];
         };
         {
+          name := "MissingChainId";
+          item := StructTuple [];
+        };
+        {
+          name := "TxGasLimitGreaterThanCap";
+          item := StructRecord [ ("gas_limit", Ty.path "u64"); ("cap", Ty.path "u64") ];
+        };
+        {
           name := "AccessListNotSupported";
           item := StructTuple [];
         };
@@ -6341,7 +6409,12 @@ Module result.
         };
         {
           name := "BlobGasPriceGreaterThanMax";
-          item := StructTuple [];
+          item :=
+            StructRecord
+              [
+                ("block_blob_gas_price", Ty.path "u128");
+                ("tx_max_fee_per_blob_gas", Ty.path "u128")
+              ];
         };
         {
           name := "EmptyBlobs";
@@ -6360,10 +6433,6 @@ Module result.
           item := StructTuple [];
         };
         {
-          name := "EofCrateShouldHaveToAddress";
-          item := StructTuple [];
-        };
-        {
           name := "AuthorizationListNotSupported";
           item := StructTuple [];
         };
@@ -6374,12 +6443,6 @@ Module result.
         {
           name := "EmptyAuthorizationList";
           item := StructTuple [];
-        };
-        {
-          name := "InvalidAuthorizationList";
-          item :=
-            StructTuple
-              [ Ty.path "revm_specification::eip7702::authorization_list::InvalidAuthorization" ];
         };
         {
           name := "Eip2930NotSupported";
@@ -6396,6 +6459,18 @@ Module result.
         {
           name := "Eip7702NotSupported";
           item := StructTuple [];
+        };
+        {
+          name := "Eip7873NotSupported";
+          item := StructTuple [];
+        };
+        {
+          name := "Eip7873MissingTarget";
+          item := StructTuple [];
+        };
+        {
+          name := "Str";
+          item := StructTuple [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ];
         }
       ];
   }
@@ -6417,82 +6492,90 @@ Module result.
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit"
       3.
+  Axiom IsDiscriminant_InvalidTransaction_GasFloorMoreThanGasLimit :
+    M.IsDiscriminant
+      "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit"
+      4.
   Axiom IsDiscriminant_InvalidTransaction_RejectCallerWithCode :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::RejectCallerWithCode" 4.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::RejectCallerWithCode" 5.
   Axiom IsDiscriminant_InvalidTransaction_LackOfFundForMaxFee :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee" 5.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee" 6.
   Axiom IsDiscriminant_InvalidTransaction_OverflowPaymentInTransaction :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::OverflowPaymentInTransaction"
-      6.
+      7.
   Axiom IsDiscriminant_InvalidTransaction_NonceOverflowInTransaction :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::NonceOverflowInTransaction"
-      7.
+      8.
   Axiom IsDiscriminant_InvalidTransaction_NonceTooHigh :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::NonceTooHigh" 8.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::NonceTooHigh" 9.
   Axiom IsDiscriminant_InvalidTransaction_NonceTooLow :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::NonceTooLow" 9.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::NonceTooLow" 10.
   Axiom IsDiscriminant_InvalidTransaction_CreateInitCodeSizeLimit :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::CreateInitCodeSizeLimit"
-      10.
+      11.
   Axiom IsDiscriminant_InvalidTransaction_InvalidChainId :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::InvalidChainId" 11.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::InvalidChainId" 12.
+  Axiom IsDiscriminant_InvalidTransaction_MissingChainId :
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::MissingChainId" 13.
+  Axiom IsDiscriminant_InvalidTransaction_TxGasLimitGreaterThanCap :
+    M.IsDiscriminant
+      "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap"
+      14.
   Axiom IsDiscriminant_InvalidTransaction_AccessListNotSupported :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::AccessListNotSupported"
-      12.
+      15.
   Axiom IsDiscriminant_InvalidTransaction_MaxFeePerBlobGasNotSupported :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::MaxFeePerBlobGasNotSupported"
-      13.
+      16.
   Axiom IsDiscriminant_InvalidTransaction_BlobVersionedHashesNotSupported :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::BlobVersionedHashesNotSupported"
-      14.
+      17.
   Axiom IsDiscriminant_InvalidTransaction_BlobGasPriceGreaterThanMax :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax"
-      15.
+      18.
   Axiom IsDiscriminant_InvalidTransaction_EmptyBlobs :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::EmptyBlobs" 16.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::EmptyBlobs" 19.
   Axiom IsDiscriminant_InvalidTransaction_BlobCreateTransaction :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::BlobCreateTransaction" 17.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::BlobCreateTransaction" 20.
   Axiom IsDiscriminant_InvalidTransaction_TooManyBlobs :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::TooManyBlobs" 18.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::TooManyBlobs" 21.
   Axiom IsDiscriminant_InvalidTransaction_BlobVersionNotSupported :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::BlobVersionNotSupported"
-      19.
-  Axiom IsDiscriminant_InvalidTransaction_EofCrateShouldHaveToAddress :
-    M.IsDiscriminant
-      "revm_context_interface::result::InvalidTransaction::EofCrateShouldHaveToAddress"
-      20.
+      22.
   Axiom IsDiscriminant_InvalidTransaction_AuthorizationListNotSupported :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::AuthorizationListNotSupported"
-      21.
+      23.
   Axiom IsDiscriminant_InvalidTransaction_AuthorizationListInvalidFields :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::AuthorizationListInvalidFields"
-      22.
+      24.
   Axiom IsDiscriminant_InvalidTransaction_EmptyAuthorizationList :
     M.IsDiscriminant
       "revm_context_interface::result::InvalidTransaction::EmptyAuthorizationList"
-      23.
-  Axiom IsDiscriminant_InvalidTransaction_InvalidAuthorizationList :
-    M.IsDiscriminant
-      "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList"
-      24.
+      25.
   Axiom IsDiscriminant_InvalidTransaction_Eip2930NotSupported :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip2930NotSupported" 25.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip2930NotSupported" 26.
   Axiom IsDiscriminant_InvalidTransaction_Eip1559NotSupported :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip1559NotSupported" 26.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip1559NotSupported" 27.
   Axiom IsDiscriminant_InvalidTransaction_Eip4844NotSupported :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip4844NotSupported" 27.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip4844NotSupported" 28.
   Axiom IsDiscriminant_InvalidTransaction_Eip7702NotSupported :
-    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip7702NotSupported" 28.
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip7702NotSupported" 29.
+  Axiom IsDiscriminant_InvalidTransaction_Eip7873NotSupported :
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip7873NotSupported" 30.
+  Axiom IsDiscriminant_InvalidTransaction_Eip7873MissingTarget :
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Eip7873MissingTarget" 31.
+  Axiom IsDiscriminant_InvalidTransaction_Str :
+    M.IsDiscriminant "revm_context_interface::result::InvalidTransaction::Str" 32.
   
   Module Impl_core_fmt_Debug_for_revm_context_interface_result_InvalidTransaction.
     Definition Self : Ty.t := Ty.path "revm_context_interface::result::InvalidTransaction".
@@ -6603,11 +6686,20 @@ Module result.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit"
+                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                      "initial_gas"
                     |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                      "gas_limit"
+                    |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -6615,7 +6707,7 @@ Module result.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_associated_function (|
                       Ty.path "core::fmt::Formatter",
-                      "write_str",
+                      "debug_struct_field2_finish",
                       [],
                       []
                     |),
@@ -6624,6 +6716,106 @@ Module result.
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| mk_str (| "CallGasCostMoreThanGasLimit" |) |)
+                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "initial_gas" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_limit" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                          |)
+                        ]
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                      "gas_floor"
+                    |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                      "gas_limit"
+                    |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "debug_struct_field2_finish",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "GasFloorMoreThanGasLimit" |) |)
+                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_floor" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_limit" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                          |)
+                        ]
                       |)
                     ]
                   |)));
@@ -7041,6 +7233,98 @@ Module result.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
+                      "revm_context_interface::result::InvalidTransaction::MissingChainId"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MissingChainId" |) |) |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                      "gas_limit"
+                    |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                      "cap"
+                    |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "debug_struct_field2_finish",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "TxGasLimitGreaterThanCap" |) |)
+                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_limit" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "cap" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                          |)
+                        ]
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
                       "revm_context_interface::result::InvalidTransaction::AccessListNotSupported"
                     |) in
                   M.call_closure (|
@@ -7119,11 +7403,22 @@ Module result.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax"
+                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                      "block_blob_gas_price"
                     |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                      "tx_max_fee_per_blob_gas"
+                    |) in
+                  let __self_0 :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                  let __self_1 :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_1 |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -7131,7 +7426,7 @@ Module result.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_associated_function (|
                       Ty.path "core::fmt::Formatter",
-                      "write_str",
+                      "debug_struct_field2_finish",
                       [],
                       []
                     |),
@@ -7140,6 +7435,44 @@ Module result.
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| mk_str (| "BlobGasPriceGreaterThanMax" |) |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "block_blob_gas_price" |) |)
+                      |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "tx_max_fee_per_blob_gas" |) |)
+                      |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                          |)
+                        ]
                       |)
                     ]
                   |)));
@@ -7294,33 +7627,6 @@ Module result.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::EofCrateShouldHaveToAddress"
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofCrateShouldHaveToAddress" |) |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
-                      γ,
                       "revm_context_interface::result::InvalidTransaction::AuthorizationListNotSupported"
                     |) in
                   M.call_closure (|
@@ -7393,72 +7699,6 @@ Module result.
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| mk_str (| "EmptyAuthorizationList" |) |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.path
-                            "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                        ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_tuple_field1_finish",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidAuthorizationList" |) |)
-                      |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.path
-                                    "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
                       |)
                     ]
                   |)));
@@ -7569,6 +7809,117 @@ Module result.
                         M.deref (| mk_str (| "Eip7702NotSupported" |) |)
                       |)
                     ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::Eip7873NotSupported"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Eip7873NotSupported" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::Eip7873MissingTarget"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Eip7873MissingTarget" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::Str",
+                      0
+                    |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                      γ1_0
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "debug_tuple_field1_finish",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Str" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                          |)
+                        ]
+                      |)
+                    ]
                   |)))
             ]
           |)))
@@ -7646,16 +7997,105 @@ Module result.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit"
+                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                      "initial_gas"
                     |) in
-                  Value.StructTuple
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                      "gas_limit"
+                    |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit"
                     []
                     []
-                    []));
+                    [
+                      ("initial_gas",
+                        M.call_closure (|
+                          Ty.path "u64",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u64",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |));
+                      ("gas_limit",
+                        M.call_closure (|
+                          Ty.path "u64",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u64",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
+                        |))
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                      "gas_floor"
+                    |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                      "gas_limit"
+                    |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  Value.mkStructRecord
+                    "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit"
+                    []
+                    []
+                    [
+                      ("gas_floor",
+                        M.call_closure (|
+                          Ty.path "u64",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u64",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |));
+                      ("gas_limit",
+                        M.call_closure (|
+                          Ty.path "u64",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u64",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
+                        |))
+                    ]));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7970,6 +8410,70 @@ Module result.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
+                      "revm_context_interface::result::InvalidTransaction::MissingChainId"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::InvalidTransaction::MissingChainId"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                      "gas_limit"
+                    |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                      "cap"
+                    |) in
+                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  Value.mkStructRecord
+                    "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap"
+                    []
+                    []
+                    [
+                      ("gas_limit",
+                        M.call_closure (|
+                          Ty.path "u64",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u64",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |));
+                      ("cap",
+                        M.call_closure (|
+                          Ty.path "u64",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u64",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
+                        |))
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
                       "revm_context_interface::result::InvalidTransaction::AccessListNotSupported"
                     |) in
                   Value.StructTuple
@@ -8006,16 +8510,56 @@ Module result.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax"
+                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                      "block_blob_gas_price"
                     |) in
-                  Value.StructTuple
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                      "tx_max_fee_per_blob_gas"
+                    |) in
+                  let __self_0 :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                  let __self_1 :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_1 |) in
+                  Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax"
                     []
                     []
-                    []));
+                    [
+                      ("block_blob_gas_price",
+                        M.call_closure (|
+                          Ty.path "u128",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u128",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |));
+                      ("tx_max_fee_per_blob_gas",
+                        M.call_closure (|
+                          Ty.path "u128",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u128",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
+                        |))
+                    ]));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8114,19 +8658,6 @@ Module result.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::EofCrateShouldHaveToAddress"
-                    |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::EofCrateShouldHaveToAddress"
-                    []
-                    []
-                    []));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
-                      γ,
                       "revm_context_interface::result::InvalidTransaction::AuthorizationListNotSupported"
                     |) in
                   Value.StructTuple
@@ -8160,47 +8691,6 @@ Module result.
                     []
                     []
                     []));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.path
-                            "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                        ],
-                      γ1_0
-                    |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path
-                          "revm_specification::eip7702::authorization_list::InvalidAuthorization",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
-                          Ty.path
-                            "revm_specification::eip7702::authorization_list::InvalidAuthorization",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8252,7 +8742,69 @@ Module result.
                     "revm_context_interface::result::InvalidTransaction::Eip7702NotSupported"
                     []
                     []
-                    []))
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::Eip7873NotSupported"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::InvalidTransaction::Eip7873NotSupported"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::Eip7873MissingTarget"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::InvalidTransaction::Eip7873MissingTarget"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::Str",
+                      0
+                    |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                      γ1_0
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::InvalidTransaction::Str"
+                    []
+                    []
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |)
+                    ]))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -8350,6 +8902,152 @@ Module result.
                       Value.Tuple [ M.read (| self |); M.read (| other |) ]
                     |),
                     [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_0,
+                              "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                              "initial_gas"
+                            |) in
+                          let γ2_1 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_0,
+                              "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                              "gas_limit"
+                            |) in
+                          let __self_0 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                          let __self_1 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_1,
+                              "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                              "initial_gas"
+                            |) in
+                          let γ2_1 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_1,
+                              "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                              "gas_limit"
+                            |) in
+                          let __arg1_0 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                          let __arg1_1 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                          LogicalOp.and (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                [],
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
+                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                ]
+                              |)))
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_0,
+                              "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                              "gas_floor"
+                            |) in
+                          let γ2_1 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_0,
+                              "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                              "gas_limit"
+                            |) in
+                          let __self_0 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                          let __self_1 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_1,
+                              "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                              "gas_floor"
+                            |) in
+                          let γ2_1 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_1,
+                              "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                              "gas_limit"
+                            |) in
+                          let __arg1_0 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                          let __arg1_1 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                          LogicalOp.and (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                [],
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
+                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                ]
+                              |)))
+                          |)));
                       fun γ =>
                         ltac:(M.monadic
                           (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -8729,6 +9427,152 @@ Module result.
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
                               γ0_0,
+                              "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                              "gas_limit"
+                            |) in
+                          let γ2_1 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_0,
+                              "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                              "cap"
+                            |) in
+                          let __self_0 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                          let __self_1 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_1,
+                              "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                              "gas_limit"
+                            |) in
+                          let γ2_1 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_1,
+                              "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                              "cap"
+                            |) in
+                          let __arg1_0 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                          let __arg1_1 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                          LogicalOp.and (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                [],
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
+                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                ]
+                              |)))
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_0,
+                              "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                              "block_blob_gas_price"
+                            |) in
+                          let γ2_1 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_0,
+                              "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                              "tx_max_fee_per_blob_gas"
+                            |) in
+                          let __self_0 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_0 |) in
+                          let __self_1 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_1 |) in
+                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_1,
+                              "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                              "block_blob_gas_price"
+                            |) in
+                          let γ2_1 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_1,
+                              "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                              "tx_max_fee_per_blob_gas"
+                            |) in
+                          let __arg1_0 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_0 |) in
+                          let __arg1_1 :=
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_1 |) in
+                          LogicalOp.and (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                                [],
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
+                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                ]
+                              |)))
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_0,
                               "revm_context_interface::result::InvalidTransaction::TooManyBlobs",
                               "max"
                             |) in
@@ -8802,7 +9646,7 @@ Module result.
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
                               γ0_0,
-                              "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList",
+                              "revm_context_interface::result::InvalidTransaction::Str",
                               0
                             |) in
                           let __self_0 :=
@@ -8810,17 +9654,14 @@ Module result.
                               Ty.apply
                                 (Ty.path "&")
                                 []
-                                [
-                                  Ty.path
-                                    "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                                ],
+                                [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
                               γ2_0
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
                               γ0_1,
-                              "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList",
+                              "revm_context_interface::result::InvalidTransaction::Str",
                               0
                             |) in
                           let __arg1_0 :=
@@ -8828,10 +9669,7 @@ Module result.
                               Ty.apply
                                 (Ty.path "&")
                                 []
-                                [
-                                  Ty.path
-                                    "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                                ],
+                                [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
                               γ2_0
                             |) in
                           M.call_closure (|
@@ -8841,19 +9679,13 @@ Module result.
                               Ty.apply
                                 (Ty.path "&")
                                 []
-                                [
-                                  Ty.path
-                                    "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                                ],
+                                [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
                               [],
                               [
                                 Ty.apply
                                   (Ty.path "&")
                                   []
-                                  [
-                                    Ty.path
-                                      "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                                  ]
+                                  [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ]
                               ],
                               "eq",
                               [],
@@ -8930,7 +9762,15 @@ Module result.
                                           (M.match_operator (|
                                             Ty.tuple [],
                                             Value.DeclaredButUndefined,
-                                            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (M.match_operator (|
+                                                    Ty.tuple [],
+                                                    Value.DeclaredButUndefined,
+                                                    [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                                                  |)))
+                                            ]
                                           |)))
                                     ]
                                   |)))
@@ -9007,6 +9847,120 @@ Module result.
                 Ty.tuple [],
                 self,
                 [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let γ1_0 :=
+                        M.SubPointer.get_struct_record_field (|
+                          γ,
+                          "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                          "initial_gas"
+                        |) in
+                      let γ1_1 :=
+                        M.SubPointer.get_struct_record_field (|
+                          γ,
+                          "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                          "gas_limit"
+                        |) in
+                      let __self_0 :=
+                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                      let __self_1 :=
+                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::hash::Hash",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "hash",
+                              [],
+                              [ __H ]
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            ]
+                          |) in
+                        M.alloc (|
+                          Ty.tuple [],
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::hash::Hash",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "hash",
+                              [],
+                              [ __H ]
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            ]
+                          |)
+                        |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let γ1_0 :=
+                        M.SubPointer.get_struct_record_field (|
+                          γ,
+                          "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                          "gas_floor"
+                        |) in
+                      let γ1_1 :=
+                        M.SubPointer.get_struct_record_field (|
+                          γ,
+                          "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                          "gas_limit"
+                        |) in
+                      let __self_0 :=
+                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                      let __self_1 :=
+                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::hash::Hash",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "hash",
+                              [],
+                              [ __H ]
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            ]
+                          |) in
+                        M.alloc (|
+                          Ty.tuple [],
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::hash::Hash",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "hash",
+                              [],
+                              [ __H ]
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            ]
+                          |)
+                        |)
+                      |)));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ := M.deref (| M.read (| γ |) |) in
@@ -9248,6 +10202,120 @@ Module result.
                       let γ1_0 :=
                         M.SubPointer.get_struct_record_field (|
                           γ,
+                          "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                          "gas_limit"
+                        |) in
+                      let γ1_1 :=
+                        M.SubPointer.get_struct_record_field (|
+                          γ,
+                          "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                          "cap"
+                        |) in
+                      let __self_0 :=
+                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                      let __self_1 :=
+                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::hash::Hash",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "hash",
+                              [],
+                              [ __H ]
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            ]
+                          |) in
+                        M.alloc (|
+                          Ty.tuple [],
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::hash::Hash",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "hash",
+                              [],
+                              [ __H ]
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            ]
+                          |)
+                        |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let γ1_0 :=
+                        M.SubPointer.get_struct_record_field (|
+                          γ,
+                          "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                          "block_blob_gas_price"
+                        |) in
+                      let γ1_1 :=
+                        M.SubPointer.get_struct_record_field (|
+                          γ,
+                          "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                          "tx_max_fee_per_blob_gas"
+                        |) in
+                      let __self_0 :=
+                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                      let __self_1 :=
+                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_1 |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::hash::Hash",
+                              Ty.path "u128",
+                              [],
+                              [],
+                              "hash",
+                              [],
+                              [ __H ]
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            ]
+                          |) in
+                        M.alloc (|
+                          Ty.tuple [],
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::hash::Hash",
+                              Ty.path "u128",
+                              [],
+                              [],
+                              "hash",
+                              [],
+                              [ __H ]
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            ]
+                          |)
+                        |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let γ1_0 :=
+                        M.SubPointer.get_struct_record_field (|
+                          γ,
                           "revm_context_interface::result::InvalidTransaction::TooManyBlobs",
                           "max"
                         |) in
@@ -9305,7 +10373,7 @@ Module result.
                       let γ1_0 :=
                         M.SubPointer.get_struct_tuple_field (|
                           γ,
-                          "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList",
+                          "revm_context_interface::result::InvalidTransaction::Str",
                           0
                         |) in
                       let __self_0 :=
@@ -9313,18 +10381,14 @@ Module result.
                           Ty.apply
                             (Ty.path "&")
                             []
-                            [
-                              Ty.path
-                                "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                            ],
+                            [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
                           γ1_0
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
                           "core::hash::Hash",
-                          Ty.path
-                            "revm_specification::eip7702::authorization_list::InvalidAuthorization",
+                          Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
                           [],
                           [],
                           "hash",
@@ -9365,41 +10429,6 @@ Module result.
         (* Instance *) [].
   End Impl_revm_context_interface_transaction_TransactionError_for_revm_context_interface_result_InvalidTransaction.
   
-  Module Impl_core_convert_From_revm_specification_eip7702_authorization_list_InvalidAuthorization_for_revm_context_interface_result_InvalidTransaction.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::result::InvalidTransaction".
-    
-    (*
-        fn from(value: InvalidAuthorization) -> Self {
-            Self::InvalidAuthorizationList(value)
-        }
-    *)
-    Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ value ] =>
-        ltac:(M.monadic
-          (let value :=
-            M.alloc (|
-              Ty.path "revm_specification::eip7702::authorization_list::InvalidAuthorization",
-              value
-            |) in
-          Value.StructTuple
-            "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList"
-            []
-            []
-            [ M.read (| value |) ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::convert::From"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *)
-        [ Ty.path "revm_specification::eip7702::authorization_list::InvalidAuthorization" ]
-        Self
-        (* Instance *) [ ("from", InstanceField.Method from) ].
-  End Impl_core_convert_From_revm_specification_eip7702_authorization_list_InvalidAuthorization_for_revm_context_interface_result_InvalidTransaction.
-  
   Module Impl_core_error_Error_for_revm_context_interface_result_InvalidTransaction.
     Definition Self : Ty.t := Ty.path "revm_context_interface::result::InvalidTransaction".
     
@@ -9427,8 +10456,29 @@ Module result.
                 Self::CallerGasLimitMoreThanBlock => {
                     write!(f, "caller gas limit exceeds the block gas limit")
                 }
-                Self::CallGasCostMoreThanGasLimit => {
-                    write!(f, "call gas cost exceeds the gas limit")
+                Self::TxGasLimitGreaterThanCap { gas_limit, cap } => {
+                    write!(
+                        f,
+                        "transaction gas limit ({gas_limit}) is greater than the cap ({cap})"
+                    )
+                }
+                Self::CallGasCostMoreThanGasLimit {
+                    initial_gas,
+                    gas_limit,
+                } => {
+                    write!(
+                        f,
+                        "call gas cost ({initial_gas}) exceeds the gas limit ({gas_limit})"
+                    )
+                }
+                Self::GasFloorMoreThanGasLimit {
+                    gas_floor,
+                    gas_limit,
+                } => {
+                    write!(
+                        f,
+                        "gas floor ({gas_floor}) exceeds the gas limit ({gas_limit})"
+                    )
                 }
                 Self::RejectCallerWithCode => {
                     write!(f, "reject transactions from senders with deployed code")
@@ -9452,6 +10502,7 @@ Module result.
                     write!(f, "create initcode size limit")
                 }
                 Self::InvalidChainId => write!(f, "invalid chain ID"),
+                Self::MissingChainId => write!(f, "missing chain ID"),
                 Self::AccessListNotSupported => write!(f, "access list not supported"),
                 Self::MaxFeePerBlobGasNotSupported => {
                     write!(f, "max fee per blob gas not supported")
@@ -9459,8 +10510,14 @@ Module result.
                 Self::BlobVersionedHashesNotSupported => {
                     write!(f, "blob versioned hashes not supported")
                 }
-                Self::BlobGasPriceGreaterThanMax => {
-                    write!(f, "blob gas price is greater than max fee per blob gas")
+                Self::BlobGasPriceGreaterThanMax {
+                    block_blob_gas_price,
+                    tx_max_fee_per_blob_gas,
+                } => {
+                    write!(
+                        f,
+                        "blob gas price ({block_blob_gas_price}) is greater than max fee per blob gas ({tx_max_fee_per_blob_gas})"
+                    )
                 }
                 Self::EmptyBlobs => write!(f, "empty blobs"),
                 Self::BlobCreateTransaction => write!(f, "blob create transaction"),
@@ -9468,7 +10525,6 @@ Module result.
                     write!(f, "too many blobs, have {have}, max {max}")
                 }
                 Self::BlobVersionNotSupported => write!(f, "blob version not supported"),
-                Self::EofCrateShouldHaveToAddress => write!(f, "EOF crate should have `to` address"),
                 Self::AuthorizationListNotSupported => write!(f, "authorization list not supported"),
                 Self::AuthorizationListInvalidFields => {
                     write!(f, "authorization list tx has invalid fields")
@@ -9478,7 +10534,11 @@ Module result.
                 Self::Eip1559NotSupported => write!(f, "Eip1559 is not supported"),
                 Self::Eip4844NotSupported => write!(f, "Eip4844 is not supported"),
                 Self::Eip7702NotSupported => write!(f, "Eip7702 is not supported"),
-                Self::InvalidAuthorizationList(i) => fmt::Display::fmt(i, f),
+                Self::Eip7873NotSupported => write!(f, "Eip7873 is not supported"),
+                Self::Eip7873MissingTarget => {
+                    write!(f, "Eip7873 initcode transaction should have `to` address")
+                }
+                Self::Str(msg) => f.write_str(msg),
             }
         }
     *)
@@ -9605,11 +10665,21 @@ Module result.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit"
+                      "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                      "gas_limit"
                     |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
+                      "cap"
+                    |) in
+                  let gas_limit :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let cap := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -9623,15 +10693,493 @@ Module result.
                     |),
                     [
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ];
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                              ] :=
+                          Value.Tuple
+                            [
+                              M.borrow (| Pointer.Kind.Ref, gas_limit |);
+                              M.borrow (| Pointer.Kind.Ref, cap |)
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
                           Ty.path "core::fmt::Arguments",
-                          "from_str",
-                          [],
-                          []
-                        |),
-                        [ mk_str (| "call gas cost exceeds the gas limit" |) ]
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 57;
+                                Value.Integer IntegerKind.Usize 2
+                              ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    57
+                                    [
+                                      23;
+                                      116;
+                                      114;
+                                      97;
+                                      110;
+                                      115;
+                                      97;
+                                      99;
+                                      116;
+                                      105;
+                                      111;
+                                      110;
+                                      32;
+                                      103;
+                                      97;
+                                      115;
+                                      32;
+                                      108;
+                                      105;
+                                      109;
+                                      105;
+                                      116;
+                                      32;
+                                      40;
+                                      192;
+                                      27;
+                                      41;
+                                      32;
+                                      105;
+                                      115;
+                                      32;
+                                      103;
+                                      114;
+                                      101;
+                                      97;
+                                      116;
+                                      101;
+                                      114;
+                                      32;
+                                      116;
+                                      104;
+                                      97;
+                                      110;
+                                      32;
+                                      116;
+                                      104;
+                                      101;
+                                      32;
+                                      99;
+                                      97;
+                                      112;
+                                      32;
+                                      40;
+                                      192;
+                                      1;
+                                      41;
+                                      0
+                                    ]
+                                |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                              |)
+                            ]
+                          |)
+                        |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                      "initial_gas"
+                    |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
+                      "gas_limit"
+                    |) in
+                  let initial_gas :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let gas_limit :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_fmt",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ];
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                              ] :=
+                          Value.Tuple
+                            [
+                              M.borrow (| Pointer.Kind.Ref, initial_gas |);
+                              M.borrow (| Pointer.Kind.Ref, gas_limit |)
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
+                          Ty.path "core::fmt::Arguments",
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 47;
+                                Value.Integer IntegerKind.Usize 2
+                              ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    47
+                                    [
+                                      15;
+                                      99;
+                                      97;
+                                      108;
+                                      108;
+                                      32;
+                                      103;
+                                      97;
+                                      115;
+                                      32;
+                                      99;
+                                      111;
+                                      115;
+                                      116;
+                                      32;
+                                      40;
+                                      192;
+                                      25;
+                                      41;
+                                      32;
+                                      101;
+                                      120;
+                                      99;
+                                      101;
+                                      101;
+                                      100;
+                                      115;
+                                      32;
+                                      116;
+                                      104;
+                                      101;
+                                      32;
+                                      103;
+                                      97;
+                                      115;
+                                      32;
+                                      108;
+                                      105;
+                                      109;
+                                      105;
+                                      116;
+                                      32;
+                                      40;
+                                      192;
+                                      1;
+                                      41;
+                                      0
+                                    ]
+                                |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                              |)
+                            ]
+                          |)
+                        |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                      "gas_floor"
+                    |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
+                      "gas_limit"
+                    |) in
+                  let gas_floor :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let gas_limit :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_fmt",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ];
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                              ] :=
+                          Value.Tuple
+                            [
+                              M.borrow (| Pointer.Kind.Ref, gas_floor |);
+                              M.borrow (| Pointer.Kind.Ref, gas_limit |)
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
+                          Ty.path "core::fmt::Arguments",
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 43;
+                                Value.Integer IntegerKind.Usize 2
+                              ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    43
+                                    [
+                                      11;
+                                      103;
+                                      97;
+                                      115;
+                                      32;
+                                      102;
+                                      108;
+                                      111;
+                                      111;
+                                      114;
+                                      32;
+                                      40;
+                                      192;
+                                      25;
+                                      41;
+                                      32;
+                                      101;
+                                      120;
+                                      99;
+                                      101;
+                                      101;
+                                      100;
+                                      115;
+                                      32;
+                                      116;
+                                      104;
+                                      101;
+                                      32;
+                                      103;
+                                      97;
+                                      115;
+                                      32;
+                                      108;
+                                      105;
+                                      109;
+                                      105;
+                                      116;
+                                      32;
+                                      40;
+                                      192;
+                                      1;
+                                      41;
+                                      0
+                                    ]
+                                |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                              |)
+                            ]
+                          |)
+                        |)
                       |)
                     ]
                   |)));
@@ -10391,6 +11939,39 @@ Module result.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
+                      "revm_context_interface::result::InvalidTransaction::MissingChainId"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_fmt",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "from_str",
+                          [],
+                          []
+                        |),
+                        [ mk_str (| "missing chain ID" |) ]
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
                       "revm_context_interface::result::InvalidTransaction::AccessListNotSupported"
                     |) in
                   M.call_closure (|
@@ -10487,11 +12068,22 @@ Module result.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax"
+                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                      "block_blob_gas_price"
                     |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
+                      "tx_max_fee_per_blob_gas"
+                    |) in
+                  let block_blob_gas_price :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                  let tx_max_fee_per_blob_gas :=
+                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_1 |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -10505,15 +12097,159 @@ Module result.
                     |),
                     [
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ];
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ]
+                              ] :=
+                          Value.Tuple
+                            [
+                              M.borrow (| Pointer.Kind.Ref, block_blob_gas_price |);
+                              M.borrow (| Pointer.Kind.Ref, tx_max_fee_per_blob_gas |)
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
                           Ty.path "core::fmt::Arguments",
-                          "from_str",
-                          [],
-                          []
-                        |),
-                        [ mk_str (| "blob gas price is greater than max fee per blob gas" |) ]
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 63;
+                                Value.Integer IntegerKind.Usize 2
+                              ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    63
+                                    [
+                                      16;
+                                      98;
+                                      108;
+                                      111;
+                                      98;
+                                      32;
+                                      103;
+                                      97;
+                                      115;
+                                      32;
+                                      112;
+                                      114;
+                                      105;
+                                      99;
+                                      101;
+                                      32;
+                                      40;
+                                      192;
+                                      40;
+                                      41;
+                                      32;
+                                      105;
+                                      115;
+                                      32;
+                                      103;
+                                      114;
+                                      101;
+                                      97;
+                                      116;
+                                      101;
+                                      114;
+                                      32;
+                                      116;
+                                      104;
+                                      97;
+                                      110;
+                                      32;
+                                      109;
+                                      97;
+                                      120;
+                                      32;
+                                      102;
+                                      101;
+                                      101;
+                                      32;
+                                      112;
+                                      101;
+                                      114;
+                                      32;
+                                      98;
+                                      108;
+                                      111;
+                                      98;
+                                      32;
+                                      103;
+                                      97;
+                                      115;
+                                      32;
+                                      40;
+                                      192;
+                                      1;
+                                      41;
+                                      0
+                                    ]
+                                |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                              |)
+                            ]
+                          |)
+                        |)
                       |)
                     ]
                   |)));
@@ -10777,39 +12513,6 @@ Module result.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::EofCrateShouldHaveToAddress"
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_fmt",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "from_str",
-                          [],
-                          []
-                        |),
-                        [ mk_str (| "EOF crate should have `to` address" |) ]
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
-                      γ,
                       "revm_context_interface::result::InvalidTransaction::AuthorizationListNotSupported"
                     |) in
                   M.call_closure (|
@@ -11038,21 +12741,84 @@ Module result.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::Eip7873NotSupported"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_fmt",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "from_str",
+                          [],
+                          []
+                        |),
+                        [ mk_str (| "Eip7873 is not supported" |) ]
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::InvalidTransaction::Eip7873MissingTarget"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_fmt",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "from_str",
+                          [],
+                          []
+                        |),
+                        [ mk_str (| "Eip7873 initcode transaction should have `to` address" |) ]
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (|
                       γ,
-                      "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList",
+                      "revm_context_interface::result::InvalidTransaction::Str",
                       0
                     |) in
-                  let i :=
+                  let msg :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
-                        [
-                          Ty.path
-                            "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                        ],
+                        [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
                       γ1_0
                     |) in
                   M.call_closure (|
@@ -11060,19 +12826,32 @@ Module result.
                       (Ty.path "core::result::Result")
                       []
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_trait_method (|
-                      "core::fmt::Display",
-                      Ty.path
-                        "revm_specification::eip7702::authorization_list::InvalidAuthorization",
-                      [],
-                      [],
-                      "fmt",
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
                       [],
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| i |) |) |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                          |)
+                        |)
+                      |)
                     ]
                   |)))
             ]
@@ -11532,10 +13311,6 @@ Module result.
         {
           name := "SelfDestruct";
           item := StructTuple [];
-        };
-        {
-          name := "EofReturnContract";
-          item := StructTuple [];
         }
       ];
   }
@@ -11547,8 +13322,6 @@ Module result.
     M.IsDiscriminant "revm_context_interface::result::SuccessReason::Return" 1.
   Axiom IsDiscriminant_SuccessReason_SelfDestruct :
     M.IsDiscriminant "revm_context_interface::result::SuccessReason::SelfDestruct" 2.
-  Axiom IsDiscriminant_SuccessReason_EofReturnContract :
-    M.IsDiscriminant "revm_context_interface::result::SuccessReason::EofReturnContract" 3.
   
   Module Impl_core_fmt_Debug_for_revm_context_interface_result_SuccessReason.
     Definition Self : Ty.t := Ty.path "revm_context_interface::result::SuccessReason".
@@ -11603,19 +13376,7 @@ Module result.
                           γ,
                           "revm_context_interface::result::SuccessReason::SelfDestruct"
                         |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SelfDestruct" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::SuccessReason::EofReturnContract"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofReturnContract" |) |)
-                      |)))
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SelfDestruct" |) |) |)))
                 ]
               |)
             ]
@@ -11893,6 +13654,10 @@ Module result.
           item := StructTuple [];
         };
         {
+          name := "PrecompileErrorWithContext";
+          item := StructTuple [ Ty.path "alloc::string::String" ];
+        };
+        {
           name := "NonceOverflow";
           item := StructTuple [];
         };
@@ -11927,22 +13692,6 @@ Module result.
         {
           name := "CallTooDeep";
           item := StructTuple [];
-        };
-        {
-          name := "EofAuxDataOverflow";
-          item := StructTuple [];
-        };
-        {
-          name := "EofAuxDataTooSmall";
-          item := StructTuple [];
-        };
-        {
-          name := "SubRoutineStackOverflow";
-          item := StructTuple [];
-        };
-        {
-          name := "InvalidEXTCALLTarget";
-          item := StructTuple [];
         }
       ];
   }
@@ -11968,32 +13717,26 @@ Module result.
     M.IsDiscriminant "revm_context_interface::result::HaltReason::CreateCollision" 8.
   Axiom IsDiscriminant_HaltReason_PrecompileError :
     M.IsDiscriminant "revm_context_interface::result::HaltReason::PrecompileError" 9.
+  Axiom IsDiscriminant_HaltReason_PrecompileErrorWithContext :
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::PrecompileErrorWithContext" 10.
   Axiom IsDiscriminant_HaltReason_NonceOverflow :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::NonceOverflow" 10.
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::NonceOverflow" 11.
   Axiom IsDiscriminant_HaltReason_CreateContractSizeLimit :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::CreateContractSizeLimit" 11.
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::CreateContractSizeLimit" 12.
   Axiom IsDiscriminant_HaltReason_CreateContractStartingWithEF :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::CreateContractStartingWithEF" 12.
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::CreateContractStartingWithEF" 13.
   Axiom IsDiscriminant_HaltReason_CreateInitCodeSizeLimit :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::CreateInitCodeSizeLimit" 13.
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::CreateInitCodeSizeLimit" 14.
   Axiom IsDiscriminant_HaltReason_OverflowPayment :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::OverflowPayment" 14.
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::OverflowPayment" 15.
   Axiom IsDiscriminant_HaltReason_StateChangeDuringStaticCall :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::StateChangeDuringStaticCall" 15.
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::StateChangeDuringStaticCall" 16.
   Axiom IsDiscriminant_HaltReason_CallNotAllowedInsideStatic :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::CallNotAllowedInsideStatic" 16.
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::CallNotAllowedInsideStatic" 17.
   Axiom IsDiscriminant_HaltReason_OutOfFunds :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::OutOfFunds" 17.
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::OutOfFunds" 18.
   Axiom IsDiscriminant_HaltReason_CallTooDeep :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::CallTooDeep" 18.
-  Axiom IsDiscriminant_HaltReason_EofAuxDataOverflow :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::EofAuxDataOverflow" 19.
-  Axiom IsDiscriminant_HaltReason_EofAuxDataTooSmall :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::EofAuxDataTooSmall" 20.
-  Axiom IsDiscriminant_HaltReason_SubRoutineStackOverflow :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::SubRoutineStackOverflow" 21.
-  Axiom IsDiscriminant_HaltReason_InvalidEXTCALLTarget :
-    M.IsDiscriminant "revm_context_interface::result::HaltReason::InvalidEXTCALLTarget" 22.
+    M.IsDiscriminant "revm_context_interface::result::HaltReason::CallTooDeep" 19.
   
   Module Impl_core_fmt_Debug_for_revm_context_interface_result_HaltReason.
     Definition Self : Ty.t := Ty.path "revm_context_interface::result::HaltReason".
@@ -12293,6 +14036,58 @@ Module result.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
+                      0
+                    |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
+                      γ1_0
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "debug_tuple_field1_finish",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "PrecompileErrorWithContext" |) |)
+                      |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                          |)
+                        ]
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
@@ -12520,114 +14315,6 @@ Module result.
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                       M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CallTooDeep" |) |) |)
                     ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::result::HaltReason::EofAuxDataOverflow"
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofAuxDataOverflow" |) |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::result::HaltReason::EofAuxDataTooSmall"
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofAuxDataTooSmall" |) |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::result::HaltReason::SubRoutineStackOverflow"
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SubRoutineStackOverflow" |) |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let _ :=
-                    M.is_struct_tuple (|
-                      γ,
-                      "revm_context_interface::result::HaltReason::InvalidEXTCALLTarget"
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidEXTCALLTarget" |) |)
-                      |)
-                    ]
                   |)))
             ]
           |)))
@@ -12642,18 +14329,6 @@ Module result.
         Self
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
   End Impl_core_fmt_Debug_for_revm_context_interface_result_HaltReason.
-  
-  Module Impl_core_clone_TrivialClone_for_revm_context_interface_result_HaltReason.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::result::HaltReason".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::clone::TrivialClone"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_clone_TrivialClone_for_revm_context_interface_result_HaltReason.
   
   Module Impl_core_clone_Clone_for_revm_context_interface_result_HaltReason.
     Definition Self : Ty.t := Ty.path "revm_context_interface::result::HaltReason".
@@ -12670,8 +14345,312 @@ Module result.
             |) in
           M.match_operator (|
             Ty.path "revm_context_interface::result::HaltReason",
-            Value.DeclaredButUndefined,
-            [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::OutOfGas",
+                      0
+                    |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_context_interface::result::OutOfGasError" ],
+                      γ1_0
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::OutOfGas"
+                    []
+                    []
+                    [
+                      M.call_closure (|
+                        Ty.path "revm_context_interface::result::OutOfGasError",
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.path "revm_context_interface::result::OutOfGasError",
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |)
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::OpcodeNotFound"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::OpcodeNotFound"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::InvalidFEOpcode"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::InvalidFEOpcode"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::InvalidJump"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::InvalidJump"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::NotActivated"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::NotActivated"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::StackUnderflow"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::StackUnderflow"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::StackOverflow"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::StackOverflow"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::OutOfOffset"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::OutOfOffset"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::CreateCollision"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::CreateCollision"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::PrecompileError"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::PrecompileError"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
+                      0
+                    |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
+                      γ1_0
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::PrecompileErrorWithContext"
+                    []
+                    []
+                    [
+                      M.call_closure (|
+                        Ty.path "alloc::string::String",
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.path "alloc::string::String",
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |)
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::NonceOverflow"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::NonceOverflow"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::CreateContractSizeLimit"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::CreateContractSizeLimit"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::CreateContractStartingWithEF"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::CreateContractStartingWithEF"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::CreateInitCodeSizeLimit"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::CreateInitCodeSizeLimit"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::OverflowPayment"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::OverflowPayment"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::StateChangeDuringStaticCall"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::StateChangeDuringStaticCall"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::CallNotAllowedInsideStatic"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::CallNotAllowedInsideStatic"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::OutOfFunds"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::OutOfFunds"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_context_interface::result::HaltReason::CallTooDeep"
+                    |) in
+                  Value.StructTuple
+                    "revm_context_interface::result::HaltReason::CallTooDeep"
+                    []
+                    []
+                    []))
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -12684,18 +14663,6 @@ Module result.
         Self
         (* Instance *) [ ("clone", InstanceField.Method clone) ].
   End Impl_core_clone_Clone_for_revm_context_interface_result_HaltReason.
-  
-  Module Impl_core_marker_Copy_for_revm_context_interface_result_HaltReason.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::result::HaltReason".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::Copy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_Copy_for_revm_context_interface_result_HaltReason.
   
   Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_result_HaltReason.
     Definition Self : Ty.t := Ty.path "revm_context_interface::result::HaltReason".
@@ -12832,6 +14799,50 @@ Module result.
                               M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
                             ]
                           |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_0,
+                              "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
+                              0
+                            |) in
+                          let __self_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
+                              γ2_0
+                            |) in
+                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_1,
+                              "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
+                              0
+                            |) in
+                          let __arg1_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
+                              γ2_0
+                            |) in
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_trait_method (|
+                              "core::cmp::PartialEq",
+                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
+                              [],
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ],
+                              "eq",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                            ]
+                          |)));
                       fun γ => ltac:(M.monadic (Value.Bool true))
                     ]
                   |)))
@@ -12870,7 +14881,15 @@ Module result.
           M.match_operator (|
             Ty.tuple [],
             Value.DeclaredButUndefined,
-            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (M.match_operator (|
+                    Ty.tuple [],
+                    Value.DeclaredButUndefined,
+                    [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                  |)))
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -12958,6 +14977,36 @@ Module result.
                         M.get_trait_method (|
                           "core::hash::Hash",
                           Ty.path "revm_context_interface::result::OutOfGasError",
+                          [],
+                          [],
+                          "hash",
+                          [],
+                          [ __H ]
+                        |),
+                        [
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
+                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                        ]
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let γ1_0 :=
+                        M.SubPointer.get_struct_tuple_field (|
+                          γ,
+                          "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
+                          0
+                        |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
+                          γ1_0
+                        |) in
+                      M.call_closure (|
+                        Ty.tuple [],
+                        M.get_trait_method (|
+                          "core::hash::Hash",
+                          Ty.path "alloc::string::String",
                           [],
                           [],
                           "hash",
@@ -13349,4 +15398,802 @@ Module result.
         Self
         (* Instance *) [ ("hash", InstanceField.Method hash) ].
   End Impl_core_hash_Hash_for_revm_context_interface_result_OutOfGasError.
+  
+  (* StructRecord
+    {
+      name := "TransactionIndexedError";
+      const_params := [];
+      ty_params := [ "Error" ];
+      fields := [ ("error", Error); ("transaction_index", Ty.path "usize") ];
+    } *)
+  
+  Module Impl_core_fmt_Debug_where_core_fmt_Debug_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+    Definition Self (Error : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::TransactionIndexedError") [] [ Error ].
+    
+    (* Debug *)
+    Definition fmt (Error : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Error in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::TransactionIndexedError")
+                    []
+                    [ Error ]
+                ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (|
+              Ty.path "core::fmt::Formatter",
+              "debug_struct_field2_finish",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TransactionIndexedError" |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "error" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Error ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::result::TransactionIndexedError",
+                          "error"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "transaction_index" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_context_interface::result::TransactionIndexedError",
+                              "transaction_index"
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Error : Ty.t),
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Error)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt Error)) ].
+  End Impl_core_fmt_Debug_where_core_fmt_Debug_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+  
+  Module Impl_core_clone_Clone_where_core_clone_Clone_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+    Definition Self (Error : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::TransactionIndexedError") [] [ Error ].
+    
+    (* Clone *)
+    Definition clone (Error : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Error in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::TransactionIndexedError")
+                    []
+                    [ Error ]
+                ],
+              self
+            |) in
+          Value.mkStructRecord
+            "revm_context_interface::result::TransactionIndexedError"
+            []
+            [ Error ]
+            [
+              ("error",
+                M.call_closure (|
+                  Error,
+                  M.get_trait_method (| "core::clone::Clone", Error, [], [], "clone", [], [] |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::result::TransactionIndexedError",
+                            "error"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |));
+              ("transaction_index",
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "usize",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::result::TransactionIndexedError",
+                            "transaction_index"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Error : Ty.t),
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Error)
+        (* Instance *) [ ("clone", InstanceField.Method (clone Error)) ].
+  End Impl_core_clone_Clone_where_core_clone_Clone_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+  
+  Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_result_TransactionIndexedError_Error.
+    Definition Self (Error : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::TransactionIndexedError") [] [ Error ].
+    
+    Axiom Implements :
+      forall (Error : Ty.t),
+      M.IsTraitInstance
+        "core::marker::StructuralPartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Error)
+        (* Instance *) [].
+  End Impl_core_marker_StructuralPartialEq_for_revm_context_interface_result_TransactionIndexedError_Error.
+  
+  Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_Error_revm_context_interface_result_TransactionIndexedError_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+    Definition Self (Error : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::TransactionIndexedError") [] [ Error ].
+    
+    (* PartialEq *)
+    Definition eq (Error : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Error in
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::TransactionIndexedError")
+                    []
+                    [ Error ]
+                ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::TransactionIndexedError")
+                    []
+                    [ Error ]
+                ],
+              other
+            |) in
+          LogicalOp.and (|
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (| "core::cmp::PartialEq", Error, [], [ Error ], "eq", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "revm_context_interface::result::TransactionIndexedError",
+                    "error"
+                  |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| other |) |),
+                    "revm_context_interface::result::TransactionIndexedError",
+                    "error"
+                  |)
+                |)
+              ]
+            |),
+            ltac:(M.monadic
+              (M.call_closure (|
+                Ty.path "bool",
+                BinOp.eq,
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_context_interface::result::TransactionIndexedError",
+                      "transaction_index"
+                    |)
+                  |);
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_context_interface::result::TransactionIndexedError",
+                      "transaction_index"
+                    |)
+                  |)
+                ]
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Error : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::PartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *)
+        [ Ty.apply (Ty.path "revm_context_interface::result::TransactionIndexedError") [] [ Error ]
+        ]
+        (Self Error)
+        (* Instance *) [ ("eq", InstanceField.Method (eq Error)) ].
+  End Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_Error_revm_context_interface_result_TransactionIndexedError_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+  
+  Module Impl_core_cmp_Eq_where_core_cmp_Eq_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+    Definition Self (Error : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::TransactionIndexedError") [] [ Error ].
+    
+    (* Eq *)
+    Definition assert_receiver_is_total_eq
+        (Error : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self Error in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::TransactionIndexedError")
+                    []
+                    [ Error ]
+                ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.tuple [],
+            Value.DeclaredButUndefined,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (M.match_operator (|
+                    Ty.tuple [],
+                    Value.DeclaredButUndefined,
+                    [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Error : Ty.t),
+      M.IsTraitInstance
+        "core::cmp::Eq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Error)
+        (* Instance *)
+        [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq Error))
+        ].
+  End Impl_core_cmp_Eq_where_core_cmp_Eq_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+  
+  Module Impl_revm_context_interface_result_TransactionIndexedError_Error.
+    Definition Self (Error : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::TransactionIndexedError") [] [ Error ].
+    
+    (*
+        pub fn new(error: Error, transaction_index: usize) -> Self {
+            Self {
+                error,
+                transaction_index,
+            }
+        }
+    *)
+    Definition new (Error : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Error in
+      match ε, τ, α with
+      | [], [], [ error; transaction_index ] =>
+        ltac:(M.monadic
+          (let error := M.alloc (| Error, error |) in
+          let transaction_index := M.alloc (| Ty.path "usize", transaction_index |) in
+          Value.mkStructRecord
+            "revm_context_interface::result::TransactionIndexedError"
+            []
+            [ Error ]
+            [ ("error", M.read (| error |)); ("transaction_index", M.read (| transaction_index |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new :
+      forall (Error : Ty.t),
+      M.IsAssociatedFunction.C (Self Error) "new" (new Error).
+    Admitted.
+    Global Typeclasses Opaque new.
+    
+    (*
+        pub fn error(&self) -> &Error {
+            &self.error
+        }
+    *)
+    Definition error (Error : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Error in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::TransactionIndexedError")
+                    []
+                    [ Error ]
+                ],
+              self
+            |) in
+          M.borrow (|
+            Pointer.Kind.Ref,
+            M.deref (|
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "revm_context_interface::result::TransactionIndexedError",
+                  "error"
+                |)
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_error :
+      forall (Error : Ty.t),
+      M.IsAssociatedFunction.C (Self Error) "error" (error Error).
+    Admitted.
+    Global Typeclasses Opaque error.
+    
+    (*
+        pub fn into_error(self) -> Error {
+            self.error
+        }
+    *)
+    Definition into_error
+        (Error : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self Error in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "revm_context_interface::result::TransactionIndexedError")
+                []
+                [ Error ],
+              self
+            |) in
+          M.read (|
+            M.SubPointer.get_struct_record_field (|
+              self,
+              "revm_context_interface::result::TransactionIndexedError",
+              "error"
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_into_error :
+      forall (Error : Ty.t),
+      M.IsAssociatedFunction.C (Self Error) "into_error" (into_error Error).
+    Admitted.
+    Global Typeclasses Opaque into_error.
+  End Impl_revm_context_interface_result_TransactionIndexedError_Error.
+  
+  Module Impl_core_fmt_Display_where_core_fmt_Display_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+    Definition Self (Error : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::TransactionIndexedError") [] [ Error ].
+    
+    (*
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            write!(
+                f,
+                "transaction {} failed: {}",
+                self.transaction_index, self.error
+            )
+        }
+    *)
+    Definition fmt (Error : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Error in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::TransactionIndexedError")
+                    []
+                    [ Error ]
+                ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.read (|
+                let~ args :
+                    Ty.tuple
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                        Ty.apply (Ty.path "&") [] [ Error ]
+                      ] :=
+                  Value.Tuple
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::result::TransactionIndexedError",
+                          "transaction_index"
+                        |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::result::TransactionIndexedError",
+                          "error"
+                        |)
+                      |)
+                    ] in
+                let~ args :
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 2 ]
+                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                  Value.Array
+                    [
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Ty.path "usize" ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                          |)
+                        ]
+                      |);
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Error ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |) |)
+                          |)
+                        ]
+                      |)
+                    ] in
+                M.alloc (|
+                  Ty.path "core::fmt::Arguments",
+                  M.call_closure (|
+                    Ty.path "core::fmt::Arguments",
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new",
+                      [ Value.Integer IntegerKind.Usize 26; Value.Integer IntegerKind.Usize 2 ],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.mk_byte_str_ref
+                            26
+                            [
+                              12;
+                              116;
+                              114;
+                              97;
+                              110;
+                              115;
+                              97;
+                              99;
+                              116;
+                              105;
+                              111;
+                              110;
+                              32;
+                              192;
+                              9;
+                              32;
+                              102;
+                              97;
+                              105;
+                              108;
+                              101;
+                              100;
+                              58;
+                              32;
+                              192;
+                              0
+                            ]
+                        |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                      |)
+                    ]
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Error : Ty.t),
+      M.IsTraitInstance
+        "core::fmt::Display"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Error)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt Error)) ].
+  End Impl_core_fmt_Display_where_core_fmt_Display_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+  
+  Module Impl_core_error_Error_where_core_error_Error_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+    Definition Self (Error : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_context_interface::result::TransactionIndexedError") [] [ Error ].
+    
+    (*
+        fn source(&self) -> Option<&(dyn core::error::Error + 'static)> {
+            Some(&self.error)
+        }
+    *)
+    Definition source (Error : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self Error in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::result::TransactionIndexedError")
+                    []
+                    [ Error ]
+                ],
+              self
+            |) in
+          Value.StructTuple
+            "core::option::Option::Some"
+            []
+            [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
+            [
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Error ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::result::TransactionIndexedError",
+                          "error"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (Error : Ty.t),
+      M.IsTraitInstance
+        "core::error::Error"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self Error)
+        (* Instance *) [ ("source", InstanceField.Method (source Error)) ].
+  End Impl_core_error_Error_where_core_error_Error_Error_for_revm_context_interface_result_TransactionIndexedError_Error.
+  
+  Module Impl_core_convert_From_ref__str_for_revm_context_interface_result_InvalidTransaction.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::result::InvalidTransaction".
+    
+    (*
+        fn from(s: &'static str) -> Self {
+            Self::Str(Cow::Borrowed(s))
+        }
+    *)
+    Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ s ] =>
+        ltac:(M.monadic
+          (let s := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], s |) in
+          Value.StructTuple
+            "revm_context_interface::result::InvalidTransaction::Str"
+            []
+            []
+            [
+              Value.StructTuple
+                "alloc::borrow::Cow::Borrowed"
+                []
+                [ Ty.path "str" ]
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::convert::From"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+        Self
+        (* Instance *) [ ("from", InstanceField.Method from) ].
+  End Impl_core_convert_From_ref__str_for_revm_context_interface_result_InvalidTransaction.
+  
+  Module Impl_core_convert_From_alloc_string_String_for_revm_context_interface_result_InvalidTransaction.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::result::InvalidTransaction".
+    
+    (*
+        fn from(s: String) -> Self {
+            Self::Str(Cow::Owned(s))
+        }
+    *)
+    Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ s ] =>
+        ltac:(M.monadic
+          (let s := M.alloc (| Ty.path "alloc::string::String", s |) in
+          Value.StructTuple
+            "revm_context_interface::result::InvalidTransaction::Str"
+            []
+            []
+            [ Value.StructTuple "alloc::borrow::Cow::Owned" [] [ Ty.path "str" ] [ M.read (| s |) ]
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::convert::From"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.path "alloc::string::String" ]
+        Self
+        (* Instance *) [ ("from", InstanceField.Method from) ].
+  End Impl_core_convert_From_alloc_string_String_for_revm_context_interface_result_InvalidTransaction.
 End result.
