@@ -9,13 +9,480 @@ Module interpreter.
         const_params := [];
         ty_params := [];
         fields :=
-          [
-            ("is_static", Ty.path "bool");
-            ("is_eof_init", Ty.path "bool");
-            ("is_eof", Ty.path "bool");
-            ("spec_id", Ty.path "revm_specification::hardfork::SpecId")
+          [ ("is_static", Ty.path "bool"); ("spec_id", Ty.path "revm_primitives::hardfork::SpecId")
           ];
       } *)
+    
+    Module Impl_core_clone_TrivialClone_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+    
+    Module Impl_core_clone_Clone_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+      
+      (* Clone *)
+      Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+              Value.DeclaredButUndefined,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.match_operator (|
+                      Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                      Value.DeclaredButUndefined,
+                      [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::Clone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("clone", InstanceField.Method clone) ].
+    End Impl_core_clone_Clone_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+    
+    Module Impl_core_marker_Copy_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::Copy"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_Copy_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+    
+    Module Impl_core_fmt_Debug_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+      
+      (* Debug *)
+      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
+                self
+              |) in
+            let f :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+              M.get_associated_function (|
+                Ty.path "core::fmt::Formatter",
+                "debug_struct_field2_finish",
+                [],
+                []
+              |),
+              [
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RuntimeFlags" |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_static" |) |) |);
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                            "is_static"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "spec_id" |) |) |);
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_primitives::hardfork::SpecId" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_primitives::hardfork::SpecId" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                                "spec_id"
+                              |)
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::fmt::Debug"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+    End Impl_core_fmt_Debug_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+    
+    Module Impl_core_default_Default_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+      
+      (* Default *)
+      Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [] =>
+          ltac:(M.monadic
+            (Value.mkStructRecord
+              "revm_interpreter::interpreter::runtime_flags::RuntimeFlags"
+              []
+              []
+              [
+                ("is_static",
+                  M.call_closure (|
+                    Ty.path "bool",
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |));
+                ("spec_id",
+                  M.call_closure (|
+                    Ty.path "revm_primitives::hardfork::SpecId",
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "revm_primitives::hardfork::SpecId",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |))
+              ]))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::default::Default"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("default", InstanceField.Method default) ].
+    End Impl_core_default_Default_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+    
+    Module Impl_core_marker_StructuralPartialEq_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::StructuralPartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_StructuralPartialEq_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+    
+    Module Impl_core_cmp_PartialEq_revm_interpreter_interpreter_runtime_flags_RuntimeFlags_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+      
+      (* PartialEq *)
+      Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
+                other
+              |) in
+            LogicalOp.and (|
+              M.call_closure (|
+                Ty.path "bool",
+                BinOp.eq,
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                      "is_static"
+                    |)
+                  |);
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                      "is_static"
+                    |)
+                  |)
+                ]
+              |),
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  M.get_trait_method (|
+                    "core::cmp::PartialEq",
+                    Ty.path "revm_primitives::hardfork::SpecId",
+                    [],
+                    [ Ty.path "revm_primitives::hardfork::SpecId" ],
+                    "eq",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                        "spec_id"
+                      |)
+                    |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                        "spec_id"
+                      |)
+                    |)
+                  ]
+                |)))
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::PartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *)
+          [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ]
+          Self
+          (* Instance *) [ ("eq", InstanceField.Method eq) ].
+    End Impl_core_cmp_PartialEq_revm_interpreter_interpreter_runtime_flags_RuntimeFlags_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+    
+    Module Impl_core_cmp_Eq_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+      
+      (* Eq *)
+      Definition assert_receiver_is_total_eq
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.tuple [],
+              Value.DeclaredButUndefined,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.match_operator (|
+                      Ty.tuple [],
+                      Value.DeclaredButUndefined,
+                      [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::Eq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *)
+          [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
+    End Impl_core_cmp_Eq_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+    
+    Module Impl_core_hash_Hash_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+      
+      (* Hash *)
+      Definition hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ __H ], [ self; state ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
+                self
+              |) in
+            let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_trait_method (|
+                    "core::hash::Hash",
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "hash",
+                    [],
+                    [ __H ]
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                            "is_static"
+                          |)
+                        |)
+                      |)
+                    |);
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.tuple [],
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_trait_method (|
+                    "core::hash::Hash",
+                    Ty.path "revm_primitives::hardfork::SpecId",
+                    [],
+                    [],
+                    "hash",
+                    [],
+                    [ __H ]
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                            "spec_id"
+                          |)
+                        |)
+                      |)
+                    |);
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::hash::Hash"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("hash", InstanceField.Method hash) ].
+    End Impl_core_hash_Hash_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
     
     Module Impl_revm_interpreter_interpreter_types_RuntimeFlag_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
       Definition Self : Ty.t :=
@@ -43,60 +510,6 @@ Module interpreter.
                 M.deref (| M.read (| self |) |),
                 "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
                 "is_static"
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*
-          fn is_eof(&self) -> bool {
-              self.is_eof
-          }
-      *)
-      Definition is_eof (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
-                self
-              |) in
-            M.read (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
-                "is_eof"
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*
-          fn is_eof_init(&self) -> bool {
-              self.is_eof_init
-          }
-      *)
-      Definition is_eof_init (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
-                self
-              |) in
-            M.read (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
-                "is_eof_init"
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -136,11 +549,7 @@ Module interpreter.
           (* Trait polymorphic types *) []
           Self
           (* Instance *)
-          [
-            ("is_static", InstanceField.Method is_static);
-            ("is_eof", InstanceField.Method is_eof);
-            ("is_eof_init", InstanceField.Method is_eof_init);
-            ("spec_id", InstanceField.Method spec_id)
+          [ ("is_static", InstanceField.Method is_static); ("spec_id", InstanceField.Method spec_id)
           ].
     End Impl_revm_interpreter_interpreter_types_RuntimeFlag_for_revm_interpreter_interpreter_runtime_flags_RuntimeFlags.
   End runtime_flags.

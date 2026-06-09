@@ -1424,9 +1424,9 @@ Module interpreter.
       
       (*
           fn clone(&self) -> Self {
-              // Use `Self::new()` to ensure the cloned Stack maintains the STACK_LIMIT capacity,
-              // and then copy the data. This preserves the invariant that Stack always has
-              // STACK_LIMIT capacity, which is crucial for the safety and correctness of other methods.
+              // Use `Self::new()` to ensure the cloned Stack is constructed with at least
+              // STACK_LIMIT capacity, and then copy the data. This preserves the invariant
+              // that Stack has sufficient capacity for operations that rely on it.
               let mut new_stack = Self::new();
               new_stack.data.extend_from_slice(&self.data);
               new_stack
@@ -1556,7 +1556,7 @@ Module interpreter.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_revm_interpreter_interpreter_stack_Stack.
     
-    Module Impl_revm_interpreter_interpreter_types_StackTrait_for_revm_interpreter_interpreter_stack_Stack.
+    Module Impl_revm_interpreter_interpreter_types_StackTr_for_revm_interpreter_interpreter_stack_Stack.
       Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter::stack::Stack".
       
       (*
@@ -1582,6 +1582,130 @@ Module interpreter.
                 []
               |),
               [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+          fn data(&self) -> &[U256] {
+              &self.data
+          }
+      *)
+      Definition data (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::interpreter::stack::Stack" ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ]
+                    ],
+                  M.get_trait_method (|
+                    "core::ops::deref::Deref",
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          [];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    [],
+                    [],
+                    "deref",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::stack::Stack",
+                            "data"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+          fn clear(&mut self) {
+              self.data.clear();
+          }
+      *)
+      Definition clear (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::stack::Stack" ],
+                self
+              |) in
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          [];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    "clear",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::interpreter::stack::Stack",
+                        "data"
+                      |)
+                    |)
+                  ]
+                |) in
+              M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2101,22 +2225,63 @@ Module interpreter.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*
+          fn push_slice(&mut self, slice: &[u8]) -> bool {
+              self.push_slice_(slice)
+          }
+      *)
+      Definition push_slice (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; slice ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::stack::Stack" ],
+                self
+              |) in
+            let slice :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                slice
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (|
+                Ty.path "revm_interpreter::interpreter::stack::Stack",
+                "push_slice_",
+                [],
+                []
+              |),
+              [
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
-          "revm_interpreter::interpreter_types::StackTrait"
+          "revm_interpreter::interpreter_types::StackTr"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
           (* Instance *)
           [
             ("len", InstanceField.Method len);
+            ("data", InstanceField.Method data);
+            ("clear", InstanceField.Method clear);
             ("popn", InstanceField.Method popn);
             ("popn_top", InstanceField.Method popn_top);
             ("exchange", InstanceField.Method exchange);
             ("dup", InstanceField.Method dup);
-            ("push", InstanceField.Method push)
+            ("push", InstanceField.Method push);
+            ("push_slice", InstanceField.Method push_slice)
           ].
-    End Impl_revm_interpreter_interpreter_types_StackTrait_for_revm_interpreter_interpreter_stack_Stack.
+    End Impl_revm_interpreter_interpreter_types_StackTr_for_revm_interpreter_interpreter_stack_Stack.
     
     Module Impl_revm_interpreter_interpreter_stack_Stack.
       Definition Self : Ty.t := Ty.path "revm_interpreter::interpreter::stack::Stack".
@@ -2182,6 +2347,58 @@ Module interpreter.
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
       Admitted.
       Global Typeclasses Opaque new.
+      
+      (*
+          pub fn invalid() -> Self {
+              Self { data: Vec::new() }
+          }
+      *)
+      Definition invalid (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [] =>
+          ltac:(M.monadic
+            (Value.mkStructRecord
+              "revm_interpreter::interpreter::stack::Stack"
+              []
+              []
+              [
+                ("data",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          [];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            [];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    []
+                  |))
+              ]))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_invalid : M.IsAssociatedFunction.C Self "invalid" invalid.
+      Admitted.
+      Global Typeclasses Opaque invalid.
       
       (*
           pub fn len(&self) -> usize {
@@ -2480,6 +2697,7 @@ Module interpreter.
       
       (*
           pub unsafe fn pop_unsafe(&mut self) -> U256 {
+              assume!(!self.data.is_empty());
               self.data.pop().unwrap_unchecked()
           }
       *)
@@ -2495,63 +2713,194 @@ Module interpreter.
                   [ Ty.path "revm_interpreter::interpreter::stack::Stack" ],
                 self
               |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "ruint::Uint")
-                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                [],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "core::option::Option")
-                  []
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
                   [
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      []
-                  ],
-                "unwrap_unchecked",
-                [],
-                []
-              |),
-              [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [];
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        "is_empty",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_interpreter::interpreter::stack::Stack",
+                                            "data"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.never_to_any (|
+                          M.read (|
+                            let~ _ : Ty.tuple [] :=
+                              M.match_operator (|
+                                Ty.tuple [],
+                                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                                      let _ :=
+                                        is_constant_or_break_match (|
+                                          M.read (| γ |),
+                                          Value.Bool true
+                                        |) in
+                                      M.never_to_any (|
+                                        M.call_closure (|
+                                          Ty.path "never",
+                                          M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::Arguments",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Arguments",
+                                                "from_str_nonconst",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                mk_str (|
+                                                  "internal error: entered unreachable code: !self.data.is_empty()"
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (M.never_to_any (|
+                                        M.read (|
+                                          let~ _ : Ty.tuple [] :=
+                                            M.never_to_any (|
+                                              M.call_closure (|
+                                                Ty.path "never",
+                                                M.get_function (|
+                                                  "core::hint::unreachable_unchecked",
+                                                  [],
+                                                  []
+                                                |),
+                                                []
+                                              |)
+                                            |) in
+                                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                        |)
+                                      |)))
+                                ]
+                              |) in
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                          |)
+                        |)));
+                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
                 M.call_closure (|
                   Ty.apply
-                    (Ty.path "core::option::Option")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ],
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [],
                   M.get_associated_function (|
                     Ty.apply
-                      (Ty.path "alloc::vec::Vec")
+                      (Ty.path "core::option::Option")
                       []
                       [
                         Ty.apply
                           (Ty.path "ruint::Uint")
                           [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.path "alloc::alloc::Global"
+                          []
                       ],
-                    "pop",
+                    "unwrap_unchecked",
                     [],
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_interpreter::interpreter::stack::Stack",
-                        "data"
-                      |)
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        "pop",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::stack::Stack",
+                            "data"
+                          |)
+                        |)
+                      ]
                     |)
                   ]
                 |)
-              ]
+              |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2563,8 +2912,8 @@ Module interpreter.
       
       (*
           pub unsafe fn top_unsafe(&mut self) -> &mut U256 {
-              let len = self.data.len();
-              self.data.get_unchecked_mut(len - 1)
+              assume!(!self.data.is_empty());
+              self.data.last_mut().unwrap_unchecked()
           }
       *)
       Definition top_unsafe (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2583,36 +2932,128 @@ Module interpreter.
               Pointer.Kind.MutRef,
               M.deref (|
                 M.read (|
-                  let~ len : Ty.path "usize" :=
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "ruint::Uint")
-                              [
-                                Value.Integer IntegerKind.Usize 256;
-                                Value.Integer IntegerKind.Usize 4
-                              ]
-                              [];
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        "len",
-                        [],
-                        []
-                      |),
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::stack::Stack",
-                            "data"
-                          |)
-                        |)
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      UnOp.not,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [];
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            "is_empty",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "revm_interpreter::interpreter::stack::Stack",
+                                                "data"
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            M.never_to_any (|
+                              M.read (|
+                                let~ _ : Ty.tuple [] :=
+                                  M.match_operator (|
+                                    Ty.tuple [],
+                                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                                          let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Bool true
+                                            |) in
+                                          M.never_to_any (|
+                                            M.call_closure (|
+                                              Ty.path "never",
+                                              M.get_function (|
+                                                "core::panicking::panic_fmt",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::Arguments",
+                                                    "from_str_nonconst",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    mk_str (|
+                                                      "internal error: entered unreachable code: !self.data.is_empty()"
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (M.never_to_any (|
+                                            M.read (|
+                                              let~ _ : Ty.tuple [] :=
+                                                M.never_to_any (|
+                                                  M.call_closure (|
+                                                    Ty.path "never",
+                                                    M.get_function (|
+                                                      "core::hint::unreachable_unchecked",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    []
+                                                  |)
+                                                |) in
+                                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                            |)
+                                          |)))
+                                    ]
+                                  |) in
+                                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                              |)
+                            |)));
+                        fun γ => ltac:(M.monadic (Value.Tuple []))
                       ]
                     |) in
                   M.alloc (|
@@ -2643,81 +3084,119 @@ Module interpreter.
                             ],
                           M.get_associated_function (|
                             Ty.apply
-                              (Ty.path "slice")
+                              (Ty.path "core::option::Option")
                               []
                               [
                                 Ty.apply
-                                  (Ty.path "ruint::Uint")
-                                  [
-                                    Value.Integer IntegerKind.Usize 256;
-                                    Value.Integer IntegerKind.Usize 4
-                                  ]
+                                  (Ty.path "&mut")
                                   []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      []
+                                  ]
                               ],
-                            "get_unchecked_mut",
+                            "unwrap_unchecked",
                             [],
-                            [ Ty.path "usize" ]
+                            []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.call_closure (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "&mut")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "slice")
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      []
+                                  ],
+                                "last_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&mut")
                                         []
                                         [
                                           Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
+                                            (Ty.path "slice")
                                             []
-                                        ]
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::DerefMut",
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [
+                                            [
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                []
+                                            ]
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::DerefMut",
                                         Ty.apply
-                                          (Ty.path "ruint::Uint")
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
                                           [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          [];
-                                        Ty.path "alloc::alloc::Global"
-                                      ],
-                                    [],
-                                    [],
-                                    "deref_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "revm_interpreter::interpreter::stack::Stack",
-                                        "data"
-                                      |)
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [];
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        [],
+                                        [],
+                                        "deref_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_interpreter::interpreter::stack::Stack",
+                                            "data"
+                                          |)
+                                        |)
+                                      ]
                                     |)
-                                  ]
+                                  |)
                                 |)
-                              |)
-                            |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.sub,
-                              [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
+                              ]
                             |)
                           ]
                         |)
@@ -2737,14 +3216,8 @@ Module interpreter.
       
       (*
           pub unsafe fn popn<const N: usize>(&mut self) -> [U256; N] {
-              if N == 0 {
-                  return [U256::ZERO; N];
-              }
-              let mut result = [U256::ZERO; N];
-              for v in result.iter_mut() {
-                  *v = self.data.pop().unwrap_unchecked();
-              }
-              result
+              assume!(self.data.len() >= N);
+              core::array::from_fn(|_| unsafe { self.pop_unsafe() })
           }
       *)
       Definition popn (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2759,42 +3232,183 @@ Module interpreter.
                   [ Ty.path "revm_interpreter::interpreter::stack::Stack" ],
                 self
               |) in
-            M.catch_return
-              (Ty.apply
-                (Ty.path "array")
-                [ N ]
-                [
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    []
-                ]) (|
-              ltac:(M.monadic
-                (M.read (|
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ :=
-                              M.alloc (|
-                                Ty.path "bool",
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              UnOp.not,
+                              [
                                 M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.eq,
-                                  [ N; Value.Integer IntegerKind.Usize 0 ]
+                                  BinOp.ge,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [];
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_interpreter::interpreter::stack::Stack",
+                                            "data"
+                                          |)
+                                        |)
+                                      ]
+                                    |);
+                                    N
+                                  ]
                                 |)
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.never_to_any (|
+                          M.read (|
+                            let~ _ : Ty.tuple [] :=
+                              M.match_operator (|
+                                Ty.tuple [],
+                                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                                      let _ :=
+                                        is_constant_or_break_match (|
+                                          M.read (| γ |),
+                                          Value.Bool true
+                                        |) in
+                                      M.never_to_any (|
+                                        M.call_closure (|
+                                          Ty.path "never",
+                                          M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::Arguments",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Arguments",
+                                                "from_str_nonconst",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                mk_str (|
+                                                  "internal error: entered unreachable code: self.data.len() >= N"
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (M.never_to_any (|
+                                        M.read (|
+                                          let~ _ : Ty.tuple [] :=
+                                            M.never_to_any (|
+                                              M.call_closure (|
+                                                Ty.path "never",
+                                                M.get_function (|
+                                                  "core::hint::unreachable_unchecked",
+                                                  [],
+                                                  []
+                                                |),
+                                                []
+                                              |)
+                                            |) in
+                                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                        |)
+                                      |)))
+                                ]
                               |) in
-                            let _ :=
-                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  lib.repeat (|
-                                    M.read (|
-                                      get_associated_constant (|
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                          |)
+                        |)));
+                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "array")
+                  [ N ]
+                  [
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ],
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "array")
+                    [ N ]
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ],
+                  M.get_function (|
+                    "core::array::from_fn",
+                    [ N ],
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [];
+                      Ty.function
+                        [ Ty.path "usize" ]
+                        (Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          [])
+                    ]
+                  |),
+                  [
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [],
+                                M.alloc (| Ty.path "usize", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
                                         Ty.apply
                                           (Ty.path "ruint::Uint")
                                           [
@@ -2802,422 +3416,26 @@ Module interpreter.
                                             Value.Integer IntegerKind.Usize 4
                                           ]
                                           [],
-                                        "ZERO",
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
+                                        M.get_associated_function (|
+                                          Ty.path "revm_interpreter::interpreter::stack::Stack",
+                                          "pop_unsafe",
+                                          [],
                                           []
-                                      |)
-                                    |),
-                                    N
-                                  |)
-                                |)
-                              |)
-                            |)));
-                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                      ]
-                    |) in
-                  let~ result :
-                      Ty.apply
-                        (Ty.path "array")
-                        [ N ]
-                        [
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            []
-                        ] :=
-                    lib.repeat (|
-                      M.read (|
-                        get_associated_constant (|
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            [],
-                          "ZERO",
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            []
-                        |)
-                      |),
-                      N
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.read (|
-                      M.use
-                        (M.alloc (|
-                          Ty.tuple [],
-                          M.match_operator (|
-                            Ty.tuple [],
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "core::slice::iter::IterMut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ],
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::slice::iter::IterMut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ],
-                                M.get_trait_method (|
-                                  "core::iter::traits::collect::IntoIterator",
-                                  Ty.apply
-                                    (Ty.path "core::slice::iter::IterMut")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "ruint::Uint")
+                                        |),
                                         [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
+                                          M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| self |) |)
+                                          |)
                                         ]
-                                        []
-                                    ],
-                                  [],
-                                  [],
-                                  "into_iter",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::slice::iter::IterMut")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          []
-                                      ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            []
-                                        ],
-                                      "iter_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "ruint::Uint")
-                                                  [
-                                                    Value.Integer IntegerKind.Usize 256;
-                                                    Value.Integer IntegerKind.Usize 4
-                                                  ]
-                                                  []
-                                              ]
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ N ]
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [
-                                                      Value.Integer IntegerKind.Usize 256;
-                                                      Value.Integer IntegerKind.Usize 4
-                                                    ]
-                                                    []
-                                                ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [
-                                                      Value.Integer IntegerKind.Usize 256;
-                                                      Value.Integer IntegerKind.Usize 4
-                                                    ]
-                                                    []
-                                                ]
-                                            ]),
-                                        [ M.borrow (| Pointer.Kind.MutRef, result |) ]
-                                      |)
-                                    ]
-                                  |)
+                                      |)))
                                 ]
-                              |)
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let~ iter :
-                                      Ty.apply
-                                        (Ty.path "core::slice::iter::IterMut")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            []
-                                        ] :=
-                                    M.read (| γ |) in
-                                  M.read (|
-                                    M.loop (|
-                                      Ty.tuple [],
-                                      ltac:(M.monadic
-                                        (let~ _ : Ty.tuple [] :=
-                                          M.match_operator (|
-                                            Ty.tuple [],
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "&mut")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [
-                                                          Value.Integer IntegerKind.Usize 256;
-                                                          Value.Integer IntegerKind.Usize 4
-                                                        ]
-                                                        []
-                                                    ]
-                                                ],
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "&mut")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "ruint::Uint")
-                                                          [
-                                                            Value.Integer IntegerKind.Usize 256;
-                                                            Value.Integer IntegerKind.Usize 4
-                                                          ]
-                                                          []
-                                                      ]
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::iter::traits::iterator::Iterator",
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::IterMut")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [
-                                                          Value.Integer IntegerKind.Usize 256;
-                                                          Value.Integer IntegerKind.Usize 4
-                                                        ]
-                                                        []
-                                                    ],
-                                                  [],
-                                                  [],
-                                                  "next",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (|
-                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |),
-                                            [
-                                              fun γ =>
-                                                ltac:(M.monadic
-                                                  (let _ :=
-                                                    M.is_struct_tuple (|
-                                                      γ,
-                                                      "core::option::Option::None"
-                                                    |) in
-                                                  M.never_to_any (| M.read (| M.break (||) |) |)));
-                                              fun γ =>
-                                                ltac:(M.monadic
-                                                  (let γ0_0 :=
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      γ,
-                                                      "core::option::Option::Some",
-                                                      0
-                                                    |) in
-                                                  let v :=
-                                                    M.copy (|
-                                                      Ty.apply
-                                                        (Ty.path "&mut")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "ruint::Uint")
-                                                            [
-                                                              Value.Integer IntegerKind.Usize 256;
-                                                              Value.Integer IntegerKind.Usize 4
-                                                            ]
-                                                            []
-                                                        ],
-                                                      γ0_0
-                                                    |) in
-                                                  M.read (|
-                                                    let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.deref (| M.read (| v |) |),
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "ruint::Uint")
-                                                            [
-                                                              Value.Integer IntegerKind.Usize 256;
-                                                              Value.Integer IntegerKind.Usize 4
-                                                            ]
-                                                            [],
-                                                          M.get_associated_function (|
-                                                            Ty.apply
-                                                              (Ty.path "core::option::Option")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "ruint::Uint")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      256;
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      4
-                                                                  ]
-                                                                  []
-                                                              ],
-                                                            "unwrap_unchecked",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "core::option::Option")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "ruint::Uint")
-                                                                    [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        256;
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        4
-                                                                    ]
-                                                                    []
-                                                                ],
-                                                              M.get_associated_function (|
-                                                                Ty.apply
-                                                                  (Ty.path "alloc::vec::Vec")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "ruint::Uint")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          256;
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          4
-                                                                      ]
-                                                                      [];
-                                                                    Ty.path "alloc::alloc::Global"
-                                                                  ],
-                                                                "pop",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    M.deref (| M.read (| self |) |),
-                                                                    "revm_interpreter::interpreter::stack::Stack",
-                                                                    "data"
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      |) in
-                                                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                                  |)))
-                                            ]
-                                          |) in
-                                        M.alloc (| Ty.tuple [], Value.Tuple [] |)))
-                                    |)
-                                  |)))
-                            ]
-                          |)
-                        |))
-                    |) in
-                  result
-                |)))
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  ]
+                |)
+              |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -3341,8 +3559,8 @@ Module interpreter.
       
       (*
           pub fn push(&mut self, value: U256) -> bool {
-              // Allows the compiler to optimize out the `Vec::push` capacity check.
-              assume!(self.data.capacity() == STACK_LIMIT);
+              // In debug builds, verify we have sufficient capacity provisioned.
+              debug_assert!(self.data.capacity() >= STACK_LIMIT);
               if self.data.len() == STACK_LIMIT {
                   return false;
               }
@@ -3380,125 +3598,90 @@ Module interpreter.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let γ :=
-                              M.alloc (|
-                                Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "alloc::vec::Vec")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "ruint::Uint")
-                                                  [
-                                                    Value.Integer IntegerKind.Usize 256;
-                                                    Value.Integer IntegerKind.Usize 4
-                                                  ]
-                                                  [];
-                                                Ty.path "alloc::alloc::Global"
-                                              ],
-                                            "capacity",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "revm_interpreter::interpreter::stack::Stack",
-                                                "data"
-                                              |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::interpreter::stack::STACK_LIMIT",
-                                            Ty.path "usize"
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |) in
+                            (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.never_to_any (|
-                              M.read (|
-                                let~ _ : Ty.tuple [] :=
-                                  M.match_operator (|
-                                    Ty.tuple [],
-                                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
-                                          let _ :=
-                                            is_constant_or_break_match (|
-                                              M.read (| γ |),
-                                              Value.Bool true
-                                            |) in
-                                          M.never_to_any (|
+                            M.read (|
+                              let~ _ : Ty.tuple [] :=
+                                M.match_operator (|
+                                  Ty.tuple [],
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
                                             M.call_closure (|
-                                              Ty.path "never",
-                                              M.get_function (|
-                                                "core::panicking::panic_fmt",
-                                                [],
-                                                []
-                                              |),
+                                              Ty.path "bool",
+                                              UnOp.not,
                                               [
                                                 M.call_closure (|
-                                                  Ty.path "core::fmt::Arguments",
-                                                  M.get_associated_function (|
-                                                    Ty.path "core::fmt::Arguments",
-                                                    "from_str_nonconst",
-                                                    [],
-                                                    []
-                                                  |),
+                                                  Ty.path "bool",
+                                                  BinOp.ge,
                                                   [
-                                                    mk_str (|
-                                                      "internal error: entered unreachable code: self.data.capacity() == STACK_LIMIT"
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "alloc::vec::Vec")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [
+                                                                Value.Integer IntegerKind.Usize 256;
+                                                                Value.Integer IntegerKind.Usize 4
+                                                              ]
+                                                              [];
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ],
+                                                        "capacity",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "revm_interpreter::interpreter::stack::Stack",
+                                                            "data"
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |);
+                                                    M.read (|
+                                                      get_constant (|
+                                                        "revm_interpreter::interpreter::stack::STACK_LIMIT",
+                                                        Ty.path "usize"
+                                                      |)
                                                     |)
                                                   ]
                                                 |)
                                               ]
                                             |)
-                                          |)));
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (M.never_to_any (|
-                                            M.read (|
-                                              let~ _ : Ty.tuple [] :=
-                                                M.never_to_any (|
-                                                  M.call_closure (|
-                                                    Ty.path "never",
-                                                    M.get_function (|
-                                                      "core::hint::unreachable_unchecked",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    []
-                                                  |)
-                                                |) in
-                                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                            |)
-                                          |)))
-                                    ]
-                                  |) in
-                                M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                              |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.never_to_any (|
+                                          M.call_closure (|
+                                            Ty.path "never",
+                                            M.get_function (| "core::panicking::panic", [], [] |),
+                                            [
+                                              mk_str (|
+                                                "assertion failed: self.data.capacity() >= STACK_LIMIT"
+                                              |)
+                                            ]
+                                          |)
+                                        |)));
+                                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                                  ]
+                                |) in
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
                         fun γ => ltac:(M.monadic (Value.Tuple []))
                       ]
@@ -4295,7 +4478,7 @@ Module interpreter.
               unsafe {
                   // Note: `ptr::swap_nonoverlapping` is more efficient than `slice::swap` or `ptr::swap`
                   // because it operates under the assumption that the pointers do not overlap,
-                  // eliminating an intemediate copy,
+                  // eliminating an intermediate copy,
                   // which is a condition we know to be true in this context.
                   let top = self.data.as_mut_ptr().add(len - 1);
                   core::ptr::swap_nonoverlapping(top.sub(n), top.sub(n_m_index), 1);
@@ -4666,15 +4849,105 @@ Module interpreter.
       
       (*
           pub fn push_slice(&mut self, slice: &[u8]) -> Result<(), InstructionResult> {
+              if self.push_slice_(slice) {
+                  Ok(())
+              } else {
+                  Err(InstructionResult::StackOverflow)
+              }
+          }
+      *)
+      Definition push_slice (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; slice ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter::stack::Stack" ],
+                self
+              |) in
+            let slice :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                slice
+              |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "revm_interpreter::instruction_result::InstructionResult" ],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_associated_function (|
+                            Ty.path "revm_interpreter::interpreter::stack::Stack",
+                            "push_slice_",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                          ]
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    Value.StructTuple
+                      "core::result::Result::Ok"
+                      []
+                      [
+                        Ty.tuple [];
+                        Ty.path "revm_interpreter::instruction_result::InstructionResult"
+                      ]
+                      [ Value.Tuple [] ]));
+                fun γ =>
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      []
+                      [
+                        Ty.tuple [];
+                        Ty.path "revm_interpreter::instruction_result::InstructionResult"
+                      ]
+                      [
+                        Value.StructTuple
+                          "revm_interpreter::instruction_result::InstructionResult::StackOverflow"
+                          []
+                          []
+                          []
+                      ]))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_push_slice :
+        M.IsAssociatedFunction.C Self "push_slice" push_slice.
+      Admitted.
+      Global Typeclasses Opaque push_slice.
+      
+      (*
+          fn push_slice_(&mut self, slice: &[u8]) -> bool {
               if slice.is_empty() {
-                  return Ok(());
+                  return true;
               }
       
-              let n_words = (slice.len() + 31) / 32;
+              let n_words = slice.len().div_ceil(32);
               let new_len = self.data.len() + n_words;
               if new_len > STACK_LIMIT {
-                  return Err(InstructionResult::StackOverflow);
+                  return false;
               }
+      
+              // In debug builds, ensure underlying capacity is sufficient for the write.
+              debug_assert!(self.data.capacity() >= new_len);
       
               // SAFETY: Length checked above.
               unsafe {
@@ -4696,7 +4969,7 @@ Module interpreter.
                   }
       
                   if partial_last_word.is_empty() {
-                      return Ok(());
+                      return true;
                   }
       
                   // Write limbs of partial last word
@@ -4715,7 +4988,7 @@ Module interpreter.
                       i += 1;
                   }
       
-                  debug_assert_eq!((i + 3) / 4, n_words, "wrote too much");
+                  debug_assert_eq!(i.div_ceil(4), n_words, "wrote too much");
       
                   // Zero out upper bytes of last word
                   let m = i % 4; // 32 / 8
@@ -4724,10 +4997,10 @@ Module interpreter.
                   }
               }
       
-              Ok(())
+              true
           }
       *)
-      Definition push_slice (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition push_slice_ (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; slice ] =>
           ltac:(M.monadic
@@ -4744,12 +5017,7 @@ Module interpreter.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                 slice
               |) in
-            M.catch_return
-              (Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [ Ty.tuple []; Ty.path "revm_interpreter::instruction_result::InstructionResult"
-                ]) (|
+            M.catch_return (Ty.path "bool") (|
               ltac:(M.monadic
                 (M.read (|
                   let~ _ : Ty.tuple [] :=
@@ -4780,45 +5048,24 @@ Module interpreter.
                               |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Ok"
-                                    []
-                                    [
-                                      Ty.tuple [];
-                                      Ty.path
-                                        "revm_interpreter::instruction_result::InstructionResult"
-                                    ]
-                                    [ Value.Tuple [] ]
-                                |)
-                              |)
-                            |)));
+                            M.never_to_any (| M.read (| M.return_ (| Value.Bool true |) |) |)));
                         fun γ => ltac:(M.monadic (Value.Tuple []))
                       ]
                     |) in
                   let~ n_words : Ty.path "usize" :=
                     M.call_closure (|
                       Ty.path "usize",
-                      BinOp.Wrap.div,
+                      M.get_associated_function (| Ty.path "usize", "div_ceil", [], [] |),
                       [
                         M.call_closure (|
                           Ty.path "usize",
-                          BinOp.Wrap.add,
-                          [
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                "len",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
-                            |);
-                            Value.Integer IntegerKind.Usize 31
-                          ]
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                            "len",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
                         |);
                         Value.Integer IntegerKind.Usize 32
                       ]
@@ -4888,26 +5135,96 @@ Module interpreter.
                               |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.tuple [];
-                                      Ty.path
-                                        "revm_interpreter::instruction_result::InstructionResult"
-                                    ]
-                                    [
-                                      Value.StructTuple
-                                        "revm_interpreter::instruction_result::InstructionResult::StackOverflow"
-                                        []
-                                        []
-                                        []
-                                    ]
-                                |)
-                              |)
+                            M.never_to_any (| M.read (| M.return_ (| Value.Bool false |) |) |)));
+                        fun γ => ltac:(M.monadic (Value.Tuple []))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            M.read (|
+                              let~ _ : Ty.tuple [] :=
+                                M.match_operator (|
+                                  Ty.tuple [],
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              UnOp.not,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.ge,
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "alloc::vec::Vec")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [
+                                                                Value.Integer IntegerKind.Usize 256;
+                                                                Value.Integer IntegerKind.Usize 4
+                                                              ]
+                                                              [];
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ],
+                                                        "capacity",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "revm_interpreter::interpreter::stack::Stack",
+                                                            "data"
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |);
+                                                    M.read (| new_len |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.never_to_any (|
+                                          M.call_closure (|
+                                            Ty.path "never",
+                                            M.get_function (| "core::panicking::panic", [], [] |),
+                                            [
+                                              mk_str (|
+                                                "assertion failed: self.data.capacity() >= new_len"
+                                              |)
+                                            ]
+                                          |)
+                                        |)));
+                                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                                  ]
+                                |) in
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
                         fun γ => ltac:(M.monadic (Value.Tuple []))
                       ]
@@ -5682,21 +5999,7 @@ Module interpreter.
                                     M.read (| γ |),
                                     Value.Bool true
                                   |) in
-                                M.never_to_any (|
-                                  M.read (|
-                                    M.return_ (|
-                                      Value.StructTuple
-                                        "core::result::Result::Ok"
-                                        []
-                                        [
-                                          Ty.tuple [];
-                                          Ty.path
-                                            "revm_interpreter::instruction_result::InstructionResult"
-                                        ]
-                                        [ Value.Tuple [] ]
-                                    |)
-                                  |)
-                                |)));
+                                M.never_to_any (| M.read (| M.return_ (| Value.Bool true |) |) |)));
                             fun γ => ltac:(M.monadic (Value.Tuple []))
                           ]
                         |) in
@@ -6232,16 +6535,14 @@ Module interpreter.
                                                 Ty.path "usize",
                                                 M.call_closure (|
                                                   Ty.path "usize",
-                                                  BinOp.Wrap.div,
+                                                  M.get_associated_function (|
+                                                    Ty.path "usize",
+                                                    "div_ceil",
+                                                    [],
+                                                    []
+                                                  |),
                                                   [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.add,
-                                                      [
-                                                        M.read (| i |);
-                                                        Value.Integer IntegerKind.Usize 3
-                                                      ]
-                                                    |);
+                                                    M.read (| i |);
                                                     Value.Integer IntegerKind.Usize 4
                                                   ]
                                                 |)
@@ -6441,32 +6742,16 @@ Module interpreter.
                         |)
                       |)
                     |) in
-                  M.alloc (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.path "revm_interpreter::instruction_result::InstructionResult"
-                      ],
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.path "revm_interpreter::instruction_result::InstructionResult"
-                      ]
-                      [ Value.Tuple [] ]
-                  |)
+                  M.alloc (| Ty.path "bool", Value.Bool true |)
                 |)))
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_push_slice :
-        M.IsAssociatedFunction.C Self "push_slice" push_slice.
+      Global Instance AssociatedFunction_push_slice_ :
+        M.IsAssociatedFunction.C Self "push_slice_" push_slice_.
       Admitted.
-      Global Typeclasses Opaque push_slice.
+      Global Typeclasses Opaque push_slice_.
       
       (*
           pub fn set(&mut self, no_from_top: usize, val: U256) -> Result<(), InstructionResult> {

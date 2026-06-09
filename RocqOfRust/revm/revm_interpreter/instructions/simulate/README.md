@@ -77,7 +77,7 @@ Rust source: [`../control.rs`](../control.rs)
 | [invalid](control/invalid.v) | ✓ |
 | [jump](control/jump.v) | ✓ |
 | [jump_inner](control/jump_inner.v) | ✓ |
-| [jumpdest_or_nop](control/jumpdest_or_nop.v) | ✓ |
+| [jumpdest](control/jumpdest.v) | ✓ |
 | [jumpi](control/jumpi.v) | ✓ |
 | [pc](control/pc.v) | ✓ |
 | [ret](control/ret.v) | ✓ |

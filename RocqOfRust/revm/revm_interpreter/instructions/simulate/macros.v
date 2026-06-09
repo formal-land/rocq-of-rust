@@ -465,31 +465,44 @@ Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
       .(InterpreterTypes.LoopControl_for_Control)
       .(LoopControl.gas) in
   let gas := ref_gas.(RefStub.projection) interpreter.(Interpreter.control) in
-  let '(extension_result, gas) := Impl_Gas.record_memory_expansion gas words_num in
-  let interpreter :=
-    interpreter <| Interpreter.control :=
-      ref_gas.(RefStub.injection) interpreter.(Interpreter.control) gas
-    |> in
-  match extension_result with
-  | MemoryExtensionResult.Extended =>
-    let '(_, memory) :=
-      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.resize)
-        interpreter.(Interpreter.memory) (words_num *i 32) in
-    let interpreter := interpreter <| Interpreter.memory := memory |> in
-    k interpreter
-  | MemoryExtensionResult.OutOfGas =>
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.MemoryOOG in
-    let interpreter := interpreter <| Interpreter.control := control |> in
-    k_exit interpreter
-  | MemoryExtensionResult.Same =>
-    k interpreter
-  end.
-
+  let memory_gas := gas.(Gas.memory) in
+  if memory_gas.(MemoryGas.words_num).(Integer.value) <? words_num.(Integer.value) then
+    let '(cost_opt, memory_gas) :=
+      Impl_MemoryGas.record_new_len memory_gas words_num in
+    let gas := gas <| Gas.memory := memory_gas |> in
+    match cost_opt with
+    | Some cost =>
+        match Impl_Gas.record_cost gas cost with
+        | Some gas =>
+            let interpreter :=
+              interpreter <| Interpreter.control :=
+                ref_gas.(RefStub.injection) interpreter.(Interpreter.control) gas
+              |> in
+            let '(_, memory) :=
+              IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.resize)
+                interpreter.(Interpreter.memory) (words_num *i 32) in
+            let interpreter := interpreter <| Interpreter.memory := memory |> in
+            k interpreter
+        | None =>
+            let interpreter :=
+              interpreter <| Interpreter.control :=
+                ref_gas.(RefStub.injection) interpreter.(Interpreter.control) gas
+              |> in
+            let control :=
+              IInterpreterTypes
+                  .(InterpreterTypes.LoopControl_for_Control)
+                  .(LoopControl.set_instruction_result)
+                interpreter.(Interpreter.control)
+                instruction_result.InstructionResult.MemoryOOG in
+            let interpreter := interpreter <| Interpreter.control := control |> in
+            k_exit interpreter
+        end
+    | None =>
+        k interpreter
+    end
+  else
+    k interpreter. 
+    
 Ltac resize_memory_macro_eq InterpreterTypesEq :=
   unfold resize_memory_macro;
   s; [
@@ -501,9 +514,6 @@ Ltac resize_memory_macro_eq InterpreterTypesEq :=
   s; [
     apply InterpreterTypesEq
   |];
-  s; [
-    apply Impl_Gas.record_memory_expansion_eq
-  |];
-  s; [
-    apply InterpreterTypesEq
-  |].
+  destruct (_ <? _) eqn:?; s; [
+    apply Impl_MemoryGas.record_new_len_eq
+  | |].

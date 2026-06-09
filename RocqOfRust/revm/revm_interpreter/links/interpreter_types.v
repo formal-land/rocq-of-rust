@@ -440,7 +440,7 @@ pub trait StackTrait {
 Module StackTrait.
   Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
     {|
-      TraitHeader.trait_name := "revm_interpreter::interpreter_types::StackTrait";
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::StackTr";
       TraitHeader.trait_consts := [];
       TraitHeader.trait_tys := [];
       TraitHeader.self_ty := Φ Self;

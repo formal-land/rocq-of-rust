@@ -1,11 +1,9 @@
 use super::constants::*;
 use crate::{num_words, tri, SStoreResult, SelfDestructResult, StateLoad};
 use context_interface::{
-    journaled_state::{AccountLoad, Eip7702CodeLoad},
-    transaction::AccessListTrait,
+    journaled_state::AccountLoad, transaction::AccessListItemTr as _, Transaction, TransactionType,
 };
-use primitives::U256;
-use specification::{eip7702, hardfork::SpecId};
+use primitives::{eip7702, hardfork::SpecId, U256};
 
 /// `SSTORE` opcode refund calculation.
 #[allow(clippy::collapsible_else_if)]
@@ -115,13 +113,9 @@ pub const fn copy_cost_verylow(len: usize) -> Option<u64> {
 
 /// `EXTCODECOPY` opcode cost calculation.
 #[inline]
-pub const fn extcodecopy_cost(
-    spec_id: SpecId,
-    len: usize,
-    load: Eip7702CodeLoad<()>,
-) -> Option<u64> {
+pub const fn extcodecopy_cost(spec_id: SpecId, len: usize, is_cold: bool) -> Option<u64> {
     let base_gas = if spec_id.is_enabled_in(SpecId::BERLIN) {
-        warm_cold_cost_with_delegation(load)
+        warm_cold_cost(is_cold)
     } else if spec_id.is_enabled_in(SpecId::TANGERINE) {
         700
     } else {
@@ -131,6 +125,7 @@ pub const fn extcodecopy_cost(
 }
 
 #[inline]
+/// Calculates the gas cost for copy operations based on data length.
 pub const fn copy_cost(base_cost: u64, len: usize) -> Option<u64> {
     base_cost.checked_add(tri!(cost_per_word(len, COPY)))
 }
@@ -186,9 +181,45 @@ pub const fn sload_cost(spec_id: SpecId, is_cold: bool) -> u64 {
     }
 }
 
+/// Static gas cost for sstore.
+#[inline]
+pub const fn sstore_cost_static(spec_id: SpecId) -> u64 {
+    if spec_id.is_enabled_in(SpecId::BERLIN) {
+        WARM_STORAGE_READ_COST
+    } else if spec_id.is_enabled_in(SpecId::ISTANBUL) {
+        ISTANBUL_SLOAD_GAS
+    } else {
+        SSTORE_RESET
+    }
+}
+
+/// Dynamic gas cost for sstore.
+#[inline]
+pub const fn sstore_cost_dynamic(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 {
+    sstore_cost(spec_id, vals, is_cold) - sstore_cost_static(spec_id)
+}
+
+/// Static gas cost for sstore.
+#[inline]
+pub const fn static_sstore_cost(spec_id: SpecId) -> u64 {
+    if spec_id.is_enabled_in(SpecId::BERLIN) {
+        WARM_STORAGE_READ_COST
+    } else if spec_id.is_enabled_in(SpecId::ISTANBUL) {
+        ISTANBUL_SLOAD_GAS
+    } else {
+        SSTORE_RESET
+    }
+}
+
+/// Dynamic gas cost for sstore.
+#[inline]
+pub const fn dyn_sstore_cost(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 {
+    sstore_cost(spec_id, vals, is_cold) - static_sstore_cost(spec_id)
+}
+
 /// `SSTORE` opcode cost calculation.
 #[inline]
-pub fn sstore_cost(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 {
+pub const fn sstore_cost(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 {
     if spec_id.is_enabled_in(SpecId::BERLIN) {
         // Berlin specification logic
         let mut gas_cost = istanbul_sstore_cost::<WARM_STORAGE_READ_COST, WARM_SSTORE_RESET>(vals);
@@ -208,7 +239,7 @@ pub fn sstore_cost(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 {
 
 /// EIP-2200: Structured Definitions for Net Gas Metering
 #[inline]
-fn istanbul_sstore_cost<const SLOAD_GAS: u64, const SSTORE_RESET_GAS: u64>(
+const fn istanbul_sstore_cost<const SLOAD_GAS: u64, const SSTORE_RESET_GAS: u64>(
     vals: &SStoreResult,
 ) -> u64 {
     if vals.is_new_eq_present() {
@@ -224,7 +255,7 @@ fn istanbul_sstore_cost<const SLOAD_GAS: u64, const SSTORE_RESET_GAS: u64>(
 
 /// Frontier sstore cost just had two cases set and reset values.
 #[inline]
-fn frontier_sstore_cost(vals: &SStoreResult) -> u64 {
+const fn frontier_sstore_cost(vals: &SStoreResult) -> u64 {
     if vals.is_present_zero() && !vals.is_new_zero() {
         SSTORE_SET
     } else {
@@ -232,9 +263,23 @@ fn frontier_sstore_cost(vals: &SStoreResult) -> u64 {
     }
 }
 
+/// Static gas cost for selfdestruct.
+#[inline]
+pub const fn static_selfdestruct_cost(spec_id: SpecId) -> u64 {
+    // EIP-150: Gas cost changes for IO-heavy operations
+    if spec_id.is_enabled_in(SpecId::TANGERINE) {
+        5000
+    } else {
+        0
+    }
+}
+
 /// `SELFDESTRUCT` opcode cost calculation.
 #[inline]
-pub const fn selfdestruct_cost(spec_id: SpecId, res: StateLoad<SelfDestructResult>) -> u64 {
+pub const fn dyn_selfdestruct_cost(spec_id: SpecId, res: &StateLoad<SelfDestructResult>) -> u64 {
+    let is_tangerine = spec_id.is_enabled_in(SpecId::TANGERINE);
+    let mut gas = 0;
+
     // EIP-161: State trie clearing (invariant-preserving alternative)
     let should_charge_topup = if spec_id.is_enabled_in(SpecId::SPURIOUS_DRAGON) {
         res.data.had_value && !res.data.target_exists
@@ -243,52 +288,43 @@ pub const fn selfdestruct_cost(spec_id: SpecId, res: StateLoad<SelfDestructResul
     };
 
     // EIP-150: Gas cost changes for IO-heavy operations
-    let selfdestruct_gas_topup = if spec_id.is_enabled_in(SpecId::TANGERINE) && should_charge_topup
-    {
-        25000
-    } else {
-        0
-    };
-
-    // EIP-150: Gas cost changes for IO-heavy operations
-    let selfdestruct_gas = if spec_id.is_enabled_in(SpecId::TANGERINE) {
-        5000
-    } else {
-        0
-    };
-
-    let mut gas = selfdestruct_gas + selfdestruct_gas_topup;
-    if spec_id.is_enabled_in(SpecId::BERLIN) && res.is_cold {
-        gas += COLD_ACCOUNT_ACCESS_COST
+    if is_tangerine && should_charge_topup {
+        gas += NEWACCOUNT
     }
+
+    if res.is_cold {
+        gas += selfdestruct_cold_beneficiary_cost(spec_id);
+    }
+
     gas
 }
 
-/// Calculate call gas cost for the call instruction.
-///
-/// There is three types of gas.
-/// * Account access gas. after berlin it can be cold or warm.
-/// * Transfer value gas. If value is transferred and balance of target account is updated.
-/// * If account is not existing and needs to be created. After Spurious dragon
-///   this is only accounted if value is transferred.
-///
-/// account_load.is_empty will be accounted only if hardfork is SPURIOUS_DRAGON and
-/// there is transfer value.
-///
-/// This means that [`bytecode::opcode::EXTSTATICCALL`],
-/// [`bytecode::opcode::EXTDELEGATECALL`] that dont transfer value will not be
-/// effected by this field.
-///
-/// [`bytecode::opcode::CALL`], [`bytecode::opcode::EXTCALL`] use this field.
-///
-/// While [`bytecode::opcode::STATICCALL`], [`bytecode::opcode::DELEGATECALL`],
-/// [`bytecode::opcode::CALLCODE`] need to have this field hardcoded to false
-/// as they were present before SPURIOUS_DRAGON hardfork.
+/// EIP-2929: Gas cost increases for state access opcodes
 #[inline]
-pub const fn call_cost(spec_id: SpecId, transfers_value: bool, account_load: AccountLoad) -> u64 {
+pub const fn selfdestruct_cold_beneficiary_cost(spec_id: SpecId) -> u64 {
+    if spec_id.is_enabled_in(SpecId::BERLIN) {
+        COLD_ACCOUNT_ACCESS_COST
+    } else {
+        0
+    }
+}
+
+/// `SELFDESTRUCT` opcode cost calculation.
+#[inline]
+pub const fn selfdestruct_cost(spec_id: SpecId, res: StateLoad<SelfDestructResult>) -> u64 {
+    static_selfdestruct_cost(spec_id) + dyn_selfdestruct_cost(spec_id, &res)
+}
+
+/// Calculate static gas for the call
+///
+/// Gas depends on:
+/// * Spec. For berlin hardfork only warm gas [`WARM_STORAGE_READ_COST`] is calculated.
+/// * If there is transfer value. additional gas of [`CALLVALUE`] is added.
+#[inline]
+pub fn calc_call_static_gas(spec_id: SpecId, has_transfer: bool) -> u64 {
     // Account access.
     let mut gas = if spec_id.is_enabled_in(SpecId::BERLIN) {
-        warm_cold_cost_with_delegation(account_load.load)
+        WARM_STORAGE_READ_COST
     } else if spec_id.is_enabled_in(SpecId::TANGERINE) {
         // EIP-150: Gas cost changes for IO-heavy operations
         700
@@ -297,21 +333,8 @@ pub const fn call_cost(spec_id: SpecId, transfers_value: bool, account_load: Acc
     };
 
     // Transfer value cost
-    if transfers_value {
+    if has_transfer {
         gas += CALLVALUE;
-    }
-
-    // New account cost
-    if account_load.is_empty {
-        // EIP-161: State trie clearing (invariant-preserving alternative)
-        if spec_id.is_enabled_in(SpecId::SPURIOUS_DRAGON) {
-            // Account only if there is value transferred.
-            if transfers_value {
-                gas += NEWACCOUNT;
-            }
-        } else {
-            gas += NEWACCOUNT;
-        }
     }
 
     gas
@@ -331,9 +354,9 @@ pub const fn warm_cold_cost(is_cold: bool) -> u64 {
 ///
 /// If delegation is Some, add additional cost for delegation account load.
 #[inline]
-pub const fn warm_cold_cost_with_delegation(load: Eip7702CodeLoad<()>) -> u64 {
-    let mut gas = warm_cold_cost(load.state_load.is_cold);
-    if let Some(is_cold) = load.is_delegate_account_cold {
+pub const fn warm_cold_cost_with_delegation(load: StateLoad<AccountLoad>) -> u64 {
+    let mut gas = warm_cold_cost(load.is_cold);
+    if let Some(is_cold) = load.data.is_delegate_account_cold {
         gas += warm_cold_cost(is_cold);
     }
     gas
@@ -348,38 +371,56 @@ pub const fn memory_gas(num_words: usize) -> u64 {
         .saturating_add(num_words.saturating_mul(num_words) / 512)
 }
 
+/// Init and floor gas from transaction
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct InitialAndFloorGas {
+    /// Initial gas for transaction.
+    pub initial_gas: u64,
+    /// If transaction is a Call and Prague is enabled
+    /// floor_gas is at least amount of gas that is going to be spent.
+    pub floor_gas: u64,
+}
+
+impl InitialAndFloorGas {
+    /// Create a new InitialAndFloorGas instance.
+    #[inline]
+    pub const fn new(initial_gas: u64, floor_gas: u64) -> Self {
+        Self {
+            initial_gas,
+            floor_gas,
+        }
+    }
+}
+
 /// Initial gas that is deducted for transaction to be included.
 /// Initial gas contains initial stipend gas, gas for access list and input data.
-pub fn validate_initial_tx_gas<AccessListT: AccessListTrait>(
+///
+/// # Returns
+///
+/// - Intrinsic gas
+/// - Number of tokens in calldata
+pub fn calculate_initial_tx_gas(
     spec_id: SpecId,
     input: &[u8],
     is_create: bool,
-    access_list: Option<&AccessListT>,
+    access_list_accounts: u64,
+    access_list_storages: u64,
     authorization_list_num: u64,
-) -> u64 {
-    let mut initial_gas = 0;
-    let zero_data_len = input.iter().filter(|v| **v == 0).count() as u64;
-    let non_zero_data_len = input.len() as u64 - zero_data_len;
+) -> InitialAndFloorGas {
+    let mut gas = InitialAndFloorGas::default();
 
     // Initdate stipend
-    initial_gas += zero_data_len * TRANSACTION_ZERO_DATA;
-    // EIP-2028: Transaction data gas cost reduction
-    initial_gas += non_zero_data_len
-        * if spec_id.is_enabled_in(SpecId::ISTANBUL) {
-            16
-        } else {
-            68
-        };
+    let tokens_in_calldata = get_tokens_in_calldata(input, spec_id.is_enabled_in(SpecId::ISTANBUL));
+
+    gas.initial_gas += tokens_in_calldata * STANDARD_TOKEN_COST;
 
     // Get number of access list account and storages.
-    if let Some(access_list) = access_list {
-        let (account_num, storage_num) = access_list.num_account_storages();
-        initial_gas += account_num as u64 * ACCESS_LIST_ADDRESS;
-        initial_gas += storage_num as u64 * ACCESS_LIST_STORAGE_KEY;
-    }
+    gas.initial_gas += access_list_accounts * ACCESS_LIST_ADDRESS;
+    gas.initial_gas += access_list_storages * ACCESS_LIST_STORAGE_KEY;
 
     // Base stipend
-    initial_gas += if is_create {
+    gas.initial_gas += if is_create {
         if spec_id.is_enabled_in(SpecId::HOMESTEAD) {
             // EIP-2: Homestead Hard-fork Changes
             53000
@@ -393,13 +434,71 @@ pub fn validate_initial_tx_gas<AccessListT: AccessListTrait>(
     // EIP-3860: Limit and meter initcode
     // Init code stipend for bytecode analysis
     if spec_id.is_enabled_in(SpecId::SHANGHAI) && is_create {
-        initial_gas += initcode_cost(input.len())
+        gas.initial_gas += initcode_cost(input.len())
     }
 
     // EIP-7702
     if spec_id.is_enabled_in(SpecId::PRAGUE) {
-        initial_gas += authorization_list_num * eip7702::PER_EMPTY_ACCOUNT_COST;
+        gas.initial_gas += authorization_list_num * eip7702::PER_EMPTY_ACCOUNT_COST;
+
+        // Calculate gas floor for EIP-7623
+        gas.floor_gas = calc_tx_floor_cost(tokens_in_calldata);
     }
 
-    initial_gas
+    gas
+}
+
+/// Initial gas that is deducted for transaction to be included.
+/// Initial gas contains initial stipend gas, gas for access list and input data.
+///
+/// # Returns
+///
+/// - Intrinsic gas
+/// - Number of tokens in calldata
+pub fn calculate_initial_tx_gas_for_tx(tx: impl Transaction, spec: SpecId) -> InitialAndFloorGas {
+    let mut accounts = 0;
+    let mut storages = 0;
+    // legacy is only tx type that does not have access list.
+    if tx.tx_type() != TransactionType::Legacy {
+        (accounts, storages) = tx
+            .access_list()
+            .map(|al| {
+                al.fold((0, 0), |(mut num_accounts, mut num_storage_slots), item| {
+                    num_accounts += 1;
+                    num_storage_slots += item.storage_slots().count();
+
+                    (num_accounts, num_storage_slots)
+                })
+            })
+            .unwrap_or_default();
+    }
+
+    calculate_initial_tx_gas(
+        spec,
+        tx.input(),
+        tx.kind().is_create(),
+        accounts as u64,
+        storages as u64,
+        tx.authorization_list_len() as u64,
+    )
+}
+
+/// Retrieve the total number of tokens in calldata.
+#[inline]
+pub fn get_tokens_in_calldata(input: &[u8], is_istanbul: bool) -> u64 {
+    let zero_data_len = input.iter().filter(|v| **v == 0).count() as u64;
+    let non_zero_data_len = input.len() as u64 - zero_data_len;
+    let non_zero_data_multiplier = if is_istanbul {
+        // EIP-2028: Transaction data gas cost reduction
+        NON_ZERO_BYTE_MULTIPLIER_ISTANBUL
+    } else {
+        NON_ZERO_BYTE_MULTIPLIER
+    };
+    zero_data_len + non_zero_data_len * non_zero_data_multiplier
+}
+
+/// Calculate the transaction cost floor as specified in EIP-7623.
+#[inline]
+pub fn calc_tx_floor_cost(tokens_in_calldata: u64) -> u64 {
+    tokens_in_calldata * TOTAL_COST_FLOOR_PER_TOKEN + 21_000
 }

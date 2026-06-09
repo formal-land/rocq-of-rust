@@ -12,7 +12,7 @@ Definition LOW : u64 := 5.
 Definition MID : u64 := 8.
 Definition HIGH : u64 := 10.
 Definition JUMPDEST : u64 := 1.
-Definition SELFDESTRUCT : i64 := 24000.
+Definition SELFDESTRUCT_REFUND : i64 := 24000.
 Definition CREATE : u64 := 32000.
 Definition CALLVALUE : u64 := 9000.
 Definition NEWACCOUNT : u64 := 25000.
@@ -30,9 +30,12 @@ Definition ISTANBUL_SLOAD_GAS : u64 := 800.
 Definition SSTORE_SET : u64 := 20000.
 Definition SSTORE_RESET : u64 := 5000.
 Definition REFUND_SSTORE_CLEARS : i64 := 15000.
-Definition TRANSACTION_ZERO_DATA : u64 := 4.
-Definition TRANSACTION_NON_ZERO_DATA_INIT : u64 := 16.
-Definition TRANSACTION_NON_ZERO_DATA_FRONTIER : u64 := 68.
+Definition STANDARD_TOKEN_COST : u64 := 4.
+Definition NON_ZERO_BYTE_DATA_COST : u64 := 68.
+Definition NON_ZERO_BYTE_MULTIPLIER : u64 := 17.
+Definition NON_ZERO_BYTE_DATA_COST_ISTANBUL : u64 := 16.
+Definition NON_ZERO_BYTE_MULTIPLIER_ISTANBUL : u64 := 4.
+Definition TOTAL_COST_FLOOR_PER_TOKEN : u64 := 10.
 Definition EOF_CREATE_GAS : u64 := 32000.
 Definition ACCESS_LIST_ADDRESS : u64 := 2400.
 Definition ACCESS_LIST_STORAGE_KEY : u64 := 1900.
@@ -99,9 +102,9 @@ Lemma JUMPDEST_eq (stack : Stack.t) :
      (Output.Success (Ref.immediate Pointer.Kind.Raw JUMPDEST), stack) }}.
 Proof. p. Qed.
 
-Lemma SELFDESTRUCT_eq (stack : Stack.t) :
-  {{ SimulateM.eval_f run_SELFDESTRUCT stack 🌲
-     (Output.Success (Ref.immediate Pointer.Kind.Raw SELFDESTRUCT), stack) }}.
+Lemma SELFDESTRUCT_REFUND_eq (stack : Stack.t) :
+  {{ SimulateM.eval_f run_SELFDESTRUCT_REFUND stack 🌲
+     (Output.Success (Ref.immediate Pointer.Kind.Raw SELFDESTRUCT_REFUND), stack) }}.
 Proof. p. Qed.
 
 Lemma CREATE_eq (stack : Stack.t) :
@@ -189,19 +192,34 @@ Lemma REFUND_SSTORE_CLEARS_eq (stack : Stack.t) :
      (Output.Success (Ref.immediate Pointer.Kind.Raw REFUND_SSTORE_CLEARS), stack) }}.
 Proof. p. Qed.
 
-Lemma TRANSACTION_ZERO_DATA_eq (stack : Stack.t) :
-  {{ SimulateM.eval_f run_TRANSACTION_ZERO_DATA stack 🌲
-     (Output.Success (Ref.immediate Pointer.Kind.Raw TRANSACTION_ZERO_DATA), stack) }}.
+Lemma STANDARD_TOKEN_COST_eq (stack : Stack.t) :
+  {{ SimulateM.eval_f run_STANDARD_TOKEN_COST stack 🌲
+     (Output.Success (Ref.immediate Pointer.Kind.Raw STANDARD_TOKEN_COST), stack) }}.
 Proof. p. Qed.
 
-Lemma TRANSACTION_NON_ZERO_DATA_INIT_eq (stack : Stack.t) :
-  {{ SimulateM.eval_f run_TRANSACTION_NON_ZERO_DATA_INIT stack 🌲
-     (Output.Success (Ref.immediate Pointer.Kind.Raw TRANSACTION_NON_ZERO_DATA_INIT), stack) }}.
+Lemma NON_ZERO_BYTE_DATA_COST_eq (stack : Stack.t) :
+  {{ SimulateM.eval_f run_NON_ZERO_BYTE_DATA_COST stack 🌲
+     (Output.Success (Ref.immediate Pointer.Kind.Raw NON_ZERO_BYTE_DATA_COST), stack) }}.
 Proof. p. Qed.
 
-Lemma TRANSACTION_NON_ZERO_DATA_FRONTIER_eq (stack : Stack.t) :
-  {{ SimulateM.eval_f run_TRANSACTION_NON_ZERO_DATA_FRONTIER stack 🌲
-     (Output.Success (Ref.immediate Pointer.Kind.Raw TRANSACTION_NON_ZERO_DATA_FRONTIER), stack) }}.
+Lemma NON_ZERO_BYTE_MULTIPLIER_eq (stack : Stack.t) :
+  {{ SimulateM.eval_f run_NON_ZERO_BYTE_MULTIPLIER stack 🌲
+     (Output.Success (Ref.immediate Pointer.Kind.Raw NON_ZERO_BYTE_MULTIPLIER), stack) }}.
+Proof. s. Qed.
+
+Lemma NON_ZERO_BYTE_DATA_COST_ISTANBUL_eq (stack : Stack.t) :
+  {{ SimulateM.eval_f run_NON_ZERO_BYTE_DATA_COST_ISTANBUL stack 🌲
+     (Output.Success (Ref.immediate Pointer.Kind.Raw NON_ZERO_BYTE_DATA_COST_ISTANBUL), stack) }}.
+Proof. p. Qed.
+
+Lemma NON_ZERO_BYTE_MULTIPLIER_ISTANBUL_eq (stack : Stack.t) :
+  {{ SimulateM.eval_f run_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL stack 🌲
+     (Output.Success (Ref.immediate Pointer.Kind.Raw NON_ZERO_BYTE_MULTIPLIER_ISTANBUL), stack) }}.
+Proof. s. Qed.
+
+Lemma TOTAL_COST_FLOOR_PER_TOKEN_eq (stack : Stack.t) :
+  {{ SimulateM.eval_f run_TOTAL_COST_FLOOR_PER_TOKEN stack 🌲
+     (Output.Success (Ref.immediate Pointer.Kind.Raw TOTAL_COST_FLOOR_PER_TOKEN), stack) }}.
 Proof. p. Qed.
 
 Lemma EOF_CREATE_GAS_eq (stack : Stack.t) :

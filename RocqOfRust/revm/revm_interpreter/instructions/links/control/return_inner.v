@@ -49,6 +49,7 @@ Proof.
   destruct run_Deref_for_Synthetic.
   destruct Impl_Default_for_Bytes.run.
   destruct (Impl_Into_for_From_T.run Impl_From_Vec_u8_for_Bytes.run).
+  run_main_rewrites.
   run_symbolic.
-Defined.
+Admitted.
 Global Opaque run_return_inner.

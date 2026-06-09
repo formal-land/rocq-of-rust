@@ -2,91 +2,577 @@
 Require Import RocqOfRust.RocqOfRust.
 
 Module instructions.
+  (* StructRecord
+    {
+      name := "Instruction";
+      const_params := [];
+      ty_params := [ "W"; "H" ];
+      fields :=
+        [
+          ("fn_",
+            Ty.function
+              [
+                Ty.apply
+                  (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                  []
+                  [ H; W ]
+              ]
+              (Ty.tuple []));
+          ("static_gas", Ty.path "u64")
+        ];
+    } *)
+  
+  Module Impl_core_fmt_Debug_where_core_fmt_Debug_W_where_revm_interpreter_interpreter_types_InterpreterTypes_W_where_core_fmt_Debug_H_where_core_marker_Sized_H_for_revm_interpreter_instructions_Instruction_W_H.
+    Definition Self (W H : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ W; H ].
+    
+    (* Debug *)
+    Definition fmt (W H : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self W H in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ W; H ] ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (|
+              Ty.path "core::fmt::Formatter",
+              "debug_struct_field2_finish",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Instruction" |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "fn_" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; W ]
+                        ]
+                        (Ty.tuple [])
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::instructions::Instruction",
+                          "fn_"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "static_gas" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_interpreter::instructions::Instruction",
+                              "static_gas"
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (W H : Ty.t),
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self W H)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt W H)) ].
+  End Impl_core_fmt_Debug_where_core_fmt_Debug_W_where_revm_interpreter_interpreter_types_InterpreterTypes_W_where_core_fmt_Debug_H_where_core_marker_Sized_H_for_revm_interpreter_instructions_Instruction_W_H.
+  
+  Module Impl_revm_interpreter_instructions_Instruction_W_H.
+    Definition Self (W H : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ W; H ].
+    
+    (*
+        pub const fn new(fn_: fn(InstructionContext<'_, H, W>), static_gas: u64) -> Self {
+            Self { fn_, static_gas }
+        }
+    *)
+    Definition new (W H : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self W H in
+      match ε, τ, α with
+      | [], [], [ fn_; static_gas ] =>
+        ltac:(M.monadic
+          (let fn_ :=
+            M.alloc (|
+              Ty.function
+                [
+                  Ty.apply
+                    (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                    []
+                    [ H; W ]
+                ]
+                (Ty.tuple []),
+              fn_
+            |) in
+          let static_gas := M.alloc (| Ty.path "u64", static_gas |) in
+          Value.mkStructRecord
+            "revm_interpreter::instructions::Instruction"
+            []
+            [ W; H ]
+            [ ("fn_", M.read (| fn_ |)); ("static_gas", M.read (| static_gas |)) ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new :
+      forall (W H : Ty.t),
+      M.IsAssociatedFunction.C (Self W H) "new" (new W H).
+    Admitted.
+    Global Typeclasses Opaque new.
+    
+    (*
+        pub const fn unknown() -> Self {
+            Self {
+                fn_: control::unknown,
+                static_gas: 0,
+            }
+        }
+    *)
+    Definition unknown (W H : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self W H in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.mkStructRecord
+            "revm_interpreter::instructions::Instruction"
+            []
+            [ W; H ]
+            [
+              ("fn_",
+                M.call_closure (|
+                  Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                        []
+                        [ H; W ]
+                    ]
+                    (Ty.tuple []),
+                  M.pointer_coercion
+                    M.PointerCoercion.ReifyFnPointer
+                    (Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; W ]
+                      ]
+                      (Ty.tuple []))
+                    (Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; W ]
+                      ]
+                      (Ty.tuple [])),
+                  [
+                    M.get_function (|
+                      "revm_interpreter::instructions::control::unknown",
+                      [],
+                      [ W; H ]
+                    |)
+                  ]
+                |));
+              ("static_gas", Value.Integer IntegerKind.U64 0)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_unknown :
+      forall (W H : Ty.t),
+      M.IsAssociatedFunction.C (Self W H) "unknown" (unknown W H).
+    Admitted.
+    Global Typeclasses Opaque unknown.
+    
+    (*
+        pub fn execute(self, ctx: InstructionContext<'_, H, W>) {
+            (self.fn_)(ctx)
+        }
+    *)
+    Definition execute (W H : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self W H in
+      match ε, τ, α with
+      | [], [], [ self; ctx ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ W; H ],
+              self
+            |) in
+          let ctx :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                []
+                [ H; W ],
+              ctx
+            |) in
+          M.call_closure (|
+            Ty.tuple [],
+            M.read (|
+              M.SubPointer.get_struct_record_field (|
+                self,
+                "revm_interpreter::instructions::Instruction",
+                "fn_"
+              |)
+            |),
+            [ M.read (| ctx |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_execute :
+      forall (W H : Ty.t),
+      M.IsAssociatedFunction.C (Self W H) "execute" (execute W H).
+    Admitted.
+    Global Typeclasses Opaque execute.
+    
+    (*
+        pub const fn static_gas(&self) -> u64 {
+            self.static_gas
+        }
+    *)
+    Definition static_gas (W H : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self W H in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ W; H ] ],
+              self
+            |) in
+          M.read (|
+            M.SubPointer.get_struct_record_field (|
+              M.deref (| M.read (| self |) |),
+              "revm_interpreter::instructions::Instruction",
+              "static_gas"
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_static_gas :
+      forall (W H : Ty.t),
+      M.IsAssociatedFunction.C (Self W H) "static_gas" (static_gas W H).
+    Admitted.
+    Global Typeclasses Opaque static_gas.
+  End Impl_revm_interpreter_instructions_Instruction_W_H.
+  
+  Module Impl_core_marker_Copy_where_revm_interpreter_interpreter_types_InterpreterTypes_W_where_revm_context_interface_host_Host_H_where_core_marker_Sized_H_for_revm_interpreter_instructions_Instruction_W_H.
+    Definition Self (W H : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ W; H ].
+    
+    Axiom Implements :
+      forall (W H : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self W H)
+        (* Instance *) [].
+  End Impl_core_marker_Copy_where_revm_interpreter_interpreter_types_InterpreterTypes_W_where_revm_context_interface_host_Host_H_where_core_marker_Sized_H_for_revm_interpreter_instructions_Instruction_W_H.
+  
+  Module Impl_core_clone_Clone_where_revm_interpreter_interpreter_types_InterpreterTypes_W_where_revm_context_interface_host_Host_H_where_core_marker_Sized_H_for_revm_interpreter_instructions_Instruction_W_H.
+    Definition Self (W H : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ W; H ].
+    
+    (*
+        fn clone(&self) -> Self {
+            *self
+        }
+    *)
+    Definition clone (W H : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self W H in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ W; H ] ],
+              self
+            |) in
+          M.read (| M.deref (| M.read (| self |) |) |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (W H : Ty.t),
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self W H)
+        (* Instance *) [ ("clone", InstanceField.Method (clone W H)) ].
+  End Impl_core_clone_Clone_where_revm_interpreter_interpreter_types_InterpreterTypes_W_where_revm_context_interface_host_Host_H_where_core_marker_Sized_H_for_revm_interpreter_instructions_Instruction_W_H.
+  
+  Axiom InstructionTable :
+    forall (W H : Ty.t),
+    (Ty.apply (Ty.path "revm_interpreter::instructions::InstructionTable") [] [ W; H ]) =
+      (Ty.apply
+        (Ty.path "array")
+        [ Value.Integer IntegerKind.Usize 256 ]
+        [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ W; H ] ]).
+  
   (*
-  pub const fn instruction<WIRE: InterpreterTypes, H: Host + ?Sized>(
-      opcode: u8,
-  ) -> crate::table::Instruction<WIRE, H> {
-      let table = instruction_table::<WIRE, H>();
-      table[opcode as usize]
+  pub const fn instruction_table<WIRE: InterpreterTypes, H: Host>() -> [Instruction<WIRE, H>; 256] {
+      const { instruction_table_impl::<WIRE, H>() }
   }
   *)
-  Definition instruction (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  Definition instruction_table (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ WIRE; H ], [ opcode ] =>
+    | [], [ WIRE; H ], [] =>
       ltac:(M.monadic
-        (let opcode := M.alloc (| Ty.path "u8", opcode |) in
-        M.read (|
-          let~ table :
-              Ty.apply
-                (Ty.path "array")
-                [ Value.Integer IntegerKind.Usize 256 ]
-                [
-                  Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                            []
-                            [ WIRE ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple [])
-                ] :=
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "array")
-                [ Value.Integer IntegerKind.Usize 256 ]
-                [
-                  Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                            []
-                            [ WIRE ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple [])
-                ],
-              M.get_function (|
-                "revm_interpreter::instructions::instruction_table",
-                [],
-                [ WIRE; H ]
-              |),
-              []
-            |) in
-          M.SubPointer.get_array_field (| table, M.cast (Ty.path "usize") (M.read (| opcode |)) |)
+        (M.read (|
+          get_constant (|
+            "revm_interpreter::instructions::instruction_table_discriminant",
+            Ty.apply
+              (Ty.path "array")
+              [ Value.Integer IntegerKind.Usize 256 ]
+              [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ] ]
+          |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_instruction :
-    M.IsFunction.C "revm_interpreter::instructions::instruction" instruction.
+  Global Instance Instance_IsFunction_instruction_table :
+    M.IsFunction.C "revm_interpreter::instructions::instruction_table" instruction_table.
   Admitted.
-  Global Typeclasses Opaque instruction.
+  Global Typeclasses Opaque instruction_table.
   
   (*
-  pub const fn instruction_table<WIRE: InterpreterTypes, H: Host + ?Sized>(
-  ) -> [crate::table::Instruction<WIRE, H>; 256] {
+  const fn instruction_table_impl<WIRE: InterpreterTypes, H: Host>() -> [Instruction<WIRE, H>; 256] {
       use bytecode::opcode::*;
-      let mut table = [control::unknown as crate::table::Instruction<WIRE, H>; 256];
+      let mut table = [Instruction::unknown(); 256];
   
-      table[STOP as usize] = control::stop;
-      table[ADD as usize] = arithmetic::add;
-      table[BALANCE as usize] = host::balance;
+      table[STOP as usize] = Instruction::new(control::stop, 0);
+      table[ADD as usize] = Instruction::new(arithmetic::add, 3);
+      table[MUL as usize] = Instruction::new(arithmetic::mul, 5);
+      table[SUB as usize] = Instruction::new(arithmetic::sub, 3);
+      table[DIV as usize] = Instruction::new(arithmetic::div, 5);
+      table[SDIV as usize] = Instruction::new(arithmetic::sdiv, 5);
+      table[MOD as usize] = Instruction::new(arithmetic::rem, 5);
+      table[SMOD as usize] = Instruction::new(arithmetic::smod, 5);
+      table[ADDMOD as usize] = Instruction::new(arithmetic::addmod, 8);
+      table[MULMOD as usize] = Instruction::new(arithmetic::mulmod, 8);
+      table[EXP as usize] = Instruction::new(arithmetic::exp, 0); // dynamic
+      table[SIGNEXTEND as usize] = Instruction::new(arithmetic::signextend, 5);
   
+      table[LT as usize] = Instruction::new(bitwise::lt, 3);
+      table[GT as usize] = Instruction::new(bitwise::gt, 3);
+      table[SLT as usize] = Instruction::new(bitwise::slt, 3);
+      table[SGT as usize] = Instruction::new(bitwise::sgt, 3);
+      table[EQ as usize] = Instruction::new(bitwise::eq, 3);
+      table[ISZERO as usize] = Instruction::new(bitwise::iszero, 3);
+      table[AND as usize] = Instruction::new(bitwise::bitand, 3);
+      table[OR as usize] = Instruction::new(bitwise::bitor, 3);
+      table[XOR as usize] = Instruction::new(bitwise::bitxor, 3);
+      table[NOT as usize] = Instruction::new(bitwise::not, 3);
+      table[BYTE as usize] = Instruction::new(bitwise::byte, 3);
+      table[SHL as usize] = Instruction::new(bitwise::shl, 3);
+      table[SHR as usize] = Instruction::new(bitwise::shr, 3);
+      table[SAR as usize] = Instruction::new(bitwise::sar, 3);
+      table[CLZ as usize] = Instruction::new(bitwise::clz, 5);
+  
+      table[KECCAK256 as usize] = Instruction::new(system::keccak256, 0); // dynamic
+  
+      table[ADDRESS as usize] = Instruction::new(system::address, 2);
+      table[BALANCE as usize] = Instruction::new(host::balance, 0); // dynamic
+      table[ORIGIN as usize] = Instruction::new(tx_info::origin, 2);
+      table[CALLER as usize] = Instruction::new(system::caller, 2);
+      table[CALLVALUE as usize] = Instruction::new(system::callvalue, 2);
+      table[CALLDATALOAD as usize] = Instruction::new(system::calldataload, 3);
+      table[CALLDATASIZE as usize] = Instruction::new(system::calldatasize, 2);
+      table[CALLDATACOPY as usize] = Instruction::new(system::calldatacopy, 0); // static 2, mostly dynamic
+      table[CODESIZE as usize] = Instruction::new(system::codesize, 2);
+      table[CODECOPY as usize] = Instruction::new(system::codecopy, 0); // static 2, mostly dynamic
+  
+      table[GASPRICE as usize] = Instruction::new(tx_info::gasprice, 2);
+      table[EXTCODESIZE as usize] = Instruction::new(host::extcodesize, 0); // dynamic
+      table[EXTCODECOPY as usize] = Instruction::new(host::extcodecopy, 0); // dynamic
+      table[RETURNDATASIZE as usize] = Instruction::new(system::returndatasize, 2);
+      table[RETURNDATACOPY as usize] = Instruction::new(system::returndatacopy, 0); // static 2, mostly dynamic
+      table[EXTCODEHASH as usize] = Instruction::new(host::extcodehash, 0); // dynamic
+      table[BLOCKHASH as usize] = Instruction::new(host::blockhash, 20);
+      table[COINBASE as usize] = Instruction::new(block_info::coinbase, 2);
+      table[TIMESTAMP as usize] = Instruction::new(block_info::timestamp, 2);
+      table[NUMBER as usize] = Instruction::new(block_info::block_number, 2);
+      table[DIFFICULTY as usize] = Instruction::new(block_info::difficulty, 2);
+      table[GASLIMIT as usize] = Instruction::new(block_info::gaslimit, 2);
+      table[CHAINID as usize] = Instruction::new(block_info::chainid, 2);
+      table[SELFBALANCE as usize] = Instruction::new(host::selfbalance, 5);
+      table[BASEFEE as usize] = Instruction::new(block_info::basefee, 2);
+      table[BLOBHASH as usize] = Instruction::new(tx_info::blob_hash, 3);
+      table[BLOBBASEFEE as usize] = Instruction::new(block_info::blob_basefee, 2);
+  
+      table[POP as usize] = Instruction::new(stack::pop, 2);
+      table[MLOAD as usize] = Instruction::new(memory::mload, 3);
+      table[MSTORE as usize] = Instruction::new(memory::mstore, 3);
+      table[MSTORE8 as usize] = Instruction::new(memory::mstore8, 3);
+      table[SLOAD as usize] = Instruction::new(host::sload, 0); // dynamic
+      table[SSTORE as usize] = Instruction::new(host::sstore, 0); // dynamic
+      table[JUMP as usize] = Instruction::new(control::jump, 8);
+      table[JUMPI as usize] = Instruction::new(control::jumpi, 10);
+      table[PC as usize] = Instruction::new(control::pc, 2);
+      table[MSIZE as usize] = Instruction::new(memory::msize, 2);
+      table[GAS as usize] = Instruction::new(system::gas, 2);
+      table[JUMPDEST as usize] = Instruction::new(control::jumpdest, 1);
+      table[TLOAD as usize] = Instruction::new(host::tload, 100);
+      table[TSTORE as usize] = Instruction::new(host::tstore, 100);
+      table[MCOPY as usize] = Instruction::new(memory::mcopy, 0); // static 2, mostly dynamic
+  
+      table[PUSH0 as usize] = Instruction::new(stack::push0, 2);
+      table[PUSH1 as usize] = Instruction::new(stack::push::<1, _, _>, 3);
+      table[PUSH2 as usize] = Instruction::new(stack::push::<2, _, _>, 3);
+      table[PUSH3 as usize] = Instruction::new(stack::push::<3, _, _>, 3);
+      table[PUSH4 as usize] = Instruction::new(stack::push::<4, _, _>, 3);
+      table[PUSH5 as usize] = Instruction::new(stack::push::<5, _, _>, 3);
+      table[PUSH6 as usize] = Instruction::new(stack::push::<6, _, _>, 3);
+      table[PUSH7 as usize] = Instruction::new(stack::push::<7, _, _>, 3);
+      table[PUSH8 as usize] = Instruction::new(stack::push::<8, _, _>, 3);
+      table[PUSH9 as usize] = Instruction::new(stack::push::<9, _, _>, 3);
+      table[PUSH10 as usize] = Instruction::new(stack::push::<10, _, _>, 3);
+      table[PUSH11 as usize] = Instruction::new(stack::push::<11, _, _>, 3);
+      table[PUSH12 as usize] = Instruction::new(stack::push::<12, _, _>, 3);
+      table[PUSH13 as usize] = Instruction::new(stack::push::<13, _, _>, 3);
+      table[PUSH14 as usize] = Instruction::new(stack::push::<14, _, _>, 3);
+      table[PUSH15 as usize] = Instruction::new(stack::push::<15, _, _>, 3);
+      table[PUSH16 as usize] = Instruction::new(stack::push::<16, _, _>, 3);
+      table[PUSH17 as usize] = Instruction::new(stack::push::<17, _, _>, 3);
+      table[PUSH18 as usize] = Instruction::new(stack::push::<18, _, _>, 3);
+      table[PUSH19 as usize] = Instruction::new(stack::push::<19, _, _>, 3);
+      table[PUSH20 as usize] = Instruction::new(stack::push::<20, _, _>, 3);
+      table[PUSH21 as usize] = Instruction::new(stack::push::<21, _, _>, 3);
+      table[PUSH22 as usize] = Instruction::new(stack::push::<22, _, _>, 3);
+      table[PUSH23 as usize] = Instruction::new(stack::push::<23, _, _>, 3);
+      table[PUSH24 as usize] = Instruction::new(stack::push::<24, _, _>, 3);
+      table[PUSH25 as usize] = Instruction::new(stack::push::<25, _, _>, 3);
+      table[PUSH26 as usize] = Instruction::new(stack::push::<26, _, _>, 3);
+      table[PUSH27 as usize] = Instruction::new(stack::push::<27, _, _>, 3);
+      table[PUSH28 as usize] = Instruction::new(stack::push::<28, _, _>, 3);
+      table[PUSH29 as usize] = Instruction::new(stack::push::<29, _, _>, 3);
+      table[PUSH30 as usize] = Instruction::new(stack::push::<30, _, _>, 3);
+      table[PUSH31 as usize] = Instruction::new(stack::push::<31, _, _>, 3);
+      table[PUSH32 as usize] = Instruction::new(stack::push::<32, _, _>, 3);
+  
+      table[DUP1 as usize] = Instruction::new(stack::dup::<1, _, _>, 3);
+      table[DUP2 as usize] = Instruction::new(stack::dup::<2, _, _>, 3);
+      table[DUP3 as usize] = Instruction::new(stack::dup::<3, _, _>, 3);
+      table[DUP4 as usize] = Instruction::new(stack::dup::<4, _, _>, 3);
+      table[DUP5 as usize] = Instruction::new(stack::dup::<5, _, _>, 3);
+      table[DUP6 as usize] = Instruction::new(stack::dup::<6, _, _>, 3);
+      table[DUP7 as usize] = Instruction::new(stack::dup::<7, _, _>, 3);
+      table[DUP8 as usize] = Instruction::new(stack::dup::<8, _, _>, 3);
+      table[DUP9 as usize] = Instruction::new(stack::dup::<9, _, _>, 3);
+      table[DUP10 as usize] = Instruction::new(stack::dup::<10, _, _>, 3);
+      table[DUP11 as usize] = Instruction::new(stack::dup::<11, _, _>, 3);
+      table[DUP12 as usize] = Instruction::new(stack::dup::<12, _, _>, 3);
+      table[DUP13 as usize] = Instruction::new(stack::dup::<13, _, _>, 3);
+      table[DUP14 as usize] = Instruction::new(stack::dup::<14, _, _>, 3);
+      table[DUP15 as usize] = Instruction::new(stack::dup::<15, _, _>, 3);
+      table[DUP16 as usize] = Instruction::new(stack::dup::<16, _, _>, 3);
+  
+      table[SWAP1 as usize] = Instruction::new(stack::swap::<1, _, _>, 3);
+      table[SWAP2 as usize] = Instruction::new(stack::swap::<2, _, _>, 3);
+      table[SWAP3 as usize] = Instruction::new(stack::swap::<3, _, _>, 3);
+      table[SWAP4 as usize] = Instruction::new(stack::swap::<4, _, _>, 3);
+      table[SWAP5 as usize] = Instruction::new(stack::swap::<5, _, _>, 3);
+      table[SWAP6 as usize] = Instruction::new(stack::swap::<6, _, _>, 3);
+      table[SWAP7 as usize] = Instruction::new(stack::swap::<7, _, _>, 3);
+      table[SWAP8 as usize] = Instruction::new(stack::swap::<8, _, _>, 3);
+      table[SWAP9 as usize] = Instruction::new(stack::swap::<9, _, _>, 3);
+      table[SWAP10 as usize] = Instruction::new(stack::swap::<10, _, _>, 3);
+      table[SWAP11 as usize] = Instruction::new(stack::swap::<11, _, _>, 3);
+      table[SWAP12 as usize] = Instruction::new(stack::swap::<12, _, _>, 3);
+      table[SWAP13 as usize] = Instruction::new(stack::swap::<13, _, _>, 3);
+      table[SWAP14 as usize] = Instruction::new(stack::swap::<14, _, _>, 3);
+      table[SWAP15 as usize] = Instruction::new(stack::swap::<15, _, _>, 3);
+      table[SWAP16 as usize] = Instruction::new(stack::swap::<16, _, _>, 3);
+  
+      table[LOG0 as usize] = Instruction::new(host::log::<0, _>, 0); // dynamic
+      table[LOG1 as usize] = Instruction::new(host::log::<1, _>, 0); // dynamic
+      table[LOG2 as usize] = Instruction::new(host::log::<2, _>, 0); // dynamic
+      table[LOG3 as usize] = Instruction::new(host::log::<3, _>, 0); // dynamic
+      table[LOG4 as usize] = Instruction::new(host::log::<4, _>, 0); // dynamic
+  
+      table[CREATE as usize] = Instruction::new(contract::create::<_, false, _>, 0); // dynamic
+      table[CALL as usize] = Instruction::new(contract::call, 0); // dynamic
+      table[CALLCODE as usize] = Instruction::new(contract::call_code, 0); // dynamic
+      table[RETURN as usize] = Instruction::new(control::ret, 0);
+      table[DELEGATECALL as usize] = Instruction::new(contract::delegate_call, 0); // dynamic
+      table[CREATE2 as usize] = Instruction::new(contract::create::<_, true, _>, 0); // dynamic
+  
+      table[STATICCALL as usize] = Instruction::new(contract::static_call, 0); // dynamic
+      table[REVERT as usize] = Instruction::new(control::revert, 0);
+      table[INVALID as usize] = Instruction::new(control::invalid, 0);
+      table[SELFDESTRUCT as usize] = Instruction::new(host::selfdestruct, 0); // dynamic
       table
   }
   *)
-  Definition instruction_table (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  Definition instruction_table_impl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ WIRE; H ], [] =>
       ltac:(M.monadic
@@ -95,94 +581,18 @@ Module instructions.
               Ty.apply
                 (Ty.path "array")
                 [ Value.Integer IntegerKind.Usize 256 ]
-                [
-                  Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                            []
-                            [ WIRE ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple [])
+                [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ]
                 ] :=
             lib.repeat (|
-              M.read (|
-                M.use
-                  (M.alloc (|
-                    Ty.function
-                      [
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "revm_interpreter::interpreter::Interpreter")
-                              []
-                              [ WIRE ]
-                          ];
-                        Ty.apply (Ty.path "&mut") [] [ H ]
-                      ]
-                      (Ty.tuple []),
-                    M.call_closure (|
-                      Ty.function
-                        [
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                []
-                                [ WIRE ]
-                            ];
-                          Ty.apply (Ty.path "&mut") [] [ H ]
-                        ]
-                        (Ty.tuple []),
-                      M.pointer_coercion
-                        M.PointerCoercion.ReifyFnPointer
-                        (Ty.function
-                          [
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                  []
-                                  [ WIRE ]
-                              ];
-                            Ty.apply (Ty.path "&mut") [] [ H ]
-                          ]
-                          (Ty.tuple []))
-                        (Ty.function
-                          [
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                  []
-                                  [ WIRE ]
-                              ];
-                            Ty.apply (Ty.path "&mut") [] [ H ]
-                          ]
-                          (Ty.tuple [])),
-                      [
-                        M.get_function (|
-                          "revm_interpreter::instructions::control::unknown",
-                          [],
-                          [ WIRE; H ]
-                        |)
-                      ]
-                    |)
-                  |))
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "unknown",
+                  [],
+                  []
+                |),
+                []
               |),
               Value.Integer IntegerKind.Usize 256
             |) in
@@ -195,52 +605,50 @@ Module instructions.
                   (M.read (| get_constant (| "revm_bytecode::opcode::STOP", Ty.path "u8" |) |))
               |),
               M.call_closure (|
-                Ty.function
-                  [
-                    Ty.apply
-                      (Ty.path "&mut")
-                      []
-                      [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ]
-                      ];
-                    Ty.apply (Ty.path "&mut") [] [ H ]
-                  ]
-                  (Ty.tuple []),
-                M.pointer_coercion
-                  M.PointerCoercion.ReifyFnPointer
-                  (Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                            []
-                            [ WIRE ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple []))
-                  (Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                            []
-                            [ WIRE ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple [])),
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
                 [
-                  M.get_function (|
-                    "revm_interpreter::instructions::control::stop",
-                    [],
-                    [ WIRE; H ]
-                  |)
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::control::stop",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
                 ]
               |)
             |) in
@@ -253,52 +661,1564 @@ Module instructions.
                   (M.read (| get_constant (| "revm_bytecode::opcode::ADD", Ty.path "u8" |) |))
               |),
               M.call_closure (|
-                Ty.function
-                  [
-                    Ty.apply
-                      (Ty.path "&mut")
-                      []
-                      [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ]
-                      ];
-                    Ty.apply (Ty.path "&mut") [] [ H ]
-                  ]
-                  (Ty.tuple []),
-                M.pointer_coercion
-                  M.PointerCoercion.ReifyFnPointer
-                  (Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                            []
-                            [ WIRE ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple []))
-                  (Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                            []
-                            [ WIRE ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple [])),
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
                 [
-                  M.get_function (|
-                    "revm_interpreter::instructions::arithmetic::add",
-                    [],
-                    [ WIRE; H ]
-                  |)
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::add",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::MUL", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::mul",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 5
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SUB", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::sub",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DIV", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::div",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 5
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SDIV", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::sdiv",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 5
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::MOD", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::rem",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 5
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SMOD", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::smod",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 5
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::ADDMOD", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::addmod",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 8
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::MULMOD", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::mulmod",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 8
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::EXP", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::exp",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::SIGNEXTEND", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::arithmetic::signextend",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 5
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::LT", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::lt",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::GT", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::gt",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SLT", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::slt",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SGT", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::sgt",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::EQ", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::eq",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::ISZERO", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::iszero",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::AND", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::bitand",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::OR", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::bitor",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::XOR", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::bitxor",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::NOT", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::not",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::BYTE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::byte",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SHL", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::shl",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SHR", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::shr",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SAR", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::sar",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CLZ", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::bitwise::clz",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 5
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::KECCAK256", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::keccak256",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::ADDRESS", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::address",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
                 ]
               |)
             |) in
@@ -311,52 +2231,6798 @@ Module instructions.
                   (M.read (| get_constant (| "revm_bytecode::opcode::BALANCE", Ty.path "u8" |) |))
               |),
               M.call_closure (|
-                Ty.function
-                  [
-                    Ty.apply
-                      (Ty.path "&mut")
-                      []
-                      [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ]
-                      ];
-                    Ty.apply (Ty.path "&mut") [] [ H ]
-                  ]
-                  (Ty.tuple []),
-                M.pointer_coercion
-                  M.PointerCoercion.ReifyFnPointer
-                  (Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                            []
-                            [ WIRE ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple []))
-                  (Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                            []
-                            [ WIRE ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple [])),
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
                 [
-                  M.get_function (|
-                    "revm_interpreter::instructions::host::balance",
-                    [],
-                    [ WIRE; H ]
-                  |)
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::balance",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::ORIGIN", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::tx_info::origin",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CALLER", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::caller",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CALLVALUE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::callvalue",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::CALLDATALOAD", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::calldataload",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::CALLDATASIZE", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::calldatasize",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::CALLDATACOPY", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::calldatacopy",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CODESIZE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::codesize",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CODECOPY", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::codecopy",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::GASPRICE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::tx_info::gasprice",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::EXTCODESIZE", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::extcodesize",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::EXTCODECOPY", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::extcodecopy",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::RETURNDATASIZE", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::returndatasize",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::RETURNDATACOPY", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::returndatacopy",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::EXTCODEHASH", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::extcodehash",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::BLOCKHASH", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::blockhash",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 20
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::COINBASE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::block_info::coinbase",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::TIMESTAMP", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::block_info::timestamp",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::NUMBER", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::block_info::block_number",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::DIFFICULTY", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::block_info::difficulty",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::GASLIMIT", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::block_info::gaslimit",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CHAINID", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::block_info::chainid",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::SELFBALANCE", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::selfbalance",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 5
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::BASEFEE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::block_info::basefee",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::BLOBHASH", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::tx_info::blob_hash",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::BLOBBASEFEE", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::block_info::blob_basefee",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::POP", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::pop",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::MLOAD", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::memory::mload",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::MSTORE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::memory::mstore",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::MSTORE8", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::memory::mstore8",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SLOAD", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::sload",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SSTORE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::sstore",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::JUMP", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::control::jump",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 8
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::JUMPI", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::control::jumpi",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 10
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PC", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::control::pc",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::MSIZE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::memory::msize",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::GAS", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::system::gas",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::JUMPDEST", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::control::jumpdest",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 1
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::TLOAD", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::tload",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 100
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::TSTORE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::tstore",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 100
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::MCOPY", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::memory::mcopy",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH0", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push0",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 2
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH1", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 1 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH2", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 2 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH3", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 3 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH4", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 4 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH5", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 5 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH6", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 6 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH7", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 7 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH8", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 8 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH9", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 9 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH10", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 10 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH11", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 11 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH12", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 12 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH13", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 13 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH14", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 14 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH15", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 15 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH16", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 16 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH17", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 17 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH18", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 18 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH19", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 19 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH20", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 20 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH21", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 21 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH22", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 22 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH23", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 23 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH24", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 24 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH25", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 25 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH26", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 26 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH27", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 27 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH28", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 28 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH29", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 29 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH30", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 30 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH31", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 31 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::PUSH32", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::push",
+                        [ Value.Integer IntegerKind.Usize 32 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP1", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 1 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP2", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 2 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP3", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 3 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP4", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 4 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP5", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 5 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP6", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 6 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP7", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 7 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP8", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 8 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP9", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 9 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP10", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 10 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP11", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 11 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP12", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 12 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP13", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 13 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP14", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 14 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP15", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 15 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::DUP16", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::dup",
+                        [ Value.Integer IntegerKind.Usize 16 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP1", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 1 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP2", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 2 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP3", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 3 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP4", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 4 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP5", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 5 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP6", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 6 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP7", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 7 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP8", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 8 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP9", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 9 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP10", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 10 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP11", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 11 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP12", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 12 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP13", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 13 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP14", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 14 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP15", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 15 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::SWAP16", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::stack::swap",
+                        [ Value.Integer IntegerKind.Usize 16 ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 3
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::LOG0", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::log",
+                        [ Value.Integer IntegerKind.Usize 0 ],
+                        [ H; WIRE ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::LOG1", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::log",
+                        [ Value.Integer IntegerKind.Usize 1 ],
+                        [ H; WIRE ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::LOG2", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::log",
+                        [ Value.Integer IntegerKind.Usize 2 ],
+                        [ H; WIRE ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::LOG3", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::log",
+                        [ Value.Integer IntegerKind.Usize 3 ],
+                        [ H; WIRE ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::LOG4", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::log",
+                        [ Value.Integer IntegerKind.Usize 4 ],
+                        [ H; WIRE ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CREATE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::contract::create",
+                        [ Value.Bool false ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CALL", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::contract::call",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CALLCODE", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::contract::call_code",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::RETURN", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::control::ret",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::DELEGATECALL", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::contract::delegate_call",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::CREATE2", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::contract::create",
+                        [ Value.Bool true ],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::STATICCALL", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::contract::static_call",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::REVERT", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::control::revert",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (| get_constant (| "revm_bytecode::opcode::INVALID", Ty.path "u8" |) |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::control::invalid",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
+                ]
+              |)
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.write (|
+              M.SubPointer.get_array_field (|
+                table,
+                M.cast
+                  (Ty.path "usize")
+                  (M.read (|
+                    get_constant (| "revm_bytecode::opcode::SELFDESTRUCT", Ty.path "u8" |)
+                  |))
+              |),
+              M.call_closure (|
+                Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ WIRE; H ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                          []
+                          [ H; WIRE ]
+                      ]
+                      (Ty.tuple []),
+                    M.pointer_coercion
+                      M.PointerCoercion.ReifyFnPointer
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple []))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                            []
+                            [ H; WIRE ]
+                        ]
+                        (Ty.tuple [])),
+                    [
+                      M.get_function (|
+                        "revm_interpreter::instructions::host::selfdestruct",
+                        [],
+                        [ WIRE; H ]
+                      |)
+                    ]
+                  |);
+                  Value.Integer IntegerKind.U64 0
                 ]
               |)
             |) in
@@ -365,8 +9031,8 @@ Module instructions.
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_instruction_table :
-    M.IsFunction.C "revm_interpreter::instructions::instruction_table" instruction_table.
+  Global Instance Instance_IsFunction_instruction_table_impl :
+    M.IsFunction.C "revm_interpreter::instructions::instruction_table_impl" instruction_table_impl.
   Admitted.
-  Global Typeclasses Opaque instruction_table.
+  Global Typeclasses Opaque instruction_table_impl.
 End instructions.

@@ -15,38 +15,6 @@ Require Import revm.revm_interpreter.instructions.utility.
 Require Import ruint.links.bytes.
 Require Import ruint.links.lib.
 
-(* pub fn cast_slice_to_u256(slice: &[u8], dest: &mut U256) *)
-Instance run_cast_slice_to_u256
-  (slice : '& (list u8))
-  (dest : '&mut aliases.U256.t) :
-  Run.Trait instructions.utility.cast_slice_to_u256 [] [] [ φ slice; φ dest ] unit.
-Proof.
-  constructor.
-  (* destruct (Impl_IntoIterator_for_Iterator_I.run (ChunksExact.t u8) u8).
-  destruct (Impl_Iterator_for_ChunksExact.run u8).
-  destruct (Impl_IntoIterator_for_Iterator_I.run (RChunksExact.t u8) u8).
-  destruct (Impl_Iterator_for_RChunksExact.run u8).
-  destruct (
-    let run_TryFrom :=
-      Impl_TryFrom_Ref_for_Array.run u8 {| Integer.value := 8 |} in
-    Impl_TryInto_for_TryFrom_T.run _ _ _ (run_TryFrom_for_U := run_TryFrom)
-  ). *)
-  (* Pointer cast and closures *)
-  run_symbolic.
-  (* 4: {
-    eapply Run.Rewrite. {
-      exact (array.repeat_φ_eq 8 (Integer.Build_t IntegerKind.U8 0)).
-    }
-    run_symbolic.
-  } *)
-Admitted.
-Global Opaque run_cast_slice_to_u256.
-
-(*
-pub trait IntoU256 {
-    fn into_u256(self) -> U256;
-}
-*)
 Module IntoU256.
   Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
     {|
