@@ -2,6 +2,495 @@
 Require Import RocqOfRust.RocqOfRust.
 
 Module interface.
+  Definition value_CRYPTO (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic
+      (M.alloc (|
+        Ty.apply
+          (Ty.path "std::sync::once_lock::OnceLock")
+          []
+          [
+            Ty.apply
+              (Ty.path "alloc::boxed::Box")
+              []
+              [
+                Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                Ty.path "alloc::alloc::Global"
+              ]
+          ],
+        M.alloc (|
+          Ty.apply
+            (Ty.path "std::sync::once_lock::OnceLock")
+            []
+            [
+              Ty.apply
+                (Ty.path "alloc::boxed::Box")
+                []
+                [
+                  Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                  Ty.path "alloc::alloc::Global"
+                ]
+            ],
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "std::sync::once_lock::OnceLock")
+              []
+              [
+                Ty.apply
+                  (Ty.path "alloc::boxed::Box")
+                  []
+                  [
+                    Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                    Ty.path "alloc::alloc::Global"
+                  ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "std::sync::once_lock::OnceLock")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "alloc::boxed::Box")
+                    []
+                    [
+                      Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                      Ty.path "alloc::alloc::Global"
+                    ]
+                ],
+              "new",
+              [],
+              []
+            |),
+            []
+          |)
+        |)
+      |))).
+  
+  Global Instance Instance_IsConstant_value_CRYPTO :
+    M.IsFunction.C "revm_precompile::interface::CRYPTO" value_CRYPTO.
+  Admitted.
+  Global Typeclasses Opaque value_CRYPTO.
+  
+  (*
+  pub fn install_crypto<C: Crypto + 'static>(crypto: C) -> bool {
+      CRYPTO.set(Box::new(crypto)).is_ok()
+  }
+  *)
+  Definition install_crypto (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ C ], [ crypto ] =>
+      ltac:(M.monadic
+        (let crypto := M.alloc (| C, crypto |) in
+        M.call_closure (|
+          Ty.path "bool",
+          M.get_associated_function (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.tuple [];
+                Ty.apply
+                  (Ty.path "alloc::boxed::Box")
+                  []
+                  [
+                    Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                    Ty.path "alloc::alloc::Global"
+                  ]
+              ],
+            "is_ok",
+            [],
+            []
+          |),
+          [
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.tuple [];
+                    Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                        Ty.path "alloc::alloc::Global"
+                      ]
+                  ],
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.tuple [];
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                          Ty.path "alloc::alloc::Global"
+                        ]
+                    ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "std::sync::once_lock::OnceLock")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ],
+                    "set",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.read (|
+                          get_constant (|
+                            "revm_precompile::interface::CRYPTO",
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "std::sync::once_lock::OnceLock")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.dyn
+                                          [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]
+                              ]
+                          |)
+                        |)
+                      |)
+                    |);
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [ C; Ty.path "alloc::alloc::Global" ])
+                        (Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                            Ty.path "alloc::alloc::Global"
+                          ]),
+                      [
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [ C; Ty.path "alloc::alloc::Global" ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [ C; Ty.path "alloc::alloc::Global" ],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [ M.read (| crypto |) ]
+                        |)
+                      ]
+                    |)
+                  ]
+                |)
+              |)
+            |)
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_install_crypto :
+    M.IsFunction.C "revm_precompile::interface::install_crypto" install_crypto.
+  Admitted.
+  Global Typeclasses Opaque install_crypto.
+  
+  (*
+  pub fn crypto() -> &'static dyn Crypto {
+      CRYPTO.get_or_init(|| Box::new(DefaultCrypto)).as_ref()
+  }
+  *)
+  Definition crypto (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [] =>
+      ltac:(M.monadic
+        (M.call_closure (|
+          Ty.apply
+            (Ty.path "&")
+            []
+            [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ],
+          M.pointer_coercion
+            M.PointerCoercion.Unsize
+            (Ty.apply
+              (Ty.path "&")
+              []
+              [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ])
+            (Ty.apply
+              (Ty.path "&")
+              []
+              [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ]),
+          [
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ])
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ],
+                          M.get_trait_method (|
+                            "core::convert::AsRef",
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ],
+                            "as_ref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::boxed::Box")
+                                        []
+                                        [
+                                          Ty.dyn
+                                            [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                                          Ty.path "alloc::alloc::Global"
+                                        ]
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "std::sync::once_lock::OnceLock")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.dyn
+                                              [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ],
+                                    "get_or_init",
+                                    [],
+                                    [
+                                      Ty.function
+                                        []
+                                        (Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.dyn
+                                              [ ("revm_precompile::interface::Crypto::Trait", []) ];
+                                            Ty.path "alloc::alloc::Global"
+                                          ])
+                                    ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (|
+                                          get_constant (|
+                                            "revm_precompile::interface::CRYPTO",
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "std::sync::once_lock::OnceLock")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::boxed::Box")
+                                                      []
+                                                      [
+                                                        Ty.dyn
+                                                          [
+                                                            ("revm_precompile::interface::Crypto::Trait",
+                                                              [])
+                                                          ];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ]
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |);
+                                    M.closure
+                                      (fun γ =>
+                                        ltac:(M.monadic
+                                          match γ with
+                                          | [ α0 ] =>
+                                            ltac:(M.monadic
+                                              (M.match_operator (|
+                                                Ty.apply
+                                                  (Ty.path "alloc::boxed::Box")
+                                                  []
+                                                  [
+                                                    Ty.dyn
+                                                      [
+                                                        ("revm_precompile::interface::Crypto::Trait",
+                                                          [])
+                                                      ];
+                                                    Ty.path "alloc::alloc::Global"
+                                                  ],
+                                                M.alloc (| Ty.tuple [], α0 |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "alloc::boxed::Box")
+                                                          []
+                                                          [
+                                                            Ty.dyn
+                                                              [
+                                                                ("revm_precompile::interface::Crypto::Trait",
+                                                                  [])
+                                                              ];
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ],
+                                                        M.pointer_coercion
+                                                          M.PointerCoercion.Unsize
+                                                          (Ty.apply
+                                                            (Ty.path "alloc::boxed::Box")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "revm_precompile::interface::DefaultCrypto";
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ])
+                                                          (Ty.apply
+                                                            (Ty.path "alloc::boxed::Box")
+                                                            []
+                                                            [
+                                                              Ty.dyn
+                                                                [
+                                                                  ("revm_precompile::interface::Crypto::Trait",
+                                                                    [])
+                                                                ];
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ]),
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "alloc::boxed::Box")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "revm_precompile::interface::DefaultCrypto";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.apply
+                                                                (Ty.path "alloc::boxed::Box")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "revm_precompile::interface::DefaultCrypto";
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ],
+                                                              "new",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              Value.StructTuple
+                                                                "revm_precompile::interface::DefaultCrypto"
+                                                                []
+                                                                []
+                                                                []
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |)))
+                                                ]
+                                              |)))
+                                          | _ => M.impossible "wrong number of arguments"
+                                          end))
+                                  ]
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              |)
+            |)
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_crypto :
+    M.IsFunction.C "revm_precompile::interface::crypto" crypto.
+  Admitted.
+  Global Typeclasses Opaque crypto.
+  
   Axiom PrecompileResult :
     (Ty.path "revm_precompile::interface::PrecompileResult") =
       (Ty.apply
@@ -9,7 +498,7 @@ Module interface.
         []
         [
           Ty.path "revm_precompile::interface::PrecompileOutput";
-          Ty.path "revm_precompile::interface::PrecompileErrors"
+          Ty.path "revm_precompile::interface::PrecompileError"
         ]).
   
   (* StructRecord
@@ -18,7 +507,12 @@ Module interface.
       const_params := [];
       ty_params := [];
       fields :=
-        [ ("gas_used", Ty.path "u64"); ("bytes", Ty.path "alloy_primitives::bytes_::Bytes") ];
+        [
+          ("gas_used", Ty.path "u64");
+          ("gas_refunded", Ty.path "i64");
+          ("bytes", Ty.path "alloy_primitives::bytes_::Bytes");
+          ("reverted", Ty.path "bool")
+        ];
     } *)
   
   Module Impl_core_clone_Clone_for_revm_precompile_interface_PrecompileOutput.
@@ -67,6 +561,34 @@ Module interface.
                     |)
                   ]
                 |));
+              ("gas_refunded",
+                M.call_closure (|
+                  Ty.path "i64",
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "i64",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_precompile::interface::PrecompileOutput",
+                            "gas_refunded"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |));
               ("bytes",
                 M.call_closure (|
                   Ty.path "alloy_primitives::bytes_::Bytes",
@@ -89,6 +611,34 @@ Module interface.
                             M.deref (| M.read (| self |) |),
                             "revm_precompile::interface::PrecompileOutput",
                             "bytes"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |));
+              ("reverted",
+                M.call_closure (|
+                  Ty.path "bool",
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_precompile::interface::PrecompileOutput",
+                            "reverted"
                           |)
                         |)
                       |)
@@ -130,7 +680,7 @@ Module interface.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (|
               Ty.path "core::fmt::Formatter",
-              "debug_struct_field2_finish",
+              "debug_struct_field4_finish",
               [],
               []
             |),
@@ -160,15 +710,58 @@ Module interface.
                   |)
                 ]
               |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_refunded" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_precompile::interface::PrecompileOutput",
+                          "gas_refunded"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |);
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "bytes" |) |) |);
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_precompile::interface::PrecompileOutput",
+                          "bytes"
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "reverted" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                 [
                   M.borrow (|
@@ -177,13 +770,13 @@ Module interface.
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                          Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
                           M.borrow (|
                             Pointer.Kind.Ref,
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "revm_precompile::interface::PrecompileOutput",
-                              "bytes"
+                              "reverted"
                             |)
                           |)
                         |)
@@ -237,25 +830,71 @@ Module interface.
               other
             |) in
           LogicalOp.and (|
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.eq,
-              [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_precompile::interface::PrecompileOutput",
-                    "gas_used"
-                  |)
-                |);
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "revm_precompile::interface::PrecompileOutput",
-                    "gas_used"
-                  |)
-                |)
-              ]
+            LogicalOp.and (|
+              LogicalOp.and (|
+                M.call_closure (|
+                  Ty.path "bool",
+                  BinOp.eq,
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_precompile::interface::PrecompileOutput",
+                        "gas_used"
+                      |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_precompile::interface::PrecompileOutput",
+                        "gas_used"
+                      |)
+                    |)
+                  ]
+                |),
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "bool",
+                    BinOp.eq,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_precompile::interface::PrecompileOutput",
+                          "gas_refunded"
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_precompile::interface::PrecompileOutput",
+                          "gas_refunded"
+                        |)
+                      |)
+                    ]
+                  |)))
+              |),
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  BinOp.eq,
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_precompile::interface::PrecompileOutput",
+                        "reverted"
+                      |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_precompile::interface::PrecompileOutput",
+                        "reverted"
+                      |)
+                    |)
+                  ]
+                |)))
             |),
             ltac:(M.monadic
               (M.call_closure (|
@@ -327,7 +966,23 @@ Module interface.
                   (M.match_operator (|
                     Ty.tuple [],
                     Value.DeclaredButUndefined,
-                    [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.tuple [],
+                            Value.DeclaredButUndefined,
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.tuple [],
+                                    Value.DeclaredButUndefined,
+                                    [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                                  |)))
+                            ]
+                          |)))
+                    ]
                   |)))
             ]
           |)))
@@ -388,8 +1043,36 @@ Module interface.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
                 ]
               |) in
-            M.alloc (|
-              Ty.tuple [],
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (|
+                  "core::hash::Hash",
+                  Ty.path "i64",
+                  [],
+                  [],
+                  "hash",
+                  [],
+                  [ __H ]
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_precompile::interface::PrecompileOutput",
+                          "gas_refunded"
+                        |)
+                      |)
+                    |)
+                  |);
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                ]
+              |) in
+            let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
                 M.get_trait_method (|
@@ -417,6 +1100,36 @@ Module interface.
                   |);
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
                 ]
+              |) in
+            M.alloc (|
+              Ty.tuple [],
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (|
+                  "core::hash::Hash",
+                  Ty.path "bool",
+                  [],
+                  [],
+                  "hash",
+                  [],
+                  [ __H ]
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_precompile::interface::PrecompileOutput",
+                          "reverted"
+                        |)
+                      |)
+                    |)
+                  |);
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                ]
               |)
             |)
           |)))
@@ -437,7 +1150,12 @@ Module interface.
     
     (*
         pub fn new(gas_used: u64, bytes: Bytes) -> Self {
-            Self { gas_used, bytes }
+            Self {
+                gas_used,
+                gas_refunded: 0,
+                bytes,
+                reverted: false,
+            }
         }
     *)
     Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -450,858 +1168,1501 @@ Module interface.
             "revm_precompile::interface::PrecompileOutput"
             []
             []
-            [ ("gas_used", M.read (| gas_used |)); ("bytes", M.read (| bytes |)) ]))
+            [
+              ("gas_used", M.read (| gas_used |));
+              ("gas_refunded", Value.Integer IntegerKind.I64 0);
+              ("bytes", M.read (| bytes |));
+              ("reverted", Value.Bool false)
+            ]))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
     Admitted.
     Global Typeclasses Opaque new.
-  End Impl_revm_precompile_interface_PrecompileOutput.
-  
-  Axiom PrecompileFn :
-    (Ty.path "revm_precompile::interface::PrecompileFn") =
-      (Ty.function
-        [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]; Ty.path "u64" ]
-        (Ty.apply
-          (Ty.path "core::result::Result")
-          []
-          [
-            Ty.path "revm_precompile::interface::PrecompileOutput";
-            Ty.path "revm_precompile::interface::PrecompileErrors"
-          ])).
-  
-  (*
-  Enum PrecompileErrors
-  {
-    const_params := [];
-    ty_params := [];
-    variants :=
-      [
-        {
-          name := "Error";
-          item := StructTuple [ Ty.path "revm_precompile::interface::PrecompileError" ];
-        };
-        {
-          name := "Fatal";
-          item := StructRecord [ ("msg", Ty.path "alloc::string::String") ];
-        }
-      ];
-  }
-  *)
-  
-  Axiom IsDiscriminant_PrecompileErrors_Error :
-    M.IsDiscriminant "revm_precompile::interface::PrecompileErrors::Error" 0.
-  Axiom IsDiscriminant_PrecompileErrors_Fatal :
-    M.IsDiscriminant "revm_precompile::interface::PrecompileErrors::Fatal" 1.
-  
-  Module Impl_core_clone_Clone_for_revm_precompile_interface_PrecompileErrors.
-    Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileErrors".
     
-    (* Clone *)
-    Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    (*
+        pub fn new_reverted(gas_used: u64, bytes: Bytes) -> Self {
+            Self {
+                gas_used,
+                gas_refunded: 0,
+                bytes,
+                reverted: true,
+            }
+        }
+    *)
+    Definition new_reverted (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ gas_used; bytes ] =>
+        ltac:(M.monadic
+          (let gas_used := M.alloc (| Ty.path "u64", gas_used |) in
+          let bytes := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", bytes |) in
+          Value.mkStructRecord
+            "revm_precompile::interface::PrecompileOutput"
+            []
+            []
+            [
+              ("gas_used", M.read (| gas_used |));
+              ("gas_refunded", Value.Integer IntegerKind.I64 0);
+              ("bytes", M.read (| bytes |));
+              ("reverted", Value.Bool true)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new_reverted :
+      M.IsAssociatedFunction.C Self "new_reverted" new_reverted.
+    Admitted.
+    Global Typeclasses Opaque new_reverted.
+    
+    (*
+        pub fn reverted(mut self) -> Self {
+            self.reverted = true;
+            self
+        }
+    *)
+    Definition reverted (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-              self
-            |) in
-          M.match_operator (|
-            Ty.path "revm_precompile::interface::PrecompileErrors",
-            self,
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "revm_precompile::interface::PrecompileErrors::Error",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "revm_precompile::interface::PrecompileError" ],
-                      γ1_0
-                    |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileErrors::Error"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "revm_precompile::interface::PrecompileError",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
-                          Ty.path "revm_precompile::interface::PrecompileError",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_record_field (|
-                      γ,
-                      "revm_precompile::interface::PrecompileErrors::Fatal",
-                      "msg"
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
-                    |) in
-                  Value.mkStructRecord
-                    "revm_precompile::interface::PrecompileErrors::Fatal"
-                    []
-                    []
-                    [
-                      ("msg",
-                        M.call_closure (|
-                          Ty.path "alloc::string::String",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
-                            Ty.path "alloc::string::String",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |))
-                    ]))
-            ]
+          (let self := M.alloc (| Ty.path "revm_precompile::interface::PrecompileOutput", self |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.write (|
+                M.SubPointer.get_struct_record_field (|
+                  self,
+                  "revm_precompile::interface::PrecompileOutput",
+                  "reverted"
+                |),
+                Value.Bool true
+              |) in
+            self
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::clone::Clone"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("clone", InstanceField.Method clone) ].
-  End Impl_core_clone_Clone_for_revm_precompile_interface_PrecompileErrors.
+    Global Instance AssociatedFunction_reverted : M.IsAssociatedFunction.C Self "reverted" reverted.
+    Admitted.
+    Global Typeclasses Opaque reverted.
+  End Impl_revm_precompile_interface_PrecompileOutput.
   
-  Module Impl_core_fmt_Debug_for_revm_precompile_interface_PrecompileErrors.
-    Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileErrors".
-    
-    (* Debug *)
-    Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  (* Trait *)
+  Module Crypto.
+    Definition sha256 (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ self; f ] =>
+      | [], [], [ self; input ] =>
         ltac:(M.monadic
-          (let self :=
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let input :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-              self
-            |) in
-          let f :=
-            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-          M.match_operator (|
-            Ty.apply
-              (Ty.path "core::result::Result")
-              []
-              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            self,
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "revm_precompile::interface::PrecompileErrors::Error",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "revm_precompile::interface::PrecompileError" ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_tuple_field1_finish",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Error" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_precompile::interface::PrecompileError" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_record_field (|
-                      γ,
-                      "revm_precompile::interface::PrecompileErrors::Fatal",
-                      "msg"
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_struct_field1_finish",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Fatal" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "msg" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)))
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::fmt::Debug"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-  End Impl_core_fmt_Debug_for_revm_precompile_interface_PrecompileErrors.
-  
-  Module Impl_core_marker_StructuralPartialEq_for_revm_precompile_interface_PrecompileErrors.
-    Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileErrors".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::StructuralPartialEq"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_StructuralPartialEq_for_revm_precompile_interface_PrecompileErrors.
-  
-  Module Impl_core_cmp_PartialEq_revm_precompile_interface_PrecompileErrors_for_revm_precompile_interface_PrecompileErrors.
-    Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileErrors".
-    
-    (* PartialEq *)
-    Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self; other ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-              self
-            |) in
-          let other :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-              other
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+              input
             |) in
           M.read (|
-            let~ __self_discr : Ty.path "isize" :=
-              M.call_closure (|
-                Ty.path "isize",
-                M.get_function (|
-                  "core::intrinsics::discriminant_value",
-                  [],
-                  [ Ty.path "revm_precompile::interface::PrecompileErrors" ]
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |) in
-            let~ __arg1_discr : Ty.path "isize" :=
-              M.call_closure (|
-                Ty.path "isize",
-                M.get_function (|
-                  "core::intrinsics::discriminant_value",
-                  [],
-                  [ Ty.path "revm_precompile::interface::PrecompileErrors" ]
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-              |) in
-            M.alloc (|
-              Ty.path "bool",
-              LogicalOp.and (|
-                M.call_closure (|
-                  Ty.path "bool",
-                  BinOp.eq,
-                  [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
-                |),
-                ltac:(M.monadic
-                  (M.match_operator (|
-                    Ty.path "bool",
-                    M.alloc (|
-                      Ty.tuple
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.path "revm_precompile::interface::PrecompileErrors" ];
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.path "revm_precompile::interface::PrecompileErrors" ]
-                        ],
-                      Value.Tuple [ M.read (| self |); M.read (| other |) ]
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
-                          let γ2_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ0_0,
-                              "revm_precompile::interface::PrecompileErrors::Error",
-                              0
-                            |) in
-                          let __self_0 :=
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_precompile::interface::PrecompileError" ],
-                              γ2_0
-                            |) in
-                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
-                          let γ2_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ0_1,
-                              "revm_precompile::interface::PrecompileErrors::Error",
-                              0
-                            |) in
-                          let __arg1_0 :=
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_precompile::interface::PrecompileError" ],
-                              γ2_0
-                            |) in
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialEq",
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_precompile::interface::PrecompileError" ],
-                              [],
+            let~ output :
+                Ty.apply
+                  (Ty.path "generic_array::GenericArray")
+                  []
+                  [
+                    Ty.path "u8";
+                    Ty.apply
+                      (Ty.path "typenum::uint::UInt")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "typenum::uint::UInt")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "typenum::uint::UInt")
+                              []
                               [
                                 Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "typenum::uint::UInt")
                                   []
-                                  [ Ty.path "revm_precompile::interface::PrecompileError" ]
-                              ],
-                              "eq",
-                              [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "typenum::uint::UInt")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "typenum::uint::UInt")
+                                          []
+                                          [
+                                            Ty.path "typenum::uint::UTerm";
+                                            Ty.path "typenum::bit::B1"
+                                          ];
+                                        Ty.path "typenum::bit::B0"
+                                      ];
+                                    Ty.path "typenum::bit::B0"
+                                  ];
+                                Ty.path "typenum::bit::B0"
+                              ];
+                            Ty.path "typenum::bit::B0"
+                          ];
+                        Ty.path "typenum::bit::B0"
+                      ]
+                  ] :=
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "generic_array::GenericArray")
+                  []
+                  [
+                    Ty.path "u8";
+                    Ty.apply
+                      (Ty.path "typenum::uint::UInt")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "typenum::uint::UInt")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "typenum::uint::UInt")
                               []
-                            |),
+                              [
+                                Ty.apply
+                                  (Ty.path "typenum::uint::UInt")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "typenum::uint::UInt")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "typenum::uint::UInt")
+                                          []
+                                          [
+                                            Ty.path "typenum::uint::UTerm";
+                                            Ty.path "typenum::bit::B1"
+                                          ];
+                                        Ty.path "typenum::bit::B0"
+                                      ];
+                                    Ty.path "typenum::bit::B0"
+                                  ];
+                                Ty.path "typenum::bit::B0"
+                              ];
+                            Ty.path "typenum::bit::B0"
+                          ];
+                        Ty.path "typenum::bit::B0"
+                      ]
+                  ],
+                M.get_trait_method (|
+                  "digest::digest::Digest",
+                  Ty.apply
+                    (Ty.path "digest::core_api::wrapper::CoreWrapper")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "digest::core_api::ct_variable::CtVariableCoreWrapper")
+                        []
+                        [
+                          Ty.path "sha2::core_api::Sha256VarCore";
+                          Ty.apply
+                            (Ty.path "typenum::uint::UInt")
+                            []
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
-                            ]
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
-                          let γ2_0 :=
-                            M.SubPointer.get_struct_record_field (|
-                              γ0_0,
-                              "revm_precompile::interface::PrecompileErrors::Fatal",
-                              "msg"
-                            |) in
-                          let __self_0 :=
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
-                            |) in
-                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
-                          let γ2_0 :=
-                            M.SubPointer.get_struct_record_field (|
-                              γ0_1,
-                              "revm_precompile::interface::PrecompileErrors::Fatal",
-                              "msg"
-                            |) in
-                          let __arg1_0 :=
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
-                            |) in
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialEq",
-                              Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              [],
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ],
-                              "eq",
-                              [],
-                              []
-                            |),
+                              Ty.apply
+                                (Ty.path "typenum::uint::UInt")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "typenum::uint::UInt")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "typenum::uint::UInt")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "typenum::uint::UInt")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "typenum::uint::UInt")
+                                                []
+                                                [
+                                                  Ty.path "typenum::uint::UTerm";
+                                                  Ty.path "typenum::bit::B1"
+                                                ];
+                                              Ty.path "typenum::bit::B0"
+                                            ];
+                                          Ty.path "typenum::bit::B0"
+                                        ];
+                                      Ty.path "typenum::bit::B0"
+                                    ];
+                                  Ty.path "typenum::bit::B0"
+                                ];
+                              Ty.path "typenum::bit::B0"
+                            ];
+                          Ty.path "sha2::OidSha256"
+                        ]
+                    ],
+                  [],
+                  [],
+                  "digest",
+                  [],
+                  [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ] ]
+                |),
+                [ M.read (| input |) ]
+              |) in
+            M.alloc (|
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
+              M.call_closure (|
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
+                M.get_trait_method (|
+                  "core::convert::Into",
+                  Ty.apply
+                    (Ty.path "generic_array::GenericArray")
+                    []
+                    [
+                      Ty.path "u8";
+                      Ty.apply
+                        (Ty.path "typenum::uint::UInt")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "typenum::uint::UInt")
+                            []
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
-                            ]
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.never_to_any (|
-                            M.call_closure (|
-                              Ty.path "never",
-                              M.get_function (| "core::intrinsics::unreachable", [], [] |),
-                              []
-                            |)
-                          |)))
-                    ]
-                  |)))
+                              Ty.apply
+                                (Ty.path "typenum::uint::UInt")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "typenum::uint::UInt")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "typenum::uint::UInt")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "typenum::uint::UInt")
+                                            []
+                                            [
+                                              Ty.path "typenum::uint::UTerm";
+                                              Ty.path "typenum::bit::B1"
+                                            ];
+                                          Ty.path "typenum::bit::B0"
+                                        ];
+                                      Ty.path "typenum::bit::B0"
+                                    ];
+                                  Ty.path "typenum::bit::B0"
+                                ];
+                              Ty.path "typenum::bit::B0"
+                            ];
+                          Ty.path "typenum::bit::B0"
+                        ]
+                    ],
+                  [],
+                  [
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [ Ty.path "u8" ]
+                  ],
+                  "into",
+                  [],
+                  []
+                |),
+                [ M.read (| output |) ]
               |)
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::cmp::PartialEq"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) [ Ty.path "revm_precompile::interface::PrecompileErrors" ]
-        Self
-        (* Instance *) [ ("eq", InstanceField.Method eq) ].
-  End Impl_core_cmp_PartialEq_revm_precompile_interface_PrecompileErrors_for_revm_precompile_interface_PrecompileErrors.
-  
-  Module Impl_core_cmp_Eq_for_revm_precompile_interface_PrecompileErrors.
-    Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileErrors".
-    
-    (* Eq *)
-    Definition assert_receiver_is_total_eq
-        (ε : list Value.t)
-        (τ : list Ty.t)
-        (α : list Value.t)
-        : M :=
+    Axiom ProvidedMethod_sha256 :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "sha256" sha256.
+    Definition ripemd160 (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ self ] =>
+      | [], [], [ self; input ] =>
         ltac:(M.monadic
-          (let self :=
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let input :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-              self
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+              input
             |) in
-          M.match_operator (|
-            Ty.tuple [],
-            Value.DeclaredButUndefined,
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (M.match_operator (|
-                    Ty.tuple [],
-                    Value.DeclaredButUndefined,
-                    [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
-                  |)))
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::cmp::Eq"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *)
-        [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
-  End Impl_core_cmp_Eq_for_revm_precompile_interface_PrecompileErrors.
-  
-  Module Impl_core_hash_Hash_for_revm_precompile_interface_PrecompileErrors.
-    Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileErrors".
-    
-    (* Hash *)
-    Definition hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ __H ], [ self; state ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-              self
-            |) in
-          let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
           M.read (|
-            let~ __self_discr : Ty.path "isize" :=
+            let~ hasher :
+                Ty.apply
+                  (Ty.path "digest::core_api::wrapper::CoreWrapper")
+                  []
+                  [ Ty.path "ripemd::Ripemd160Core" ] :=
               M.call_closure (|
-                Ty.path "isize",
-                M.get_function (|
-                  "core::intrinsics::discriminant_value",
+                Ty.apply
+                  (Ty.path "digest::core_api::wrapper::CoreWrapper")
+                  []
+                  [ Ty.path "ripemd::Ripemd160Core" ],
+                M.get_trait_method (|
+                  "digest::digest::Digest",
+                  Ty.apply
+                    (Ty.path "digest::core_api::wrapper::CoreWrapper")
+                    []
+                    [ Ty.path "ripemd::Ripemd160Core" ],
                   [],
-                  [ Ty.path "revm_precompile::interface::PrecompileErrors" ]
+                  [],
+                  "new",
+                  [],
+                  []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                []
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
                 M.get_trait_method (|
-                  "core::hash::Hash",
-                  Ty.path "isize",
+                  "digest::digest::Digest",
+                  Ty.apply
+                    (Ty.path "digest::core_api::wrapper::CoreWrapper")
+                    []
+                    [ Ty.path "ripemd::Ripemd160Core" ],
                   [],
                   [],
-                  "hash",
+                  "update",
                   [],
-                  [ __H ]
+                  [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ] ]
                 |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                ]
+                [ M.borrow (| Pointer.Kind.MutRef, hasher |); M.read (| input |) ]
               |) in
-            M.alloc (|
-              Ty.tuple [],
-              M.match_operator (|
-                Ty.tuple [],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let γ1_0 :=
-                        M.SubPointer.get_struct_tuple_field (|
-                          γ,
-                          "revm_precompile::interface::PrecompileErrors::Error",
-                          0
-                        |) in
-                      let __self_0 :=
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.path "revm_precompile::interface::PrecompileError" ],
-                          γ1_0
-                        |) in
-                      M.call_closure (|
-                        Ty.tuple [],
-                        M.get_trait_method (|
-                          "core::hash::Hash",
-                          Ty.path "revm_precompile::interface::PrecompileError",
-                          [],
-                          [],
-                          "hash",
-                          [],
-                          [ __H ]
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                        ]
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let γ1_0 :=
-                        M.SubPointer.get_struct_record_field (|
-                          γ,
-                          "revm_precompile::interface::PrecompileErrors::Fatal",
-                          "msg"
-                        |) in
-                      let __self_0 :=
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                          γ1_0
-                        |) in
-                      M.call_closure (|
-                        Ty.tuple [],
-                        M.get_trait_method (|
-                          "core::hash::Hash",
-                          Ty.path "alloc::string::String",
-                          [],
-                          [],
-                          "hash",
-                          [],
-                          [ __H ]
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                        ]
-                      |)))
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::hash::Hash"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("hash", InstanceField.Method hash) ].
-  End Impl_core_hash_Hash_for_revm_precompile_interface_PrecompileErrors.
-  
-  Module Impl_core_convert_From_revm_precompile_interface_PrecompileErrors_for_revm_context_interface_result_EVMError_DB_TXERROR.
-    Definition Self (DB TXERROR : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_context_interface::result::EVMError") [] [ DB; TXERROR ].
-    
-    (*
-        fn from(value: PrecompileErrors) -> Self {
-            Self::Precompile(value.to_string())
-        }
-    *)
-    Definition from (DB TXERROR : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self DB TXERROR in
-      match ε, τ, α with
-      | [], [], [ value ] =>
-        ltac:(M.monadic
-          (let value :=
-            M.alloc (| Ty.path "revm_precompile::interface::PrecompileErrors", value |) in
-          Value.StructTuple
-            "revm_context_interface::result::EVMError::Precompile"
-            []
-            [ DB; TXERROR ]
-            [
+            let~ output :
+                Ty.apply
+                  (Ty.path "array")
+                  [ Value.Integer IntegerKind.Usize 32 ]
+                  [ Ty.path "u8" ] :=
+              lib.repeat (| Value.Integer IntegerKind.U8 0, Value.Integer IntegerKind.Usize 32 |) in
+            let~ _ : Ty.tuple [] :=
               M.call_closure (|
-                Ty.path "alloc::string::String",
+                Ty.tuple [],
                 M.get_trait_method (|
-                  "alloc::string::ToString",
-                  Ty.path "revm_precompile::interface::PrecompileErrors",
+                  "digest::digest::Digest",
+                  Ty.apply
+                    (Ty.path "digest::core_api::wrapper::CoreWrapper")
+                    []
+                    [ Ty.path "ripemd::Ripemd160Core" ],
                   [],
                   [],
-                  "to_string",
+                  "finalize_into",
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, value |) ]
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (DB TXERROR : Ty.t),
-      M.IsTraitInstance
-        "core::convert::From"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) [ Ty.path "revm_precompile::interface::PrecompileErrors" ]
-        (Self DB TXERROR)
-        (* Instance *) [ ("from", InstanceField.Method (from DB TXERROR)) ].
-  End Impl_core_convert_From_revm_precompile_interface_PrecompileErrors_for_revm_context_interface_result_EVMError_DB_TXERROR.
-  
-  Module Impl_core_error_Error_for_revm_precompile_interface_PrecompileErrors.
-    Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileErrors".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::error::Error"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_error_Error_for_revm_precompile_interface_PrecompileErrors.
-  
-  Module Impl_core_fmt_Display_for_revm_precompile_interface_PrecompileErrors.
-    Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileErrors".
-    
-    (*
-        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            match self {
-                Self::Error(e) => e.fmt(f),
-                Self::Fatal { msg } => f.write_str(msg),
-            }
-        }
-    *)
-    Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self; f ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-              self
-            |) in
-          let f :=
-            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-          M.match_operator (|
-            Ty.apply
-              (Ty.path "core::result::Result")
-              []
-              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            self,
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "revm_precompile::interface::PrecompileErrors::Error",
-                      0
-                    |) in
-                  let e :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "revm_precompile::interface::PrecompileError" ],
-                      γ1_0
-                    |) in
+                [
+                  M.read (| hasher |);
                   M.call_closure (|
                     Ty.apply
-                      (Ty.path "core::result::Result")
+                      (Ty.path "&mut")
                       []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_trait_method (|
-                      "core::fmt::Display",
-                      Ty.path "revm_precompile::interface::PrecompileError",
-                      [],
-                      [],
-                      "fmt",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_record_field (|
-                      γ,
-                      "revm_precompile::interface::PrecompileErrors::Fatal",
-                      "msg"
-                    |) in
-                  let msg :=
-                    M.alloc (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.path "alloc::string::String",
-                              [],
-                              [],
-                              "deref",
-                              [],
+                      [
+                        Ty.apply
+                          (Ty.path "generic_array::GenericArray")
+                          []
+                          [
+                            Ty.path "u8";
+                            Ty.apply
+                              (Ty.path "typenum::uint::UInt")
                               []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                              [
+                                Ty.apply
+                                  (Ty.path "typenum::uint::UInt")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "typenum::uint::UInt")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "typenum::uint::UInt")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "typenum::uint::UInt")
+                                              []
+                                              [
+                                                Ty.path "typenum::uint::UTerm";
+                                                Ty.path "typenum::bit::B1"
+                                              ];
+                                            Ty.path "typenum::bit::B0"
+                                          ];
+                                        Ty.path "typenum::bit::B1"
+                                      ];
+                                    Ty.path "typenum::bit::B0"
+                                  ];
+                                Ty.path "typenum::bit::B0"
+                              ]
+                          ]
+                      ],
+                    M.get_trait_method (|
+                      "core::convert::Into",
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "generic_array::GenericArray")
+                              []
+                              [
+                                Ty.path "u8";
+                                Ty.apply
+                                  (Ty.path "typenum::uint::UInt")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "typenum::uint::UInt")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "typenum::uint::UInt")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "typenum::uint::UInt")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "typenum::uint::UInt")
+                                                  []
+                                                  [
+                                                    Ty.path "typenum::uint::UTerm";
+                                                    Ty.path "typenum::bit::B1"
+                                                  ];
+                                                Ty.path "typenum::bit::B0"
+                                              ];
+                                            Ty.path "typenum::bit::B1"
+                                          ];
+                                        Ty.path "typenum::bit::B0"
+                                      ];
+                                    Ty.path "typenum::bit::B0"
+                                  ]
+                              ]
+                          ]
+                      ],
+                      "into",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::index::IndexMut",
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                    [ Ty.path "u8" ],
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::RangeFrom")
+                                      []
+                                      [ Ty.path "usize" ]
+                                  ],
+                                  "index_mut",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.MutRef, output |);
+                                  Value.mkStructRecord
+                                    "core::ops::range::RangeFrom"
+                                    []
+                                    [ Ty.path "usize" ]
+                                    [ ("start", Value.Integer IntegerKind.Usize 12) ]
+                                ]
+                              |)
+                            |)
                           |)
                         |)
                       |)
                     ]
-                  |)))
+                  |)
+                ]
+              |) in
+            output
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_ripemd160 :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "ripemd160" ripemd160.
+    Definition bn254_g1_add
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; p1; p2 ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let p1 :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+              p1
+            |) in
+          let p2 :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+              p2
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 64 ] [ Ty.path "u8" ];
+                Ty.path "revm_precompile::interface::PrecompileError"
+              ],
+            M.get_function (| "revm_precompile::bn254::arkworks::g1_point_add", [], [] |),
+            [
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| p1 |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| p2 |) |) |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::fmt::Display"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-  End Impl_core_fmt_Display_for_revm_precompile_interface_PrecompileErrors.
+    Axiom ProvidedMethod_bn254_g1_add :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "bn254_g1_add" bn254_g1_add.
+    Definition bn254_g1_mul
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; point; scalar ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let point :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+              point
+            |) in
+          let scalar :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+              scalar
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 64 ] [ Ty.path "u8" ];
+                Ty.path "revm_precompile::interface::PrecompileError"
+              ],
+            M.get_function (| "revm_precompile::bn254::arkworks::g1_point_mul", [], [] |),
+            [
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| point |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| scalar |) |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_bn254_g1_mul :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "bn254_g1_mul" bn254_g1_mul.
+    Definition bn254_pairing_check
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; pairs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let pairs :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "slice")
+                    []
+                    [
+                      Ty.tuple
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                        ]
+                    ]
+                ],
+              pairs
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.path "bool"; Ty.path "revm_precompile::interface::PrecompileError" ],
+            M.get_function (| "revm_precompile::bn254::arkworks::pairing_check", [], [] |),
+            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| pairs |) |) |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_bn254_pairing_check :
+      M.IsProvidedMethod
+        "revm_precompile::interface::Crypto"
+        "bn254_pairing_check"
+        bn254_pairing_check.
+    Definition secp256k1_ecrecover
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; sig; recid; msg ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let sig :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 64 ] [ Ty.path "u8" ]
+                ],
+              sig
+            |) in
+          let recid := M.alloc (| Ty.path "u8", recid |) in
+          let msg :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ],
+              msg
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ];
+                Ty.path "revm_precompile::interface::PrecompileError"
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ],
+              "ok_or",
+              [],
+              [ Ty.path "revm_precompile::interface::PrecompileError" ]
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [ Ty.path "u8" ]
+                  ],
+                M.get_function (| "revm_precompile::secp256k1::ecrecover_bytes", [], [] |),
+                [
+                  M.read (| M.deref (| M.read (| sig |) |) |);
+                  M.read (| recid |);
+                  M.read (| M.deref (| M.read (| msg |) |) |)
+                ]
+              |);
+              Value.StructTuple
+                "revm_precompile::interface::PrecompileError::Secp256k1RecoverFailed"
+                []
+                []
+                []
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_secp256k1_ecrecover :
+      M.IsProvidedMethod
+        "revm_precompile::interface::Crypto"
+        "secp256k1_ecrecover"
+        secp256k1_ecrecover.
+    Definition modexp (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; base; exp; modulus ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let base :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+              base
+            |) in
+          let exp :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+              exp
+            |) in
+          let modulus :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+              modulus
+            |) in
+          Value.StructTuple
+            "core::result::Result::Ok"
+            []
+            [
+              Ty.apply
+                (Ty.path "alloc::vec::Vec")
+                []
+                [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+              Ty.path "revm_precompile::interface::PrecompileError"
+            ]
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "alloc::vec::Vec")
+                  []
+                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                M.get_function (| "revm_precompile::modexp::modexp", [], [] |),
+                [
+                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| base |) |) |);
+                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| exp |) |) |);
+                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| modulus |) |) |)
+                ]
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_modexp :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "modexp" modexp.
+    Definition blake2_compress
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; rounds; h; m; t; f ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let rounds := M.alloc (| Ty.path "u32", rounds |) in
+          let h :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u64" ]
+                ],
+              h
+            |) in
+          let m :=
+            M.alloc (|
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u64" ],
+              m
+            |) in
+          let t :=
+            M.alloc (|
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u64" ],
+              t
+            |) in
+          let f := M.alloc (| Ty.path "bool", f |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (| "revm_precompile::blake2::algo::compress", [], [] |),
+                [
+                  M.cast (Ty.path "usize") (M.read (| rounds |));
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| h |) |) |);
+                  M.read (| m |);
+                  M.read (| t |);
+                  M.read (| f |)
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_blake2_compress :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "blake2_compress" blake2_compress.
+    Definition secp256r1_verify_signature
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; msg; sig; pk ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let msg :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ],
+              msg
+            |) in
+          let sig :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 64 ] [ Ty.path "u8" ]
+                ],
+              sig
+            |) in
+          let pk :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 64 ] [ Ty.path "u8" ]
+                ],
+              pk
+            |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_associated_function (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.tuple [] ],
+              "is_some",
+              [],
+              []
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.alloc (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.tuple [] ],
+                  M.call_closure (|
+                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.tuple [] ],
+                    M.get_function (| "revm_precompile::secp256r1::verify_signature", [], [] |),
+                    [
+                      M.read (| M.deref (| M.read (| msg |) |) |);
+                      M.read (| M.deref (| M.read (| sig |) |) |);
+                      M.read (| M.deref (| M.read (| pk |) |) |)
+                    ]
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_secp256r1_verify_signature :
+      M.IsProvidedMethod
+        "revm_precompile::interface::Crypto"
+        "secp256r1_verify_signature"
+        secp256r1_verify_signature.
+    Definition verify_kzg_proof
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; z; y; commitment; proof ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let z :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ],
+              z
+            |) in
+          let y :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ],
+              y
+            |) in
+          let commitment :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
+                ],
+              commitment
+            |) in
+          let proof :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
+                ],
+              proof
+            |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "revm_precompile::interface::PrecompileError" ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_function (|
+                                      "revm_precompile::kzg_point_evaluation::verify_kzg_proof",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| commitment |) |)
+                                      |);
+                                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| z |) |) |);
+                                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| y |) |) |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| proof |) |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                Value.StructTuple
+                                  "core::result::Result::Err"
+                                  []
+                                  [
+                                    Ty.tuple [];
+                                    Ty.path "revm_precompile::interface::PrecompileError"
+                                  ]
+                                  [
+                                    Value.StructTuple
+                                      "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed"
+                                      []
+                                      []
+                                      []
+                                  ]
+                              |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "revm_precompile::interface::PrecompileError" ],
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [ Ty.tuple []; Ty.path "revm_precompile::interface::PrecompileError" ]
+                    [ Value.Tuple [] ]
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_verify_kzg_proof :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "verify_kzg_proof" verify_kzg_proof.
+    Definition bls12_381_g1_add
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; a; b ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let a :=
+            M.alloc (|
+              Ty.tuple
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ];
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ]
+                ],
+              a
+            |) in
+          let b :=
+            M.alloc (|
+              Ty.tuple
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ];
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ]
+                ],
+              b
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 96 ] [ Ty.path "u8" ];
+                Ty.path "revm_precompile::interface::PrecompileError"
+              ],
+            M.get_function (| "revm_precompile::bls12_381::blst::p1_add_affine_bytes", [], [] |),
+            [ M.read (| a |); M.read (| b |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_bls12_381_g1_add :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "bls12_381_g1_add" bls12_381_g1_add.
+    Definition bls12_381_g1_msm
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; pairs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let pairs :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ] ],
+              pairs
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 96 ] [ Ty.path "u8" ];
+                Ty.path "revm_precompile::interface::PrecompileError"
+              ],
+            M.get_function (|
+              "revm_precompile::bls12_381::blst::p1_msm_bytes",
+              [],
+              [
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ] ]
+              ]
+            |),
+            [ M.read (| pairs |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_bls12_381_g1_msm :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "bls12_381_g1_msm" bls12_381_g1_msm.
+    Definition bls12_381_g2_add
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; a; b ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let a :=
+            M.alloc (|
+              Ty.tuple
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ];
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ];
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ];
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ]
+                ],
+              a
+            |) in
+          let b :=
+            M.alloc (|
+              Ty.tuple
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ];
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ];
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ];
+                  Ty.apply
+                    (Ty.path "array")
+                    [
+                      M.unevaluated_const
+                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                    ]
+                    [ Ty.path "u8" ]
+                ],
+              b
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 192 ] [ Ty.path "u8" ];
+                Ty.path "revm_precompile::interface::PrecompileError"
+              ],
+            M.get_function (| "revm_precompile::bls12_381::blst::p2_add_affine_bytes", [], [] |),
+            [ M.read (| a |); M.read (| b |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_bls12_381_g2_add :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "bls12_381_g2_add" bls12_381_g2_add.
+    Definition bls12_381_g2_msm
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; pairs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let pairs :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ] ],
+              pairs
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 192 ] [ Ty.path "u8" ];
+                Ty.path "revm_precompile::interface::PrecompileError"
+              ],
+            M.get_function (|
+              "revm_precompile::bls12_381::blst::p2_msm_bytes",
+              [],
+              [
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ] ]
+              ]
+            |),
+            [ M.read (| pairs |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_bls12_381_g2_msm :
+      M.IsProvidedMethod "revm_precompile::interface::Crypto" "bls12_381_g2_msm" bls12_381_g2_msm.
+    Definition bls12_381_pairing_check
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; pairs ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let pairs :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "slice")
+                    []
+                    [
+                      Ty.tuple
+                        [
+                          Ty.tuple
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [
+                                  M.unevaluated_const
+                                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                                ]
+                                [ Ty.path "u8" ];
+                              Ty.apply
+                                (Ty.path "array")
+                                [
+                                  M.unevaluated_const
+                                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
+                                ]
+                                [ Ty.path "u8" ]
+                            ];
+                          Ty.tuple
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [
+                                  M.unevaluated_const
+                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                                ]
+                                [ Ty.path "u8" ];
+                              Ty.apply
+                                (Ty.path "array")
+                                [
+                                  M.unevaluated_const
+                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                                ]
+                                [ Ty.path "u8" ];
+                              Ty.apply
+                                (Ty.path "array")
+                                [
+                                  M.unevaluated_const
+                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                                ]
+                                [ Ty.path "u8" ];
+                              Ty.apply
+                                (Ty.path "array")
+                                [
+                                  M.unevaluated_const
+                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
+                                ]
+                                [ Ty.path "u8" ]
+                            ]
+                        ]
+                    ]
+                ],
+              pairs
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.path "bool"; Ty.path "revm_precompile::interface::PrecompileError" ],
+            M.get_function (| "revm_precompile::bls12_381::blst::pairing_check_bytes", [], [] |),
+            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| pairs |) |) |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_bls12_381_pairing_check :
+      M.IsProvidedMethod
+        "revm_precompile::interface::Crypto"
+        "bls12_381_pairing_check"
+        bls12_381_pairing_check.
+    Definition bls12_381_fp_to_g1
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; fp ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let fp :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
+                ],
+              fp
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 96 ] [ Ty.path "u8" ];
+                Ty.path "revm_precompile::interface::PrecompileError"
+              ],
+            M.get_function (| "revm_precompile::bls12_381::blst::map_fp_to_g1_bytes", [], [] |),
+            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| fp |) |) |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_bls12_381_fp_to_g1 :
+      M.IsProvidedMethod
+        "revm_precompile::interface::Crypto"
+        "bls12_381_fp_to_g1"
+        bls12_381_fp_to_g1.
+    Definition bls12_381_fp2_to_g2
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; fp2 ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let fp2 :=
+            M.alloc (|
+              Ty.tuple
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 48 ]
+                    [ Ty.path "u8" ];
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
+                ],
+              fp2
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 192 ] [ Ty.path "u8" ];
+                Ty.path "revm_precompile::interface::PrecompileError"
+              ],
+            M.get_function (| "revm_precompile::bls12_381::blst::map_fp2_to_g2_bytes", [], [] |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (| Pointer.Kind.Ref, M.SubPointer.get_tuple_field (| fp2, 0 |) |)
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (| Pointer.Kind.Ref, M.SubPointer.get_tuple_field (| fp2, 1 |) |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_bls12_381_fp2_to_g2 :
+      M.IsProvidedMethod
+        "revm_precompile::interface::Crypto"
+        "bls12_381_fp2_to_g2"
+        bls12_381_fp2_to_g2.
+  End Crypto.
+  
+  Axiom PrecompileFn :
+    (Ty.path "revm_precompile::interface::PrecompileFn") =
+      (Ty.function
+        [
+          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+          Ty.path "u64"
+        ]
+        (Ty.apply
+          (Ty.path "core::result::Result")
+          []
+          [
+            Ty.path "revm_precompile::interface::PrecompileOutput";
+            Ty.path "revm_precompile::interface::PrecompileError"
+          ])).
   
   (*
   Enum PrecompileError
@@ -1335,15 +2696,19 @@ Module interface.
           item := StructTuple [];
         };
         {
-          name := "Bn128FieldPointNotAMember";
+          name := "ModexpEip7823LimitSize";
           item := StructTuple [];
         };
         {
-          name := "Bn128AffineGFailedToCreate";
+          name := "Bn254FieldPointNotAMember";
           item := StructTuple [];
         };
         {
-          name := "Bn128PairLength";
+          name := "Bn254AffineGFailedToCreate";
+          item := StructTuple [];
+        };
+        {
+          name := "Bn254PairLength";
           item := StructTuple [];
         };
         {
@@ -1359,8 +2724,100 @@ Module interface.
           item := StructTuple [];
         };
         {
-          name := "Other";
+          name := "NonCanonicalFp";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G1NotOnCurve";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G1NotInSubgroup";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G2NotOnCurve";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G2NotInSubgroup";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381ScalarInputLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G1AddInputLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G1MsmInputLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G2AddInputLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G2MsmInputLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381PairingInputLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381MapFpToG1InputLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381MapFp2ToG2InputLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381FpPaddingInvalid";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381FpPaddingLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G1PaddingLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Bls12381G2PaddingLength";
+          item := StructTuple [];
+        };
+        {
+          name := "KzgInvalidG1Point";
+          item := StructTuple [];
+        };
+        {
+          name := "KzgG1PointNotOnCurve";
+          item := StructTuple [];
+        };
+        {
+          name := "KzgG1PointNotInSubgroup";
+          item := StructTuple [];
+        };
+        {
+          name := "KzgInvalidInputLength";
+          item := StructTuple [];
+        };
+        {
+          name := "Secp256k1RecoverFailed";
+          item := StructTuple [];
+        };
+        {
+          name := "Fatal";
           item := StructTuple [ Ty.path "alloc::string::String" ];
+        };
+        {
+          name := "Other";
+          item := StructTuple [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ];
         }
       ];
   }
@@ -1378,20 +2835,70 @@ Module interface.
     M.IsDiscriminant "revm_precompile::interface::PrecompileError::ModexpBaseOverflow" 4.
   Axiom IsDiscriminant_PrecompileError_ModexpModOverflow :
     M.IsDiscriminant "revm_precompile::interface::PrecompileError::ModexpModOverflow" 5.
-  Axiom IsDiscriminant_PrecompileError_Bn128FieldPointNotAMember :
-    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember" 6.
-  Axiom IsDiscriminant_PrecompileError_Bn128AffineGFailedToCreate :
-    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate" 7.
-  Axiom IsDiscriminant_PrecompileError_Bn128PairLength :
-    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bn128PairLength" 8.
+  Axiom IsDiscriminant_PrecompileError_ModexpEip7823LimitSize :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::ModexpEip7823LimitSize" 6.
+  Axiom IsDiscriminant_PrecompileError_Bn254FieldPointNotAMember :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bn254FieldPointNotAMember" 7.
+  Axiom IsDiscriminant_PrecompileError_Bn254AffineGFailedToCreate :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bn254AffineGFailedToCreate" 8.
+  Axiom IsDiscriminant_PrecompileError_Bn254PairLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bn254PairLength" 9.
   Axiom IsDiscriminant_PrecompileError_BlobInvalidInputLength :
-    M.IsDiscriminant "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" 9.
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" 10.
   Axiom IsDiscriminant_PrecompileError_BlobMismatchedVersion :
-    M.IsDiscriminant "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" 10.
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" 11.
   Axiom IsDiscriminant_PrecompileError_BlobVerifyKzgProofFailed :
-    M.IsDiscriminant "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" 11.
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" 12.
+  Axiom IsDiscriminant_PrecompileError_NonCanonicalFp :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::NonCanonicalFp" 13.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G1NotOnCurve :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G1NotOnCurve" 14.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G1NotInSubgroup :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G1NotInSubgroup" 15.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G2NotOnCurve :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G2NotOnCurve" 16.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G2NotInSubgroup :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G2NotInSubgroup" 17.
+  Axiom IsDiscriminant_PrecompileError_Bls12381ScalarInputLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381ScalarInputLength" 18.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G1AddInputLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G1AddInputLength" 19.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G1MsmInputLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G1MsmInputLength" 20.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G2AddInputLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G2AddInputLength" 21.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G2MsmInputLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G2MsmInputLength" 22.
+  Axiom IsDiscriminant_PrecompileError_Bls12381PairingInputLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381PairingInputLength" 23.
+  Axiom IsDiscriminant_PrecompileError_Bls12381MapFpToG1InputLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381MapFpToG1InputLength" 24.
+  Axiom IsDiscriminant_PrecompileError_Bls12381MapFp2ToG2InputLength :
+    M.IsDiscriminant
+      "revm_precompile::interface::PrecompileError::Bls12381MapFp2ToG2InputLength"
+      25.
+  Axiom IsDiscriminant_PrecompileError_Bls12381FpPaddingInvalid :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381FpPaddingInvalid" 26.
+  Axiom IsDiscriminant_PrecompileError_Bls12381FpPaddingLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381FpPaddingLength" 27.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G1PaddingLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G1PaddingLength" 28.
+  Axiom IsDiscriminant_PrecompileError_Bls12381G2PaddingLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Bls12381G2PaddingLength" 29.
+  Axiom IsDiscriminant_PrecompileError_KzgInvalidG1Point :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::KzgInvalidG1Point" 30.
+  Axiom IsDiscriminant_PrecompileError_KzgG1PointNotOnCurve :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::KzgG1PointNotOnCurve" 31.
+  Axiom IsDiscriminant_PrecompileError_KzgG1PointNotInSubgroup :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::KzgG1PointNotInSubgroup" 32.
+  Axiom IsDiscriminant_PrecompileError_KzgInvalidInputLength :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::KzgInvalidInputLength" 33.
+  Axiom IsDiscriminant_PrecompileError_Secp256k1RecoverFailed :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Secp256k1RecoverFailed" 34.
+  Axiom IsDiscriminant_PrecompileError_Fatal :
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Fatal" 35.
   Axiom IsDiscriminant_PrecompileError_Other :
-    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Other" 12.
+    M.IsDiscriminant "revm_precompile::interface::PrecompileError::Other" 36.
   
   Module Impl_core_clone_Clone_for_revm_precompile_interface_PrecompileError.
     Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileError".
@@ -1494,10 +3001,10 @@ Module interface.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
-                      "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
+                      "revm_precompile::interface::PrecompileError::ModexpEip7823LimitSize"
                     |) in
                   Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
+                    "revm_precompile::interface::PrecompileError::ModexpEip7823LimitSize"
                     []
                     []
                     []));
@@ -1507,10 +3014,10 @@ Module interface.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
-                      "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
+                      "revm_precompile::interface::PrecompileError::Bn254FieldPointNotAMember"
                     |) in
                   Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
+                    "revm_precompile::interface::PrecompileError::Bn254FieldPointNotAMember"
                     []
                     []
                     []));
@@ -1520,10 +3027,23 @@ Module interface.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
-                      "revm_precompile::interface::PrecompileError::Bn128PairLength"
+                      "revm_precompile::interface::PrecompileError::Bn254AffineGFailedToCreate"
                     |) in
                   Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Bn128PairLength"
+                    "revm_precompile::interface::PrecompileError::Bn254AffineGFailedToCreate"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bn254PairLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bn254PairLength"
                     []
                     []
                     []));
@@ -1569,10 +3089,296 @@ Module interface.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::NonCanonicalFp"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::NonCanonicalFp"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1NotOnCurve"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G1NotOnCurve"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1NotInSubgroup"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G1NotInSubgroup"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2NotOnCurve"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G2NotOnCurve"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2NotInSubgroup"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G2NotInSubgroup"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381ScalarInputLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381ScalarInputLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1AddInputLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G1AddInputLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1MsmInputLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G1MsmInputLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2AddInputLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G2AddInputLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2MsmInputLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G2MsmInputLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381PairingInputLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381PairingInputLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381MapFpToG1InputLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381MapFpToG1InputLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381MapFp2ToG2InputLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381MapFp2ToG2InputLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381FpPaddingInvalid"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381FpPaddingInvalid"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381FpPaddingLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381FpPaddingLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1PaddingLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G1PaddingLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2PaddingLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Bls12381G2PaddingLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::KzgInvalidG1Point"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::KzgInvalidG1Point"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::KzgG1PointNotOnCurve"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::KzgG1PointNotOnCurve"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::KzgG1PointNotInSubgroup"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::KzgG1PointNotInSubgroup"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::KzgInvalidInputLength"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::KzgInvalidInputLength"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Secp256k1RecoverFailed"
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Secp256k1RecoverFailed"
+                    []
+                    []
+                    []));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (|
                       γ,
-                      "revm_precompile::interface::PrecompileError::Other",
+                      "revm_precompile::interface::PrecompileError::Fatal",
                       0
                     |) in
                   let __self_0 :=
@@ -1581,7 +3387,7 @@ Module interface.
                       γ1_0
                     |) in
                   Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Other"
+                    "revm_precompile::interface::PrecompileError::Fatal"
                     []
                     []
                     [
@@ -1590,6 +3396,42 @@ Module interface.
                         M.get_trait_method (|
                           "core::clone::Clone",
                           Ty.path "alloc::string::String",
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                      |)
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Other",
+                      0
+                    |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                      γ1_0
+                    |) in
+                  Value.StructTuple
+                    "revm_precompile::interface::PrecompileError::Other"
+                    []
+                    []
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
                           [],
                           [],
                           "clone",
@@ -1800,7 +3642,7 @@ Module interface.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
-                      "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
+                      "revm_precompile::interface::PrecompileError::ModexpEip7823LimitSize"
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1817,7 +3659,7 @@ Module interface.
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Bn128FieldPointNotAMember" |) |)
+                        M.deref (| mk_str (| "ModexpEip7823LimitSize" |) |)
                       |)
                     ]
                   |)));
@@ -1827,7 +3669,7 @@ Module interface.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
-                      "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
+                      "revm_precompile::interface::PrecompileError::Bn254FieldPointNotAMember"
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1844,7 +3686,7 @@ Module interface.
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Bn128AffineGFailedToCreate" |) |)
+                        M.deref (| mk_str (| "Bn254FieldPointNotAMember" |) |)
                       |)
                     ]
                   |)));
@@ -1854,7 +3696,7 @@ Module interface.
                   let _ :=
                     M.is_struct_tuple (|
                       γ,
-                      "revm_precompile::interface::PrecompileError::Bn128PairLength"
+                      "revm_precompile::interface::PrecompileError::Bn254AffineGFailedToCreate"
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1869,7 +3711,34 @@ Module interface.
                     |),
                     [
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bn128PairLength" |) |) |)
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bn254AffineGFailedToCreate" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bn254PairLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bn254PairLength" |) |) |)
                     ]
                   |)));
               fun γ =>
@@ -1956,6 +3825,646 @@ Module interface.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::NonCanonicalFp"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NonCanonicalFp" |) |) |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1NotOnCurve"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G1NotOnCurve" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1NotInSubgroup"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G1NotInSubgroup" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2NotOnCurve"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G2NotOnCurve" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2NotInSubgroup"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G2NotInSubgroup" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381ScalarInputLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381ScalarInputLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1AddInputLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G1AddInputLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1MsmInputLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G1MsmInputLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2AddInputLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G2AddInputLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2MsmInputLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G2MsmInputLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381PairingInputLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381PairingInputLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381MapFpToG1InputLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381MapFpToG1InputLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381MapFp2ToG2InputLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381MapFp2ToG2InputLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381FpPaddingInvalid"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381FpPaddingInvalid" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381FpPaddingLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381FpPaddingLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G1PaddingLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G1PaddingLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Bls12381G2PaddingLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Bls12381G2PaddingLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::KzgInvalidG1Point"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "KzgInvalidG1Point" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::KzgG1PointNotOnCurve"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "KzgG1PointNotOnCurve" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::KzgG1PointNotInSubgroup"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "KzgG1PointNotInSubgroup" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::KzgInvalidInputLength"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "KzgInvalidInputLength" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let _ :=
+                    M.is_struct_tuple (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Secp256k1RecoverFailed"
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Secp256k1RecoverFailed" |) |)
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "revm_precompile::interface::PrecompileError::Fatal",
+                      0
+                    |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
+                      γ1_0
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "debug_tuple_field1_finish",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Fatal" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                          |)
+                        ]
+                      |)
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (|
                       γ,
@@ -1964,7 +4473,10 @@ Module interface.
                     |) in
                   let __self_0 :=
                     M.alloc (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
                       γ1_0
                     |) in
                   M.call_closure (|
@@ -1988,7 +4500,12 @@ Module interface.
                           (Ty.apply
                             (Ty.path "&")
                             []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ]
+                            ])
                           (Ty.apply
                             (Ty.path "&")
                             []
@@ -2101,7 +4618,7 @@ Module interface.
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
                               γ0_0,
-                              "revm_precompile::interface::PrecompileError::Other",
+                              "revm_precompile::interface::PrecompileError::Fatal",
                               0
                             |) in
                           let __self_0 :=
@@ -2113,7 +4630,7 @@ Module interface.
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
                               γ0_1,
-                              "revm_precompile::interface::PrecompileError::Other",
+                              "revm_precompile::interface::PrecompileError::Fatal",
                               0
                             |) in
                           let __arg1_0 :=
@@ -2128,6 +4645,64 @@ Module interface.
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
                               [],
                               [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ],
+                              "eq",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                            ]
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_0,
+                              "revm_precompile::interface::PrecompileError::Other",
+                              0
+                            |) in
+                          let __self_0 :=
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                              γ2_0
+                            |) in
+                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_1,
+                              "revm_precompile::interface::PrecompileError::Other",
+                              0
+                            |) in
+                          let __arg1_0 :=
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                              γ2_0
+                            |) in
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_trait_method (|
+                              "core::cmp::PartialEq",
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ]
+                              ],
                               "eq",
                               [],
                               []
@@ -2175,7 +4750,15 @@ Module interface.
           M.match_operator (|
             Ty.tuple [],
             Value.DeclaredButUndefined,
-            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (M.match_operator (|
+                    Ty.tuple [],
+                    Value.DeclaredButUndefined,
+                    [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                  |)))
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2247,7 +4830,7 @@ Module interface.
                       let γ1_0 :=
                         M.SubPointer.get_struct_tuple_field (|
                           γ,
-                          "revm_precompile::interface::PrecompileError::Other",
+                          "revm_precompile::interface::PrecompileError::Fatal",
                           0
                         |) in
                       let __self_0 :=
@@ -2260,6 +4843,39 @@ Module interface.
                         M.get_trait_method (|
                           "core::hash::Hash",
                           Ty.path "alloc::string::String",
+                          [],
+                          [],
+                          "hash",
+                          [],
+                          [ __H ]
+                        |),
+                        [
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
+                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                        ]
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let γ1_0 :=
+                        M.SubPointer.get_struct_tuple_field (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Other",
+                          0
+                        |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                          γ1_0
+                        |) in
+                      M.call_closure (|
+                        Ty.tuple [],
+                        M.get_trait_method (|
+                          "core::hash::Hash",
+                          Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
                           [],
                           [],
                           "hash",
@@ -2293,7 +4909,7 @@ Module interface.
     
     (*
         pub fn other(err: impl Into<String>) -> Self {
-            Self::Other(err.into())
+            Self::Other(Cow::Owned(err.into()))
         }
     *)
     Definition other (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2306,19 +4922,25 @@ Module interface.
             []
             []
             [
-              M.call_closure (|
-                Ty.path "alloc::string::String",
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  impl_Into_String_,
-                  [],
-                  [ Ty.path "alloc::string::String" ],
-                  "into",
-                  [],
-                  []
-                |),
-                [ M.read (| err |) ]
-              |)
+              Value.StructTuple
+                "alloc::borrow::Cow::Owned"
+                []
+                [ Ty.path "str" ]
+                [
+                  M.call_closure (|
+                    Ty.path "alloc::string::String",
+                    M.get_trait_method (|
+                      "core::convert::Into",
+                      impl_Into_String_,
+                      [],
+                      [ Ty.path "alloc::string::String" ],
+                      "into",
+                      [],
+                      []
+                    |),
+                    [ M.read (| err |) ]
+                  |)
+                ]
             ]))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2326,6 +4948,35 @@ Module interface.
     Global Instance AssociatedFunction_other : M.IsAssociatedFunction.C Self "other" other.
     Admitted.
     Global Typeclasses Opaque other.
+    
+    (*
+        pub const fn other_static(err: &'static str) -> Self {
+            Self::Other(Cow::Borrowed(err))
+        }
+    *)
+    Definition other_static (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ err ] =>
+        ltac:(M.monadic
+          (let err := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], err |) in
+          Value.StructTuple
+            "revm_precompile::interface::PrecompileError::Other"
+            []
+            []
+            [
+              Value.StructTuple
+                "alloc::borrow::Cow::Borrowed"
+                []
+                [ Ty.path "str" ]
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| err |) |) |) ]
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_other_static :
+      M.IsAssociatedFunction.C Self "other_static" other_static.
+    Admitted.
+    Global Typeclasses Opaque other_static.
     
     (*
         pub fn is_oog(&self) -> bool {
@@ -2365,36 +5016,6 @@ Module interface.
     Global Typeclasses Opaque is_oog.
   End Impl_revm_precompile_interface_PrecompileError.
   
-  Module Impl_core_convert_From_revm_precompile_interface_PrecompileError_for_revm_precompile_interface_PrecompileErrors.
-    Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileErrors".
-    
-    (*
-        fn from(err: PrecompileError) -> Self {
-            PrecompileErrors::Error(err)
-        }
-    *)
-    Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ err ] =>
-        ltac:(M.monadic
-          (let err := M.alloc (| Ty.path "revm_precompile::interface::PrecompileError", err |) in
-          Value.StructTuple
-            "revm_precompile::interface::PrecompileErrors::Error"
-            []
-            []
-            [ M.read (| err |) ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::convert::From"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) [ Ty.path "revm_precompile::interface::PrecompileError" ]
-        Self
-        (* Instance *) [ ("from", InstanceField.Method from) ].
-  End Impl_core_convert_From_revm_precompile_interface_PrecompileError_for_revm_precompile_interface_PrecompileErrors.
-  
   Module Impl_core_error_Error_for_revm_precompile_interface_PrecompileError.
     Definition Self : Ty.t := Ty.path "revm_precompile::interface::PrecompileError".
     
@@ -2419,12 +5040,36 @@ Module interface.
                 Self::ModexpExpOverflow => "modexp exp overflow",
                 Self::ModexpBaseOverflow => "modexp base overflow",
                 Self::ModexpModOverflow => "modexp mod overflow",
-                Self::Bn128FieldPointNotAMember => "field point not a member of bn128 curve",
-                Self::Bn128AffineGFailedToCreate => "failed to create affine g point for bn128 curve",
-                Self::Bn128PairLength => "bn128 invalid pair length",
+                Self::ModexpEip7823LimitSize => "Modexp limit all input sizes.",
+                Self::Bn254FieldPointNotAMember => "field point not a member of bn254 curve",
+                Self::Bn254AffineGFailedToCreate => "failed to create affine g point for bn254 curve",
+                Self::Bn254PairLength => "bn254 invalid pair length",
                 Self::BlobInvalidInputLength => "invalid blob input length",
                 Self::BlobMismatchedVersion => "mismatched blob version",
                 Self::BlobVerifyKzgProofFailed => "verifying blob kzg proof failed",
+                Self::NonCanonicalFp => "non-canonical field element",
+                Self::Bls12381G1NotOnCurve => "bls12-381 g1 point not on curve",
+                Self::Bls12381G1NotInSubgroup => "bls12-381 g1 point not in correct subgroup",
+                Self::Bls12381G2NotOnCurve => "bls12-381 g2 point not on curve",
+                Self::Bls12381G2NotInSubgroup => "bls12-381 g2 point not in correct subgroup",
+                Self::Bls12381ScalarInputLength => "bls12-381 scalar input length error",
+                Self::Bls12381G1AddInputLength => "bls12-381 g1 add input length error",
+                Self::Bls12381G1MsmInputLength => "bls12-381 g1 msm input length error",
+                Self::Bls12381G2AddInputLength => "bls12-381 g2 add input length error",
+                Self::Bls12381G2MsmInputLength => "bls12-381 g2 msm input length error",
+                Self::Bls12381PairingInputLength => "bls12-381 pairing input length error",
+                Self::Bls12381MapFpToG1InputLength => "bls12-381 map fp to g1 input length error",
+                Self::Bls12381MapFp2ToG2InputLength => "bls12-381 map fp2 to g2 input length error",
+                Self::Bls12381FpPaddingInvalid => "bls12-381 fp 64 top bytes of input are not zero",
+                Self::Bls12381FpPaddingLength => "bls12-381 fp padding length error",
+                Self::Bls12381G1PaddingLength => "bls12-381 g1 padding length error",
+                Self::Bls12381G2PaddingLength => "bls12-381 g2 padding length error",
+                Self::KzgInvalidG1Point => "kzg invalid g1 point",
+                Self::KzgG1PointNotOnCurve => "kzg g1 point not on curve",
+                Self::KzgG1PointNotInSubgroup => "kzg g1 point not in correct subgroup",
+                Self::KzgInvalidInputLength => "kzg invalid input length",
+                Self::Secp256k1RecoverFailed => "secp256k1 signature recovery failed",
+                Self::Fatal(s) => s,
                 Self::Other(s) => s,
             };
             f.write_str(s)
@@ -2522,11 +5167,11 @@ Module interface.
                       let _ :=
                         M.is_struct_tuple (|
                           γ,
-                          "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
+                          "revm_precompile::interface::PrecompileError::ModexpEip7823LimitSize"
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "field point not a member of bn128 curve" |) |)
+                        M.deref (| mk_str (| "Modexp limit all input sizes." |) |)
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -2534,11 +5179,11 @@ Module interface.
                       let _ :=
                         M.is_struct_tuple (|
                           γ,
-                          "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
+                          "revm_precompile::interface::PrecompileError::Bn254FieldPointNotAMember"
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "failed to create affine g point for bn128 curve" |) |)
+                        M.deref (| mk_str (| "field point not a member of bn254 curve" |) |)
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -2546,11 +5191,23 @@ Module interface.
                       let _ :=
                         M.is_struct_tuple (|
                           γ,
-                          "revm_precompile::interface::PrecompileError::Bn128PairLength"
+                          "revm_precompile::interface::PrecompileError::Bn254AffineGFailedToCreate"
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "bn128 invalid pair length" |) |)
+                        M.deref (| mk_str (| "failed to create affine g point for bn254 curve" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bn254PairLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bn254 invalid pair length" |) |)
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -2591,10 +5248,274 @@ Module interface.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::NonCanonicalFp"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "non-canonical field element" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G1NotOnCurve"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g1 point not on curve" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G1NotInSubgroup"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g1 point not in correct subgroup" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G2NotOnCurve"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g2 point not on curve" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G2NotInSubgroup"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g2 point not in correct subgroup" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381ScalarInputLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 scalar input length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G1AddInputLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g1 add input length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G1MsmInputLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g1 msm input length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G2AddInputLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g2 add input length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G2MsmInputLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g2 msm input length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381PairingInputLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 pairing input length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381MapFpToG1InputLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 map fp to g1 input length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381MapFp2ToG2InputLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 map fp2 to g2 input length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381FpPaddingInvalid"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 fp 64 top bytes of input are not zero" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381FpPaddingLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 fp padding length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G1PaddingLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g1 padding length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Bls12381G2PaddingLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "bls12-381 g2 padding length error" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::KzgInvalidG1Point"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "kzg invalid g1 point" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::KzgG1PointNotOnCurve"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "kzg g1 point not on curve" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::KzgG1PointNotInSubgroup"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "kzg g1 point not in correct subgroup" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::KzgInvalidInputLength"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "kzg invalid input length" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Secp256k1RecoverFailed"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "secp256k1 signature recovery failed" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
                       let γ1_0 :=
                         M.SubPointer.get_struct_tuple_field (|
                           γ,
-                          "revm_precompile::interface::PrecompileError::Other",
+                          "revm_precompile::interface::PrecompileError::Fatal",
                           0
                         |) in
                       let s :=
@@ -2610,6 +5531,41 @@ Module interface.
                             M.get_trait_method (|
                               "core::ops::deref::Deref",
                               Ty.path "alloc::string::String",
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                          |)
+                        |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let γ1_0 :=
+                        M.SubPointer.get_struct_tuple_field (|
+                          γ,
+                          "revm_precompile::interface::PrecompileError::Other",
+                          0
+                        |) in
+                      let s :=
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                          γ1_0
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ],
                               [],
                               [],
                               "deref",
@@ -2651,4 +5607,88 @@ Module interface.
         Self
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
   End Impl_core_fmt_Display_for_revm_precompile_interface_PrecompileError.
+  
+  (* StructTuple
+    {
+      name := "DefaultCrypto";
+      const_params := [];
+      ty_params := [];
+      fields := [];
+    } *)
+  
+  Module Impl_core_clone_Clone_for_revm_precompile_interface_DefaultCrypto.
+    Definition Self : Ty.t := Ty.path "revm_precompile::interface::DefaultCrypto".
+    
+    (* Clone *)
+    Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::DefaultCrypto" ],
+              self
+            |) in
+          Value.StructTuple "revm_precompile::interface::DefaultCrypto" [] [] []))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("clone", InstanceField.Method clone) ].
+  End Impl_core_clone_Clone_for_revm_precompile_interface_DefaultCrypto.
+  
+  Module Impl_core_fmt_Debug_for_revm_precompile_interface_DefaultCrypto.
+    Definition Self : Ty.t := Ty.path "revm_precompile::interface::DefaultCrypto".
+    
+    (* Debug *)
+    Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::DefaultCrypto" ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DefaultCrypto" |) |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+  End Impl_core_fmt_Debug_for_revm_precompile_interface_DefaultCrypto.
+  
+  Module Impl_revm_precompile_interface_Crypto_for_revm_precompile_interface_DefaultCrypto.
+    Definition Self : Ty.t := Ty.path "revm_precompile::interface::DefaultCrypto".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "revm_precompile::interface::Crypto"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_revm_precompile_interface_Crypto_for_revm_precompile_interface_DefaultCrypto.
 End interface.

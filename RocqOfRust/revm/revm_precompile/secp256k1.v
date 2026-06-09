@@ -5,12 +5,12 @@ Module secp256k1.
   Definition value_ECRECOVER (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.alloc (|
-        Ty.path "revm_precompile::PrecompileWithAddress",
-        Value.StructTuple
-          "revm_precompile::PrecompileWithAddress"
-          []
-          []
+        Ty.path "revm_precompile::Precompile",
+        M.call_closure (|
+          Ty.path "revm_precompile::Precompile",
+          M.get_associated_function (| Ty.path "revm_precompile::Precompile", "new", [], [] |),
           [
+            Value.StructTuple "revm_precompile::id::PrecompileId::EcRec" [] [] [];
             M.call_closure (|
               Ty.path "alloy_primitives::bits::address::Address",
               M.get_function (| "revm_precompile::u64_to_address", [], [] |),
@@ -19,7 +19,7 @@ Module secp256k1.
             M.call_closure (|
               Ty.function
                 [
-                  Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                   Ty.path "u64"
                 ]
                 (Ty.apply
@@ -27,13 +27,13 @@ Module secp256k1.
                   []
                   [
                     Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                    Ty.path "revm_precompile::interface::PrecompileError"
                   ]),
               M.pointer_coercion
                 M.PointerCoercion.ReifyFnPointer
                 (Ty.function
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                     Ty.path "u64"
                   ]
                   (Ty.apply
@@ -41,11 +41,11 @@ Module secp256k1.
                     []
                     [
                       Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
+                      Ty.path "revm_precompile::interface::PrecompileError"
                     ]))
                 (Ty.function
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                     Ty.path "u64"
                   ]
                   (Ty.apply
@@ -53,11 +53,12 @@ Module secp256k1.
                     []
                     [
                       Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
+                      Ty.path "revm_precompile::interface::PrecompileError"
                     ])),
               [ M.get_function (| "revm_precompile::secp256k1::ec_recover_run", [], [] |) ]
             |)
           ]
+        |)
       |))).
   
   Global Instance Instance_IsConstant_value_ECRECOVER :
@@ -65,645 +66,12 @@ Module secp256k1.
   Admitted.
   Global Typeclasses Opaque value_ECRECOVER.
   
-  Module secp256k1.
-    (*
-        pub fn ecrecover(sig: &B512, recid: u8, msg: &B256) -> Result<B256, secp256k1::Error> {
-            let recid = RecoveryId::from_i32(recid as i32).expect("recovery ID is valid");
-            let sig = RecoverableSignature::from_compact(sig.as_slice(), recid)?;
-    
-            let msg = Message::from_digest(msg.0);
-            let public = SECP256K1.recover_ecdsa(&msg, &sig)?;
-    
-            let mut hash = keccak256(&public.serialize_uncompressed()[1..]);
-            hash[..12].fill(0);
-            Ok(hash)
-        }
-    *)
-    Definition ecrecover (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ sig; recid; msg ] =>
-        ltac:(M.monadic
-          (let sig :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                    [ Value.Integer IntegerKind.Usize 64 ]
-                    []
-                ],
-              sig
-            |) in
-          let recid := M.alloc (| Ty.path "u8", recid |) in
-          let msg :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                    [ Value.Integer IntegerKind.Usize 32 ]
-                    []
-                ],
-              msg
-            |) in
-          M.catch_return
-            (Ty.apply
-              (Ty.path "core::result::Result")
-              []
-              [
-                Ty.apply
-                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                  [ Value.Integer IntegerKind.Usize 32 ]
-                  [];
-                Ty.path "secp256k1::Error"
-              ]) (|
-            ltac:(M.monadic
-              (M.read (|
-                let~ recid : Ty.path "secp256k1::ecdsa::recovery::RecoveryId" :=
-                  M.call_closure (|
-                    Ty.path "secp256k1::ecdsa::recovery::RecoveryId",
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.path "secp256k1::ecdsa::recovery::RecoveryId";
-                          Ty.path "secp256k1::Error"
-                        ],
-                      "expect",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.path "secp256k1::ecdsa::recovery::RecoveryId";
-                            Ty.path "secp256k1::Error"
-                          ],
-                        M.get_associated_function (|
-                          Ty.path "secp256k1::ecdsa::recovery::RecoveryId",
-                          "from_i32",
-                          [],
-                          []
-                        |),
-                        [ M.cast (Ty.path "i32") (M.read (| recid |)) ]
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "recovery ID is valid" |) |)
-                      |)
-                    ]
-                  |) in
-                let~ sig : Ty.path "secp256k1::ecdsa::recovery::RecoverableSignature" :=
-                  M.match_operator (|
-                    Ty.path "secp256k1::ecdsa::recovery::RecoverableSignature",
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::ops::control_flow::ControlFlow")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.path "core::convert::Infallible"; Ty.path "secp256k1::Error" ];
-                          Ty.path "secp256k1::ecdsa::recovery::RecoverableSignature"
-                        ],
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.path "core::convert::Infallible"; Ty.path "secp256k1::Error" ];
-                            Ty.path "secp256k1::ecdsa::recovery::RecoverableSignature"
-                          ],
-                        M.get_trait_method (|
-                          "core::ops::try_trait::Try",
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.path "secp256k1::ecdsa::recovery::RecoverableSignature";
-                              Ty.path "secp256k1::Error"
-                            ],
-                          [],
-                          [],
-                          "branch",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.path "secp256k1::ecdsa::recovery::RecoverableSignature";
-                                Ty.path "secp256k1::Error"
-                              ],
-                            M.get_associated_function (|
-                              Ty.path "secp256k1::ecdsa::recovery::RecoverableSignature",
-                              "from_compact",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                        [ Value.Integer IntegerKind.Usize 64 ]
-                                        [],
-                                      "as_slice",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| sig |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |);
-                              M.read (| recid |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Break",
-                              0
-                            |) in
-                          let residual :=
-                            M.copy (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "core::convert::Infallible"; Ty.path "secp256k1::Error" ],
-                              γ0_0
-                            |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                        [ Value.Integer IntegerKind.Usize 32 ]
-                                        [];
-                                      Ty.path "secp256k1::Error"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::try_trait::FromResidual",
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                          [ Value.Integer IntegerKind.Usize 32 ]
-                                          [];
-                                        Ty.path "secp256k1::Error"
-                                      ],
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [
-                                          Ty.path "core::convert::Infallible";
-                                          Ty.path "secp256k1::Error"
-                                        ]
-                                    ],
-                                    "from_residual",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| residual |) ]
-                                |)
-                              |)
-                            |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Continue",
-                              0
-                            |) in
-                          let val :=
-                            M.copy (|
-                              Ty.path "secp256k1::ecdsa::recovery::RecoverableSignature",
-                              γ0_0
-                            |) in
-                          M.read (| val |)))
-                    ]
-                  |) in
-                let~ msg : Ty.path "secp256k1::Message" :=
-                  M.call_closure (|
-                    Ty.path "secp256k1::Message",
-                    M.get_associated_function (|
-                      Ty.path "secp256k1::Message",
-                      "from_digest",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| msg |) |),
-                          "alloy_primitives::bits::fixed::FixedBytes",
-                          0
-                        |)
-                      |)
-                    ]
-                  |) in
-                let~ public : Ty.path "secp256k1::key::PublicKey" :=
-                  M.match_operator (|
-                    Ty.path "secp256k1::key::PublicKey",
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::ops::control_flow::ControlFlow")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.path "core::convert::Infallible"; Ty.path "secp256k1::Error" ];
-                          Ty.path "secp256k1::key::PublicKey"
-                        ],
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.path "core::convert::Infallible"; Ty.path "secp256k1::Error" ];
-                            Ty.path "secp256k1::key::PublicKey"
-                          ],
-                        M.get_trait_method (|
-                          "core::ops::try_trait::Try",
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.path "secp256k1::key::PublicKey"; Ty.path "secp256k1::Error" ],
-                          [],
-                          [],
-                          "branch",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.path "secp256k1::key::PublicKey"; Ty.path "secp256k1::Error" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "secp256k1::Secp256k1")
-                                []
-                                [ Ty.path "secp256k1::context::alloc_only::All" ],
-                              "recover_ecdsa",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "secp256k1::Secp256k1")
-                                          []
-                                          [ Ty.path "secp256k1::context::alloc_only::All" ]
-                                      ],
-                                    M.get_trait_method (|
-                                      "core::ops::deref::Deref",
-                                      Ty.path "secp256k1::context::global::GlobalContext",
-                                      [],
-                                      [],
-                                      "deref",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.deref (|
-                                              M.read (|
-                                                get_constant (|
-                                                  "secp256k1::context::global::SECP256K1",
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "secp256k1::context::global::GlobalContext"
-                                                        ]
-                                                    ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.borrow (| Pointer.Kind.Ref, msg |) |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.borrow (| Pointer.Kind.Ref, sig |) |)
-                              |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Break",
-                              0
-                            |) in
-                          let residual :=
-                            M.copy (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "core::convert::Infallible"; Ty.path "secp256k1::Error" ],
-                              γ0_0
-                            |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                        [ Value.Integer IntegerKind.Usize 32 ]
-                                        [];
-                                      Ty.path "secp256k1::Error"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::try_trait::FromResidual",
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                          [ Value.Integer IntegerKind.Usize 32 ]
-                                          [];
-                                        Ty.path "secp256k1::Error"
-                                      ],
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [
-                                          Ty.path "core::convert::Infallible";
-                                          Ty.path "secp256k1::Error"
-                                        ]
-                                    ],
-                                    "from_residual",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| residual |) ]
-                                |)
-                              |)
-                            |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Continue",
-                              0
-                            |) in
-                          let val := M.copy (| Ty.path "secp256k1::key::PublicKey", γ0_0 |) in
-                          M.read (| val |)))
-                    ]
-                  |) in
-                let~ hash :
-                    Ty.apply
-                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                      [ Value.Integer IntegerKind.Usize 32 ]
-                      [] :=
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                      [ Value.Integer IntegerKind.Usize 32 ]
-                      [],
-                    M.get_function (|
-                      "alloy_primitives::utils::keccak256",
-                      [],
-                      [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                      ]
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_trait_method (|
-                              "core::ops::index::Index",
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 65 ]
-                                [ Ty.path "u8" ],
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "core::ops::range::RangeFrom")
-                                  []
-                                  [ Ty.path "usize" ]
-                              ],
-                              "index",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 65 ]
-                                    [ Ty.path "u8" ],
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 65 ]
-                                      [ Ty.path "u8" ],
-                                    M.get_associated_function (|
-                                      Ty.path "secp256k1::key::PublicKey",
-                                      "serialize_uncompressed",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, public |) ]
-                                  |)
-                                |)
-                              |);
-                              Value.mkStructRecord
-                                "core::ops::range::RangeFrom"
-                                []
-                                [ Ty.path "usize" ]
-                                [ ("start", Value.Integer IntegerKind.Usize 1) ]
-                            ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |) in
-                let~ _ : Ty.tuple [] :=
-                  M.call_closure (|
-                    Ty.tuple [],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                      "fill",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_trait_method (|
-                              "core::ops::index::IndexMut",
-                              Ty.apply
-                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                [ Value.Integer IntegerKind.Usize 32 ]
-                                [],
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "core::ops::range::RangeTo")
-                                  []
-                                  [ Ty.path "usize" ]
-                              ],
-                              "index_mut",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, hash |);
-                              Value.mkStructRecord
-                                "core::ops::range::RangeTo"
-                                []
-                                [ Ty.path "usize" ]
-                                [ ("end_", Value.Integer IntegerKind.Usize 12) ]
-                            ]
-                          |)
-                        |)
-                      |);
-                      Value.Integer IntegerKind.U8 0
-                    ]
-                  |) in
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        [];
-                      Ty.path "secp256k1::Error"
-                    ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        [];
-                      Ty.path "secp256k1::Error"
-                    ]
-                    [ M.read (| hash |) ]
-                |)
-              |)))
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_ecrecover :
-      M.IsFunction.C "revm_precompile::secp256k1::secp256k1::ecrecover" ecrecover.
-    Admitted.
-    Global Typeclasses Opaque ecrecover.
-  End secp256k1.
-  
   (*
-  pub fn ec_recover_run(input: &Bytes, gas_limit: u64) -> PrecompileResult {
+  pub fn ec_recover_run(input: &[u8], gas_limit: u64) -> PrecompileResult {
       const ECRECOVER_BASE: u64 = 3_000;
   
       if ECRECOVER_BASE > gas_limit {
-          return Err(PrecompileError::OutOfGas.into());
+          return Err(PrecompileError::OutOfGas);
       }
   
       let input = right_pad::<128>(input);
@@ -717,9 +85,8 @@ Module secp256k1.
       let recid = input[63] - 27;
       let sig = <&B512>::try_from(&input[64..128]).unwrap();
   
-      let out = secp256k1::ecrecover(sig, recid, msg)
-          .map(|o| o.to_vec().into())
-          .unwrap_or_default();
+      let res = crypto().secp256k1_ecrecover(&sig.0, recid, &msg.0).ok();
+      let out = res.map(|o| o.to_vec().into()).unwrap_or_default();
       Ok(PrecompileOutput::new(ECRECOVER_BASE, out))
   }
   *)
@@ -729,7 +96,7 @@ Module secp256k1.
       ltac:(M.monadic
         (let input :=
           M.alloc (|
-            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
             input
           |) in
         let gas_limit := M.alloc (| Ty.path "u64", gas_limit |) in
@@ -739,7 +106,7 @@ Module secp256k1.
             []
             [
               Ty.path "revm_precompile::interface::PrecompileOutput";
-              Ty.path "revm_precompile::interface::PrecompileErrors"
+              Ty.path "revm_precompile::interface::PrecompileError"
             ]) (|
           ltac:(M.monadic
             (M.read (|
@@ -776,28 +143,14 @@ Module secp256k1.
                                 []
                                 [
                                   Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  Ty.path "revm_precompile::interface::PrecompileError"
                                 ]
                                 [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::OutOfGas"
-                                        []
-                                        []
-                                        []
-                                    ]
-                                  |)
+                                  Value.StructTuple
+                                    "revm_precompile::interface::PrecompileError::OutOfGas"
+                                    []
+                                    []
+                                    []
                                 ]
                             |)
                           |)
@@ -830,53 +183,7 @@ Module secp256k1.
                     [ Value.Integer IntegerKind.Usize 128 ],
                     []
                   |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.path "bytes::bytes::Bytes",
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::Deref",
-                                    Ty.path "alloy_primitives::bytes_::Bytes",
-                                    [],
-                                    [],
-                                    "deref",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| input |) |)
-                                    |)
-                                  ]
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |)
-                    |)
-                  ]
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -1137,7 +444,7 @@ Module secp256k1.
                                 []
                                 [
                                   Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  Ty.path "revm_precompile::interface::PrecompileError"
                                 ]
                                 [
                                   M.call_closure (|
@@ -1530,15 +837,38 @@ Module secp256k1.
                     |)
                   ]
                 |) in
-              let~ out : Ty.path "alloy_primitives::bytes_::Bytes" :=
+              let~ res :
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ] :=
                 M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ],
                   M.get_associated_function (|
                     Ty.apply
                       (Ty.path "core::result::Result")
                       []
-                      [ Ty.path "alloy_primitives::bytes_::Bytes"; Ty.path "secp256k1::Error" ],
-                    "unwrap_or_default",
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [ Ty.path "u8" ];
+                        Ty.path "revm_precompile::interface::PrecompileError"
+                      ],
+                    "ok",
                     [],
                     []
                   |),
@@ -1547,17 +877,94 @@ Module secp256k1.
                       Ty.apply
                         (Ty.path "core::result::Result")
                         []
-                        [ Ty.path "alloy_primitives::bytes_::Bytes"; Ty.path "secp256k1::Error" ],
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [ Ty.path "u8" ];
+                          Ty.path "revm_precompile::interface::PrecompileError"
+                        ],
+                      M.get_trait_method (|
+                        "revm_precompile::interface::Crypto",
+                        Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ],
+                        [],
+                        [],
+                        "secp256k1_ecrecover",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("revm_precompile::interface::Crypto::Trait", []) ] ],
+                              M.get_function (| "revm_precompile::interface::crypto", [], [] |),
+                              []
+                            |)
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| sig |) |),
+                                "alloy_primitives::bits::fixed::FixedBytes",
+                                0
+                              |)
+                            |)
+                          |)
+                        |);
+                        M.read (| recid |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| msg |) |),
+                                "alloy_primitives::bits::fixed::FixedBytes",
+                                0
+                              |)
+                            |)
+                          |)
+                        |)
+                      ]
+                    |)
+                  ]
+                |) in
+              let~ out : Ty.path "alloy_primitives::bytes_::Bytes" :=
+                M.call_closure (|
+                  Ty.path "alloy_primitives::bytes_::Bytes",
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                    "unwrap_or_default",
+                    [],
+                    []
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "alloy_primitives::bytes_::Bytes" ],
                       M.get_associated_function (|
                         Ty.apply
-                          (Ty.path "core::result::Result")
+                          (Ty.path "core::option::Option")
                           []
                           [
                             Ty.apply
-                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 32 ]
-                              [];
-                            Ty.path "secp256k1::Error"
+                              [ Ty.path "u8" ]
                           ],
                         "map",
                         [],
@@ -1566,36 +973,15 @@ Module secp256k1.
                           Ty.function
                             [
                               Ty.apply
-                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 32 ]
-                                []
+                                [ Ty.path "u8" ]
                             ]
                             (Ty.path "alloy_primitives::bytes_::Bytes")
                         ]
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                [ Value.Integer IntegerKind.Usize 32 ]
-                                [];
-                              Ty.path "secp256k1::Error"
-                            ],
-                          M.get_function (|
-                            "revm_precompile::secp256k1::secp256k1::ecrecover",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| sig |) |) |);
-                            M.read (| recid |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |)
-                          ]
-                        |);
+                        M.read (| res |);
                         M.closure
                           (fun γ =>
                             ltac:(M.monadic
@@ -1606,9 +992,9 @@ Module secp256k1.
                                     Ty.path "alloy_primitives::bytes_::Bytes",
                                     M.alloc (|
                                       Ty.apply
-                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                        (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 32 ]
-                                        [],
+                                        [ Ty.path "u8" ],
                                       α0
                                     |),
                                     [
@@ -1617,10 +1003,9 @@ Module secp256k1.
                                           (let o :=
                                             M.copy (|
                                               Ty.apply
-                                                (Ty.path
-                                                  "alloy_primitives::bits::fixed::FixedBytes")
+                                                (Ty.path "array")
                                                 [ Value.Integer IntegerKind.Usize 32 ]
-                                                [],
+                                                [ Ty.path "u8" ],
                                               γ
                                             |) in
                                           M.call_closure (|
@@ -1680,43 +1065,7 @@ Module secp256k1.
                                                             []
                                                             [ Ty.path "u8" ]
                                                         ]),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      32
-                                                                  ]
-                                                                  [ Ty.path "u8" ]
-                                                              ],
-                                                            M.get_trait_method (|
-                                                              "core::ops::deref::Deref",
-                                                              Ty.apply
-                                                                (Ty.path
-                                                                  "alloy_primitives::bits::fixed::FixedBytes")
-                                                                [ Value.Integer IntegerKind.Usize 32
-                                                                ]
-                                                                [],
-                                                              [],
-                                                              [],
-                                                              "deref",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [ M.borrow (| Pointer.Kind.Ref, o |) ]
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    ]
+                                                    [ M.borrow (| Pointer.Kind.Ref, o |) ]
                                                   |)
                                                 ]
                                               |)
@@ -1736,14 +1085,14 @@ Module secp256k1.
                   []
                   [
                     Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                    Ty.path "revm_precompile::interface::PrecompileError"
                   ],
                 Value.StructTuple
                   "core::result::Result::Ok"
                   []
                   [
                     Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                    Ty.path "revm_precompile::interface::PrecompileError"
                   ]
                   [
                     M.call_closure (|
@@ -1787,4 +1136,226 @@ Module secp256k1.
     Admitted.
     Global Typeclasses Opaque value_ECRECOVER_BASE.
   End ec_recover_run.
+  
+  (*
+  pub(crate) fn ecrecover_bytes(sig: [u8; 64], recid: u8, msg: [u8; 32]) -> Option<[u8; 32]> {
+      let sig = B512::from_slice(&sig);
+      let msg = B256::from_slice(&msg);
+  
+      match ecrecover(&sig, recid, &msg) {
+          Ok(address) => Some(address.0),
+          Err(_) => None,
+      }
+  }
+  *)
+  Definition ecrecover_bytes (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ sig; recid; msg ] =>
+      ltac:(M.monadic
+        (let sig :=
+          M.alloc (|
+            Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 64 ] [ Ty.path "u8" ],
+            sig
+          |) in
+        let recid := M.alloc (| Ty.path "u8", recid |) in
+        let msg :=
+          M.alloc (|
+            Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
+            msg
+          |) in
+        M.read (|
+          let~ sig :
+              Ty.apply
+                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                [ Value.Integer IntegerKind.Usize 64 ]
+                [] :=
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                [ Value.Integer IntegerKind.Usize 64 ]
+                [],
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                  [ Value.Integer IntegerKind.Usize 64 ]
+                  [],
+                "from_slice",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 64 ]
+                          [ Ty.path "u8" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, sig |) |)
+                    |)
+                  ]
+                |)
+              ]
+            |) in
+          let~ msg :
+              Ty.apply
+                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                [ Value.Integer IntegerKind.Usize 32 ]
+                [] :=
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                [ Value.Integer IntegerKind.Usize 32 ]
+                [],
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                  [ Value.Integer IntegerKind.Usize 32 ]
+                  [],
+                "from_slice",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [ Ty.path "u8" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, msg |) |)
+                    |)
+                  ]
+                |)
+              ]
+            |) in
+          M.alloc (|
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+              ],
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ],
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [];
+                    Ty.path "secp256k1::Error"
+                  ],
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [];
+                      Ty.path "secp256k1::Error"
+                    ],
+                  M.get_function (|
+                    "revm_precompile::secp256k1::bitcoin_secp256k1::ecrecover",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, sig |) |)
+                    |);
+                    M.read (| recid |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, msg |) |)
+                    |)
+                  ]
+                |)
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
+                    let address :=
+                      M.copy (|
+                        Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [],
+                        γ0_0
+                      |) in
+                    Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [ Ty.path "u8" ]
+                      ]
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            address,
+                            "alloy_primitives::bits::fixed::FixedBytes",
+                            0
+                          |)
+                        |)
+                      ]));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
+                    Value.StructTuple
+                      "core::option::Option::None"
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [ Ty.path "u8" ]
+                      ]
+                      []))
+              ]
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_ecrecover_bytes :
+    M.IsFunction.C "revm_precompile::secp256k1::ecrecover_bytes" ecrecover_bytes.
+  Admitted.
+  Global Typeclasses Opaque ecrecover_bytes.
 End secp256k1.

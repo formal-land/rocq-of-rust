@@ -5,12 +5,12 @@ Module identity.
   Definition value_FUN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.alloc (|
-        Ty.path "revm_precompile::PrecompileWithAddress",
-        Value.StructTuple
-          "revm_precompile::PrecompileWithAddress"
-          []
-          []
+        Ty.path "revm_precompile::Precompile",
+        M.call_closure (|
+          Ty.path "revm_precompile::Precompile",
+          M.get_associated_function (| Ty.path "revm_precompile::Precompile", "new", [], [] |),
           [
+            Value.StructTuple "revm_precompile::id::PrecompileId::Identity" [] [] [];
             M.call_closure (|
               Ty.path "alloy_primitives::bits::address::Address",
               M.get_function (| "revm_precompile::u64_to_address", [], [] |),
@@ -19,7 +19,7 @@ Module identity.
             M.call_closure (|
               Ty.function
                 [
-                  Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                   Ty.path "u64"
                 ]
                 (Ty.apply
@@ -27,13 +27,13 @@ Module identity.
                   []
                   [
                     Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                    Ty.path "revm_precompile::interface::PrecompileError"
                   ]),
               M.pointer_coercion
                 M.PointerCoercion.ReifyFnPointer
                 (Ty.function
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                     Ty.path "u64"
                   ]
                   (Ty.apply
@@ -41,11 +41,11 @@ Module identity.
                     []
                     [
                       Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
+                      Ty.path "revm_precompile::interface::PrecompileError"
                     ]))
                 (Ty.function
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                     Ty.path "u64"
                   ]
                   (Ty.apply
@@ -53,11 +53,12 @@ Module identity.
                     []
                     [
                       Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
+                      Ty.path "revm_precompile::interface::PrecompileError"
                     ])),
               [ M.get_function (| "revm_precompile::identity::identity_run", [], [] |) ]
             |)
           ]
+        |)
       |))).
   
   Global Instance Instance_IsConstant_value_FUN :
@@ -82,12 +83,15 @@ Module identity.
   Global Typeclasses Opaque value_IDENTITY_PER_WORD.
   
   (*
-  pub fn identity_run(input: &Bytes, gas_limit: u64) -> PrecompileResult {
+  pub fn identity_run(input: &[u8], gas_limit: u64) -> PrecompileResult {
       let gas_used = calc_linear_cost_u32(input.len(), IDENTITY_BASE, IDENTITY_PER_WORD);
       if gas_used > gas_limit {
-          return Err(PrecompileError::OutOfGas.into());
+          return Err(PrecompileError::OutOfGas);
       }
-      Ok(PrecompileOutput::new(gas_used, input.clone()))
+      Ok(PrecompileOutput::new(
+          gas_used,
+          Bytes::copy_from_slice(input),
+      ))
   }
   *)
   Definition identity_run (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -96,7 +100,7 @@ Module identity.
       ltac:(M.monadic
         (let input :=
           M.alloc (|
-            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
             input
           |) in
         let gas_limit := M.alloc (| Ty.path "u64", gas_limit |) in
@@ -106,7 +110,7 @@ Module identity.
             []
             [
               Ty.path "revm_precompile::interface::PrecompileOutput";
-              Ty.path "revm_precompile::interface::PrecompileErrors"
+              Ty.path "revm_precompile::interface::PrecompileError"
             ]) (|
           ltac:(M.monadic
             (M.read (|
@@ -117,27 +121,13 @@ Module identity.
                   [
                     M.call_closure (|
                       Ty.path "usize",
-                      M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "len", [], [] |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.path "alloy_primitives::bytes_::Bytes",
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
-                            |)
-                          |)
-                        |)
-                      ]
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
                     |);
                     M.read (|
                       get_constant (| "revm_precompile::identity::IDENTITY_BASE", Ty.path "u64" |)
@@ -175,28 +165,14 @@ Module identity.
                                 []
                                 [
                                   Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  Ty.path "revm_precompile::interface::PrecompileError"
                                 ]
                                 [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::OutOfGas"
-                                        []
-                                        []
-                                        []
-                                    ]
-                                  |)
+                                  Value.StructTuple
+                                    "revm_precompile::interface::PrecompileError::OutOfGas"
+                                    []
+                                    []
+                                    []
                                 ]
                             |)
                           |)
@@ -210,14 +186,14 @@ Module identity.
                   []
                   [
                     Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                    Ty.path "revm_precompile::interface::PrecompileError"
                   ],
                 Value.StructTuple
                   "core::result::Result::Ok"
                   []
                   [
                     Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                    Ty.path "revm_precompile::interface::PrecompileError"
                   ]
                   [
                     M.call_closure (|
@@ -232,12 +208,9 @@ Module identity.
                         M.read (| gas_used |);
                         M.call_closure (|
                           Ty.path "alloy_primitives::bytes_::Bytes",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                          M.get_associated_function (|
                             Ty.path "alloy_primitives::bytes_::Bytes",
-                            [],
-                            [],
-                            "clone",
+                            "copy_from_slice",
                             [],
                             []
                           |),

@@ -1043,8 +1043,10 @@ Module utilities.
   
   (*
   pub const fn bool_to_b256(value: bool) -> &'static B256 {
-      const TRUE: &B256 = &b256!("0000000000000000000000000000000000000000000000000000000000000001");
-      const FALSE: &B256 = &b256!("0000000000000000000000000000000000000000000000000000000000000000");
+      const TRUE: &B256 =
+          &b256!("0x0000000000000000000000000000000000000000000000000000000000000001");
+      const FALSE: &B256 =
+          &b256!("0x0000000000000000000000000000000000000000000000000000000000000000");
       if value {
           TRUE
       } else {
@@ -1153,7 +1155,7 @@ Module utilities.
                     [
                       M.read (|
                         get_constant (|
-                          "revm_precompile::utilities::bool_to_b256::TRUE::RES",
+                          "revm_precompile::utilities::bool_to_b256::TRUE_discriminant",
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 32 ]
@@ -1212,7 +1214,7 @@ Module utilities.
                     [
                       M.read (|
                         get_constant (|
-                          "revm_precompile::utilities::bool_to_b256::FALSE::RES",
+                          "revm_precompile::utilities::bool_to_b256::FALSE_discriminant",
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 32 ]

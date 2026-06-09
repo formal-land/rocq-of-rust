@@ -10,54 +10,6 @@ Module constants.
   Admitted.
   Global Typeclasses Opaque value_BLOCK_HASH_HISTORY.
   
-  Definition value_BLOCKHASH_SERVE_WINDOW
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    ltac:(M.monadic (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 8192 |))).
-  
-  Global Instance Instance_IsConstant_value_BLOCKHASH_SERVE_WINDOW :
-    M.IsFunction.C
-      "revm_primitives::constants::BLOCKHASH_SERVE_WINDOW"
-      value_BLOCKHASH_SERVE_WINDOW.
-  Admitted.
-  Global Typeclasses Opaque value_BLOCKHASH_SERVE_WINDOW.
-  
-  Definition value_BLOCKHASH_STORAGE_ADDRESS
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    ltac:(M.monadic
-      (M.alloc (|
-        Ty.path "alloy_primitives::bits::address::Address",
-        M.call_closure (|
-          Ty.path "alloy_primitives::bits::address::Address",
-          M.get_associated_function (|
-            Ty.path "alloy_primitives::bits::address::Address",
-            "new",
-            [],
-            []
-          |),
-          [
-            M.read (|
-              get_constant (|
-                "revm_primitives::constants::BLOCKHASH_STORAGE_ADDRESS::RES",
-                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 20 ] [ Ty.path "u8" ]
-              |)
-            |)
-          ]
-        |)
-      |))).
-  
-  Global Instance Instance_IsConstant_value_BLOCKHASH_STORAGE_ADDRESS :
-    M.IsFunction.C
-      "revm_primitives::constants::BLOCKHASH_STORAGE_ADDRESS"
-      value_BLOCKHASH_STORAGE_ADDRESS.
-  Admitted.
-  Global Typeclasses Opaque value_BLOCKHASH_STORAGE_ADDRESS.
-  
   Definition value_PRECOMPILE3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.alloc (|
@@ -102,4 +54,57 @@ Module constants.
     M.IsFunction.C "revm_primitives::constants::PRECOMPILE3" value_PRECOMPILE3.
   Admitted.
   Global Typeclasses Opaque value_PRECOMPILE3.
+  
+  Definition value_STACK_LIMIT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 1024 |))).
+  
+  Global Instance Instance_IsConstant_value_STACK_LIMIT :
+    M.IsFunction.C "revm_primitives::constants::STACK_LIMIT" value_STACK_LIMIT.
+  Admitted.
+  Global Typeclasses Opaque value_STACK_LIMIT.
+  
+  Definition value_CALL_STACK_LIMIT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 1024 |))).
+  
+  Global Instance Instance_IsConstant_value_CALL_STACK_LIMIT :
+    M.IsFunction.C "revm_primitives::constants::CALL_STACK_LIMIT" value_CALL_STACK_LIMIT.
+  Admitted.
+  Global Typeclasses Opaque value_CALL_STACK_LIMIT.
+  
+  Definition value_KECCAK_EMPTY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic
+      (M.alloc (|
+        Ty.apply
+          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+          [ Value.Integer IntegerKind.Usize 32 ]
+          [],
+        M.call_closure (|
+          Ty.apply
+            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+            [ Value.Integer IntegerKind.Usize 32 ]
+            [],
+          M.get_associated_function (|
+            Ty.apply
+              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+              [ Value.Integer IntegerKind.Usize 32 ]
+              [],
+            "new",
+            [],
+            []
+          |),
+          [
+            M.read (|
+              get_constant (|
+                "revm_primitives::constants::KECCAK_EMPTY_discriminant",
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+              |)
+            |)
+          ]
+        |)
+      |))).
+  
+  Global Instance Instance_IsConstant_value_KECCAK_EMPTY :
+    M.IsFunction.C "revm_primitives::constants::KECCAK_EMPTY" value_KECCAK_EMPTY.
+  Admitted.
+  Global Typeclasses Opaque value_KECCAK_EMPTY.
 End constants.

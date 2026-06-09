@@ -93,13 +93,19 @@ Module gas.
     Admitted.
     Global Typeclasses Opaque value_JUMPDEST.
     
-    Definition value_SELFDESTRUCT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition value_SELFDESTRUCT_REFUND
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
       ltac:(M.monadic (M.alloc (| Ty.path "i64", Value.Integer IntegerKind.I64 24000 |))).
     
-    Global Instance Instance_IsConstant_value_SELFDESTRUCT :
-      M.IsFunction.C "revm_interpreter::gas::constants::SELFDESTRUCT" value_SELFDESTRUCT.
+    Global Instance Instance_IsConstant_value_SELFDESTRUCT_REFUND :
+      M.IsFunction.C
+        "revm_interpreter::gas::constants::SELFDESTRUCT_REFUND"
+        value_SELFDESTRUCT_REFUND.
     Admitted.
-    Global Typeclasses Opaque value_SELFDESTRUCT.
+    Global Typeclasses Opaque value_SELFDESTRUCT_REFUND.
     
     Definition value_CREATE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 32000 |))).
@@ -245,47 +251,131 @@ Module gas.
     Admitted.
     Global Typeclasses Opaque value_REFUND_SSTORE_CLEARS.
     
-    Definition value_TRANSACTION_ZERO_DATA
+    Definition value_STANDARD_TOKEN_COST
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
       ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 4 |))).
     
-    Global Instance Instance_IsConstant_value_TRANSACTION_ZERO_DATA :
+    Global Instance Instance_IsConstant_value_STANDARD_TOKEN_COST :
       M.IsFunction.C
-        "revm_interpreter::gas::constants::TRANSACTION_ZERO_DATA"
-        value_TRANSACTION_ZERO_DATA.
+        "revm_interpreter::gas::constants::STANDARD_TOKEN_COST"
+        value_STANDARD_TOKEN_COST.
     Admitted.
-    Global Typeclasses Opaque value_TRANSACTION_ZERO_DATA.
+    Global Typeclasses Opaque value_STANDARD_TOKEN_COST.
     
-    Definition value_TRANSACTION_NON_ZERO_DATA_INIT
-        (ε : list Value.t)
-        (τ : list Ty.t)
-        (α : list Value.t)
-        : M :=
-      ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 16 |))).
-    
-    Global Instance Instance_IsConstant_value_TRANSACTION_NON_ZERO_DATA_INIT :
-      M.IsFunction.C
-        "revm_interpreter::gas::constants::TRANSACTION_NON_ZERO_DATA_INIT"
-        value_TRANSACTION_NON_ZERO_DATA_INIT.
-    Admitted.
-    Global Typeclasses Opaque value_TRANSACTION_NON_ZERO_DATA_INIT.
-    
-    Definition value_TRANSACTION_NON_ZERO_DATA_FRONTIER
+    Definition value_NON_ZERO_BYTE_DATA_COST
         (ε : list Value.t)
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
       ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 68 |))).
     
-    Global Instance Instance_IsConstant_value_TRANSACTION_NON_ZERO_DATA_FRONTIER :
+    Global Instance Instance_IsConstant_value_NON_ZERO_BYTE_DATA_COST :
       M.IsFunction.C
-        "revm_interpreter::gas::constants::TRANSACTION_NON_ZERO_DATA_FRONTIER"
-        value_TRANSACTION_NON_ZERO_DATA_FRONTIER.
+        "revm_interpreter::gas::constants::NON_ZERO_BYTE_DATA_COST"
+        value_NON_ZERO_BYTE_DATA_COST.
     Admitted.
-    Global Typeclasses Opaque value_TRANSACTION_NON_ZERO_DATA_FRONTIER.
+    Global Typeclasses Opaque value_NON_ZERO_BYTE_DATA_COST.
+    
+    Definition value_NON_ZERO_BYTE_MULTIPLIER
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "u64",
+          M.call_closure (|
+            Ty.path "u64",
+            BinOp.Wrap.div,
+            [
+              M.read (|
+                get_constant (|
+                  "revm_interpreter::gas::constants::NON_ZERO_BYTE_DATA_COST",
+                  Ty.path "u64"
+                |)
+              |);
+              M.read (|
+                get_constant (|
+                  "revm_interpreter::gas::constants::STANDARD_TOKEN_COST",
+                  Ty.path "u64"
+                |)
+              |)
+            ]
+          |)
+        |))).
+    
+    Global Instance Instance_IsConstant_value_NON_ZERO_BYTE_MULTIPLIER :
+      M.IsFunction.C
+        "revm_interpreter::gas::constants::NON_ZERO_BYTE_MULTIPLIER"
+        value_NON_ZERO_BYTE_MULTIPLIER.
+    Admitted.
+    Global Typeclasses Opaque value_NON_ZERO_BYTE_MULTIPLIER.
+    
+    Definition value_NON_ZERO_BYTE_DATA_COST_ISTANBUL
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 16 |))).
+    
+    Global Instance Instance_IsConstant_value_NON_ZERO_BYTE_DATA_COST_ISTANBUL :
+      M.IsFunction.C
+        "revm_interpreter::gas::constants::NON_ZERO_BYTE_DATA_COST_ISTANBUL"
+        value_NON_ZERO_BYTE_DATA_COST_ISTANBUL.
+    Admitted.
+    Global Typeclasses Opaque value_NON_ZERO_BYTE_DATA_COST_ISTANBUL.
+    
+    Definition value_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "u64",
+          M.call_closure (|
+            Ty.path "u64",
+            BinOp.Wrap.div,
+            [
+              M.read (|
+                get_constant (|
+                  "revm_interpreter::gas::constants::NON_ZERO_BYTE_DATA_COST_ISTANBUL",
+                  Ty.path "u64"
+                |)
+              |);
+              M.read (|
+                get_constant (|
+                  "revm_interpreter::gas::constants::STANDARD_TOKEN_COST",
+                  Ty.path "u64"
+                |)
+              |)
+            ]
+          |)
+        |))).
+    
+    Global Instance Instance_IsConstant_value_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL :
+      M.IsFunction.C
+        "revm_interpreter::gas::constants::NON_ZERO_BYTE_MULTIPLIER_ISTANBUL"
+        value_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL.
+    Admitted.
+    Global Typeclasses Opaque value_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL.
+    
+    Definition value_TOTAL_COST_FLOOR_PER_TOKEN
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 10 |))).
+    
+    Global Instance Instance_IsConstant_value_TOTAL_COST_FLOOR_PER_TOKEN :
+      M.IsFunction.C
+        "revm_interpreter::gas::constants::TOTAL_COST_FLOOR_PER_TOKEN"
+        value_TOTAL_COST_FLOOR_PER_TOKEN.
+    Admitted.
+    Global Typeclasses Opaque value_TOTAL_COST_FLOOR_PER_TOKEN.
     
     Definition value_EOF_CREATE_GAS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       ltac:(M.monadic (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 32000 |))).
@@ -344,6 +434,76 @@ Module gas.
         value_COLD_ACCOUNT_ACCESS_COST.
     Admitted.
     Global Typeclasses Opaque value_COLD_ACCOUNT_ACCESS_COST.
+    
+    Definition value_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "u64",
+          M.call_closure (|
+            Ty.path "u64",
+            BinOp.Wrap.sub,
+            [
+              M.read (|
+                get_constant (|
+                  "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST",
+                  Ty.path "u64"
+                |)
+              |);
+              M.read (|
+                get_constant (|
+                  "revm_interpreter::gas::constants::WARM_STORAGE_READ_COST",
+                  Ty.path "u64"
+                |)
+              |)
+            ]
+          |)
+        |))).
+    
+    Global Instance Instance_IsConstant_value_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL :
+      M.IsFunction.C
+        "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL"
+        value_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL.
+    Admitted.
+    Global Typeclasses Opaque value_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL.
+    
+    Definition value_COLD_SLOAD_COST_ADDITIONAL
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "u64",
+          M.call_closure (|
+            Ty.path "u64",
+            BinOp.Wrap.sub,
+            [
+              M.read (|
+                get_constant (|
+                  "revm_interpreter::gas::constants::COLD_SLOAD_COST",
+                  Ty.path "u64"
+                |)
+              |);
+              M.read (|
+                get_constant (|
+                  "revm_interpreter::gas::constants::WARM_STORAGE_READ_COST",
+                  Ty.path "u64"
+                |)
+              |)
+            ]
+          |)
+        |))).
+    
+    Global Instance Instance_IsConstant_value_COLD_SLOAD_COST_ADDITIONAL :
+      M.IsFunction.C
+        "revm_interpreter::gas::constants::COLD_SLOAD_COST_ADDITIONAL"
+        value_COLD_SLOAD_COST_ADDITIONAL.
+    Admitted.
+    Global Typeclasses Opaque value_COLD_SLOAD_COST_ADDITIONAL.
     
     Definition value_WARM_STORAGE_READ_COST
         (ε : list Value.t)

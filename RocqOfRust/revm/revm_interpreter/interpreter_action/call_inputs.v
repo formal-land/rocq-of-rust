@@ -3,6 +3,1099 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module interpreter_action.
   Module call_inputs.
+    (*
+    Enum CallInput
+    {
+      const_params := [];
+      ty_params := [];
+      variants :=
+        [
+          {
+            name := "SharedBuffer";
+            item :=
+              StructTuple [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ];
+          };
+          {
+            name := "Bytes";
+            item := StructTuple [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+          }
+        ];
+    }
+    *)
+    
+    Axiom IsDiscriminant_CallInput_SharedBuffer :
+      M.IsDiscriminant
+        "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer"
+        0.
+    Axiom IsDiscriminant_CallInput_Bytes :
+      M.IsDiscriminant "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes" 1.
+    
+    Module Impl_core_clone_Clone_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput".
+      
+      (* Clone *)
+      Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput",
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
+                        0
+                      |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
+                        γ1_0
+                      |) in
+                    Value.StructTuple
+                      "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer"
+                      []
+                      []
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |)
+                      ]));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
+                        0
+                      |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                        γ1_0
+                      |) in
+                    Value.StructTuple
+                      "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes"
+                      []
+                      []
+                      [
+                        M.call_closure (|
+                          Ty.path "alloy_primitives::bytes_::Bytes",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "alloy_primitives::bytes_::Bytes",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |)
+                      ]))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::Clone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("clone", InstanceField.Method clone) ].
+    End Impl_core_clone_Clone_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+    
+    Module Impl_core_fmt_Debug_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput".
+      
+      (* Debug *)
+      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ],
+                self
+              |) in
+            let f :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
+                        0
+                      |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
+                        γ1_0
+                      |) in
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "debug_tuple_field1_finish",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SharedBuffer" |) |) |);
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
+                        0
+                      |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                        γ1_0
+                      |) in
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "debug_tuple_field1_finish",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bytes" |) |) |);
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::fmt::Debug"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+    End Impl_core_fmt_Debug_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+    
+    Module Impl_core_marker_StructuralPartialEq_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::StructuralPartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_StructuralPartialEq_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+    
+    Module Impl_core_cmp_PartialEq_revm_interpreter_interpreter_action_call_inputs_CallInput_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput".
+      
+      (* PartialEq *)
+      Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ],
+                other
+              |) in
+            M.read (|
+              let~ __self_discr : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_function (|
+                    "core::intrinsics::discriminant_value",
+                    [],
+                    [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ]
+                  |),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |) in
+              let~ __arg1_discr : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_function (|
+                    "core::intrinsics::discriminant_value",
+                    [],
+                    [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ]
+                  |),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |) in
+              M.alloc (|
+                Ty.path "bool",
+                LogicalOp.and (|
+                  M.call_closure (|
+                    Ty.path "bool",
+                    BinOp.eq,
+                    [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
+                  |),
+                  ltac:(M.monadic
+                    (M.match_operator (|
+                      Ty.path "bool",
+                      M.alloc (|
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.path
+                                  "revm_interpreter::interpreter_action::call_inputs::CallInput"
+                              ];
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.path
+                                  "revm_interpreter::interpreter_action::call_inputs::CallInput"
+                              ]
+                          ],
+                        Value.Tuple [ M.read (| self |); M.read (| other |) ]
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                            let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                            let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                            let γ2_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ0_0,
+                                "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
+                                0
+                              |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ]
+                                  ],
+                                γ2_0
+                              |) in
+                            let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                            let γ2_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ0_1,
+                                "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
+                                0
+                              |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ]
+                                  ],
+                                γ2_0
+                              |) in
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ]
+                                  ],
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ]
+                                ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              ]
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                            let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                            let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                            let γ2_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ0_0,
+                                "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
+                                0
+                              |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                γ2_0
+                              |) in
+                            let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                            let γ2_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ0_1,
+                                "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
+                                0
+                              |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                γ2_0
+                              |) in
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                                ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              ]
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (M.never_to_any (|
+                              M.call_closure (|
+                                Ty.path "never",
+                                M.get_function (| "core::intrinsics::unreachable", [], [] |),
+                                []
+                              |)
+                            |)))
+                      ]
+                    |)))
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::PartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *)
+          [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ]
+          Self
+          (* Instance *) [ ("eq", InstanceField.Method eq) ].
+    End Impl_core_cmp_PartialEq_revm_interpreter_interpreter_action_call_inputs_CallInput_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+    
+    Module Impl_core_cmp_Eq_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput".
+      
+      (* Eq *)
+      Definition assert_receiver_is_total_eq
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.tuple [],
+              Value.DeclaredButUndefined,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.match_operator (|
+                      Ty.tuple [],
+                      Value.DeclaredButUndefined,
+                      [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::Eq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *)
+          [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
+    End Impl_core_cmp_Eq_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+    
+    Module Impl_revm_interpreter_interpreter_action_call_inputs_CallInput.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput".
+      
+      (*
+          pub fn len(&self) -> usize {
+              match self {
+                  Self::Bytes(bytes) => bytes.len(),
+                  Self::SharedBuffer(range) => range.len(),
+              }
+          }
+      *)
+      Definition len (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "usize",
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
+                        0
+                      |) in
+                    let bytes :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                        γ1_0
+                      |) in
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "len", [], [] |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
+                              M.get_trait_method (|
+                                "core::ops::deref::Deref",
+                                Ty.path "alloy_primitives::bytes_::Bytes",
+                                [],
+                                [],
+                                "deref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |) ]
+                            |)
+                          |)
+                        |)
+                      ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
+                        0
+                      |) in
+                    let range :=
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
+                        γ1_0
+                      |) in
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_trait_method (|
+                        "core::iter::traits::exact_size::ExactSizeIterator",
+                        Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                        [],
+                        [],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| range |) |) |) ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Admitted.
+      Global Typeclasses Opaque len.
+      
+      (*
+          pub fn is_empty(&self) -> bool {
+              self.len() == 0
+          }
+      *)
+      Definition is_empty (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.eq,
+              [
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput",
+                    "len",
+                    [],
+                    []
+                  |),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |);
+                Value.Integer IntegerKind.Usize 0
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_empty :
+        M.IsAssociatedFunction.C Self "is_empty" is_empty.
+      Admitted.
+      Global Typeclasses Opaque is_empty.
+      
+      (*
+          pub fn bytes<CTX>(&self, ctx: &CTX) -> Bytes
+          where
+              CTX: ContextTr,
+          {
+              match self {
+                  CallInput::Bytes(bytes) => bytes.clone(),
+                  CallInput::SharedBuffer(range) => ctx
+                      .local()
+                      .shared_memory_buffer_slice(range.clone())
+                      .map(|b| Bytes::from(b.to_vec()))
+                      .unwrap_or_default(),
+              }
+          }
+      *)
+      Definition bytes (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ CTX ], [ self; ctx ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput" ],
+                self
+              |) in
+            let ctx := M.alloc (| Ty.apply (Ty.path "&") [] [ CTX ], ctx |) in
+            M.match_operator (|
+              Ty.path "alloy_primitives::bytes_::Bytes",
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
+                        0
+                      |) in
+                    let bytes :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                        γ1_0
+                      |) in
+                    M.call_closure (|
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "alloy_primitives::bytes_::Bytes",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |) ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
+                        0
+                      |) in
+                    let range :=
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
+                        γ1_0
+                      |) in
+                    M.call_closure (|
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                        "unwrap_or_default",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::Ref")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                              ],
+                            "map",
+                            [],
+                            [
+                              Ty.path "alloy_primitives::bytes_::Bytes";
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::cell::Ref")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                ]
+                                (Ty.path "alloy_primitives::bytes_::Bytes")
+                            ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::cell::Ref")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                ],
+                              M.get_trait_method (|
+                                "revm_context_interface::local::LocalContextTr",
+                                Ty.associated_in_trait
+                                  "revm_context_interface::context::ContextTr"
+                                  []
+                                  []
+                                  CTX
+                                  "Local",
+                                [],
+                                [],
+                                "shared_memory_buffer_slice",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "revm_context_interface::context::ContextTr"
+                                            []
+                                            []
+                                            CTX
+                                            "Local"
+                                        ],
+                                      M.get_trait_method (|
+                                        "revm_context_interface::context::ContextTr",
+                                        CTX,
+                                        [],
+                                        [],
+                                        "local",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| ctx |) |)
+                                        |)
+                                      ]
+                                    |)
+                                  |)
+                                |);
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  M.get_trait_method (|
+                                    "core::clone::Clone",
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    [],
+                                    [],
+                                    "clone",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| range |) |)
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |);
+                            M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "alloy_primitives::bytes_::Bytes",
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::cell::Ref")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          α0
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply
+                                                    (Ty.path "core::cell::Ref")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.path "alloy_primitives::bytes_::Bytes",
+                                                M.get_trait_method (|
+                                                  "core::convert::From",
+                                                  Ty.path "alloy_primitives::bytes_::Bytes",
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
+                                                      []
+                                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ],
+                                                  "from",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
+                                                      []
+                                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global"
+                                                      ],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "slice")
+                                                        []
+                                                        [ Ty.path "u8" ],
+                                                      "to_vec",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ],
+                                                            M.get_trait_method (|
+                                                              "core::ops::deref::Deref",
+                                                              Ty.apply
+                                                                (Ty.path "core::cell::Ref")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ],
+                                                              [],
+                                                              [],
+                                                              "deref",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [ M.borrow (| Pointer.Kind.Ref, b |) ]
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end))
+                          ]
+                        |)
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_bytes : M.IsAssociatedFunction.C Self "bytes" bytes.
+      Admitted.
+      Global Typeclasses Opaque bytes.
+    End Impl_revm_interpreter_interpreter_action_call_inputs_CallInput.
+    
+    Module Impl_core_default_Default_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput".
+      
+      (*
+          fn default() -> Self {
+              CallInput::SharedBuffer(0..0)
+          }
+      *)
+      Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [] =>
+          ltac:(M.monadic
+            (Value.StructTuple
+              "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer"
+              []
+              []
+              [
+                Value.mkStructRecord
+                  "core::ops::range::Range"
+                  []
+                  [ Ty.path "usize" ]
+                  [
+                    ("start", Value.Integer IntegerKind.Usize 0);
+                    ("end_", Value.Integer IntegerKind.Usize 0)
+                  ]
+              ]))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::default::Default"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("default", InstanceField.Method default) ].
+    End Impl_core_default_Default_for_revm_interpreter_interpreter_action_call_inputs_CallInput.
+    
     (* StructRecord
       {
         name := "CallInputs";
@@ -10,17 +1103,30 @@ Module interpreter_action.
         ty_params := [];
         fields :=
           [
-            ("input", Ty.path "alloy_primitives::bytes_::Bytes");
+            ("input", Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput");
             ("return_memory_offset",
               Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
             ("gas_limit", Ty.path "u64");
             ("bytecode_address", Ty.path "alloy_primitives::bits::address::Address");
+            ("known_bytecode",
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.tuple
+                    [
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [];
+                      Ty.path "revm_bytecode::bytecode::Bytecode"
+                    ]
+                ]);
             ("target_address", Ty.path "alloy_primitives::bits::address::Address");
             ("caller", Ty.path "alloy_primitives::bits::address::Address");
             ("value", Ty.path "revm_interpreter::interpreter_action::call_inputs::CallValue");
             ("scheme", Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme");
-            ("is_static", Ty.path "bool");
-            ("is_eof", Ty.path "bool")
+            ("is_static", Ty.path "bool")
           ];
       } *)
     
@@ -48,10 +1154,10 @@ Module interpreter_action.
               [
                 ("input",
                   M.call_closure (|
-                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput",
                     M.get_trait_method (|
                       "core::clone::Clone",
-                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput",
                       [],
                       [],
                       "clone",
@@ -152,6 +1258,58 @@ Module interpreter_action.
                               M.deref (| M.read (| self |) |),
                               "revm_interpreter::interpreter_action::call_inputs::CallInputs",
                               "bytecode_address"
+                            |)
+                          |)
+                        |)
+                      |)
+                    ]
+                  |));
+                ("known_bytecode",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [];
+                            Ty.path "revm_bytecode::bytecode::Bytecode"
+                          ]
+                      ],
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.tuple
+                            [
+                              Ty.apply
+                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [];
+                              Ty.path "revm_bytecode::bytecode::Bytecode"
+                            ]
+                        ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_interpreter::interpreter_action::call_inputs::CallInputs",
+                              "known_bytecode"
                             |)
                           |)
                         |)
@@ -297,34 +1455,6 @@ Module interpreter_action.
                         |)
                       |)
                     ]
-                  |));
-                ("is_eof",
-                  M.call_closure (|
-                    Ty.path "bool",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
-                      Ty.path "bool",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                              "is_eof"
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
                   |))
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -393,13 +1523,16 @@ Module interpreter_action.
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "known_bytecode" |) |)
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
                               M.deref (| mk_str (| "target_address" |) |)
                             |);
                             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "caller" |) |) |);
                             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "value" |) |) |);
                             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "scheme" |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_static" |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_eof" |) |) |)
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_static" |) |) |)
                           ]
                       |)
                     |)
@@ -475,7 +1608,10 @@ Module interpreter_action.
                                     (Ty.apply
                                       (Ty.path "&")
                                       []
-                                      [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                      [
+                                        Ty.path
+                                          "revm_interpreter::interpreter_action::call_inputs::CallInput"
+                                      ])
                                     (Ty.apply
                                       (Ty.path "&")
                                       []
@@ -585,6 +1721,52 @@ Module interpreter_action.
                                             M.deref (| M.read (| self |) |),
                                             "revm_interpreter::interpreter_action::call_inputs::CallInputs",
                                             "bytecode_address"
+                                          |)
+                                        |)
+                                      |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.tuple
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloy_primitives::bits::fixed::FixedBytes")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  [];
+                                                Ty.path "revm_bytecode::bytecode::Bytecode"
+                                              ]
+                                          ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
+                                            "known_bytecode"
                                           |)
                                         |)
                                       |)
@@ -728,34 +1910,6 @@ Module interpreter_action.
                                     [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                                   M.pointer_coercion
                                     M.PointerCoercion.Unsize
-                                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                            "is_static"
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |);
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
                                     (Ty.apply
                                       (Ty.path "&")
                                       []
@@ -777,7 +1931,7 @@ Module interpreter_action.
                                               M.SubPointer.get_struct_record_field (|
                                                 M.deref (| M.read (| self |) |),
                                                 "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                                "is_eof"
+                                                "is_static"
                                               |)
                                             |)
                                           |)
@@ -953,20 +2107,34 @@ Module interpreter_action.
                             ltac:(M.monadic
                               (M.call_closure (|
                                 Ty.path "bool",
-                                BinOp.eq,
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.path
+                                    "revm_interpreter::interpreter_action::call_inputs::CallInput",
+                                  [],
+                                  [
+                                    Ty.path
+                                      "revm_interpreter::interpreter_action::call_inputs::CallInput"
+                                  ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
                                 [
-                                  M.read (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                      "is_eof"
+                                      "input"
                                     |)
                                   |);
-                                  M.read (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| other |) |),
                                       "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                      "is_eof"
+                                      "input"
                                     |)
                                   |)
                                 ]
@@ -977,9 +2145,14 @@ Module interpreter_action.
                               Ty.path "bool",
                               M.get_trait_method (|
                                 "core::cmp::PartialEq",
-                                Ty.path "alloy_primitives::bytes_::Bytes",
+                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
                                 [],
-                                [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]
+                                ],
                                 "eq",
                                 [],
                                 []
@@ -990,7 +2163,7 @@ Module interpreter_action.
                                   M.SubPointer.get_struct_record_field (|
                                     M.deref (| M.read (| self |) |),
                                     "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                    "input"
+                                    "return_memory_offset"
                                   |)
                                 |);
                                 M.borrow (|
@@ -998,7 +2171,7 @@ Module interpreter_action.
                                   M.SubPointer.get_struct_record_field (|
                                     M.deref (| M.read (| other |) |),
                                     "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                    "input"
+                                    "return_memory_offset"
                                   |)
                                 |)
                               ]
@@ -1009,10 +2182,9 @@ Module interpreter_action.
                             Ty.path "bool",
                             M.get_trait_method (|
                               "core::cmp::PartialEq",
-                              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                              Ty.path "alloy_primitives::bits::address::Address",
                               [],
-                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
-                              ],
+                              [ Ty.path "alloy_primitives::bits::address::Address" ],
                               "eq",
                               [],
                               []
@@ -1023,7 +2195,7 @@ Module interpreter_action.
                                 M.SubPointer.get_struct_record_field (|
                                   M.deref (| M.read (| self |) |),
                                   "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                  "return_memory_offset"
+                                  "bytecode_address"
                                 |)
                               |);
                               M.borrow (|
@@ -1031,7 +2203,7 @@ Module interpreter_action.
                                 M.SubPointer.get_struct_record_field (|
                                   M.deref (| M.read (| other |) |),
                                   "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                  "return_memory_offset"
+                                  "bytecode_address"
                                 |)
                               |)
                             ]
@@ -1042,9 +2214,35 @@ Module interpreter_action.
                           Ty.path "bool",
                           M.get_trait_method (|
                             "core::cmp::PartialEq",
-                            Ty.path "alloy_primitives::bits::address::Address",
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [];
+                                    Ty.path "revm_bytecode::bytecode::Bytecode"
+                                  ]
+                              ],
                             [],
-                            [ Ty.path "alloy_primitives::bits::address::Address" ],
+                            [
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.tuple
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        [];
+                                      Ty.path "revm_bytecode::bytecode::Bytecode"
+                                    ]
+                                ]
+                            ],
                             "eq",
                             [],
                             []
@@ -1055,7 +2253,7 @@ Module interpreter_action.
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
                                 "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                "bytecode_address"
+                                "known_bytecode"
                               |)
                             |);
                             M.borrow (|
@@ -1063,7 +2261,7 @@ Module interpreter_action.
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| other |) |),
                                 "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                                "bytecode_address"
+                                "known_bytecode"
                               |)
                             |)
                           ]
@@ -1272,7 +2470,16 @@ Module interpreter_action.
                                                               Value.DeclaredButUndefined,
                                                               [
                                                                 fun γ =>
-                                                                  ltac:(M.monadic (Value.Tuple []))
+                                                                  ltac:(M.monadic
+                                                                    (M.match_operator (|
+                                                                      Ty.tuple [],
+                                                                      Value.DeclaredButUndefined,
+                                                                      [
+                                                                        fun γ =>
+                                                                          ltac:(M.monadic
+                                                                            (Value.Tuple []))
+                                                                      ]
+                                                                    |)))
                                                               ]
                                                             |)))
                                                       ]
@@ -1299,330 +2506,6 @@ Module interpreter_action.
           (* Instance *)
           [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
     End Impl_core_cmp_Eq_for_revm_interpreter_interpreter_action_call_inputs_CallInputs.
-    
-    Module Impl_core_hash_Hash_for_revm_interpreter_interpreter_action_call_inputs_CallInputs.
-      Definition Self : Ty.t :=
-        Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInputs".
-      
-      (* Hash *)
-      Definition hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [ __H ], [ self; state ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInputs" ],
-                self
-              |) in
-            let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
-            M.read (|
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "alloy_primitives::bytes_::Bytes",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "input"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "return_memory_offset"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "u64",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "gas_limit"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "alloy_primitives::bits::address::Address",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "bytecode_address"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "alloy_primitives::bits::address::Address",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "target_address"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "alloy_primitives::bits::address::Address",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "caller"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "revm_interpreter::interpreter_action::call_inputs::CallValue",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "value"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "scheme"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "bool",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "is_static"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              M.alloc (|
-                Ty.tuple [],
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "bool",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::call_inputs::CallInputs",
-                            "is_eof"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::hash::Hash"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("hash", InstanceField.Method hash) ].
-    End Impl_core_hash_Hash_for_revm_interpreter_interpreter_action_call_inputs_CallInputs.
     
     Module Impl_revm_interpreter_interpreter_action_call_inputs_CallInputs.
       Definition Self : Ty.t :=
@@ -2031,18 +2914,6 @@ Module interpreter_action.
           {
             name := "StaticCall";
             item := StructTuple [];
-          };
-          {
-            name := "ExtCall";
-            item := StructTuple [];
-          };
-          {
-            name := "ExtStaticCall";
-            item := StructTuple [];
-          };
-          {
-            name := "ExtDelegateCall";
-            item := StructTuple [];
           }
         ];
     }
@@ -2060,16 +2931,6 @@ Module interpreter_action.
       M.IsDiscriminant
         "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall"
         3.
-    Axiom IsDiscriminant_CallScheme_ExtCall :
-      M.IsDiscriminant "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall" 4.
-    Axiom IsDiscriminant_CallScheme_ExtStaticCall :
-      M.IsDiscriminant
-        "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall"
-        5.
-    Axiom IsDiscriminant_CallScheme_ExtDelegateCall :
-      M.IsDiscriminant
-        "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall"
-        6.
     
     Module Impl_core_clone_TrivialClone_for_revm_interpreter_interpreter_action_call_inputs_CallScheme.
       Definition Self : Ty.t :=
@@ -2196,40 +3057,7 @@ Module interpreter_action.
                             γ,
                             "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall"
                           |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "StaticCall" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ExtCall" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall"
-                          |) in
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| mk_str (| "ExtStaticCall" |) |)
-                        |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall"
-                          |) in
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| mk_str (| "ExtDelegateCall" |) |)
-                        |)))
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "StaticCall" |) |) |)))
                   ]
                 |)
               ]
@@ -2431,85 +3259,11 @@ Module interpreter_action.
         Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme".
       
       (*
-          pub fn is_ext(&self) -> bool {
-              matches!(
-                  self,
-                  Self::ExtCall | Self::ExtStaticCall | Self::ExtDelegateCall
-              )
+          pub fn is_call(&self) -> bool {
+              matches!(self, Self::Call)
           }
       *)
-      Definition is_ext (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme" ],
-                self
-              |) in
-            M.match_operator (|
-              Ty.path "bool",
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (M.find_or_pattern (Ty.tuple []) (|
-                      γ,
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ := M.deref (| M.read (| γ |) |) in
-                            let _ :=
-                              M.is_struct_tuple (|
-                                γ,
-                                "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall"
-                              |) in
-                            Value.Tuple []));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ := M.deref (| M.read (| γ |) |) in
-                            let _ :=
-                              M.is_struct_tuple (|
-                                γ,
-                                "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall"
-                              |) in
-                            Value.Tuple []));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ := M.deref (| M.read (| γ |) |) in
-                            let _ :=
-                              M.is_struct_tuple (|
-                                γ,
-                                "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall"
-                              |) in
-                            Value.Tuple []))
-                      ],
-                      fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [] => ltac:(M.monadic (Value.Bool true))
-                          | _ => M.impossible "wrong number of arguments"
-                          end)
-                    |)));
-                fun γ => ltac:(M.monadic (Value.Bool false))
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_is_ext : M.IsAssociatedFunction.C Self "is_ext" is_ext.
-      Admitted.
-      Global Typeclasses Opaque is_ext.
-      
-      (*
-          pub fn is_ext_delegate_call(&self) -> bool {
-              matches!(self, Self::ExtDelegateCall)
-          }
-      *)
-      Definition is_ext_delegate_call (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition is_call (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self ] =>
           ltac:(M.monadic
@@ -2531,7 +3285,7 @@ Module interpreter_action.
                     let _ :=
                       M.is_struct_tuple (|
                         γ,
-                        "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall"
+                        "revm_interpreter::interpreter_action::call_inputs::CallScheme::Call"
                       |) in
                     Value.Bool true));
                 fun γ => ltac:(M.monadic (Value.Bool false))
@@ -2540,10 +3294,132 @@ Module interpreter_action.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_is_ext_delegate_call :
-        M.IsAssociatedFunction.C Self "is_ext_delegate_call" is_ext_delegate_call.
+      Global Instance AssociatedFunction_is_call : M.IsAssociatedFunction.C Self "is_call" is_call.
       Admitted.
-      Global Typeclasses Opaque is_ext_delegate_call.
+      Global Typeclasses Opaque is_call.
+      
+      (*
+          pub fn is_call_code(&self) -> bool {
+              matches!(self, Self::CallCode)
+          }
+      *)
+      Definition is_call_code (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme" ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "bool",
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let _ :=
+                      M.is_struct_tuple (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallScheme::CallCode"
+                      |) in
+                    Value.Bool true));
+                fun γ => ltac:(M.monadic (Value.Bool false))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_call_code :
+        M.IsAssociatedFunction.C Self "is_call_code" is_call_code.
+      Admitted.
+      Global Typeclasses Opaque is_call_code.
+      
+      (*
+          pub fn is_delegate_call(&self) -> bool {
+              matches!(self, Self::DelegateCall)
+          }
+      *)
+      Definition is_delegate_call (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme" ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "bool",
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let _ :=
+                      M.is_struct_tuple (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallScheme::DelegateCall"
+                      |) in
+                    Value.Bool true));
+                fun γ => ltac:(M.monadic (Value.Bool false))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_delegate_call :
+        M.IsAssociatedFunction.C Self "is_delegate_call" is_delegate_call.
+      Admitted.
+      Global Typeclasses Opaque is_delegate_call.
+      
+      (*
+          pub fn is_static_call(&self) -> bool {
+              matches!(self, Self::StaticCall)
+          }
+      *)
+      Definition is_static_call (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme" ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "bool",
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let _ :=
+                      M.is_struct_tuple (|
+                        γ,
+                        "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall"
+                      |) in
+                    Value.Bool true));
+                fun γ => ltac:(M.monadic (Value.Bool false))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_static_call :
+        M.IsAssociatedFunction.C Self "is_static_call" is_static_call.
+      Admitted.
+      Global Typeclasses Opaque is_static_call.
     End Impl_revm_interpreter_interpreter_action_call_inputs_CallScheme.
     
     (*

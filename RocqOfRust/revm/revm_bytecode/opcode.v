@@ -501,17 +501,26 @@ Module opcode.
                     ltac:(M.monadic
                       (let γ :=
                         M.SubPointer.get_array_field (|
-                          get_constant (|
-                            "revm_bytecode::opcode::OPCODE_INFO",
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 256 ]
-                              [
+                          M.deref (|
+                            M.read (|
+                              get_constant (|
+                                "revm_bytecode::opcode::OPCODE_INFO",
                                 Ty.apply
-                                  (Ty.path "core::option::Option")
+                                  (Ty.path "&")
                                   []
-                                  [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-                              ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 256 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                                      ]
+                                  ]
+                              |)
+                            |)
                           |),
                           M.cast (Ty.path "usize") (M.read (| n |))
                         |) in
@@ -687,17 +696,26 @@ Module opcode.
               []
               [ Ty.path "revm_bytecode::opcode::OpCode" ],
             M.SubPointer.get_array_field (|
-              get_constant (|
-                "revm_bytecode::opcode::OPCODE_INFO",
-                Ty.apply
-                  (Ty.path "array")
-                  [ Value.Integer IntegerKind.Usize 256 ]
-                  [
+              M.deref (|
+                M.read (|
+                  get_constant (|
+                    "revm_bytecode::opcode::OPCODE_INFO",
                     Ty.apply
-                      (Ty.path "core::option::Option")
+                      (Ty.path "&")
                       []
-                      [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-                  ]
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 256 ]
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                          ]
+                      ]
+                  |)
+                |)
               |),
               M.cast (Ty.path "usize") (M.read (| opcode |))
             |),
@@ -736,7 +754,7 @@ Module opcode.
     
     (*
         pub const fn is_jumpdest(&self) -> bool {
-            false
+            self.0 == JUMPDEST
         }
     *)
     Definition is_jumpdest (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -748,7 +766,20 @@ Module opcode.
               Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ],
               self
             |) in
-          Value.Bool false))
+          M.call_closure (|
+            Ty.path "bool",
+            BinOp.eq,
+            [
+              M.read (|
+                M.SubPointer.get_struct_tuple_field (|
+                  M.deref (| M.read (| self |) |),
+                  "revm_bytecode::opcode::OpCode",
+                  0
+                |)
+              |);
+              M.read (| get_constant (| "revm_bytecode::opcode::JUMPDEST", Ty.path "u8" |) |)
+            ]
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -823,7 +854,7 @@ Module opcode.
     
     (*
         pub const fn is_jump(self) -> bool {
-            false
+            self.0 == JUMP
         }
     *)
     Definition is_jump (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -831,7 +862,16 @@ Module opcode.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.path "revm_bytecode::opcode::OpCode", self |) in
-          Value.Bool false))
+          M.call_closure (|
+            Ty.path "bool",
+            BinOp.eq,
+            [
+              M.read (|
+                M.SubPointer.get_struct_tuple_field (| self, "revm_bytecode::opcode::OpCode", 0 |)
+              |);
+              M.read (| get_constant (| "revm_bytecode::opcode::JUMP", Ty.path "u8" |) |)
+            ]
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -905,7 +945,7 @@ Module opcode.
     
     (*
         pub const fn is_push(self) -> bool {
-            false
+            self.0 >= PUSH1 && self.0 <= PUSH32
         }
     *)
     Definition is_push (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -913,7 +953,33 @@ Module opcode.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.path "revm_bytecode::opcode::OpCode", self |) in
-          Value.Bool false))
+          LogicalOp.and (|
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "revm_bytecode::opcode::OpCode", 0 |)
+                |);
+                M.read (| get_constant (| "revm_bytecode::opcode::PUSH1", Ty.path "u8" |) |)
+              ]
+            |),
+            ltac:(M.monadic
+              (M.call_closure (|
+                Ty.path "bool",
+                BinOp.le,
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "revm_bytecode::opcode::OpCode",
+                      0
+                    |)
+                  |);
+                  M.read (| get_constant (| "revm_bytecode::opcode::PUSH32", Ty.path "u8" |) |)
+                ]
+              |)))
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1391,17 +1457,26 @@ Module opcode.
                 ltac:(M.monadic
                   (let γ :=
                     M.SubPointer.get_array_field (|
-                      get_constant (|
-                        "revm_bytecode::opcode::OPCODE_INFO",
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 256 ]
-                          [
+                      M.deref (|
+                        M.read (|
+                          get_constant (|
+                            "revm_bytecode::opcode::OPCODE_INFO",
                             Ty.apply
-                              (Ty.path "core::option::Option")
+                              (Ty.path "&")
                               []
-                              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-                          ]
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 256 ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                                  ]
+                              ]
+                          |)
+                        |)
                       |),
                       M.cast
                         (Ty.path "usize")
@@ -1524,7 +1599,20 @@ Module opcode.
     
     (*
         pub const fn modifies_memory(&self) -> bool {
-            false
+            matches!(
+                *self,
+                OpCode::EXTCODECOPY
+                    | OpCode::MSTORE
+                    | OpCode::MSTORE8
+                    | OpCode::MCOPY
+                    | OpCode::CODECOPY
+                    | OpCode::CALLDATACOPY
+                    | OpCode::RETURNDATACOPY
+                    | OpCode::CALL
+                    | OpCode::CALLCODE
+                    | OpCode::DELEGATECALL
+                    | OpCode::STATICCALL
+            )
         }
     *)
     Definition modifies_memory (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1536,7 +1624,180 @@ Module opcode.
               Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ],
               self
             |) in
-          Value.Bool false))
+          M.match_operator (|
+            Ty.path "bool",
+            M.deref (| M.read (| self |) |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (M.find_or_pattern (Ty.tuple []) (|
+                    γ,
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 60
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 82
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 83
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 94
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 57
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 55
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 62
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 241
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 242
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 244
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "revm_bytecode::opcode::OpCode",
+                              0
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.read (| γ0_0 |),
+                              Value.Integer IntegerKind.U8 250
+                            |) in
+                          Value.Tuple []))
+                    ],
+                    fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [] => ltac:(M.monadic (Value.Bool true))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Bool false))
+            ]
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1544,6 +1805,76 @@ Module opcode.
       M.IsAssociatedFunction.C Self "modifies_memory" modifies_memory.
     Admitted.
     Global Typeclasses Opaque modifies_memory.
+    
+    (*
+        pub const fn is_valid(&self) -> bool {
+            OPCODE_INFO[self.0 as usize].is_some()
+        }
+    *)
+    Definition is_valid (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ],
+              self
+            |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ],
+              "is_some",
+              [],
+              []
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_array_field (|
+                  M.deref (|
+                    M.read (|
+                      get_constant (|
+                        "revm_bytecode::opcode::OPCODE_INFO",
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 256 ]
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                              ]
+                          ]
+                      |)
+                    |)
+                  |),
+                  M.cast
+                    (Ty.path "usize")
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_bytecode::opcode::OpCode",
+                        0
+                      |)
+                    |))
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_is_valid : M.IsAssociatedFunction.C Self "is_valid" is_valid.
+    Admitted.
+    Global Typeclasses Opaque is_valid.
     (*             pub const $name: Self = Self($val); *)
     (* Ty.path "revm_bytecode::opcode::OpCode" *)
     Definition value_STOP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1572,6 +1903,439 @@ Module opcode.
     
     (*             pub const $name: Self = Self($val); *)
     (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_MUL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 2 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_MUL : M.IsAssociatedFunction.C Self "MUL" value_MUL.
+    Admitted.
+    Global Typeclasses Opaque value_MUL.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SUB (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 3 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SUB : M.IsAssociatedFunction.C Self "SUB" value_SUB.
+    Admitted.
+    Global Typeclasses Opaque value_SUB.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DIV (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 4 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DIV : M.IsAssociatedFunction.C Self "DIV" value_DIV.
+    Admitted.
+    Global Typeclasses Opaque value_DIV.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SDIV (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 5 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SDIV : M.IsAssociatedFunction.C Self "SDIV" value_SDIV.
+    Admitted.
+    Global Typeclasses Opaque value_SDIV.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_MOD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 6 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_MOD : M.IsAssociatedFunction.C Self "MOD" value_MOD.
+    Admitted.
+    Global Typeclasses Opaque value_MOD.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SMOD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 7 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SMOD : M.IsAssociatedFunction.C Self "SMOD" value_SMOD.
+    Admitted.
+    Global Typeclasses Opaque value_SMOD.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_ADDMOD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 8 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_ADDMOD :
+      M.IsAssociatedFunction.C Self "ADDMOD" value_ADDMOD.
+    Admitted.
+    Global Typeclasses Opaque value_ADDMOD.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_MULMOD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 9 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_MULMOD :
+      M.IsAssociatedFunction.C Self "MULMOD" value_MULMOD.
+    Admitted.
+    Global Typeclasses Opaque value_MULMOD.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_EXP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 10 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_EXP : M.IsAssociatedFunction.C Self "EXP" value_EXP.
+    Admitted.
+    Global Typeclasses Opaque value_EXP.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SIGNEXTEND (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 11 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SIGNEXTEND :
+      M.IsAssociatedFunction.C Self "SIGNEXTEND" value_SIGNEXTEND.
+    Admitted.
+    Global Typeclasses Opaque value_SIGNEXTEND.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_LT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 16 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_LT : M.IsAssociatedFunction.C Self "LT" value_LT.
+    Admitted.
+    Global Typeclasses Opaque value_LT.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_GT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 17 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_GT : M.IsAssociatedFunction.C Self "GT" value_GT.
+    Admitted.
+    Global Typeclasses Opaque value_GT.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SLT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 18 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SLT : M.IsAssociatedFunction.C Self "SLT" value_SLT.
+    Admitted.
+    Global Typeclasses Opaque value_SLT.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SGT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 19 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SGT : M.IsAssociatedFunction.C Self "SGT" value_SGT.
+    Admitted.
+    Global Typeclasses Opaque value_SGT.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_EQ (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 20 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_EQ : M.IsAssociatedFunction.C Self "EQ" value_EQ.
+    Admitted.
+    Global Typeclasses Opaque value_EQ.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_ISZERO (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 21 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_ISZERO :
+      M.IsAssociatedFunction.C Self "ISZERO" value_ISZERO.
+    Admitted.
+    Global Typeclasses Opaque value_ISZERO.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_AND (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 22 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_AND : M.IsAssociatedFunction.C Self "AND" value_AND.
+    Admitted.
+    Global Typeclasses Opaque value_AND.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_OR (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 23 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_OR : M.IsAssociatedFunction.C Self "OR" value_OR.
+    Admitted.
+    Global Typeclasses Opaque value_OR.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_XOR (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 24 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_XOR : M.IsAssociatedFunction.C Self "XOR" value_XOR.
+    Admitted.
+    Global Typeclasses Opaque value_XOR.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_NOT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 25 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_NOT : M.IsAssociatedFunction.C Self "NOT" value_NOT.
+    Admitted.
+    Global Typeclasses Opaque value_NOT.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_BYTE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 26 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_BYTE : M.IsAssociatedFunction.C Self "BYTE" value_BYTE.
+    Admitted.
+    Global Typeclasses Opaque value_BYTE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SHL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 27 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SHL : M.IsAssociatedFunction.C Self "SHL" value_SHL.
+    Admitted.
+    Global Typeclasses Opaque value_SHL.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SHR (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 28 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SHR : M.IsAssociatedFunction.C Self "SHR" value_SHR.
+    Admitted.
+    Global Typeclasses Opaque value_SHR.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SAR (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 29 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SAR : M.IsAssociatedFunction.C Self "SAR" value_SAR.
+    Admitted.
+    Global Typeclasses Opaque value_SAR.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CLZ (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 30 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CLZ : M.IsAssociatedFunction.C Self "CLZ" value_CLZ.
+    Admitted.
+    Global Typeclasses Opaque value_CLZ.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_KECCAK256 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 32 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_KECCAK256 :
+      M.IsAssociatedFunction.C Self "KECCAK256" value_KECCAK256.
+    Admitted.
+    Global Typeclasses Opaque value_KECCAK256.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_ADDRESS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 48 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_ADDRESS :
+      M.IsAssociatedFunction.C Self "ADDRESS" value_ADDRESS.
+    Admitted.
+    Global Typeclasses Opaque value_ADDRESS.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
     Definition value_BALANCE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       ltac:(M.monadic
         (M.alloc (|
@@ -1587,7 +2351,2209 @@ Module opcode.
       M.IsAssociatedFunction.C Self "BALANCE" value_BALANCE.
     Admitted.
     Global Typeclasses Opaque value_BALANCE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_ORIGIN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 50 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_ORIGIN :
+      M.IsAssociatedFunction.C Self "ORIGIN" value_ORIGIN.
+    Admitted.
+    Global Typeclasses Opaque value_ORIGIN.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CALLER (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 51 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CALLER :
+      M.IsAssociatedFunction.C Self "CALLER" value_CALLER.
+    Admitted.
+    Global Typeclasses Opaque value_CALLER.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CALLVALUE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 52 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CALLVALUE :
+      M.IsAssociatedFunction.C Self "CALLVALUE" value_CALLVALUE.
+    Admitted.
+    Global Typeclasses Opaque value_CALLVALUE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CALLDATALOAD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 53 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CALLDATALOAD :
+      M.IsAssociatedFunction.C Self "CALLDATALOAD" value_CALLDATALOAD.
+    Admitted.
+    Global Typeclasses Opaque value_CALLDATALOAD.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CALLDATASIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 54 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CALLDATASIZE :
+      M.IsAssociatedFunction.C Self "CALLDATASIZE" value_CALLDATASIZE.
+    Admitted.
+    Global Typeclasses Opaque value_CALLDATASIZE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CALLDATACOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 55 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CALLDATACOPY :
+      M.IsAssociatedFunction.C Self "CALLDATACOPY" value_CALLDATACOPY.
+    Admitted.
+    Global Typeclasses Opaque value_CALLDATACOPY.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CODESIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 56 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CODESIZE :
+      M.IsAssociatedFunction.C Self "CODESIZE" value_CODESIZE.
+    Admitted.
+    Global Typeclasses Opaque value_CODESIZE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CODECOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 57 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CODECOPY :
+      M.IsAssociatedFunction.C Self "CODECOPY" value_CODECOPY.
+    Admitted.
+    Global Typeclasses Opaque value_CODECOPY.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_GASPRICE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 58 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_GASPRICE :
+      M.IsAssociatedFunction.C Self "GASPRICE" value_GASPRICE.
+    Admitted.
+    Global Typeclasses Opaque value_GASPRICE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_EXTCODESIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 59 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_EXTCODESIZE :
+      M.IsAssociatedFunction.C Self "EXTCODESIZE" value_EXTCODESIZE.
+    Admitted.
+    Global Typeclasses Opaque value_EXTCODESIZE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_EXTCODECOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 60 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_EXTCODECOPY :
+      M.IsAssociatedFunction.C Self "EXTCODECOPY" value_EXTCODECOPY.
+    Admitted.
+    Global Typeclasses Opaque value_EXTCODECOPY.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_RETURNDATASIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 61 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_RETURNDATASIZE :
+      M.IsAssociatedFunction.C Self "RETURNDATASIZE" value_RETURNDATASIZE.
+    Admitted.
+    Global Typeclasses Opaque value_RETURNDATASIZE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_RETURNDATACOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 62 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_RETURNDATACOPY :
+      M.IsAssociatedFunction.C Self "RETURNDATACOPY" value_RETURNDATACOPY.
+    Admitted.
+    Global Typeclasses Opaque value_RETURNDATACOPY.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_EXTCODEHASH (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 63 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_EXTCODEHASH :
+      M.IsAssociatedFunction.C Self "EXTCODEHASH" value_EXTCODEHASH.
+    Admitted.
+    Global Typeclasses Opaque value_EXTCODEHASH.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_BLOCKHASH (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 64 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_BLOCKHASH :
+      M.IsAssociatedFunction.C Self "BLOCKHASH" value_BLOCKHASH.
+    Admitted.
+    Global Typeclasses Opaque value_BLOCKHASH.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_COINBASE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 65 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_COINBASE :
+      M.IsAssociatedFunction.C Self "COINBASE" value_COINBASE.
+    Admitted.
+    Global Typeclasses Opaque value_COINBASE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_TIMESTAMP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 66 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_TIMESTAMP :
+      M.IsAssociatedFunction.C Self "TIMESTAMP" value_TIMESTAMP.
+    Admitted.
+    Global Typeclasses Opaque value_TIMESTAMP.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_NUMBER (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 67 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_NUMBER :
+      M.IsAssociatedFunction.C Self "NUMBER" value_NUMBER.
+    Admitted.
+    Global Typeclasses Opaque value_NUMBER.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DIFFICULTY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 68 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DIFFICULTY :
+      M.IsAssociatedFunction.C Self "DIFFICULTY" value_DIFFICULTY.
+    Admitted.
+    Global Typeclasses Opaque value_DIFFICULTY.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_GASLIMIT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 69 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_GASLIMIT :
+      M.IsAssociatedFunction.C Self "GASLIMIT" value_GASLIMIT.
+    Admitted.
+    Global Typeclasses Opaque value_GASLIMIT.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CHAINID (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 70 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CHAINID :
+      M.IsAssociatedFunction.C Self "CHAINID" value_CHAINID.
+    Admitted.
+    Global Typeclasses Opaque value_CHAINID.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SELFBALANCE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 71 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SELFBALANCE :
+      M.IsAssociatedFunction.C Self "SELFBALANCE" value_SELFBALANCE.
+    Admitted.
+    Global Typeclasses Opaque value_SELFBALANCE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_BASEFEE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 72 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_BASEFEE :
+      M.IsAssociatedFunction.C Self "BASEFEE" value_BASEFEE.
+    Admitted.
+    Global Typeclasses Opaque value_BASEFEE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_BLOBHASH (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 73 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_BLOBHASH :
+      M.IsAssociatedFunction.C Self "BLOBHASH" value_BLOBHASH.
+    Admitted.
+    Global Typeclasses Opaque value_BLOBHASH.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_BLOBBASEFEE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 74 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_BLOBBASEFEE :
+      M.IsAssociatedFunction.C Self "BLOBBASEFEE" value_BLOBBASEFEE.
+    Admitted.
+    Global Typeclasses Opaque value_BLOBBASEFEE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_POP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 80 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_POP : M.IsAssociatedFunction.C Self "POP" value_POP.
+    Admitted.
+    Global Typeclasses Opaque value_POP.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_MLOAD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 81 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_MLOAD :
+      M.IsAssociatedFunction.C Self "MLOAD" value_MLOAD.
+    Admitted.
+    Global Typeclasses Opaque value_MLOAD.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_MSTORE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 82 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_MSTORE :
+      M.IsAssociatedFunction.C Self "MSTORE" value_MSTORE.
+    Admitted.
+    Global Typeclasses Opaque value_MSTORE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_MSTORE8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 83 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_MSTORE8 :
+      M.IsAssociatedFunction.C Self "MSTORE8" value_MSTORE8.
+    Admitted.
+    Global Typeclasses Opaque value_MSTORE8.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SLOAD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 84 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SLOAD :
+      M.IsAssociatedFunction.C Self "SLOAD" value_SLOAD.
+    Admitted.
+    Global Typeclasses Opaque value_SLOAD.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SSTORE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 85 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SSTORE :
+      M.IsAssociatedFunction.C Self "SSTORE" value_SSTORE.
+    Admitted.
+    Global Typeclasses Opaque value_SSTORE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_JUMP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 86 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_JUMP : M.IsAssociatedFunction.C Self "JUMP" value_JUMP.
+    Admitted.
+    Global Typeclasses Opaque value_JUMP.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_JUMPI (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 87 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_JUMPI :
+      M.IsAssociatedFunction.C Self "JUMPI" value_JUMPI.
+    Admitted.
+    Global Typeclasses Opaque value_JUMPI.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PC (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 88 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PC : M.IsAssociatedFunction.C Self "PC" value_PC.
+    Admitted.
+    Global Typeclasses Opaque value_PC.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_MSIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 89 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_MSIZE :
+      M.IsAssociatedFunction.C Self "MSIZE" value_MSIZE.
+    Admitted.
+    Global Typeclasses Opaque value_MSIZE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_GAS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 90 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_GAS : M.IsAssociatedFunction.C Self "GAS" value_GAS.
+    Admitted.
+    Global Typeclasses Opaque value_GAS.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_JUMPDEST (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 91 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_JUMPDEST :
+      M.IsAssociatedFunction.C Self "JUMPDEST" value_JUMPDEST.
+    Admitted.
+    Global Typeclasses Opaque value_JUMPDEST.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_TLOAD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 92 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_TLOAD :
+      M.IsAssociatedFunction.C Self "TLOAD" value_TLOAD.
+    Admitted.
+    Global Typeclasses Opaque value_TLOAD.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_TSTORE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 93 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_TSTORE :
+      M.IsAssociatedFunction.C Self "TSTORE" value_TSTORE.
+    Admitted.
+    Global Typeclasses Opaque value_TSTORE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_MCOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 94 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_MCOPY :
+      M.IsAssociatedFunction.C Self "MCOPY" value_MCOPY.
+    Admitted.
+    Global Typeclasses Opaque value_MCOPY.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH0 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 95 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH0 :
+      M.IsAssociatedFunction.C Self "PUSH0" value_PUSH0.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH0.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 96 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH1 :
+      M.IsAssociatedFunction.C Self "PUSH1" value_PUSH1.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH1.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 97 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH2 :
+      M.IsAssociatedFunction.C Self "PUSH2" value_PUSH2.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH2.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 98 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH3 :
+      M.IsAssociatedFunction.C Self "PUSH3" value_PUSH3.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH3.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH4 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 99 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH4 :
+      M.IsAssociatedFunction.C Self "PUSH4" value_PUSH4.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH4.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH5 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 100 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH5 :
+      M.IsAssociatedFunction.C Self "PUSH5" value_PUSH5.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH5.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH6 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 101 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH6 :
+      M.IsAssociatedFunction.C Self "PUSH6" value_PUSH6.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH6.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH7 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 102 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH7 :
+      M.IsAssociatedFunction.C Self "PUSH7" value_PUSH7.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH7.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 103 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH8 :
+      M.IsAssociatedFunction.C Self "PUSH8" value_PUSH8.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH8.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH9 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 104 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH9 :
+      M.IsAssociatedFunction.C Self "PUSH9" value_PUSH9.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH9.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 105 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH10 :
+      M.IsAssociatedFunction.C Self "PUSH10" value_PUSH10.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH10.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH11 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 106 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH11 :
+      M.IsAssociatedFunction.C Self "PUSH11" value_PUSH11.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH11.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH12 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 107 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH12 :
+      M.IsAssociatedFunction.C Self "PUSH12" value_PUSH12.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH12.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH13 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 108 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH13 :
+      M.IsAssociatedFunction.C Self "PUSH13" value_PUSH13.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH13.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH14 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 109 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH14 :
+      M.IsAssociatedFunction.C Self "PUSH14" value_PUSH14.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH14.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH15 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 110 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH15 :
+      M.IsAssociatedFunction.C Self "PUSH15" value_PUSH15.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH15.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 111 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH16 :
+      M.IsAssociatedFunction.C Self "PUSH16" value_PUSH16.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH16.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH17 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 112 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH17 :
+      M.IsAssociatedFunction.C Self "PUSH17" value_PUSH17.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH17.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH18 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 113 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH18 :
+      M.IsAssociatedFunction.C Self "PUSH18" value_PUSH18.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH18.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH19 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 114 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH19 :
+      M.IsAssociatedFunction.C Self "PUSH19" value_PUSH19.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH19.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH20 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 115 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH20 :
+      M.IsAssociatedFunction.C Self "PUSH20" value_PUSH20.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH20.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH21 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 116 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH21 :
+      M.IsAssociatedFunction.C Self "PUSH21" value_PUSH21.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH21.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH22 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 117 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH22 :
+      M.IsAssociatedFunction.C Self "PUSH22" value_PUSH22.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH22.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH23 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 118 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH23 :
+      M.IsAssociatedFunction.C Self "PUSH23" value_PUSH23.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH23.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH24 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 119 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH24 :
+      M.IsAssociatedFunction.C Self "PUSH24" value_PUSH24.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH24.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH25 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 120 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH25 :
+      M.IsAssociatedFunction.C Self "PUSH25" value_PUSH25.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH25.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH26 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 121 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH26 :
+      M.IsAssociatedFunction.C Self "PUSH26" value_PUSH26.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH26.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH27 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 122 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH27 :
+      M.IsAssociatedFunction.C Self "PUSH27" value_PUSH27.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH27.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH28 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 123 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH28 :
+      M.IsAssociatedFunction.C Self "PUSH28" value_PUSH28.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH28.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH29 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 124 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH29 :
+      M.IsAssociatedFunction.C Self "PUSH29" value_PUSH29.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH29.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH30 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 125 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH30 :
+      M.IsAssociatedFunction.C Self "PUSH30" value_PUSH30.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH30.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH31 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 126 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH31 :
+      M.IsAssociatedFunction.C Self "PUSH31" value_PUSH31.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH31.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_PUSH32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 127 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_PUSH32 :
+      M.IsAssociatedFunction.C Self "PUSH32" value_PUSH32.
+    Admitted.
+    Global Typeclasses Opaque value_PUSH32.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 128 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP1 : M.IsAssociatedFunction.C Self "DUP1" value_DUP1.
+    Admitted.
+    Global Typeclasses Opaque value_DUP1.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 129 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP2 : M.IsAssociatedFunction.C Self "DUP2" value_DUP2.
+    Admitted.
+    Global Typeclasses Opaque value_DUP2.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 130 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP3 : M.IsAssociatedFunction.C Self "DUP3" value_DUP3.
+    Admitted.
+    Global Typeclasses Opaque value_DUP3.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP4 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 131 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP4 : M.IsAssociatedFunction.C Self "DUP4" value_DUP4.
+    Admitted.
+    Global Typeclasses Opaque value_DUP4.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP5 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 132 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP5 : M.IsAssociatedFunction.C Self "DUP5" value_DUP5.
+    Admitted.
+    Global Typeclasses Opaque value_DUP5.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP6 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 133 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP6 : M.IsAssociatedFunction.C Self "DUP6" value_DUP6.
+    Admitted.
+    Global Typeclasses Opaque value_DUP6.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP7 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 134 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP7 : M.IsAssociatedFunction.C Self "DUP7" value_DUP7.
+    Admitted.
+    Global Typeclasses Opaque value_DUP7.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 135 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP8 : M.IsAssociatedFunction.C Self "DUP8" value_DUP8.
+    Admitted.
+    Global Typeclasses Opaque value_DUP8.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP9 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 136 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP9 : M.IsAssociatedFunction.C Self "DUP9" value_DUP9.
+    Admitted.
+    Global Typeclasses Opaque value_DUP9.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 137 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP10 :
+      M.IsAssociatedFunction.C Self "DUP10" value_DUP10.
+    Admitted.
+    Global Typeclasses Opaque value_DUP10.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP11 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 138 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP11 :
+      M.IsAssociatedFunction.C Self "DUP11" value_DUP11.
+    Admitted.
+    Global Typeclasses Opaque value_DUP11.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP12 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 139 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP12 :
+      M.IsAssociatedFunction.C Self "DUP12" value_DUP12.
+    Admitted.
+    Global Typeclasses Opaque value_DUP12.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP13 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 140 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP13 :
+      M.IsAssociatedFunction.C Self "DUP13" value_DUP13.
+    Admitted.
+    Global Typeclasses Opaque value_DUP13.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP14 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 141 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP14 :
+      M.IsAssociatedFunction.C Self "DUP14" value_DUP14.
+    Admitted.
+    Global Typeclasses Opaque value_DUP14.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP15 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 142 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP15 :
+      M.IsAssociatedFunction.C Self "DUP15" value_DUP15.
+    Admitted.
+    Global Typeclasses Opaque value_DUP15.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DUP16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 143 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DUP16 :
+      M.IsAssociatedFunction.C Self "DUP16" value_DUP16.
+    Admitted.
+    Global Typeclasses Opaque value_DUP16.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 144 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP1 :
+      M.IsAssociatedFunction.C Self "SWAP1" value_SWAP1.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP1.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 145 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP2 :
+      M.IsAssociatedFunction.C Self "SWAP2" value_SWAP2.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP2.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 146 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP3 :
+      M.IsAssociatedFunction.C Self "SWAP3" value_SWAP3.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP3.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP4 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 147 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP4 :
+      M.IsAssociatedFunction.C Self "SWAP4" value_SWAP4.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP4.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP5 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 148 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP5 :
+      M.IsAssociatedFunction.C Self "SWAP5" value_SWAP5.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP5.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP6 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 149 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP6 :
+      M.IsAssociatedFunction.C Self "SWAP6" value_SWAP6.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP6.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP7 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 150 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP7 :
+      M.IsAssociatedFunction.C Self "SWAP7" value_SWAP7.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP7.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 151 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP8 :
+      M.IsAssociatedFunction.C Self "SWAP8" value_SWAP8.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP8.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP9 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 152 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP9 :
+      M.IsAssociatedFunction.C Self "SWAP9" value_SWAP9.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP9.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 153 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP10 :
+      M.IsAssociatedFunction.C Self "SWAP10" value_SWAP10.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP10.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP11 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 154 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP11 :
+      M.IsAssociatedFunction.C Self "SWAP11" value_SWAP11.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP11.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP12 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 155 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP12 :
+      M.IsAssociatedFunction.C Self "SWAP12" value_SWAP12.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP12.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP13 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 156 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP13 :
+      M.IsAssociatedFunction.C Self "SWAP13" value_SWAP13.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP13.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP14 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 157 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP14 :
+      M.IsAssociatedFunction.C Self "SWAP14" value_SWAP14.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP14.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP15 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 158 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP15 :
+      M.IsAssociatedFunction.C Self "SWAP15" value_SWAP15.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP15.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SWAP16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 159 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SWAP16 :
+      M.IsAssociatedFunction.C Self "SWAP16" value_SWAP16.
+    Admitted.
+    Global Typeclasses Opaque value_SWAP16.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_LOG0 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 160 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_LOG0 : M.IsAssociatedFunction.C Self "LOG0" value_LOG0.
+    Admitted.
+    Global Typeclasses Opaque value_LOG0.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_LOG1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 161 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_LOG1 : M.IsAssociatedFunction.C Self "LOG1" value_LOG1.
+    Admitted.
+    Global Typeclasses Opaque value_LOG1.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_LOG2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 162 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_LOG2 : M.IsAssociatedFunction.C Self "LOG2" value_LOG2.
+    Admitted.
+    Global Typeclasses Opaque value_LOG2.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_LOG3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 163 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_LOG3 : M.IsAssociatedFunction.C Self "LOG3" value_LOG3.
+    Admitted.
+    Global Typeclasses Opaque value_LOG3.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_LOG4 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 164 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_LOG4 : M.IsAssociatedFunction.C Self "LOG4" value_LOG4.
+    Admitted.
+    Global Typeclasses Opaque value_LOG4.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CREATE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 240 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CREATE :
+      M.IsAssociatedFunction.C Self "CREATE" value_CREATE.
+    Admitted.
+    Global Typeclasses Opaque value_CREATE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CALL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 241 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CALL : M.IsAssociatedFunction.C Self "CALL" value_CALL.
+    Admitted.
+    Global Typeclasses Opaque value_CALL.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CALLCODE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 242 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CALLCODE :
+      M.IsAssociatedFunction.C Self "CALLCODE" value_CALLCODE.
+    Admitted.
+    Global Typeclasses Opaque value_CALLCODE.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_RETURN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 243 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_RETURN :
+      M.IsAssociatedFunction.C Self "RETURN" value_RETURN.
+    Admitted.
+    Global Typeclasses Opaque value_RETURN.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_DELEGATECALL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 244 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_DELEGATECALL :
+      M.IsAssociatedFunction.C Self "DELEGATECALL" value_DELEGATECALL.
+    Admitted.
+    Global Typeclasses Opaque value_DELEGATECALL.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_CREATE2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 245 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_CREATE2 :
+      M.IsAssociatedFunction.C Self "CREATE2" value_CREATE2.
+    Admitted.
+    Global Typeclasses Opaque value_CREATE2.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_STATICCALL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 250 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_STATICCALL :
+      M.IsAssociatedFunction.C Self "STATICCALL" value_STATICCALL.
+    Admitted.
+    Global Typeclasses Opaque value_STATICCALL.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_REVERT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 253 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_REVERT :
+      M.IsAssociatedFunction.C Self "REVERT" value_REVERT.
+    Admitted.
+    Global Typeclasses Opaque value_REVERT.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_INVALID (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 254 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_INVALID :
+      M.IsAssociatedFunction.C Self "INVALID" value_INVALID.
+    Admitted.
+    Global Typeclasses Opaque value_INVALID.
+    
+    (*             pub const $name: Self = Self($val); *)
+    (* Ty.path "revm_bytecode::opcode::OpCode" *)
+    Definition value_SELFDESTRUCT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "revm_bytecode::opcode::OpCode",
+          Value.StructTuple
+            "revm_bytecode::opcode::OpCode"
+            []
+            []
+            [ Value.Integer IntegerKind.U8 255 ]
+        |))).
+    
+    Global Instance AssociatedConstant_value_SELFDESTRUCT :
+      M.IsAssociatedFunction.C Self "SELFDESTRUCT" value_SELFDESTRUCT.
+    Admitted.
+    Global Typeclasses Opaque value_SELFDESTRUCT.
   End Impl_revm_bytecode_opcode_OpCode.
+  
+  Module Impl_core_cmp_PartialEq_u8_for_revm_bytecode_opcode_OpCode.
+    Definition Self : Ty.t := Ty.path "revm_bytecode::opcode::OpCode".
+    
+    (*
+        fn eq(&self, other: &u8) -> bool {
+            self.get().eq(other)
+        }
+    *)
+    Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ],
+              self
+            |) in
+          let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], other |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_trait_method (|
+              "core::cmp::PartialEq",
+              Ty.path "u8",
+              [],
+              [ Ty.path "u8" ],
+              "eq",
+              [],
+              []
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.alloc (|
+                  Ty.path "u8",
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (|
+                      Ty.path "revm_bytecode::opcode::OpCode",
+                      "get",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::cmp::PartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.path "u8" ]
+        Self
+        (* Instance *) [ ("eq", InstanceField.Method eq) ].
+  End Impl_core_cmp_PartialEq_u8_for_revm_bytecode_opcode_OpCode.
   
   (* StructRecord
     {
@@ -1601,7 +4567,6 @@ Module opcode.
           ("inputs", Ty.path "u8");
           ("outputs", Ty.path "u8");
           ("immediate_size", Ty.path "u8");
-          ("not_eof", Ty.path "bool");
           ("terminating", Ty.path "bool")
         ];
     } *)
@@ -1714,48 +4679,25 @@ Module opcode.
               LogicalOp.and (|
                 LogicalOp.and (|
                   LogicalOp.and (|
-                    LogicalOp.and (|
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.eq,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_bytecode::opcode::OpCodeInfo",
-                              "name_len"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| other |) |),
-                              "revm_bytecode::opcode::OpCodeInfo",
-                              "name_len"
-                            |)
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.eq,
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "name_len"
                           |)
-                        ]
-                      |),
-                      ltac:(M.monadic
-                        (M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.eq,
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "revm_bytecode::opcode::OpCodeInfo",
-                                "inputs"
-                              |)
-                            |);
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| other |) |),
-                                "revm_bytecode::opcode::OpCodeInfo",
-                                "inputs"
-                              |)
-                            |)
-                          ]
-                        |)))
+                        |);
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| other |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "name_len"
+                          |)
+                        |)
+                      ]
                     |),
                     ltac:(M.monadic
                       (M.call_closure (|
@@ -1766,14 +4708,14 @@ Module opcode.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "revm_bytecode::opcode::OpCodeInfo",
-                              "outputs"
+                              "inputs"
                             |)
                           |);
                           M.read (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| other |) |),
                               "revm_bytecode::opcode::OpCodeInfo",
-                              "outputs"
+                              "inputs"
                             |)
                           |)
                         ]
@@ -1788,14 +4730,14 @@ Module opcode.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "revm_bytecode::opcode::OpCodeInfo",
-                            "immediate_size"
+                            "outputs"
                           |)
                         |);
                         M.read (|
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| other |) |),
                             "revm_bytecode::opcode::OpCodeInfo",
-                            "immediate_size"
+                            "outputs"
                           |)
                         |)
                       ]
@@ -1810,14 +4752,14 @@ Module opcode.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "revm_bytecode::opcode::OpCodeInfo",
-                          "not_eof"
+                          "immediate_size"
                         |)
                       |);
                       M.read (|
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| other |) |),
                           "revm_bytecode::opcode::OpCodeInfo",
-                          "not_eof"
+                          "immediate_size"
                         |)
                       |)
                     ]
@@ -2271,132 +5213,47 @@ Module opcode.
                                                       γ0_0,
                                                       "core::cmp::Ordering::Equal"
                                                     |) in
-                                                  M.match_operator (|
+                                                  M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "core::option::Option")
                                                       []
                                                       [ Ty.path "core::cmp::Ordering" ],
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "core::option::Option")
-                                                        []
-                                                        [ Ty.path "core::cmp::Ordering" ],
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "core::option::Option")
-                                                          []
-                                                          [ Ty.path "core::cmp::Ordering" ],
-                                                        M.get_trait_method (|
-                                                          "core::cmp::PartialOrd",
-                                                          Ty.path "bool",
-                                                          [],
-                                                          [ Ty.path "bool" ],
-                                                          "partial_cmp",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                                  "not_eof"
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| other |) |),
-                                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                                  "not_eof"
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                    M.get_trait_method (|
+                                                      "core::cmp::PartialOrd",
+                                                      Ty.path "bool",
+                                                      [],
+                                                      [ Ty.path "bool" ],
+                                                      "partial_cmp",
+                                                      [],
+                                                      []
                                                     |),
                                                     [
-                                                      fun γ =>
-                                                        ltac:(M.monadic
-                                                          (let γ0_0 :=
-                                                            M.SubPointer.get_struct_tuple_field (|
-                                                              γ,
-                                                              "core::option::Option::Some",
-                                                              0
-                                                            |) in
-                                                          let _ :=
-                                                            M.is_struct_tuple (|
-                                                              γ0_0,
-                                                              "core::cmp::Ordering::Equal"
-                                                            |) in
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "core::option::Option")
-                                                              []
-                                                              [ Ty.path "core::cmp::Ordering" ],
-                                                            M.get_trait_method (|
-                                                              "core::cmp::PartialOrd",
-                                                              Ty.path "bool",
-                                                              [],
-                                                              [ Ty.path "bool" ],
-                                                              "partial_cmp",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.read (| self |)
-                                                                      |),
-                                                                      "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "terminating"
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              |);
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.read (| other |)
-                                                                      |),
-                                                                      "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "terminating"
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |)));
-                                                      fun γ =>
-                                                        ltac:(M.monadic
-                                                          (let cmp :=
-                                                            M.copy (|
-                                                              Ty.apply
-                                                                (Ty.path "core::option::Option")
-                                                                []
-                                                                [ Ty.path "core::cmp::Ordering" ],
-                                                              γ
-                                                            |) in
-                                                          M.read (| cmp |)))
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| self |) |),
+                                                              "revm_bytecode::opcode::OpCodeInfo",
+                                                              "terminating"
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |);
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| other |) |),
+                                                              "revm_bytecode::opcode::OpCodeInfo",
+                                                              "terminating"
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |)
                                                     ]
                                                   |)));
                                               fun γ =>
@@ -2748,111 +5605,44 @@ Module opcode.
                                                       γ,
                                                       "core::cmp::Ordering::Equal"
                                                     |) in
-                                                  M.match_operator (|
+                                                  M.call_closure (|
                                                     Ty.path "core::cmp::Ordering",
-                                                    M.alloc (|
-                                                      Ty.path "core::cmp::Ordering",
-                                                      M.call_closure (|
-                                                        Ty.path "core::cmp::Ordering",
-                                                        M.get_trait_method (|
-                                                          "core::cmp::Ord",
-                                                          Ty.path "bool",
-                                                          [],
-                                                          [],
-                                                          "cmp",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                                  "not_eof"
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| other |) |),
-                                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                                  "not_eof"
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                    M.get_trait_method (|
+                                                      "core::cmp::Ord",
+                                                      Ty.path "bool",
+                                                      [],
+                                                      [],
+                                                      "cmp",
+                                                      [],
+                                                      []
                                                     |),
                                                     [
-                                                      fun γ =>
-                                                        ltac:(M.monadic
-                                                          (let _ :=
-                                                            M.is_struct_tuple (|
-                                                              γ,
-                                                              "core::cmp::Ordering::Equal"
-                                                            |) in
-                                                          M.call_closure (|
-                                                            Ty.path "core::cmp::Ordering",
-                                                            M.get_trait_method (|
-                                                              "core::cmp::Ord",
-                                                              Ty.path "bool",
-                                                              [],
-                                                              [],
-                                                              "cmp",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.read (| self |)
-                                                                      |),
-                                                                      "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "terminating"
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              |);
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.read (| other |)
-                                                                      |),
-                                                                      "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "terminating"
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |)));
-                                                      fun γ =>
-                                                        ltac:(M.monadic
-                                                          (let cmp :=
-                                                            M.copy (|
-                                                              Ty.path "core::cmp::Ordering",
-                                                              γ
-                                                            |) in
-                                                          M.read (| cmp |)))
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| self |) |),
+                                                              "revm_bytecode::opcode::OpCodeInfo",
+                                                              "terminating"
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |);
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| other |) |),
+                                                              "revm_bytecode::opcode::OpCodeInfo",
+                                                              "terminating"
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |)
                                                     ]
                                                   |)));
                                               fun γ =>
@@ -3059,35 +5849,6 @@ Module opcode.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
                 ]
               |) in
-            let~ _ : Ty.tuple [] :=
-              M.call_closure (|
-                Ty.tuple [],
-                M.get_trait_method (|
-                  "core::hash::Hash",
-                  Ty.path "bool",
-                  [],
-                  [],
-                  "hash",
-                  [],
-                  [ __H ]
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "not_eof"
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                ]
-              |) in
             M.alloc (|
               Ty.tuple [],
               M.call_closure (|
@@ -3132,6 +5893,30 @@ Module opcode.
         (* Instance *) [ ("hash", InstanceField.Method hash) ].
   End Impl_core_hash_Hash_for_revm_bytecode_opcode_OpCodeInfo.
   
+  Module Impl_core_marker_Send_for_revm_bytecode_opcode_OpCodeInfo.
+    Definition Self : Ty.t := Ty.path "revm_bytecode::opcode::OpCodeInfo".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::Send"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_Send_for_revm_bytecode_opcode_OpCodeInfo.
+  
+  Module Impl_core_marker_Sync_for_revm_bytecode_opcode_OpCodeInfo.
+    Definition Self : Ty.t := Ty.path "revm_bytecode::opcode::OpCodeInfo".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::Sync"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_Sync_for_revm_bytecode_opcode_OpCodeInfo.
+  
   Module Impl_core_fmt_Debug_for_revm_bytecode_opcode_OpCodeInfo.
     Definition Self : Ty.t := Ty.path "revm_bytecode::opcode::OpCodeInfo".
     
@@ -3141,7 +5926,6 @@ Module opcode.
                 .field("name", &self.name())
                 .field("inputs", &self.inputs())
                 .field("outputs", &self.outputs())
-                .field("not_eof", &self.is_disabled_in_eof())
                 .field("terminating", &self.is_terminating())
                 .field("immediate_size", &self.immediate_size())
                 .finish()
@@ -3245,126 +6029,28 @@ Module opcode.
                                                     [
                                                       M.borrow (|
                                                         Pointer.Kind.MutRef,
-                                                        M.deref (|
+                                                        M.alloc (|
+                                                          Ty.path
+                                                            "core::fmt::builders::DebugStruct",
                                                           M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "&mut")
-                                                              []
-                                                              [
-                                                                Ty.path
-                                                                  "core::fmt::builders::DebugStruct"
-                                                              ],
+                                                            Ty.path
+                                                              "core::fmt::builders::DebugStruct",
                                                             M.get_associated_function (|
-                                                              Ty.path
-                                                                "core::fmt::builders::DebugStruct",
-                                                              "field",
+                                                              Ty.path "core::fmt::Formatter",
+                                                              "debug_struct",
                                                               [],
                                                               []
                                                             |),
                                                             [
                                                               M.borrow (|
                                                                 Pointer.Kind.MutRef,
-                                                                M.alloc (|
-                                                                  Ty.path
-                                                                    "core::fmt::builders::DebugStruct",
-                                                                  M.call_closure (|
-                                                                    Ty.path
-                                                                      "core::fmt::builders::DebugStruct",
-                                                                    M.get_associated_function (|
-                                                                      Ty.path
-                                                                        "core::fmt::Formatter",
-                                                                      "debug_struct",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        M.deref (| M.read (| f |) |)
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          mk_str (| "OpCodeInfo" |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                |)
+                                                                M.deref (| M.read (| f |) |)
                                                               |);
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
-                                                                M.deref (| mk_str (| "name" |) |)
-                                                              |);
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.dyn
-                                                                      [
-                                                                        ("core::fmt::Debug::Trait",
-                                                                          [])
-                                                                      ]
-                                                                  ],
-                                                                M.pointer_coercion
-                                                                  M.PointerCoercion.Unsize
-                                                                  (Ty.apply
-                                                                    (Ty.path "&")
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [ Ty.path "str" ]
-                                                                    ])
-                                                                  (Ty.apply
-                                                                    (Ty.path "&")
-                                                                    []
-                                                                    [
-                                                                      Ty.dyn
-                                                                        [
-                                                                          ("core::fmt::Debug::Trait",
-                                                                            [])
-                                                                        ]
-                                                                    ]),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.alloc (|
-                                                                          Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [ Ty.path "str" ],
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path "&")
-                                                                              []
-                                                                              [ Ty.path "str" ],
-                                                                            M.get_associated_function (|
-                                                                              Ty.path
-                                                                                "revm_bytecode::opcode::OpCodeInfo",
-                                                                              "name",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (| self |)
-                                                                                |)
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  |)
-                                                                ]
+                                                                M.deref (|
+                                                                  mk_str (| "OpCodeInfo" |)
+                                                                |)
                                                               |)
                                                             ]
                                                           |)
@@ -3372,7 +6058,7 @@ Module opcode.
                                                       |);
                                                       M.borrow (|
                                                         Pointer.Kind.Ref,
-                                                        M.deref (| mk_str (| "inputs" |) |)
+                                                        M.deref (| mk_str (| "name" |) |)
                                                       |);
                                                       M.call_closure (|
                                                         Ty.apply
@@ -3387,7 +6073,12 @@ Module opcode.
                                                           (Ty.apply
                                                             (Ty.path "&")
                                                             []
-                                                            [ Ty.path "u8" ])
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [ Ty.path "str" ]
+                                                            ])
                                                           (Ty.apply
                                                             (Ty.path "&")
                                                             []
@@ -3402,13 +6093,19 @@ Module opcode.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.alloc (|
-                                                                  Ty.path "u8",
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [ Ty.path "str" ],
                                                                   M.call_closure (|
-                                                                    Ty.path "u8",
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "str" ],
                                                                     M.get_associated_function (|
                                                                       Ty.path
                                                                         "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "inputs",
+                                                                      "name",
                                                                       [],
                                                                       []
                                                                     |),
@@ -3433,7 +6130,7 @@ Module opcode.
                                               |);
                                               M.borrow (|
                                                 Pointer.Kind.Ref,
-                                                M.deref (| mk_str (| "outputs" |) |)
+                                                M.deref (| mk_str (| "inputs" |) |)
                                               |);
                                               M.call_closure (|
                                                 Ty.apply
@@ -3460,7 +6157,7 @@ Module opcode.
                                                             M.get_associated_function (|
                                                               Ty.path
                                                                 "revm_bytecode::opcode::OpCodeInfo",
-                                                              "outputs",
+                                                              "inputs",
                                                               [],
                                                               []
                                                             |),
@@ -3483,7 +6180,7 @@ Module opcode.
                                       |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| mk_str (| "not_eof" |) |)
+                                        M.deref (| mk_str (| "outputs" |) |)
                                       |);
                                       M.call_closure (|
                                         Ty.apply
@@ -3492,7 +6189,7 @@ Module opcode.
                                           [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                                         M.pointer_coercion
                                           M.PointerCoercion.Unsize
-                                          (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                                           (Ty.apply
                                             (Ty.path "&")
                                             []
@@ -3504,12 +6201,12 @@ Module opcode.
                                               M.borrow (|
                                                 Pointer.Kind.Ref,
                                                 M.alloc (|
-                                                  Ty.path "bool",
+                                                  Ty.path "u8",
                                                   M.call_closure (|
-                                                    Ty.path "bool",
+                                                    Ty.path "u8",
                                                     M.get_associated_function (|
                                                       Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                                                      "is_disabled_in_eof",
+                                                      "outputs",
                                                       [],
                                                       []
                                                     |),
@@ -3647,7 +6344,6 @@ Module opcode.
                 name_len: name.len() as u8,
                 inputs: 0,
                 outputs: 0,
-                not_eof: false,
                 terminating: false,
                 immediate_size: 0,
             }
@@ -3760,7 +6456,6 @@ Module opcode.
                       |)));
                   ("inputs", Value.Integer IntegerKind.U8 0);
                   ("outputs", Value.Integer IntegerKind.U8 0);
-                  ("not_eof", Value.Bool false);
                   ("terminating", Value.Bool false);
                   ("immediate_size", Value.Integer IntegerKind.U8 0)
                 ]
@@ -3777,8 +6472,7 @@ Module opcode.
         pub const fn name(&self) -> &'static str {
             // SAFETY: `self.name_*` can only be initialized with a valid `&'static str`.
             unsafe {
-                // TODO : Use `str::from_raw_parts` when it's stable.
-                let slice = core::slice::from_raw_parts(self.name_ptr.as_ptr(), self.name_len as usize);
+                let slice = std::slice::from_raw_parts(self.name_ptr.as_ptr(), self.name_len as usize);
                 core::str::from_utf8_unchecked(slice)
             }
         }
@@ -3960,35 +6654,6 @@ Module opcode.
     Global Typeclasses Opaque outputs.
     
     (*
-        pub const fn is_disabled_in_eof(&self) -> bool {
-            self.not_eof
-        }
-    *)
-    Definition is_disabled_in_eof (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ],
-              self
-            |) in
-          M.read (|
-            M.SubPointer.get_struct_record_field (|
-              M.deref (| M.read (| self |) |),
-              "revm_bytecode::opcode::OpCodeInfo",
-              "not_eof"
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_is_disabled_in_eof :
-      M.IsAssociatedFunction.C Self "is_disabled_in_eof" is_disabled_in_eof.
-    Admitted.
-    Global Typeclasses Opaque is_disabled_in_eof.
-    
-    (*
         pub const fn is_terminating(&self) -> bool {
             self.terminating
         }
@@ -4046,37 +6711,6 @@ Module opcode.
     Admitted.
     Global Typeclasses Opaque immediate_size.
   End Impl_revm_bytecode_opcode_OpCodeInfo.
-  
-  (*
-  pub const fn not_eof(mut op: OpCodeInfo) -> OpCodeInfo {
-      op.not_eof = true;
-      op
-  }
-  *)
-  Definition not_eof (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ op ] =>
-      ltac:(M.monadic
-        (let op := M.alloc (| Ty.path "revm_bytecode::opcode::OpCodeInfo", op |) in
-        M.read (|
-          let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                op,
-                "revm_bytecode::opcode::OpCodeInfo",
-                "not_eof"
-              |),
-              Value.Bool true
-            |) in
-          op
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_not_eof :
-    M.IsFunction.C "revm_bytecode::opcode::not_eof" not_eof.
-  Admitted.
-  Global Typeclasses Opaque not_eof.
   
   (*
   pub const fn immediate_size(mut op: OpCodeInfo, n: u8) -> OpCodeInfo {
@@ -4184,6 +6818,14 @@ Module opcode.
   Admitted.
   Global Typeclasses Opaque stack_io.
   
+  Definition value_NOP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (get_constant (| "revm_bytecode::opcode::JUMPDEST", Ty.path "u8" |))).
+  
+  Global Instance Instance_IsConstant_value_NOP :
+    M.IsFunction.C "revm_bytecode::opcode::NOP" value_NOP.
+  Admitted.
+  Global Typeclasses Opaque value_NOP.
+  
   Definition value_STOP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 0 |))).
   
@@ -4200,6 +6842,222 @@ Module opcode.
   Admitted.
   Global Typeclasses Opaque value_ADD.
   
+  Definition value_MUL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 2 |))).
+  
+  Global Instance Instance_IsConstant_value_MUL :
+    M.IsFunction.C "revm_bytecode::opcode::MUL" value_MUL.
+  Admitted.
+  Global Typeclasses Opaque value_MUL.
+  
+  Definition value_SUB (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 3 |))).
+  
+  Global Instance Instance_IsConstant_value_SUB :
+    M.IsFunction.C "revm_bytecode::opcode::SUB" value_SUB.
+  Admitted.
+  Global Typeclasses Opaque value_SUB.
+  
+  Definition value_DIV (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 4 |))).
+  
+  Global Instance Instance_IsConstant_value_DIV :
+    M.IsFunction.C "revm_bytecode::opcode::DIV" value_DIV.
+  Admitted.
+  Global Typeclasses Opaque value_DIV.
+  
+  Definition value_SDIV (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 5 |))).
+  
+  Global Instance Instance_IsConstant_value_SDIV :
+    M.IsFunction.C "revm_bytecode::opcode::SDIV" value_SDIV.
+  Admitted.
+  Global Typeclasses Opaque value_SDIV.
+  
+  Definition value_MOD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 6 |))).
+  
+  Global Instance Instance_IsConstant_value_MOD :
+    M.IsFunction.C "revm_bytecode::opcode::MOD" value_MOD.
+  Admitted.
+  Global Typeclasses Opaque value_MOD.
+  
+  Definition value_SMOD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 7 |))).
+  
+  Global Instance Instance_IsConstant_value_SMOD :
+    M.IsFunction.C "revm_bytecode::opcode::SMOD" value_SMOD.
+  Admitted.
+  Global Typeclasses Opaque value_SMOD.
+  
+  Definition value_ADDMOD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 8 |))).
+  
+  Global Instance Instance_IsConstant_value_ADDMOD :
+    M.IsFunction.C "revm_bytecode::opcode::ADDMOD" value_ADDMOD.
+  Admitted.
+  Global Typeclasses Opaque value_ADDMOD.
+  
+  Definition value_MULMOD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 9 |))).
+  
+  Global Instance Instance_IsConstant_value_MULMOD :
+    M.IsFunction.C "revm_bytecode::opcode::MULMOD" value_MULMOD.
+  Admitted.
+  Global Typeclasses Opaque value_MULMOD.
+  
+  Definition value_EXP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 10 |))).
+  
+  Global Instance Instance_IsConstant_value_EXP :
+    M.IsFunction.C "revm_bytecode::opcode::EXP" value_EXP.
+  Admitted.
+  Global Typeclasses Opaque value_EXP.
+  
+  Definition value_SIGNEXTEND (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 11 |))).
+  
+  Global Instance Instance_IsConstant_value_SIGNEXTEND :
+    M.IsFunction.C "revm_bytecode::opcode::SIGNEXTEND" value_SIGNEXTEND.
+  Admitted.
+  Global Typeclasses Opaque value_SIGNEXTEND.
+  
+  Definition value_LT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 16 |))).
+  
+  Global Instance Instance_IsConstant_value_LT :
+    M.IsFunction.C "revm_bytecode::opcode::LT" value_LT.
+  Admitted.
+  Global Typeclasses Opaque value_LT.
+  
+  Definition value_GT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 17 |))).
+  
+  Global Instance Instance_IsConstant_value_GT :
+    M.IsFunction.C "revm_bytecode::opcode::GT" value_GT.
+  Admitted.
+  Global Typeclasses Opaque value_GT.
+  
+  Definition value_SLT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 18 |))).
+  
+  Global Instance Instance_IsConstant_value_SLT :
+    M.IsFunction.C "revm_bytecode::opcode::SLT" value_SLT.
+  Admitted.
+  Global Typeclasses Opaque value_SLT.
+  
+  Definition value_SGT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 19 |))).
+  
+  Global Instance Instance_IsConstant_value_SGT :
+    M.IsFunction.C "revm_bytecode::opcode::SGT" value_SGT.
+  Admitted.
+  Global Typeclasses Opaque value_SGT.
+  
+  Definition value_EQ (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 20 |))).
+  
+  Global Instance Instance_IsConstant_value_EQ :
+    M.IsFunction.C "revm_bytecode::opcode::EQ" value_EQ.
+  Admitted.
+  Global Typeclasses Opaque value_EQ.
+  
+  Definition value_ISZERO (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 21 |))).
+  
+  Global Instance Instance_IsConstant_value_ISZERO :
+    M.IsFunction.C "revm_bytecode::opcode::ISZERO" value_ISZERO.
+  Admitted.
+  Global Typeclasses Opaque value_ISZERO.
+  
+  Definition value_AND (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 22 |))).
+  
+  Global Instance Instance_IsConstant_value_AND :
+    M.IsFunction.C "revm_bytecode::opcode::AND" value_AND.
+  Admitted.
+  Global Typeclasses Opaque value_AND.
+  
+  Definition value_OR (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 23 |))).
+  
+  Global Instance Instance_IsConstant_value_OR :
+    M.IsFunction.C "revm_bytecode::opcode::OR" value_OR.
+  Admitted.
+  Global Typeclasses Opaque value_OR.
+  
+  Definition value_XOR (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 24 |))).
+  
+  Global Instance Instance_IsConstant_value_XOR :
+    M.IsFunction.C "revm_bytecode::opcode::XOR" value_XOR.
+  Admitted.
+  Global Typeclasses Opaque value_XOR.
+  
+  Definition value_NOT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 25 |))).
+  
+  Global Instance Instance_IsConstant_value_NOT :
+    M.IsFunction.C "revm_bytecode::opcode::NOT" value_NOT.
+  Admitted.
+  Global Typeclasses Opaque value_NOT.
+  
+  Definition value_BYTE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 26 |))).
+  
+  Global Instance Instance_IsConstant_value_BYTE :
+    M.IsFunction.C "revm_bytecode::opcode::BYTE" value_BYTE.
+  Admitted.
+  Global Typeclasses Opaque value_BYTE.
+  
+  Definition value_SHL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 27 |))).
+  
+  Global Instance Instance_IsConstant_value_SHL :
+    M.IsFunction.C "revm_bytecode::opcode::SHL" value_SHL.
+  Admitted.
+  Global Typeclasses Opaque value_SHL.
+  
+  Definition value_SHR (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 28 |))).
+  
+  Global Instance Instance_IsConstant_value_SHR :
+    M.IsFunction.C "revm_bytecode::opcode::SHR" value_SHR.
+  Admitted.
+  Global Typeclasses Opaque value_SHR.
+  
+  Definition value_SAR (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 29 |))).
+  
+  Global Instance Instance_IsConstant_value_SAR :
+    M.IsFunction.C "revm_bytecode::opcode::SAR" value_SAR.
+  Admitted.
+  Global Typeclasses Opaque value_SAR.
+  
+  Definition value_CLZ (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 30 |))).
+  
+  Global Instance Instance_IsConstant_value_CLZ :
+    M.IsFunction.C "revm_bytecode::opcode::CLZ" value_CLZ.
+  Admitted.
+  Global Typeclasses Opaque value_CLZ.
+  
+  Definition value_KECCAK256 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 32 |))).
+  
+  Global Instance Instance_IsConstant_value_KECCAK256 :
+    M.IsFunction.C "revm_bytecode::opcode::KECCAK256" value_KECCAK256.
+  Admitted.
+  Global Typeclasses Opaque value_KECCAK256.
+  
+  Definition value_ADDRESS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 48 |))).
+  
+  Global Instance Instance_IsConstant_value_ADDRESS :
+    M.IsFunction.C "revm_bytecode::opcode::ADDRESS" value_ADDRESS.
+  Admitted.
+  Global Typeclasses Opaque value_ADDRESS.
+  
   Definition value_BALANCE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 49 |))).
   
@@ -4208,275 +7066,970 @@ Module opcode.
   Admitted.
   Global Typeclasses Opaque value_BALANCE.
   
+  Definition value_ORIGIN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 50 |))).
+  
+  Global Instance Instance_IsConstant_value_ORIGIN :
+    M.IsFunction.C "revm_bytecode::opcode::ORIGIN" value_ORIGIN.
+  Admitted.
+  Global Typeclasses Opaque value_ORIGIN.
+  
+  Definition value_CALLER (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 51 |))).
+  
+  Global Instance Instance_IsConstant_value_CALLER :
+    M.IsFunction.C "revm_bytecode::opcode::CALLER" value_CALLER.
+  Admitted.
+  Global Typeclasses Opaque value_CALLER.
+  
+  Definition value_CALLVALUE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 52 |))).
+  
+  Global Instance Instance_IsConstant_value_CALLVALUE :
+    M.IsFunction.C "revm_bytecode::opcode::CALLVALUE" value_CALLVALUE.
+  Admitted.
+  Global Typeclasses Opaque value_CALLVALUE.
+  
+  Definition value_CALLDATALOAD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 53 |))).
+  
+  Global Instance Instance_IsConstant_value_CALLDATALOAD :
+    M.IsFunction.C "revm_bytecode::opcode::CALLDATALOAD" value_CALLDATALOAD.
+  Admitted.
+  Global Typeclasses Opaque value_CALLDATALOAD.
+  
+  Definition value_CALLDATASIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 54 |))).
+  
+  Global Instance Instance_IsConstant_value_CALLDATASIZE :
+    M.IsFunction.C "revm_bytecode::opcode::CALLDATASIZE" value_CALLDATASIZE.
+  Admitted.
+  Global Typeclasses Opaque value_CALLDATASIZE.
+  
+  Definition value_CALLDATACOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 55 |))).
+  
+  Global Instance Instance_IsConstant_value_CALLDATACOPY :
+    M.IsFunction.C "revm_bytecode::opcode::CALLDATACOPY" value_CALLDATACOPY.
+  Admitted.
+  Global Typeclasses Opaque value_CALLDATACOPY.
+  
+  Definition value_CODESIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 56 |))).
+  
+  Global Instance Instance_IsConstant_value_CODESIZE :
+    M.IsFunction.C "revm_bytecode::opcode::CODESIZE" value_CODESIZE.
+  Admitted.
+  Global Typeclasses Opaque value_CODESIZE.
+  
+  Definition value_CODECOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 57 |))).
+  
+  Global Instance Instance_IsConstant_value_CODECOPY :
+    M.IsFunction.C "revm_bytecode::opcode::CODECOPY" value_CODECOPY.
+  Admitted.
+  Global Typeclasses Opaque value_CODECOPY.
+  
+  Definition value_GASPRICE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 58 |))).
+  
+  Global Instance Instance_IsConstant_value_GASPRICE :
+    M.IsFunction.C "revm_bytecode::opcode::GASPRICE" value_GASPRICE.
+  Admitted.
+  Global Typeclasses Opaque value_GASPRICE.
+  
+  Definition value_EXTCODESIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 59 |))).
+  
+  Global Instance Instance_IsConstant_value_EXTCODESIZE :
+    M.IsFunction.C "revm_bytecode::opcode::EXTCODESIZE" value_EXTCODESIZE.
+  Admitted.
+  Global Typeclasses Opaque value_EXTCODESIZE.
+  
+  Definition value_EXTCODECOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 60 |))).
+  
+  Global Instance Instance_IsConstant_value_EXTCODECOPY :
+    M.IsFunction.C "revm_bytecode::opcode::EXTCODECOPY" value_EXTCODECOPY.
+  Admitted.
+  Global Typeclasses Opaque value_EXTCODECOPY.
+  
+  Definition value_RETURNDATASIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 61 |))).
+  
+  Global Instance Instance_IsConstant_value_RETURNDATASIZE :
+    M.IsFunction.C "revm_bytecode::opcode::RETURNDATASIZE" value_RETURNDATASIZE.
+  Admitted.
+  Global Typeclasses Opaque value_RETURNDATASIZE.
+  
+  Definition value_RETURNDATACOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 62 |))).
+  
+  Global Instance Instance_IsConstant_value_RETURNDATACOPY :
+    M.IsFunction.C "revm_bytecode::opcode::RETURNDATACOPY" value_RETURNDATACOPY.
+  Admitted.
+  Global Typeclasses Opaque value_RETURNDATACOPY.
+  
+  Definition value_EXTCODEHASH (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 63 |))).
+  
+  Global Instance Instance_IsConstant_value_EXTCODEHASH :
+    M.IsFunction.C "revm_bytecode::opcode::EXTCODEHASH" value_EXTCODEHASH.
+  Admitted.
+  Global Typeclasses Opaque value_EXTCODEHASH.
+  
+  Definition value_BLOCKHASH (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 64 |))).
+  
+  Global Instance Instance_IsConstant_value_BLOCKHASH :
+    M.IsFunction.C "revm_bytecode::opcode::BLOCKHASH" value_BLOCKHASH.
+  Admitted.
+  Global Typeclasses Opaque value_BLOCKHASH.
+  
+  Definition value_COINBASE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 65 |))).
+  
+  Global Instance Instance_IsConstant_value_COINBASE :
+    M.IsFunction.C "revm_bytecode::opcode::COINBASE" value_COINBASE.
+  Admitted.
+  Global Typeclasses Opaque value_COINBASE.
+  
+  Definition value_TIMESTAMP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 66 |))).
+  
+  Global Instance Instance_IsConstant_value_TIMESTAMP :
+    M.IsFunction.C "revm_bytecode::opcode::TIMESTAMP" value_TIMESTAMP.
+  Admitted.
+  Global Typeclasses Opaque value_TIMESTAMP.
+  
+  Definition value_NUMBER (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 67 |))).
+  
+  Global Instance Instance_IsConstant_value_NUMBER :
+    M.IsFunction.C "revm_bytecode::opcode::NUMBER" value_NUMBER.
+  Admitted.
+  Global Typeclasses Opaque value_NUMBER.
+  
+  Definition value_DIFFICULTY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 68 |))).
+  
+  Global Instance Instance_IsConstant_value_DIFFICULTY :
+    M.IsFunction.C "revm_bytecode::opcode::DIFFICULTY" value_DIFFICULTY.
+  Admitted.
+  Global Typeclasses Opaque value_DIFFICULTY.
+  
+  Definition value_GASLIMIT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 69 |))).
+  
+  Global Instance Instance_IsConstant_value_GASLIMIT :
+    M.IsFunction.C "revm_bytecode::opcode::GASLIMIT" value_GASLIMIT.
+  Admitted.
+  Global Typeclasses Opaque value_GASLIMIT.
+  
+  Definition value_CHAINID (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 70 |))).
+  
+  Global Instance Instance_IsConstant_value_CHAINID :
+    M.IsFunction.C "revm_bytecode::opcode::CHAINID" value_CHAINID.
+  Admitted.
+  Global Typeclasses Opaque value_CHAINID.
+  
+  Definition value_SELFBALANCE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 71 |))).
+  
+  Global Instance Instance_IsConstant_value_SELFBALANCE :
+    M.IsFunction.C "revm_bytecode::opcode::SELFBALANCE" value_SELFBALANCE.
+  Admitted.
+  Global Typeclasses Opaque value_SELFBALANCE.
+  
+  Definition value_BASEFEE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 72 |))).
+  
+  Global Instance Instance_IsConstant_value_BASEFEE :
+    M.IsFunction.C "revm_bytecode::opcode::BASEFEE" value_BASEFEE.
+  Admitted.
+  Global Typeclasses Opaque value_BASEFEE.
+  
+  Definition value_BLOBHASH (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 73 |))).
+  
+  Global Instance Instance_IsConstant_value_BLOBHASH :
+    M.IsFunction.C "revm_bytecode::opcode::BLOBHASH" value_BLOBHASH.
+  Admitted.
+  Global Typeclasses Opaque value_BLOBHASH.
+  
+  Definition value_BLOBBASEFEE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 74 |))).
+  
+  Global Instance Instance_IsConstant_value_BLOBBASEFEE :
+    M.IsFunction.C "revm_bytecode::opcode::BLOBBASEFEE" value_BLOBBASEFEE.
+  Admitted.
+  Global Typeclasses Opaque value_BLOBBASEFEE.
+  
+  Definition value_POP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 80 |))).
+  
+  Global Instance Instance_IsConstant_value_POP :
+    M.IsFunction.C "revm_bytecode::opcode::POP" value_POP.
+  Admitted.
+  Global Typeclasses Opaque value_POP.
+  
+  Definition value_MLOAD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 81 |))).
+  
+  Global Instance Instance_IsConstant_value_MLOAD :
+    M.IsFunction.C "revm_bytecode::opcode::MLOAD" value_MLOAD.
+  Admitted.
+  Global Typeclasses Opaque value_MLOAD.
+  
+  Definition value_MSTORE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 82 |))).
+  
+  Global Instance Instance_IsConstant_value_MSTORE :
+    M.IsFunction.C "revm_bytecode::opcode::MSTORE" value_MSTORE.
+  Admitted.
+  Global Typeclasses Opaque value_MSTORE.
+  
+  Definition value_MSTORE8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 83 |))).
+  
+  Global Instance Instance_IsConstant_value_MSTORE8 :
+    M.IsFunction.C "revm_bytecode::opcode::MSTORE8" value_MSTORE8.
+  Admitted.
+  Global Typeclasses Opaque value_MSTORE8.
+  
+  Definition value_SLOAD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 84 |))).
+  
+  Global Instance Instance_IsConstant_value_SLOAD :
+    M.IsFunction.C "revm_bytecode::opcode::SLOAD" value_SLOAD.
+  Admitted.
+  Global Typeclasses Opaque value_SLOAD.
+  
+  Definition value_SSTORE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 85 |))).
+  
+  Global Instance Instance_IsConstant_value_SSTORE :
+    M.IsFunction.C "revm_bytecode::opcode::SSTORE" value_SSTORE.
+  Admitted.
+  Global Typeclasses Opaque value_SSTORE.
+  
+  Definition value_JUMP (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 86 |))).
+  
+  Global Instance Instance_IsConstant_value_JUMP :
+    M.IsFunction.C "revm_bytecode::opcode::JUMP" value_JUMP.
+  Admitted.
+  Global Typeclasses Opaque value_JUMP.
+  
+  Definition value_JUMPI (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 87 |))).
+  
+  Global Instance Instance_IsConstant_value_JUMPI :
+    M.IsFunction.C "revm_bytecode::opcode::JUMPI" value_JUMPI.
+  Admitted.
+  Global Typeclasses Opaque value_JUMPI.
+  
+  Definition value_PC (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 88 |))).
+  
+  Global Instance Instance_IsConstant_value_PC :
+    M.IsFunction.C "revm_bytecode::opcode::PC" value_PC.
+  Admitted.
+  Global Typeclasses Opaque value_PC.
+  
+  Definition value_MSIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 89 |))).
+  
+  Global Instance Instance_IsConstant_value_MSIZE :
+    M.IsFunction.C "revm_bytecode::opcode::MSIZE" value_MSIZE.
+  Admitted.
+  Global Typeclasses Opaque value_MSIZE.
+  
+  Definition value_GAS (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 90 |))).
+  
+  Global Instance Instance_IsConstant_value_GAS :
+    M.IsFunction.C "revm_bytecode::opcode::GAS" value_GAS.
+  Admitted.
+  Global Typeclasses Opaque value_GAS.
+  
+  Definition value_JUMPDEST (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 91 |))).
+  
+  Global Instance Instance_IsConstant_value_JUMPDEST :
+    M.IsFunction.C "revm_bytecode::opcode::JUMPDEST" value_JUMPDEST.
+  Admitted.
+  Global Typeclasses Opaque value_JUMPDEST.
+  
+  Definition value_TLOAD (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 92 |))).
+  
+  Global Instance Instance_IsConstant_value_TLOAD :
+    M.IsFunction.C "revm_bytecode::opcode::TLOAD" value_TLOAD.
+  Admitted.
+  Global Typeclasses Opaque value_TLOAD.
+  
+  Definition value_TSTORE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 93 |))).
+  
+  Global Instance Instance_IsConstant_value_TSTORE :
+    M.IsFunction.C "revm_bytecode::opcode::TSTORE" value_TSTORE.
+  Admitted.
+  Global Typeclasses Opaque value_TSTORE.
+  
+  Definition value_MCOPY (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 94 |))).
+  
+  Global Instance Instance_IsConstant_value_MCOPY :
+    M.IsFunction.C "revm_bytecode::opcode::MCOPY" value_MCOPY.
+  Admitted.
+  Global Typeclasses Opaque value_MCOPY.
+  
+  Definition value_PUSH0 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 95 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH0 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH0" value_PUSH0.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH0.
+  
+  Definition value_PUSH1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 96 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH1 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH1" value_PUSH1.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH1.
+  
+  Definition value_PUSH2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 97 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH2 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH2" value_PUSH2.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH2.
+  
+  Definition value_PUSH3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 98 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH3 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH3" value_PUSH3.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH3.
+  
+  Definition value_PUSH4 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 99 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH4 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH4" value_PUSH4.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH4.
+  
+  Definition value_PUSH5 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 100 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH5 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH5" value_PUSH5.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH5.
+  
+  Definition value_PUSH6 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 101 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH6 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH6" value_PUSH6.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH6.
+  
+  Definition value_PUSH7 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 102 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH7 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH7" value_PUSH7.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH7.
+  
+  Definition value_PUSH8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 103 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH8 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH8" value_PUSH8.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH8.
+  
+  Definition value_PUSH9 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 104 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH9 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH9" value_PUSH9.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH9.
+  
+  Definition value_PUSH10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 105 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH10 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH10" value_PUSH10.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH10.
+  
+  Definition value_PUSH11 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 106 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH11 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH11" value_PUSH11.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH11.
+  
+  Definition value_PUSH12 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 107 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH12 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH12" value_PUSH12.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH12.
+  
+  Definition value_PUSH13 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 108 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH13 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH13" value_PUSH13.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH13.
+  
+  Definition value_PUSH14 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 109 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH14 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH14" value_PUSH14.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH14.
+  
+  Definition value_PUSH15 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 110 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH15 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH15" value_PUSH15.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH15.
+  
+  Definition value_PUSH16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 111 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH16 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH16" value_PUSH16.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH16.
+  
+  Definition value_PUSH17 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 112 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH17 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH17" value_PUSH17.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH17.
+  
+  Definition value_PUSH18 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 113 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH18 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH18" value_PUSH18.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH18.
+  
+  Definition value_PUSH19 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 114 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH19 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH19" value_PUSH19.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH19.
+  
+  Definition value_PUSH20 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 115 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH20 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH20" value_PUSH20.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH20.
+  
+  Definition value_PUSH21 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 116 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH21 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH21" value_PUSH21.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH21.
+  
+  Definition value_PUSH22 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 117 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH22 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH22" value_PUSH22.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH22.
+  
+  Definition value_PUSH23 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 118 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH23 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH23" value_PUSH23.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH23.
+  
+  Definition value_PUSH24 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 119 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH24 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH24" value_PUSH24.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH24.
+  
+  Definition value_PUSH25 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 120 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH25 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH25" value_PUSH25.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH25.
+  
+  Definition value_PUSH26 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 121 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH26 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH26" value_PUSH26.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH26.
+  
+  Definition value_PUSH27 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 122 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH27 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH27" value_PUSH27.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH27.
+  
+  Definition value_PUSH28 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 123 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH28 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH28" value_PUSH28.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH28.
+  
+  Definition value_PUSH29 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 124 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH29 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH29" value_PUSH29.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH29.
+  
+  Definition value_PUSH30 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 125 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH30 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH30" value_PUSH30.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH30.
+  
+  Definition value_PUSH31 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 126 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH31 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH31" value_PUSH31.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH31.
+  
+  Definition value_PUSH32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 127 |))).
+  
+  Global Instance Instance_IsConstant_value_PUSH32 :
+    M.IsFunction.C "revm_bytecode::opcode::PUSH32" value_PUSH32.
+  Admitted.
+  Global Typeclasses Opaque value_PUSH32.
+  
+  Definition value_DUP1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 128 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP1 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP1" value_DUP1.
+  Admitted.
+  Global Typeclasses Opaque value_DUP1.
+  
+  Definition value_DUP2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 129 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP2 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP2" value_DUP2.
+  Admitted.
+  Global Typeclasses Opaque value_DUP2.
+  
+  Definition value_DUP3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 130 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP3 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP3" value_DUP3.
+  Admitted.
+  Global Typeclasses Opaque value_DUP3.
+  
+  Definition value_DUP4 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 131 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP4 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP4" value_DUP4.
+  Admitted.
+  Global Typeclasses Opaque value_DUP4.
+  
+  Definition value_DUP5 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 132 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP5 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP5" value_DUP5.
+  Admitted.
+  Global Typeclasses Opaque value_DUP5.
+  
+  Definition value_DUP6 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 133 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP6 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP6" value_DUP6.
+  Admitted.
+  Global Typeclasses Opaque value_DUP6.
+  
+  Definition value_DUP7 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 134 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP7 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP7" value_DUP7.
+  Admitted.
+  Global Typeclasses Opaque value_DUP7.
+  
+  Definition value_DUP8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 135 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP8 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP8" value_DUP8.
+  Admitted.
+  Global Typeclasses Opaque value_DUP8.
+  
+  Definition value_DUP9 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 136 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP9 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP9" value_DUP9.
+  Admitted.
+  Global Typeclasses Opaque value_DUP9.
+  
+  Definition value_DUP10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 137 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP10 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP10" value_DUP10.
+  Admitted.
+  Global Typeclasses Opaque value_DUP10.
+  
+  Definition value_DUP11 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 138 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP11 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP11" value_DUP11.
+  Admitted.
+  Global Typeclasses Opaque value_DUP11.
+  
+  Definition value_DUP12 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 139 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP12 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP12" value_DUP12.
+  Admitted.
+  Global Typeclasses Opaque value_DUP12.
+  
+  Definition value_DUP13 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 140 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP13 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP13" value_DUP13.
+  Admitted.
+  Global Typeclasses Opaque value_DUP13.
+  
+  Definition value_DUP14 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 141 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP14 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP14" value_DUP14.
+  Admitted.
+  Global Typeclasses Opaque value_DUP14.
+  
+  Definition value_DUP15 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 142 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP15 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP15" value_DUP15.
+  Admitted.
+  Global Typeclasses Opaque value_DUP15.
+  
+  Definition value_DUP16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 143 |))).
+  
+  Global Instance Instance_IsConstant_value_DUP16 :
+    M.IsFunction.C "revm_bytecode::opcode::DUP16" value_DUP16.
+  Admitted.
+  Global Typeclasses Opaque value_DUP16.
+  
+  Definition value_SWAP1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 144 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP1 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP1" value_SWAP1.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP1.
+  
+  Definition value_SWAP2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 145 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP2 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP2" value_SWAP2.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP2.
+  
+  Definition value_SWAP3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 146 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP3 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP3" value_SWAP3.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP3.
+  
+  Definition value_SWAP4 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 147 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP4 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP4" value_SWAP4.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP4.
+  
+  Definition value_SWAP5 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 148 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP5 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP5" value_SWAP5.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP5.
+  
+  Definition value_SWAP6 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 149 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP6 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP6" value_SWAP6.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP6.
+  
+  Definition value_SWAP7 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 150 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP7 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP7" value_SWAP7.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP7.
+  
+  Definition value_SWAP8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 151 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP8 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP8" value_SWAP8.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP8.
+  
+  Definition value_SWAP9 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 152 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP9 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP9" value_SWAP9.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP9.
+  
+  Definition value_SWAP10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 153 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP10 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP10" value_SWAP10.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP10.
+  
+  Definition value_SWAP11 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 154 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP11 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP11" value_SWAP11.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP11.
+  
+  Definition value_SWAP12 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 155 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP12 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP12" value_SWAP12.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP12.
+  
+  Definition value_SWAP13 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 156 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP13 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP13" value_SWAP13.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP13.
+  
+  Definition value_SWAP14 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 157 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP14 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP14" value_SWAP14.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP14.
+  
+  Definition value_SWAP15 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 158 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP15 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP15" value_SWAP15.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP15.
+  
+  Definition value_SWAP16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 159 |))).
+  
+  Global Instance Instance_IsConstant_value_SWAP16 :
+    M.IsFunction.C "revm_bytecode::opcode::SWAP16" value_SWAP16.
+  Admitted.
+  Global Typeclasses Opaque value_SWAP16.
+  
+  Definition value_LOG0 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 160 |))).
+  
+  Global Instance Instance_IsConstant_value_LOG0 :
+    M.IsFunction.C "revm_bytecode::opcode::LOG0" value_LOG0.
+  Admitted.
+  Global Typeclasses Opaque value_LOG0.
+  
+  Definition value_LOG1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 161 |))).
+  
+  Global Instance Instance_IsConstant_value_LOG1 :
+    M.IsFunction.C "revm_bytecode::opcode::LOG1" value_LOG1.
+  Admitted.
+  Global Typeclasses Opaque value_LOG1.
+  
+  Definition value_LOG2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 162 |))).
+  
+  Global Instance Instance_IsConstant_value_LOG2 :
+    M.IsFunction.C "revm_bytecode::opcode::LOG2" value_LOG2.
+  Admitted.
+  Global Typeclasses Opaque value_LOG2.
+  
+  Definition value_LOG3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 163 |))).
+  
+  Global Instance Instance_IsConstant_value_LOG3 :
+    M.IsFunction.C "revm_bytecode::opcode::LOG3" value_LOG3.
+  Admitted.
+  Global Typeclasses Opaque value_LOG3.
+  
+  Definition value_LOG4 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 164 |))).
+  
+  Global Instance Instance_IsConstant_value_LOG4 :
+    M.IsFunction.C "revm_bytecode::opcode::LOG4" value_LOG4.
+  Admitted.
+  Global Typeclasses Opaque value_LOG4.
+  
+  Definition value_CREATE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 240 |))).
+  
+  Global Instance Instance_IsConstant_value_CREATE :
+    M.IsFunction.C "revm_bytecode::opcode::CREATE" value_CREATE.
+  Admitted.
+  Global Typeclasses Opaque value_CREATE.
+  
+  Definition value_CALL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 241 |))).
+  
+  Global Instance Instance_IsConstant_value_CALL :
+    M.IsFunction.C "revm_bytecode::opcode::CALL" value_CALL.
+  Admitted.
+  Global Typeclasses Opaque value_CALL.
+  
+  Definition value_CALLCODE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 242 |))).
+  
+  Global Instance Instance_IsConstant_value_CALLCODE :
+    M.IsFunction.C "revm_bytecode::opcode::CALLCODE" value_CALLCODE.
+  Admitted.
+  Global Typeclasses Opaque value_CALLCODE.
+  
+  Definition value_RETURN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 243 |))).
+  
+  Global Instance Instance_IsConstant_value_RETURN :
+    M.IsFunction.C "revm_bytecode::opcode::RETURN" value_RETURN.
+  Admitted.
+  Global Typeclasses Opaque value_RETURN.
+  
+  Definition value_DELEGATECALL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 244 |))).
+  
+  Global Instance Instance_IsConstant_value_DELEGATECALL :
+    M.IsFunction.C "revm_bytecode::opcode::DELEGATECALL" value_DELEGATECALL.
+  Admitted.
+  Global Typeclasses Opaque value_DELEGATECALL.
+  
+  Definition value_CREATE2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 245 |))).
+  
+  Global Instance Instance_IsConstant_value_CREATE2 :
+    M.IsFunction.C "revm_bytecode::opcode::CREATE2" value_CREATE2.
+  Admitted.
+  Global Typeclasses Opaque value_CREATE2.
+  
+  Definition value_STATICCALL (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 250 |))).
+  
+  Global Instance Instance_IsConstant_value_STATICCALL :
+    M.IsFunction.C "revm_bytecode::opcode::STATICCALL" value_STATICCALL.
+  Admitted.
+  Global Typeclasses Opaque value_STATICCALL.
+  
+  Definition value_REVERT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 253 |))).
+  
+  Global Instance Instance_IsConstant_value_REVERT :
+    M.IsFunction.C "revm_bytecode::opcode::REVERT" value_REVERT.
+  Admitted.
+  Global Typeclasses Opaque value_REVERT.
+  
+  Definition value_INVALID (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 254 |))).
+  
+  Global Instance Instance_IsConstant_value_INVALID :
+    M.IsFunction.C "revm_bytecode::opcode::INVALID" value_INVALID.
+  Admitted.
+  Global Typeclasses Opaque value_INVALID.
+  
+  Definition value_SELFDESTRUCT (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 255 |))).
+  
+  Global Instance Instance_IsConstant_value_SELFDESTRUCT :
+    M.IsFunction.C "revm_bytecode::opcode::SELFDESTRUCT" value_SELFDESTRUCT.
+  Admitted.
+  Global Typeclasses Opaque value_SELFDESTRUCT.
+  
   
   Definition value_OPCODE_INFO (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
-      (let~ map :
-          Ty.apply
-            (Ty.path "array")
-            [ Value.Integer IntegerKind.Usize 256 ]
-            [
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-            ] :=
-        lib.repeat (|
-          Value.StructTuple
-            "core::option::Option::None"
-            []
-            [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-            [],
-          Value.Integer IntegerKind.Usize 256
-        |) in
-      let~ prev : Ty.path "u8" := Value.Integer IntegerKind.U8 0 in
-      let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 0 in
-      let~ _ : Ty.tuple [] :=
-        M.match_operator (|
-          Ty.tuple [],
-          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-          [
-            fun γ =>
-              ltac:(M.monadic
-                (let γ :=
-                  M.alloc (|
-                    Ty.path "bool",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      UnOp.not,
-                      [
-                        LogicalOp.or (|
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
-                          |),
-                          ltac:(M.monadic
-                            (M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [ M.read (| val |); M.read (| prev |) ]
-                            |)))
-                        |)
-                      ]
-                    |)
-                  |) in
-                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                M.never_to_any (|
-                  M.call_closure (|
-                    Ty.path "never",
-                    M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                    [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "from_str",
-                          [],
-                          []
-                        |),
-                        [ mk_str (| "opcodes must be sorted in ascending order" |) ]
-                      |)
-                    ]
-                  |)
-                |)));
-            fun γ => ltac:(M.monadic (Value.Tuple []))
-          ]
-        |) in
-      let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
-      let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
-        M.call_closure (|
-          Ty.path "revm_bytecode::opcode::OpCodeInfo",
-          M.get_associated_function (|
-            Ty.path "revm_bytecode::opcode::OpCodeInfo",
-            "new",
-            [],
-            []
-          |),
-          [ mk_str (| "STOP" |) ]
-        |) in
-      let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
-        M.call_closure (|
-          Ty.path "revm_bytecode::opcode::OpCodeInfo",
-          M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
-          [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 0 ]
-        |) in
-      let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
-        M.call_closure (|
-          Ty.path "revm_bytecode::opcode::OpCodeInfo",
-          M.get_function (| "revm_bytecode::opcode::terminating", [], [] |),
-          [ M.read (| info |) ]
-        |) in
-      let~ _ : Ty.tuple [] :=
-        M.write (|
-          M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 0 |),
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-            [ M.read (| info |) ]
-        |) in
-      let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 1 in
-      let~ _ : Ty.tuple [] :=
-        M.match_operator (|
-          Ty.tuple [],
-          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-          [
-            fun γ =>
-              ltac:(M.monadic
-                (let γ :=
-                  M.alloc (|
-                    Ty.path "bool",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      UnOp.not,
-                      [
-                        LogicalOp.or (|
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
-                          |),
-                          ltac:(M.monadic
-                            (M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [ M.read (| val |); M.read (| prev |) ]
-                            |)))
-                        |)
-                      ]
-                    |)
-                  |) in
-                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                M.never_to_any (|
-                  M.call_closure (|
-                    Ty.path "never",
-                    M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                    [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "from_str",
-                          [],
-                          []
-                        |),
-                        [ mk_str (| "opcodes must be sorted in ascending order" |) ]
-                      |)
-                    ]
-                  |)
-                |)));
-            fun γ => ltac:(M.monadic (Value.Tuple []))
-          ]
-        |) in
-      let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
-      let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
-        M.call_closure (|
-          Ty.path "revm_bytecode::opcode::OpCodeInfo",
-          M.get_associated_function (|
-            Ty.path "revm_bytecode::opcode::OpCodeInfo",
-            "new",
-            [],
-            []
-          |),
-          [ mk_str (| "ADD" |) ]
-        |) in
-      let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
-        M.call_closure (|
-          Ty.path "revm_bytecode::opcode::OpCodeInfo",
-          M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
-          [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
-        |) in
-      let~ _ : Ty.tuple [] :=
-        M.write (|
-          M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 1 |),
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-            [ M.read (| info |) ]
-        |) in
-      let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 49 in
-      let~ _ : Ty.tuple [] :=
-        M.match_operator (|
-          Ty.tuple [],
-          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-          [
-            fun γ =>
-              ltac:(M.monadic
-                (let γ :=
-                  M.alloc (|
-                    Ty.path "bool",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      UnOp.not,
-                      [
-                        LogicalOp.or (|
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
-                          |),
-                          ltac:(M.monadic
-                            (M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [ M.read (| val |); M.read (| prev |) ]
-                            |)))
-                        |)
-                      ]
-                    |)
-                  |) in
-                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                M.never_to_any (|
-                  M.call_closure (|
-                    Ty.path "never",
-                    M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                    [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "from_str",
-                          [],
-                          []
-                        |),
-                        [ mk_str (| "opcodes must be sorted in ascending order" |) ]
-                      |)
-                    ]
-                  |)
-                |)));
-            fun γ => ltac:(M.monadic (Value.Tuple []))
-          ]
-        |) in
-      let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
-      let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
-        M.call_closure (|
-          Ty.path "revm_bytecode::opcode::OpCodeInfo",
-          M.get_associated_function (|
-            Ty.path "revm_bytecode::opcode::OpCodeInfo",
-            "new",
-            [],
-            []
-          |),
-          [ mk_str (| "BALANCE" |) ]
-        |) in
-      let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
-        M.call_closure (|
-          Ty.path "revm_bytecode::opcode::OpCodeInfo",
-          M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
-          [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
-        |) in
-      let~ _ : Ty.tuple [] :=
-        M.write (|
-          M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 49 |),
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-            [ M.read (| info |) ]
-        |) in
-      M.alloc (|
+      (M.alloc (|
         Ty.apply
           (Ty.path "array")
           [ Value.Integer IntegerKind.Usize 256 ]
@@ -4486,7 +8039,12248 @@ Module opcode.
               []
               [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
           ],
-        M.match_operator (|
+        let~ map :
+            Ty.apply
+              (Ty.path "array")
+              [ Value.Integer IntegerKind.Usize 256 ]
+              [
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              ] :=
+          lib.repeat (|
+            Value.StructTuple
+              "core::option::Option::None"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [],
+            Value.Integer IntegerKind.Usize 256
+          |) in
+        let~ prev : Ty.path "u8" := Value.Integer IntegerKind.U8 0 in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 0 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "STOP" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::terminating", [], [] |),
+            [ M.read (| info |) ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 0 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 1 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "ADD" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 1 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 2 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "MUL" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 2 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 3 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SUB" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 3 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 4 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DIV" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 4 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 5 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SDIV" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 5 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 6 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "MOD" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 6 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 7 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SMOD" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 7 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 8 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "ADDMOD" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 8 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 9 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "MULMOD" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 9 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 10 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "EXP" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 10 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 11 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SIGNEXTEND" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 11 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 16 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "LT" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 16 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 17 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "GT" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 17 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 18 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SLT" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 18 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 19 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SGT" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 19 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 20 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "EQ" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 20 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 21 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "ISZERO" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 21 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 22 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "AND" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 22 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 23 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "OR" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 23 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 24 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "XOR" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 24 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 25 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "NOT" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 25 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 26 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "BYTE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 26 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 27 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SHL" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 27 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 28 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SHR" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 28 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 29 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SAR" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 29 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 30 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CLZ" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 30 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 32 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "KECCAK256" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 32 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 48 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "ADDRESS" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 48 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 49 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "BALANCE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 49 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 50 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "ORIGIN" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 50 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 51 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CALLER" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 51 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 52 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CALLVALUE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 52 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 53 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CALLDATALOAD" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 53 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 54 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CALLDATASIZE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 54 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 55 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CALLDATACOPY" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 55 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 56 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CODESIZE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 56 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 57 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CODECOPY" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 57 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 58 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "GASPRICE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 58 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 59 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "EXTCODESIZE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 59 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 60 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "EXTCODECOPY" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 60 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 61 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "RETURNDATASIZE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 61 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 62 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "RETURNDATACOPY" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 62 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 63 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "EXTCODEHASH" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 63 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 64 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "BLOCKHASH" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 64 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 65 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "COINBASE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 65 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 66 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "TIMESTAMP" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 66 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 67 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "NUMBER" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 67 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 68 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DIFFICULTY" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 68 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 69 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "GASLIMIT" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 69 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 70 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CHAINID" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 70 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 71 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SELFBALANCE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 71 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 72 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "BASEFEE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 72 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 73 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "BLOBHASH" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 73 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 74 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "BLOBBASEFEE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 74 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 80 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "POP" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 80 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 81 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "MLOAD" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 81 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 82 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "MSTORE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 82 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 83 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "MSTORE8" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 83 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 84 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SLOAD" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 84 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 85 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SSTORE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 85 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 86 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "JUMP" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 86 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 87 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "JUMPI" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 87 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 88 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PC" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 88 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 89 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "MSIZE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 89 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 90 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "GAS" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 90 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 91 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "JUMPDEST" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 91 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 92 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "TLOAD" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 92 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 93 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "TSTORE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 93 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 94 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "MCOPY" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 94 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 95 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH0" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 95 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 96 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH1" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 96 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 97 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH2" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 97 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 98 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH3" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 98 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 99 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH4" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 4 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 99 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 100 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH5" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 5 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 100 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 101 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH6" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 6 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 101 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 102 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH7" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 7 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 102 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 103 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH8" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 8 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 103 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 104 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH9" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 9 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 104 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 105 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH10" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 10 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 105 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 106 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH11" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 11 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 106 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 107 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH12" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 12 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 107 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 108 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH13" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 13 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 108 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 109 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH14" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 14 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 109 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 110 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH15" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 15 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 110 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 111 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH16" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 16 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 111 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 112 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH17" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 17 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 112 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 113 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH18" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 18 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 113 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 114 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH19" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 19 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 114 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 115 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH20" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 20 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 115 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 116 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH21" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 21 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 116 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 117 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH22" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 22 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 117 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 118 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH23" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 23 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 118 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 119 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH24" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 24 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 119 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 120 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH25" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 25 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 120 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 121 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH26" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 26 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 121 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 122 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH27" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 27 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 122 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 123 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH28" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 28 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 123 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 124 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH29" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 29 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 124 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 125 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH30" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 30 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 125 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 126 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH31" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 31 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 126 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 127 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "PUSH32" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::immediate_size", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 32 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 127 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 128 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP1" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 2 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 128 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 129 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP2" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 3 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 129 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 130 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP3" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 4 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 130 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 131 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP4" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 5 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 131 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 132 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP5" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 5; Value.Integer IntegerKind.U8 6 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 132 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 133 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP6" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 7 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 133 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 134 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP7" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 7; Value.Integer IntegerKind.U8 8 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 134 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 135 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP8" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 8; Value.Integer IntegerKind.U8 9 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 135 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 136 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP9" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 9; Value.Integer IntegerKind.U8 10 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 136 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 137 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP10" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 10; Value.Integer IntegerKind.U8 11 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 137 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 138 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP11" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 11; Value.Integer IntegerKind.U8 12 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 138 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 139 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP12" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 12; Value.Integer IntegerKind.U8 13 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 139 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 140 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP13" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 13; Value.Integer IntegerKind.U8 14 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 140 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 141 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP14" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 14; Value.Integer IntegerKind.U8 15 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 141 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 142 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP15" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 15; Value.Integer IntegerKind.U8 16 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 142 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 143 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DUP16" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 16; Value.Integer IntegerKind.U8 17 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 143 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 144 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP1" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 2 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 144 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 145 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP2" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 3 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 145 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 146 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP3" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 4 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 146 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 147 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP4" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 5; Value.Integer IntegerKind.U8 5 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 147 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 148 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP5" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 6 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 148 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 149 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP6" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 7; Value.Integer IntegerKind.U8 7 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 149 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 150 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP7" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 8; Value.Integer IntegerKind.U8 8 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 150 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 151 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP8" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 9; Value.Integer IntegerKind.U8 9 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 151 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 152 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP9" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 10; Value.Integer IntegerKind.U8 10 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 152 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 153 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP10" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 11; Value.Integer IntegerKind.U8 11 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 153 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 154 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP11" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 12; Value.Integer IntegerKind.U8 12 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 154 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 155 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP12" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 13; Value.Integer IntegerKind.U8 13 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 155 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 156 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP13" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 14; Value.Integer IntegerKind.U8 14 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 156 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 157 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP14" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 15; Value.Integer IntegerKind.U8 15 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 157 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 158 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP15" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 16; Value.Integer IntegerKind.U8 16 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 158 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 159 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SWAP16" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 17; Value.Integer IntegerKind.U8 17 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 159 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 160 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "LOG0" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 160 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 161 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "LOG1" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 161 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 162 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "LOG2" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 162 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 163 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "LOG3" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 5; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 163 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 164 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "LOG4" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 164 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 240 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CREATE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 240 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 241 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CALL" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 7; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 241 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 242 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CALLCODE" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 7; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 242 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 243 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "RETURN" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::terminating", [], [] |),
+            [ M.read (| info |) ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 243 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 244 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "DELEGATECALL" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 244 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 245 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "CREATE2" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 245 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 250 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "STATICCALL" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 1 ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 250 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 253 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "REVERT" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::terminating", [], [] |),
+            [ M.read (| info |) ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 253 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 254 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "INVALID" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::terminating", [], [] |),
+            [ M.read (| info |) ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 254 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 255 in
+        let~ _ : Ty.tuple [] :=
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          LogicalOp.or (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [ M.read (| val |); Value.Integer IntegerKind.U8 0 ]
+                            |),
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| val |); M.read (| prev |) ]
+                              |)))
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                        |)
+                      ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |) in
+        let~ _ : Ty.tuple [] := M.write (| prev, M.read (| val |) |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_associated_function (|
+              Ty.path "revm_bytecode::opcode::OpCodeInfo",
+              "new",
+              [],
+              []
+            |),
+            [ mk_str (| "SELFDESTRUCT" |) ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
+            [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 0 ]
+          |) in
+        let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
+          M.call_closure (|
+            Ty.path "revm_bytecode::opcode::OpCodeInfo",
+            M.get_function (| "revm_bytecode::opcode::terminating", [], [] |),
+            [ M.read (| info |) ]
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.write (|
+            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 255 |),
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              [ M.read (| info |) ]
+          |) in
+        M.alloc (|
           Ty.apply
             (Ty.path "array")
             [ Value.Integer IntegerKind.Usize 256 ]
@@ -4496,8 +20290,19 @@ Module opcode.
                 []
                 [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
             ],
-          prev,
-          [ fun γ => ltac:(M.monadic (M.read (| map |))) ]
+          M.match_operator (|
+            Ty.apply
+              (Ty.path "array")
+              [ Value.Integer IntegerKind.Usize 256 ]
+              [
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+              ],
+            prev,
+            [ fun γ => ltac:(M.monadic (M.read (| map |))) ]
+          |)
         |)
       |))).
   
@@ -4524,7 +20329,7 @@ Module opcode.
             []
             [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]; Ty.path "revm_bytecode::opcode::OpCode" ]
             [
-              ("key", Value.Integer IntegerKind.U64 15467950696543387533);
+              ("key", Value.Integer IntegerKind.U64 16263683158343804936);
               ("disps",
                 M.call_closure (|
                   Ty.apply
@@ -4539,7 +20344,7 @@ Module opcode.
                       [
                         Ty.apply
                           (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Value.Integer IntegerKind.Usize 30 ]
                           [ Ty.tuple [ Ty.path "u32"; Ty.path "u32" ] ]
                       ])
                     (Ty.apply
@@ -4556,12 +20361,143 @@ Module opcode.
                           M.alloc (|
                             Ty.apply
                               (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Value.Integer IntegerKind.Usize 30 ]
                               [ Ty.tuple [ Ty.path "u32"; Ty.path "u32" ] ],
                             Value.Array
                               [
                                 Value.Tuple
-                                  [ Value.Integer IntegerKind.U32 0; Value.Integer IntegerKind.U32 0
+                                  [
+                                    Value.Integer IntegerKind.U32 1;
+                                    Value.Integer IntegerKind.U32 120
+                                  ];
+                                Value.Tuple
+                                  [ Value.Integer IntegerKind.U32 1; Value.Integer IntegerKind.U32 9
+                                  ];
+                                Value.Tuple
+                                  [ Value.Integer IntegerKind.U32 0; Value.Integer IntegerKind.U32 7
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 32
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 7;
+                                    Value.Integer IntegerKind.U32 42
+                                  ];
+                                Value.Tuple
+                                  [ Value.Integer IntegerKind.U32 0; Value.Integer IntegerKind.U32 1
+                                  ];
+                                Value.Tuple
+                                  [ Value.Integer IntegerKind.U32 1; Value.Integer IntegerKind.U32 2
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 131
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 2;
+                                    Value.Integer IntegerKind.U32 31
+                                  ];
+                                Value.Tuple
+                                  [ Value.Integer IntegerKind.U32 0; Value.Integer IntegerKind.U32 9
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 92
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 1;
+                                    Value.Integer IntegerKind.U32 96
+                                  ];
+                                Value.Tuple
+                                  [ Value.Integer IntegerKind.U32 0; Value.Integer IntegerKind.U32 1
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 63
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 2;
+                                    Value.Integer IntegerKind.U32 48
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 18
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 72
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 46
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 98
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 27;
+                                    Value.Integer IntegerKind.U32 63
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 11;
+                                    Value.Integer IntegerKind.U32 16
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 83
+                                  ];
+                                Value.Tuple
+                                  [ Value.Integer IntegerKind.U32 0; Value.Integer IntegerKind.U32 2
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 15;
+                                    Value.Integer IntegerKind.U32 79
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 38;
+                                    Value.Integer IntegerKind.U32 148
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 15;
+                                    Value.Integer IntegerKind.U32 96
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 0;
+                                    Value.Integer IntegerKind.U32 22
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 5;
+                                    Value.Integer IntegerKind.U32 90
+                                  ];
+                                Value.Tuple
+                                  [ Value.Integer IntegerKind.U32 1; Value.Integer IntegerKind.U32 0
+                                  ];
+                                Value.Tuple
+                                  [
+                                    Value.Integer IntegerKind.U32 54;
+                                    Value.Integer IntegerKind.U32 35
                                   ]
                               ]
                           |)
@@ -4595,7 +20531,7 @@ Module opcode.
                       [
                         Ty.apply
                           (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 3 ]
+                          [ Value.Integer IntegerKind.Usize 150 ]
                           [
                             Ty.tuple
                               [
@@ -4628,7 +20564,7 @@ Module opcode.
                           M.alloc (|
                             Ty.apply
                               (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 3 ]
+                              [ Value.Integer IntegerKind.Usize 150 ]
                               [
                                 Ty.tuple
                                   [
@@ -4642,12 +20578,908 @@ Module opcode.
                                   [
                                     M.borrow (|
                                       Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP12" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP12",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH31" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH31",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "COINBASE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "COINBASE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DIFFICULTY" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DIFFICULTY",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP11" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP11",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "ADDMOD" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "ADDMOD",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SDIV" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SDIV",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "NOT" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "NOT",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "RETURNDATASIZE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "RETURNDATASIZE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH30" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH30",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH5" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH5",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "EXTCODECOPY" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "EXTCODECOPY",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SHL" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SHL",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SSTORE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SSTORE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "RETURNDATACOPY" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "RETURNDATACOPY",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "EXP" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "EXP",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "MSTORE8" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "MSTORE8",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "LOG4" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "LOG4",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SLOAD" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SLOAD",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "XOR" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "XOR",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "JUMP" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "JUMP",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH28" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH28",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "BALANCE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "BALANCE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "MCOPY" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "MCOPY",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH8" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH8",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "NUMBER" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "NUMBER",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH20" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH20",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DIV" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DIV",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "OR" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "OR",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
                                       M.deref (| mk_str (| "STOP" |) |)
                                     |);
                                     M.read (|
                                       get_associated_constant (|
                                         Ty.path "revm_bytecode::opcode::OpCode",
                                         "STOP",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP7" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP7",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP14" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP14",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP4" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP4",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH7" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH7",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP6" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP6",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CALLER" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CALLER",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH0" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH0",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH27" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH27",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CALLCODE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CALLCODE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SUB" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SUB",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "LOG1" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "LOG1",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP16" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP16",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP16" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP16",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SGT" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SGT",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "BLOCKHASH" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "BLOCKHASH",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH4" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH4",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH3" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH3",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH21" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH21",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP5" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP5",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CHAINID" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CHAINID",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP2" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP2",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP7" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP7",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH2" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH2",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH24" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH24",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "JUMPDEST" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "JUMPDEST",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH14" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH14",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH16" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH16",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CALL" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CALL",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "GASLIMIT" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "GASLIMIT",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH32" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH32",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SHR" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SHR",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SAR" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SAR",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP10" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP10",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP3" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP3",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "AND" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "AND",
                                         Ty.path "revm_bytecode::opcode::OpCode"
                                       |)
                                     |)
@@ -4670,12 +21502,1174 @@ Module opcode.
                                   [
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (| mk_str (| "BALANCE" |) |)
+                                      M.deref (| mk_str (| "DUP4" |) |)
                                     |);
                                     M.read (|
                                       get_associated_constant (|
                                         Ty.path "revm_bytecode::opcode::OpCode",
-                                        "BALANCE",
+                                        "DUP4",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "MOD" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "MOD",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SLT" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SLT",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "MSTORE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "MSTORE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "TIMESTAMP" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "TIMESTAMP",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "LOG0" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "LOG0",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP9" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP9",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH11" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH11",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH17" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH17",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH10" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH10",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "REVERT" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "REVERT",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "LOG3" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "LOG3",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "JUMPI" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "JUMPI",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CALLVALUE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CALLVALUE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "INVALID" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "INVALID",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP10" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP10",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SELFDESTRUCT" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SELFDESTRUCT",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CODECOPY" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CODECOPY",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "BLOBBASEFEE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "BLOBBASEFEE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP3" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP3",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "KECCAK256" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "KECCAK256",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH22" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH22",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP2" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP2",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH13" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH13",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "MULMOD" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "MULMOD",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP15" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP15",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CREATE2" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CREATE2",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "GAS" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "GAS",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP1" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP1",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CLZ" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CLZ",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "BYTE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "BYTE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH19" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH19",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH12" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH12",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "RETURN" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "RETURN",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "LT" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "LT",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH15" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH15",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CALLDATASIZE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CALLDATASIZE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "STATICCALL" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "STATICCALL",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "ORIGIN" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "ORIGIN",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP15" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP15",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP14" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP14",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH9" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH9",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "ADDRESS" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "ADDRESS",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CREATE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CREATE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PC" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PC",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP8" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP8",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "BASEFEE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "BASEFEE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH6" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH6",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP13" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP13",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "GASPRICE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "GASPRICE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH25" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH25",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "TLOAD" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "TLOAD",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP5" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP5",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CODESIZE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CODESIZE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH1" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH1",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH26" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH26",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP12" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP12",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "POP" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "POP",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CALLDATALOAD" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CALLDATALOAD",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH18" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH18",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "TSTORE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "TSTORE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP8" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP8",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SWAP13" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SWAP13",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "MLOAD" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "MLOAD",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SIGNEXTEND" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SIGNEXTEND",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "GT" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "GT",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "EXTCODEHASH" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "EXTCODEHASH",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH23" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH23",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "LOG2" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "LOG2",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SMOD" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SMOD",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "SELFBALANCE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "SELFBALANCE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "BLOBHASH" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "BLOBHASH",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "EXTCODESIZE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "EXTCODESIZE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "ISZERO" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "ISZERO",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "PUSH29" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "PUSH29",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP9" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP9",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP1" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP1",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "MSIZE" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "MSIZE",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP11" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP11",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "EQ" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "EQ",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "CALLDATACOPY" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "CALLDATACOPY",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DELEGATECALL" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DELEGATECALL",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "DUP6" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "DUP6",
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      |)
+                                    |)
+                                  ];
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "MUL" |) |)
+                                    |);
+                                    M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "revm_bytecode::opcode::OpCode",
+                                        "MUL",
                                         Ty.path "revm_bytecode::opcode::OpCode"
                                       |)
                                     |)

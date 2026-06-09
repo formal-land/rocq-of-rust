@@ -16,6 +16,7 @@ Module interpreter.
               []
               WIRE
               "Bytecode");
+          ("gas", Ty.path "revm_interpreter::gas::Gas");
           ("stack",
             Ty.associated_in_trait
               "revm_interpreter::interpreter_types::InterpreterTypes"
@@ -44,20 +45,6 @@ Module interpreter.
               []
               WIRE
               "Input");
-          ("sub_routine",
-            Ty.associated_in_trait
-              "revm_interpreter::interpreter_types::InterpreterTypes"
-              []
-              []
-              WIRE
-              "SubRoutineStack");
-          ("control",
-            Ty.associated_in_trait
-              "revm_interpreter::interpreter_types::InterpreterTypes"
-              []
-              []
-              WIRE
-              "Control");
           ("runtime_flag",
             Ty.associated_in_trait
               "revm_interpreter::interpreter_types::InterpreterTypes"
@@ -75,7 +62,7 @@ Module interpreter.
         ];
     } *)
   
-  Module Impl_core_fmt_Debug_where_core_fmt_Debug_WIRE_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Bytecode_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Stack_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_ReturnData_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Memory_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Input_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_SubRoutineStack_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Control_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_RuntimeFlag_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Extend_for_revm_interpreter_interpreter_Interpreter_WIRE.
+  Module Impl_core_fmt_Debug_where_core_fmt_Debug_WIRE_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Bytecode_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Stack_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_ReturnData_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Memory_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Input_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_RuntimeFlag_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Extend_for_revm_interpreter_interpreter_Interpreter_WIRE.
     Definition Self (WIRE : Ty.t) : Ty.t :=
       Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ].
     
@@ -103,7 +90,7 @@ Module interpreter.
                   [
                     Ty.apply
                       (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 9 ]
+                      [ Value.Integer IntegerKind.Usize 8 ]
                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
                   ] :=
               M.borrow (|
@@ -114,17 +101,16 @@ Module interpreter.
                     M.alloc (|
                       Ty.apply
                         (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 9 ]
+                        [ Value.Integer IntegerKind.Usize 8 ]
                         [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
                       Value.Array
                         [
                           mk_str (| "bytecode" |);
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas" |) |) |);
                           M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "stack" |) |) |);
                           M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "return_data" |) |) |);
                           M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "memory" |) |) |);
                           M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "input" |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "sub_routine" |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "control" |) |) |);
                           M.borrow (|
                             Pointer.Kind.Ref,
                             M.deref (| mk_str (| "runtime_flag" |) |)
@@ -163,7 +149,7 @@ Module interpreter.
                     [
                       Ty.apply
                         (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 9 ]
+                        [ Value.Integer IntegerKind.Usize 8 ]
                         [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ] ]
                     ])
                   (Ty.apply
@@ -184,7 +170,7 @@ Module interpreter.
                         M.alloc (|
                           Ty.apply
                             (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 9 ]
+                            [ Value.Integer IntegerKind.Usize 8 ]
                             [
                               Ty.apply
                                 (Ty.path "&")
@@ -225,6 +211,37 @@ Module interpreter.
                                           M.deref (| M.read (| self |) |),
                                           "revm_interpreter::interpreter::Interpreter",
                                           "bytecode"
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_interpreter::gas::Gas" ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "gas"
                                         |)
                                       |)
                                     |)
@@ -399,82 +416,6 @@ Module interpreter.
                                         []
                                         []
                                         WIRE
-                                        "SubRoutineStack"
-                                    ])
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "revm_interpreter::interpreter::Interpreter",
-                                          "sub_routine"
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "revm_interpreter::interpreter_types::InterpreterTypes"
-                                        []
-                                        []
-                                        WIRE
-                                        "Control"
-                                    ])
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "revm_interpreter::interpreter::Interpreter",
-                                          "control"
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "revm_interpreter::interpreter_types::InterpreterTypes"
-                                        []
-                                        []
-                                        WIRE
                                         "RuntimeFlag"
                                     ])
                                   (Ty.apply
@@ -600,7 +541,7 @@ Module interpreter.
                         [
                           Ty.apply
                             (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 9 ]
+                            [ Value.Integer IntegerKind.Usize 8 ]
                             [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
                         ])
                       (Ty.apply
@@ -630,9 +571,9 @@ Module interpreter.
         (* Trait polymorphic types *) []
         (Self WIRE)
         (* Instance *) [ ("fmt", InstanceField.Method (fmt WIRE)) ].
-  End Impl_core_fmt_Debug_where_core_fmt_Debug_WIRE_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Bytecode_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Stack_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_ReturnData_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Memory_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Input_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_SubRoutineStack_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Control_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_RuntimeFlag_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Extend_for_revm_interpreter_interpreter_Interpreter_WIRE.
+  End Impl_core_fmt_Debug_where_core_fmt_Debug_WIRE_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Bytecode_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Stack_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_ReturnData_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Memory_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Input_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_RuntimeFlag_where_core_fmt_Debug_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Extend_for_revm_interpreter_interpreter_Interpreter_WIRE.
   
-  Module Impl_core_clone_Clone_where_core_clone_Clone_WIRE_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Bytecode_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Stack_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_ReturnData_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Memory_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Input_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_SubRoutineStack_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Control_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_RuntimeFlag_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Extend_for_revm_interpreter_interpreter_Interpreter_WIRE.
+  Module Impl_core_clone_Clone_where_core_clone_Clone_WIRE_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Bytecode_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Stack_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_ReturnData_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Memory_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Input_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_RuntimeFlag_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Extend_for_revm_interpreter_interpreter_Interpreter_WIRE.
     Definition Self (WIRE : Ty.t) : Ty.t :=
       Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ].
     
@@ -687,6 +628,34 @@ Module interpreter.
                             M.deref (| M.read (| self |) |),
                             "revm_interpreter::interpreter::Interpreter",
                             "bytecode"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |));
+              ("gas",
+                M.call_closure (|
+                  Ty.path "revm_interpreter::gas::Gas",
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "revm_interpreter::gas::Gas",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::Interpreter",
+                            "gas"
                           |)
                         |)
                       |)
@@ -845,82 +814,6 @@ Module interpreter.
                     |)
                   ]
                 |));
-              ("sub_routine",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "SubRoutineStack",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.associated_in_trait
-                      "revm_interpreter::interpreter_types::InterpreterTypes"
-                      []
-                      []
-                      WIRE
-                      "SubRoutineStack",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "sub_routine"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("control",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "Control",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.associated_in_trait
-                      "revm_interpreter::interpreter_types::InterpreterTypes"
-                      []
-                      []
-                      WIRE
-                      "Control",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "control"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
               ("runtime_flag",
                 M.call_closure (|
                   Ty.associated_in_trait
@@ -1009,190 +902,1042 @@ Module interpreter.
         (* Trait polymorphic types *) []
         (Self WIRE)
         (* Instance *) [ ("clone", InstanceField.Method (clone WIRE)) ].
-  End Impl_core_clone_Clone_where_core_clone_Clone_WIRE_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Bytecode_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Stack_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_ReturnData_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Memory_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Input_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_SubRoutineStack_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Control_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_RuntimeFlag_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Extend_for_revm_interpreter_interpreter_Interpreter_WIRE.
+  End Impl_core_clone_Clone_where_core_clone_Clone_WIRE_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Bytecode_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Stack_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_ReturnData_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Memory_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Input_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_RuntimeFlag_where_core_clone_Clone_associated_in_trait_revm_interpreter_interpreter_types_InterpreterTypes___WIRE_Extend_for_revm_interpreter_interpreter_Interpreter_WIRE.
   
-  Module Impl_revm_interpreter_interpreter_Interpreter_revm_interpreter_interpreter_EthInterpreter_EXT_MG.
-    Definition Self (EXT MG : Ty.t) : Ty.t :=
+  Module Impl_revm_interpreter_interpreter_Interpreter_revm_interpreter_interpreter_EthInterpreter_EXT_revm_interpreter_interpreter_shared_memory_SharedMemory.
+    Definition Self (EXT : Ty.t) : Ty.t :=
       Ty.apply
         (Ty.path "revm_interpreter::interpreter::Interpreter")
         []
-        [ Ty.apply (Ty.path "revm_interpreter::interpreter::EthInterpreter") [] [ EXT; MG ] ].
+        [
+          Ty.apply
+            (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+            []
+            [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+        ].
     
     (*
         pub fn new(
-            memory: Rc<RefCell<MG>>,
-            bytecode: Bytecode,
-            inputs: InputsImpl,
+            memory: SharedMemory,
+            bytecode: ExtBytecode,
+            input: InputsImpl,
             is_static: bool,
-            is_eof_init: bool,
             spec_id: SpecId,
             gas_limit: u64,
         ) -> Self {
-            let runtime_flag = RuntimeFlags {
-                spec_id,
-                is_static,
-                is_eof: bytecode.is_eof(),
-                is_eof_init,
-            };
-            Self {
-                bytecode: ExtBytecode::new(bytecode),
-                stack: Stack::new(),
-                return_data: ReturnDataImpl::default(),
+            Self::new_inner(
+                Stack::new(),
                 memory,
-                input: inputs,
-                sub_routine: SubRoutineImpl::default(),
-                control: LoopControlImpl::new(gas_limit),
-                runtime_flag,
-                extend: EXT::default(),
-            }
+                bytecode,
+                input,
+                is_static,
+                spec_id,
+                gas_limit,
+            )
         }
     *)
-    Definition new (EXT MG : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self EXT MG in
+    Definition new (EXT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self EXT in
       match ε, τ, α with
-      | [], [], [ memory; bytecode; inputs; is_static; is_eof_init; spec_id; gas_limit ] =>
+      | [], [], [ memory; bytecode; input; is_static; spec_id; gas_limit ] =>
         ltac:(M.monadic
           (let memory :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "alloc::rc::Rc")
-                []
-                [ Ty.apply (Ty.path "core::cell::RefCell") [] [ MG ]; Ty.path "alloc::alloc::Global"
-                ],
+              Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
               memory
             |) in
-          let bytecode := M.alloc (| Ty.path "revm_bytecode::bytecode::Bytecode", bytecode |) in
-          let inputs :=
-            M.alloc (| Ty.path "revm_interpreter::interpreter::input::InputsImpl", inputs |) in
-          let is_static := M.alloc (| Ty.path "bool", is_static |) in
-          let is_eof_init := M.alloc (| Ty.path "bool", is_eof_init |) in
-          let spec_id := M.alloc (| Ty.path "revm_specification::hardfork::SpecId", spec_id |) in
-          let gas_limit := M.alloc (| Ty.path "u64", gas_limit |) in
-          M.read (|
-            let~ runtime_flag :
-                Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" :=
-              Value.mkStructRecord
-                "revm_interpreter::interpreter::runtime_flags::RuntimeFlags"
-                []
-                []
-                [
-                  ("spec_id", M.read (| spec_id |));
-                  ("is_static", M.read (| is_static |));
-                  ("is_eof",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      M.get_associated_function (|
-                        Ty.path "revm_bytecode::bytecode::Bytecode",
-                        "is_eof",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, bytecode |) ]
-                    |));
-                  ("is_eof_init", M.read (| is_eof_init |))
-                ] in
+          let bytecode :=
             M.alloc (|
+              Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+              bytecode
+            |) in
+          let input :=
+            M.alloc (| Ty.path "revm_interpreter::interpreter::input::InputsImpl", input |) in
+          let is_static := M.alloc (| Ty.path "bool", is_static |) in
+          let spec_id := M.alloc (| Ty.path "revm_primitives::hardfork::SpecId", spec_id |) in
+          let gas_limit := M.alloc (| Ty.path "u64", gas_limit |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "revm_interpreter::interpreter::Interpreter")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                  []
+                  [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+              ],
+            M.get_associated_function (|
               Ty.apply
                 (Ty.path "revm_interpreter::interpreter::Interpreter")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::EthInterpreter") [] [ EXT; MG ]
-                ],
-              Value.mkStructRecord
-                "revm_interpreter::interpreter::Interpreter"
-                []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::EthInterpreter") [] [ EXT; MG ]
-                ]
                 [
-                  ("bytecode",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                      M.get_associated_function (|
-                        Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ M.read (| bytecode |) ]
-                    |));
-                  ("stack",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::stack::Stack",
-                      M.get_associated_function (|
-                        Ty.path "revm_interpreter::interpreter::stack::Stack",
-                        "new",
-                        [],
-                        []
-                      |),
-                      []
-                    |));
-                  ("return_data",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                      M.get_trait_method (|
-                        "core::default::Default",
-                        Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                        [],
-                        [],
-                        "default",
-                        [],
-                        []
-                      |),
-                      []
-                    |));
-                  ("memory", M.read (| memory |));
-                  ("input", M.read (| inputs |));
-                  ("sub_routine",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::subroutine_stack::SubRoutineImpl",
-                      M.get_trait_method (|
-                        "core::default::Default",
-                        Ty.path "revm_interpreter::interpreter::subroutine_stack::SubRoutineImpl",
-                        [],
-                        [],
-                        "default",
-                        [],
-                        []
-                      |),
-                      []
-                    |));
-                  ("control",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::loop_control::LoopControl",
-                      M.get_associated_function (|
-                        Ty.path "revm_interpreter::interpreter::loop_control::LoopControl",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ M.read (| gas_limit |) ]
-                    |));
-                  ("runtime_flag", M.read (| runtime_flag |));
-                  ("extend",
-                    M.call_closure (|
-                      EXT,
-                      M.get_trait_method (|
-                        "core::default::Default",
-                        EXT,
-                        [],
-                        [],
-                        "default",
-                        [],
-                        []
-                      |),
-                      []
-                    |))
-                ]
-            |)
+                  Ty.apply
+                    (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                    []
+                    [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+                ],
+              "new_inner",
+              [],
+              []
+            |),
+            [
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::stack::Stack",
+                M.get_associated_function (|
+                  Ty.path "revm_interpreter::interpreter::stack::Stack",
+                  "new",
+                  [],
+                  []
+                |),
+                []
+              |);
+              M.read (| memory |);
+              M.read (| bytecode |);
+              M.read (| input |);
+              M.read (| is_static |);
+              M.read (| spec_id |);
+              M.read (| gas_limit |)
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Global Instance AssociatedFunction_new :
-      forall (EXT MG : Ty.t),
-      M.IsAssociatedFunction.C (Self EXT MG) "new" (new EXT MG).
+      forall (EXT : Ty.t),
+      M.IsAssociatedFunction.C (Self EXT) "new" (new EXT).
     Admitted.
     Global Typeclasses Opaque new.
-  End Impl_revm_interpreter_interpreter_Interpreter_revm_interpreter_interpreter_EthInterpreter_EXT_MG.
+    
+    (*
+        pub fn default_ext() -> Self {
+            Self::do_default(Stack::new(), SharedMemory::new())
+        }
+    *)
+    Definition default_ext (EXT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self EXT in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.call_closure (|
+            Ty.apply
+              (Ty.path "revm_interpreter::interpreter::Interpreter")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                  []
+                  [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "revm_interpreter::interpreter::Interpreter")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                    []
+                    [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+                ],
+              "do_default",
+              [],
+              []
+            |),
+            [
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::stack::Stack",
+                M.get_associated_function (|
+                  Ty.path "revm_interpreter::interpreter::stack::Stack",
+                  "new",
+                  [],
+                  []
+                |),
+                []
+              |);
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+                M.get_associated_function (|
+                  Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+                  "new",
+                  [],
+                  []
+                |),
+                []
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_default_ext :
+      forall (EXT : Ty.t),
+      M.IsAssociatedFunction.C (Self EXT) "default_ext" (default_ext EXT).
+    Admitted.
+    Global Typeclasses Opaque default_ext.
+    
+    (*
+        pub fn invalid() -> Self {
+            Self::do_default(Stack::invalid(), SharedMemory::invalid())
+        }
+    *)
+    Definition invalid (EXT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self EXT in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.call_closure (|
+            Ty.apply
+              (Ty.path "revm_interpreter::interpreter::Interpreter")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                  []
+                  [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "revm_interpreter::interpreter::Interpreter")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                    []
+                    [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+                ],
+              "do_default",
+              [],
+              []
+            |),
+            [
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::stack::Stack",
+                M.get_associated_function (|
+                  Ty.path "revm_interpreter::interpreter::stack::Stack",
+                  "invalid",
+                  [],
+                  []
+                |),
+                []
+              |);
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+                M.get_associated_function (|
+                  Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+                  "invalid",
+                  [],
+                  []
+                |),
+                []
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_invalid :
+      forall (EXT : Ty.t),
+      M.IsAssociatedFunction.C (Self EXT) "invalid" (invalid EXT).
+    Admitted.
+    Global Typeclasses Opaque invalid.
+    
+    (*
+        fn do_default(stack: Stack, memory: SharedMemory) -> Self {
+            Self::new_inner(
+                stack,
+                memory,
+                ExtBytecode::default(),
+                InputsImpl::default(),
+                false,
+                SpecId::default(),
+                u64::MAX,
+            )
+        }
+    *)
+    Definition do_default (EXT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self EXT in
+      match ε, τ, α with
+      | [], [], [ stack; memory ] =>
+        ltac:(M.monadic
+          (let stack :=
+            M.alloc (| Ty.path "revm_interpreter::interpreter::stack::Stack", stack |) in
+          let memory :=
+            M.alloc (|
+              Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+              memory
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "revm_interpreter::interpreter::Interpreter")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                  []
+                  [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "revm_interpreter::interpreter::Interpreter")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                    []
+                    [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+                ],
+              "new_inner",
+              [],
+              []
+            |),
+            [
+              M.read (| stack |);
+              M.read (| memory |);
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
+                []
+              |);
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter::input::InputsImpl",
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "revm_interpreter::interpreter::input::InputsImpl",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
+                []
+              |);
+              Value.Bool false;
+              M.call_closure (|
+                Ty.path "revm_primitives::hardfork::SpecId",
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "revm_primitives::hardfork::SpecId",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
+                []
+              |);
+              M.read (| get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_do_default :
+      forall (EXT : Ty.t),
+      M.IsAssociatedFunction.C (Self EXT) "do_default" (do_default EXT).
+    Admitted.
+    Global Typeclasses Opaque do_default.
+    
+    (*
+        fn new_inner(
+            stack: Stack,
+            memory: SharedMemory,
+            bytecode: ExtBytecode,
+            input: InputsImpl,
+            is_static: bool,
+            spec_id: SpecId,
+            gas_limit: u64,
+        ) -> Self {
+            Self {
+                bytecode,
+                gas: Gas::new(gas_limit),
+                stack,
+                return_data: Default::default(),
+                memory,
+                input,
+                runtime_flag: RuntimeFlags { is_static, spec_id },
+                extend: Default::default(),
+            }
+        }
+    *)
+    Definition new_inner (EXT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self EXT in
+      match ε, τ, α with
+      | [], [], [ stack; memory; bytecode; input; is_static; spec_id; gas_limit ] =>
+        ltac:(M.monadic
+          (let stack :=
+            M.alloc (| Ty.path "revm_interpreter::interpreter::stack::Stack", stack |) in
+          let memory :=
+            M.alloc (|
+              Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+              memory
+            |) in
+          let bytecode :=
+            M.alloc (|
+              Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+              bytecode
+            |) in
+          let input :=
+            M.alloc (| Ty.path "revm_interpreter::interpreter::input::InputsImpl", input |) in
+          let is_static := M.alloc (| Ty.path "bool", is_static |) in
+          let spec_id := M.alloc (| Ty.path "revm_primitives::hardfork::SpecId", spec_id |) in
+          let gas_limit := M.alloc (| Ty.path "u64", gas_limit |) in
+          Value.mkStructRecord
+            "revm_interpreter::interpreter::Interpreter"
+            []
+            [
+              Ty.apply
+                (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                []
+                [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+            ]
+            [
+              ("bytecode", M.read (| bytecode |));
+              ("gas",
+                M.call_closure (|
+                  Ty.path "revm_interpreter::gas::Gas",
+                  M.get_associated_function (|
+                    Ty.path "revm_interpreter::gas::Gas",
+                    "new",
+                    [],
+                    []
+                  |),
+                  [ M.read (| gas_limit |) ]
+                |));
+              ("stack", M.read (| stack |));
+              ("return_data",
+                M.call_closure (|
+                  Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
+                  []
+                |));
+              ("memory", M.read (| memory |));
+              ("input", M.read (| input |));
+              ("runtime_flag",
+                Value.mkStructRecord
+                  "revm_interpreter::interpreter::runtime_flags::RuntimeFlags"
+                  []
+                  []
+                  [ ("is_static", M.read (| is_static |)); ("spec_id", M.read (| spec_id |)) ]);
+              ("extend",
+                M.call_closure (|
+                  EXT,
+                  M.get_trait_method (| "core::default::Default", EXT, [], [], "default", [], [] |),
+                  []
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_new_inner :
+      forall (EXT : Ty.t),
+      M.IsAssociatedFunction.C (Self EXT) "new_inner" (new_inner EXT).
+    Admitted.
+    Global Typeclasses Opaque new_inner.
+    
+    (*
+        pub fn clear(
+            &mut self,
+            memory: SharedMemory,
+            bytecode: ExtBytecode,
+            input: InputsImpl,
+            is_static: bool,
+            spec_id: SpecId,
+            gas_limit: u64,
+        ) {
+            let Self {
+                bytecode: bytecode_ref,
+                gas,
+                stack,
+                return_data,
+                memory: memory_ref,
+                input: input_ref,
+                runtime_flag,
+                extend,
+            } = self;
+            *bytecode_ref = bytecode;
+            *gas = Gas::new(gas_limit);
+            if stack.data().capacity() == 0 {
+                *stack = Stack::new();
+            } else {
+                stack.clear();
+            }
+            return_data.0.clear();
+            *memory_ref = memory;
+            *input_ref = input;
+            *runtime_flag = RuntimeFlags { spec_id, is_static };
+            *extend = EXT::default();
+        }
+    *)
+    Definition clear (EXT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self EXT in
+      match ε, τ, α with
+      | [], [], [ self; memory; bytecode; input; is_static; spec_id; gas_limit ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_interpreter::interpreter::Interpreter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                        []
+                        [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory"
+                        ]
+                    ]
+                ],
+              self
+            |) in
+          let memory :=
+            M.alloc (|
+              Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",
+              memory
+            |) in
+          let bytecode :=
+            M.alloc (|
+              Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+              bytecode
+            |) in
+          let input :=
+            M.alloc (| Ty.path "revm_interpreter::interpreter::input::InputsImpl", input |) in
+          let is_static := M.alloc (| Ty.path "bool", is_static |) in
+          let spec_id := M.alloc (| Ty.path "revm_primitives::hardfork::SpecId", spec_id |) in
+          let gas_limit := M.alloc (| Ty.path "u64", gas_limit |) in
+          M.match_operator (|
+            Ty.tuple [],
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_interpreter::interpreter::Interpreter",
+                      "bytecode"
+                    |) in
+                  let γ1_1 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_interpreter::interpreter::Interpreter",
+                      "gas"
+                    |) in
+                  let γ1_2 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_interpreter::interpreter::Interpreter",
+                      "stack"
+                    |) in
+                  let γ1_3 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_interpreter::interpreter::Interpreter",
+                      "return_data"
+                    |) in
+                  let γ1_4 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_interpreter::interpreter::Interpreter",
+                      "memory"
+                    |) in
+                  let γ1_5 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_interpreter::interpreter::Interpreter",
+                      "input"
+                    |) in
+                  let γ1_6 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_interpreter::interpreter::Interpreter",
+                      "runtime_flag"
+                    |) in
+                  let γ1_7 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_interpreter::interpreter::Interpreter",
+                      "extend"
+                    |) in
+                  let bytecode_ref :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode" ],
+                      γ1_0
+                    |) in
+                  let gas :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_interpreter::gas::Gas" ],
+                      γ1_1
+                    |) in
+                  let stack :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.path "revm_interpreter::interpreter::stack::Stack" ],
+                      γ1_2
+                    |) in
+                  let return_data :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl" ],
+                      γ1_3
+                    |) in
+                  let memory_ref :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ],
+                      γ1_4
+                    |) in
+                  let input_ref :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.path "revm_interpreter::interpreter::input::InputsImpl" ],
+                      γ1_5
+                    |) in
+                  let runtime_flag :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
+                      γ1_6
+                    |) in
+                  let extend := M.alloc (| Ty.apply (Ty.path "&mut") [] [ EXT ], γ1_7 |) in
+                  M.read (|
+                    let~ _ : Ty.tuple [] :=
+                      M.write (|
+                        M.deref (| M.read (| bytecode_ref |) |),
+                        M.read (| bytecode |)
+                      |) in
+                    let~ _ : Ty.tuple [] :=
+                      M.write (|
+                        M.deref (| M.read (| gas |) |),
+                        M.call_closure (|
+                          Ty.path "revm_interpreter::gas::Gas",
+                          M.get_associated_function (|
+                            Ty.path "revm_interpreter::gas::Gas",
+                            "new",
+                            [],
+                            []
+                          |),
+                          [ M.read (| gas_limit |) ]
+                        |)
+                      |) in
+                    let~ _ : Ty.tuple [] :=
+                      M.match_operator (|
+                        Ty.tuple [],
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ :=
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                [];
+                                              Ty.path "alloc::alloc::Global"
+                                            ],
+                                          "capacity",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [
+                                                            Value.Integer IntegerKind.Usize 256;
+                                                            Value.Integer IntegerKind.Usize 4
+                                                          ]
+                                                          [];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ],
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "revm_interpreter::interpreter::stack::Stack",
+                                                  "data",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| stack |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |);
+                                      Value.Integer IntegerKind.Usize 0
+                                    ]
+                                  |)
+                                |) in
+                              let _ :=
+                                is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                              M.read (|
+                                let~ _ : Ty.tuple [] :=
+                                  M.write (|
+                                    M.deref (| M.read (| stack |) |),
+                                    M.call_closure (|
+                                      Ty.path "revm_interpreter::interpreter::stack::Stack",
+                                      M.get_associated_function (|
+                                        Ty.path "revm_interpreter::interpreter::stack::Stack",
+                                        "new",
+                                        [],
+                                        []
+                                      |),
+                                      []
+                                    |)
+                                  |) in
+                                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (M.read (|
+                                let~ _ : Ty.tuple [] :=
+                                  M.call_closure (|
+                                    Ty.tuple [],
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.path "revm_interpreter::interpreter::stack::Stack",
+                                      [],
+                                      [],
+                                      "clear",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| stack |) |)
+                                      |)
+                                    ]
+                                  |) in
+                                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                              |)))
+                        ]
+                      |) in
+                    let~ _ : Ty.tuple [] :=
+                      M.call_closure (|
+                        Ty.tuple [],
+                        M.get_associated_function (|
+                          Ty.path "bytes::bytes::Bytes",
+                          "clear",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "bytes::bytes::Bytes" ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::DerefMut",
+                                  Ty.path "alloy_primitives::bytes_::Bytes",
+                                  [],
+                                  [],
+                                  "deref_mut",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_tuple_field (|
+                                      M.deref (| M.read (| return_data |) |),
+                                      "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                                      0
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |)
+                          |)
+                        ]
+                      |) in
+                    let~ _ : Ty.tuple [] :=
+                      M.write (| M.deref (| M.read (| memory_ref |) |), M.read (| memory |) |) in
+                    let~ _ : Ty.tuple [] :=
+                      M.write (| M.deref (| M.read (| input_ref |) |), M.read (| input |) |) in
+                    let~ _ : Ty.tuple [] :=
+                      M.write (|
+                        M.deref (| M.read (| runtime_flag |) |),
+                        Value.mkStructRecord
+                          "revm_interpreter::interpreter::runtime_flags::RuntimeFlags"
+                          []
+                          []
+                          [ ("spec_id", M.read (| spec_id |)); ("is_static", M.read (| is_static |))
+                          ]
+                      |) in
+                    let~ _ : Ty.tuple [] :=
+                      M.write (|
+                        M.deref (| M.read (| extend |) |),
+                        M.call_closure (|
+                          EXT,
+                          M.get_trait_method (|
+                            "core::default::Default",
+                            EXT,
+                            [],
+                            [],
+                            "default",
+                            [],
+                            []
+                          |),
+                          []
+                        |)
+                      |) in
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_clear :
+      forall (EXT : Ty.t),
+      M.IsAssociatedFunction.C (Self EXT) "clear" (clear EXT).
+    Admitted.
+    Global Typeclasses Opaque clear.
+    
+    (*
+        pub fn with_bytecode(mut self, bytecode: Bytecode) -> Self {
+            self.bytecode = ExtBytecode::new(bytecode);
+            self
+        }
+    *)
+    Definition with_bytecode
+        (EXT : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self EXT in
+      match ε, τ, α with
+      | [], [], [ self; bytecode ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "revm_interpreter::interpreter::Interpreter")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                    []
+                    [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+                ],
+              self
+            |) in
+          let bytecode := M.alloc (| Ty.path "revm_bytecode::bytecode::Bytecode", bytecode |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.write (|
+                M.SubPointer.get_struct_record_field (|
+                  self,
+                  "revm_interpreter::interpreter::Interpreter",
+                  "bytecode"
+                |),
+                M.call_closure (|
+                  Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                  M.get_associated_function (|
+                    Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                    "new",
+                    [],
+                    []
+                  |),
+                  [ M.read (| bytecode |) ]
+                |)
+              |) in
+            self
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_with_bytecode :
+      forall (EXT : Ty.t),
+      M.IsAssociatedFunction.C (Self EXT) "with_bytecode" (with_bytecode EXT).
+    Admitted.
+    Global Typeclasses Opaque with_bytecode.
+    
+    (*
+        pub fn set_spec_id(&mut self, spec_id: SpecId) {
+            self.runtime_flag.spec_id = spec_id;
+        }
+    *)
+    Definition set_spec_id (EXT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self EXT in
+      match ε, τ, α with
+      | [], [], [ self; spec_id ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_interpreter::interpreter::Interpreter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                        []
+                        [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory"
+                        ]
+                    ]
+                ],
+              self
+            |) in
+          let spec_id := M.alloc (| Ty.path "revm_primitives::hardfork::SpecId", spec_id |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.write (|
+                M.SubPointer.get_struct_record_field (|
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "revm_interpreter::interpreter::Interpreter",
+                    "runtime_flag"
+                  |),
+                  "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                  "spec_id"
+                |),
+                M.read (| spec_id |)
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_set_spec_id :
+      forall (EXT : Ty.t),
+      M.IsAssociatedFunction.C (Self EXT) "set_spec_id" (set_spec_id EXT).
+    Admitted.
+    Global Typeclasses Opaque set_spec_id.
+  End Impl_revm_interpreter_interpreter_Interpreter_revm_interpreter_interpreter_EthInterpreter_EXT_revm_interpreter_interpreter_shared_memory_SharedMemory.
+  
+  Module Impl_core_default_Default_for_revm_interpreter_interpreter_Interpreter_revm_interpreter_interpreter_EthInterpreter_Tuple__revm_interpreter_interpreter_shared_memory_SharedMemory.
+    Definition Self : Ty.t :=
+      Ty.apply
+        (Ty.path "revm_interpreter::interpreter::Interpreter")
+        []
+        [
+          Ty.apply
+            (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+            []
+            [ Ty.tuple []; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ]
+        ].
+    
+    (*
+        fn default() -> Self {
+            Self::default_ext()
+        }
+    *)
+    Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.call_closure (|
+            Ty.apply
+              (Ty.path "revm_interpreter::interpreter::Interpreter")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                  []
+                  [
+                    Ty.tuple [];
+                    Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory"
+                  ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "revm_interpreter::interpreter::Interpreter")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+                    []
+                    [
+                      Ty.tuple [];
+                      Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory"
+                    ]
+                ],
+              "default_ext",
+              [],
+              []
+            |),
+            []
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("default", InstanceField.Method default) ].
+  End Impl_core_default_Default_for_revm_interpreter_interpreter_Interpreter_revm_interpreter_interpreter_EthInterpreter_Tuple__revm_interpreter_interpreter_shared_memory_SharedMemory.
   
   (* StructRecord
     {
@@ -1209,743 +1954,181 @@ Module interpreter.
         ];
     } *)
   
-  Module Impl_revm_interpreter_interpreter_types_InterpreterTypes_where_revm_interpreter_interpreter_shared_memory_MemoryGetter_MG_for_revm_interpreter_interpreter_EthInterpreter_EXT_MG.
+  Module Impl_core_fmt_Debug_where_core_fmt_Debug_EXT_where_core_fmt_Debug_MG_for_revm_interpreter_interpreter_EthInterpreter_EXT_MG.
     Definition Self (EXT MG : Ty.t) : Ty.t :=
       Ty.apply (Ty.path "revm_interpreter::interpreter::EthInterpreter") [] [ EXT; MG ].
     
-    (*     type Stack = Stack; *)
-    Definition _Stack (EXT MG : Ty.t) : Ty.t :=
-      Ty.path "revm_interpreter::interpreter::stack::Stack".
-    
-    (*     type Memory = Rc<RefCell<MG>>; *)
-    Definition _Memory (EXT MG : Ty.t) : Ty.t :=
-      Ty.apply
-        (Ty.path "alloc::rc::Rc")
-        []
-        [ Ty.apply (Ty.path "core::cell::RefCell") [] [ MG ]; Ty.path "alloc::alloc::Global" ].
-    
-    (*     type Bytecode = ExtBytecode; *)
-    Definition _Bytecode (EXT MG : Ty.t) : Ty.t :=
-      Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode".
-    
-    (*     type ReturnData = ReturnDataImpl; *)
-    Definition _ReturnData (EXT MG : Ty.t) : Ty.t :=
-      Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl".
-    
-    (*     type Input = InputsImpl; *)
-    Definition _Input (EXT MG : Ty.t) : Ty.t :=
-      Ty.path "revm_interpreter::interpreter::input::InputsImpl".
-    
-    (*     type SubRoutineStack = SubRoutineImpl; *)
-    Definition _SubRoutineStack (EXT MG : Ty.t) : Ty.t :=
-      Ty.path "revm_interpreter::interpreter::subroutine_stack::SubRoutineImpl".
-    
-    (*     type Control = LoopControlImpl; *)
-    Definition _Control (EXT MG : Ty.t) : Ty.t :=
-      Ty.path "revm_interpreter::interpreter::loop_control::LoopControl".
-    
-    (*     type RuntimeFlag = RuntimeFlags; *)
-    Definition _RuntimeFlag (EXT MG : Ty.t) : Ty.t :=
-      Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
-    
-    (*     type Extend = EXT; *)
-    Definition _Extend (EXT MG : Ty.t) : Ty.t := EXT.
+    (* Debug *)
+    Definition fmt (EXT MG : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self EXT MG in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::EthInterpreter") [] [ EXT; MG ]
+                ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (|
+              Ty.path "core::fmt::Formatter",
+              "debug_struct_field1_finish",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EthInterpreter" |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "_phantom" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::marker::PhantomData")
+                            []
+                            [ Ty.function [] (Ty.tuple [ EXT; MG ]) ]
+                        ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::marker::PhantomData")
+                                []
+                                [ Ty.function [] (Ty.tuple [ EXT; MG ]) ]
+                            ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_interpreter::interpreter::EthInterpreter",
+                              "_phantom"
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Axiom Implements :
       forall (EXT MG : Ty.t),
       M.IsTraitInstance
-        "revm_interpreter::interpreter_types::InterpreterTypes"
+        "core::fmt::Debug"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         (Self EXT MG)
-        (* Instance *)
-        [
-          ("Stack", InstanceField.Ty (_Stack EXT MG));
-          ("Memory", InstanceField.Ty (_Memory EXT MG));
-          ("Bytecode", InstanceField.Ty (_Bytecode EXT MG));
-          ("ReturnData", InstanceField.Ty (_ReturnData EXT MG));
-          ("Input", InstanceField.Ty (_Input EXT MG));
-          ("SubRoutineStack", InstanceField.Ty (_SubRoutineStack EXT MG));
-          ("Control", InstanceField.Ty (_Control EXT MG));
-          ("RuntimeFlag", InstanceField.Ty (_RuntimeFlag EXT MG));
-          ("Extend", InstanceField.Ty (_Extend EXT MG))
-        ].
-  End Impl_revm_interpreter_interpreter_types_InterpreterTypes_where_revm_interpreter_interpreter_shared_memory_MemoryGetter_MG_for_revm_interpreter_interpreter_EthInterpreter_EXT_MG.
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt EXT MG)) ].
+  End Impl_core_fmt_Debug_where_core_fmt_Debug_EXT_where_core_fmt_Debug_MG_for_revm_interpreter_interpreter_EthInterpreter_EXT_MG.
   
-  (* Trait *)
-  (* Empty module 'InstructionProvider' *)
-  
-  (* StructRecord
-    {
-      name := "EthInstructionProvider";
-      const_params := [];
-      ty_params := [ "WIRE"; "HOST" ];
-      fields :=
-        [
-          ("instruction_table",
-            Ty.apply
-              (Ty.path "alloc::rc::Rc")
-              []
-              [
-                Ty.apply
-                  (Ty.path "array")
-                  [ Value.Integer IntegerKind.Usize 256 ]
-                  [
-                    Ty.function
-                      [
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "revm_interpreter::interpreter::Interpreter")
-                              []
-                              [ WIRE ]
-                          ];
-                        Ty.apply (Ty.path "&mut") [] [ HOST ]
-                      ]
-                      (Ty.tuple [])
-                  ];
-                Ty.path "alloc::alloc::Global"
-              ])
-        ];
-    } *)
-  
-  Module Impl_core_clone_Clone_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_for_revm_interpreter_interpreter_EthInstructionProvider_WIRE_HOST.
-    Definition Self (WIRE HOST : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_interpreter::interpreter::EthInstructionProvider") [] [ WIRE; HOST ].
+  Module Impl_revm_interpreter_interpreter_types_InterpreterTypes_for_revm_interpreter_interpreter_EthInterpreter_EXT_revm_interpreter_interpreter_shared_memory_SharedMemory.
+    Definition Self (EXT : Ty.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "revm_interpreter::interpreter::EthInterpreter")
+        []
+        [ EXT; Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ].
     
-    (*
-        fn clone(&self) -> Self {
-            Self {
-                instruction_table: self.instruction_table.clone(),
-            }
-        }
-    *)
-    Definition clone (WIRE HOST : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self WIRE HOST in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_interpreter::interpreter::EthInstructionProvider")
-                    []
-                    [ WIRE; HOST ]
-                ],
-              self
-            |) in
-          Value.mkStructRecord
-            "revm_interpreter::interpreter::EthInstructionProvider"
-            []
-            [ WIRE; HOST ]
-            [
-              ("instruction_table",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::rc::Rc")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 256 ]
-                        [
-                          Ty.function
-                            [
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                    []
-                                    [ WIRE ]
-                                ];
-                              Ty.apply (Ty.path "&mut") [] [ HOST ]
-                            ]
-                            (Ty.tuple [])
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.apply
-                      (Ty.path "alloc::rc::Rc")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 256 ]
-                          [
-                            Ty.function
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                      []
-                                      [ WIRE ]
-                                  ];
-                                Ty.apply (Ty.path "&mut") [] [ HOST ]
-                              ]
-                              (Ty.tuple [])
-                          ];
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_interpreter::interpreter::EthInstructionProvider",
-                        "instruction_table"
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
+    (*     type Stack = Stack; *)
+    Definition _Stack (EXT : Ty.t) : Ty.t := Ty.path "revm_interpreter::interpreter::stack::Stack".
+    
+    (*     type Memory = SharedMemory; *)
+    Definition _Memory (EXT : Ty.t) : Ty.t :=
+      Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory".
+    
+    (*     type Bytecode = ExtBytecode; *)
+    Definition _Bytecode (EXT : Ty.t) : Ty.t :=
+      Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode".
+    
+    (*     type ReturnData = ReturnDataImpl; *)
+    Definition _ReturnData (EXT : Ty.t) : Ty.t :=
+      Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl".
+    
+    (*     type Input = InputsImpl; *)
+    Definition _Input (EXT : Ty.t) : Ty.t :=
+      Ty.path "revm_interpreter::interpreter::input::InputsImpl".
+    
+    (*     type RuntimeFlag = RuntimeFlags; *)
+    Definition _RuntimeFlag (EXT : Ty.t) : Ty.t :=
+      Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags".
+    
+    (*     type Extend = EXT; *)
+    Definition _Extend (EXT : Ty.t) : Ty.t := EXT.
+    
+    (*     type Output = InterpreterAction; *)
+    Definition _Output (EXT : Ty.t) : Ty.t :=
+      Ty.path "revm_interpreter::interpreter_action::InterpreterAction".
     
     Axiom Implements :
-      forall (WIRE HOST : Ty.t),
+      forall (EXT : Ty.t),
       M.IsTraitInstance
-        "core::clone::Clone"
+        "revm_interpreter::interpreter_types::InterpreterTypes"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self WIRE HOST)
-        (* Instance *) [ ("clone", InstanceField.Method (clone WIRE HOST)) ].
-  End Impl_core_clone_Clone_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_for_revm_interpreter_interpreter_EthInstructionProvider_WIRE_HOST.
-  
-  Module Impl_revm_interpreter_interpreter_InstructionProvider_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_revm_context_interface_host_Host_HOST_for_revm_interpreter_interpreter_EthInstructionProvider_WIRE_HOST.
-    Definition Self (WIRE HOST : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "revm_interpreter::interpreter::EthInstructionProvider") [] [ WIRE; HOST ].
-    
-    (*     type WIRE = WIRE; *)
-    Definition _WIRE (WIRE HOST : Ty.t) : Ty.t := WIRE.
-    
-    (*     type Host = HOST; *)
-    Definition _Host (WIRE HOST : Ty.t) : Ty.t := HOST.
-    
-    (*
-        fn new(_context: &mut Self::Host) -> Self {
-            Self {
-                instruction_table: Rc::new(crate::table::make_instruction_table::<WIRE, HOST>()),
-            }
-        }
-    *)
-    Definition new (WIRE HOST : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self WIRE HOST in
-      match ε, τ, α with
-      | [], [], [ _context ] =>
-        ltac:(M.monadic
-          (let _context :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter::InstructionProvider"
-                    []
-                    []
-                    (Ty.apply
-                      (Ty.path "revm_interpreter::interpreter::EthInstructionProvider")
-                      []
-                      [ WIRE; HOST ])
-                    "Host"
-                ],
-              _context
-            |) in
-          Value.mkStructRecord
-            "revm_interpreter::interpreter::EthInstructionProvider"
-            []
-            [ WIRE; HOST ]
-            [
-              ("instruction_table",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::rc::Rc")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 256 ]
-                        [
-                          Ty.function
-                            [
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                    []
-                                    [ WIRE ]
-                                ];
-                              Ty.apply (Ty.path "&mut") [] [ HOST ]
-                            ]
-                            (Ty.tuple [])
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "alloc::rc::Rc")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 256 ]
-                          [
-                            Ty.function
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                      []
-                                      [ WIRE ]
-                                  ];
-                                Ty.apply (Ty.path "&mut") [] [ HOST ]
-                              ]
-                              (Ty.tuple [])
-                          ];
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 256 ]
-                        [
-                          Ty.function
-                            [
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                    []
-                                    [ WIRE ]
-                                ];
-                              Ty.apply (Ty.path "&mut") [] [ HOST ]
-                            ]
-                            (Ty.tuple [])
-                        ],
-                      M.get_function (|
-                        "revm_interpreter::table::make_instruction_table",
-                        [],
-                        [ WIRE; HOST ]
-                      |),
-                      []
-                    |)
-                  ]
-                |))
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    (*
-        fn table(&mut self) -> &[impl CustomInstruction<Wire = Self::WIRE, Host = Self::Host>; 256] {
-            self.instruction_table.as_ref()
-        }
-    *)
-    Definition table (WIRE HOST : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self WIRE HOST in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_interpreter::interpreter::EthInstructionProvider")
-                    []
-                    [ WIRE; HOST ]
-                ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (|
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 256 ]
-                          [
-                            Ty.function
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                      []
-                                      [ WIRE ]
-                                  ];
-                                Ty.apply (Ty.path "&mut") [] [ HOST ]
-                              ]
-                              (Ty.tuple [])
-                          ]
-                      ],
-                    M.get_trait_method (|
-                      "core::convert::AsRef",
-                      Ty.apply
-                        (Ty.path "alloc::rc::Rc")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 256 ]
-                            [
-                              Ty.function
-                                [
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                        []
-                                        [ WIRE ]
-                                    ];
-                                  Ty.apply (Ty.path "&mut") [] [ HOST ]
-                                ]
-                                (Ty.tuple [])
-                            ];
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      [],
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 256 ]
-                          [
-                            Ty.function
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                      []
-                                      [ WIRE ]
-                                  ];
-                                Ty.apply (Ty.path "&mut") [] [ HOST ]
-                              ]
-                              (Ty.tuple [])
-                          ]
-                      ],
-                      "as_ref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::interpreter::EthInstructionProvider",
-                          "instruction_table"
-                        |)
-                      |)
-                    ]
-                  |)
-                |)
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (WIRE HOST : Ty.t),
-      M.IsTraitInstance
-        "revm_interpreter::interpreter::InstructionProvider"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self WIRE HOST)
+        (Self EXT)
         (* Instance *)
         [
-          ("WIRE", InstanceField.Ty (_WIRE WIRE HOST));
-          ("Host", InstanceField.Ty (_Host WIRE HOST));
-          ("new", InstanceField.Method (new WIRE HOST));
-          ("table", InstanceField.Method (table WIRE HOST))
+          ("Stack", InstanceField.Ty (_Stack EXT));
+          ("Memory", InstanceField.Ty (_Memory EXT));
+          ("Bytecode", InstanceField.Ty (_Bytecode EXT));
+          ("ReturnData", InstanceField.Ty (_ReturnData EXT));
+          ("Input", InstanceField.Ty (_Input EXT));
+          ("RuntimeFlag", InstanceField.Ty (_RuntimeFlag EXT));
+          ("Extend", InstanceField.Ty (_Extend EXT));
+          ("Output", InstanceField.Ty (_Output EXT))
         ].
-  End Impl_revm_interpreter_interpreter_InstructionProvider_where_revm_interpreter_interpreter_types_InterpreterTypes_WIRE_where_revm_context_interface_host_Host_HOST_for_revm_interpreter_interpreter_EthInstructionProvider_WIRE_HOST.
-  
-  Module Impl_revm_interpreter_table_CustomInstruction_where_revm_interpreter_interpreter_types_InterpreterTypes_IW_where_revm_context_interface_host_Host_H_for_ref_mut_revm_interpreter_interpreter_Interpreter_IWref_mut_HToTuple_.
-    Definition Self (IW H : Ty.t) : Ty.t :=
-      Ty.function
-        [
-          Ty.apply
-            (Ty.path "&mut")
-            []
-            [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ];
-          Ty.apply (Ty.path "&mut") [] [ H ]
-        ]
-        (Ty.tuple []).
-    
-    (*     type Wire = IW; *)
-    Definition _Wire (IW H : Ty.t) : Ty.t := IW.
-    
-    (*     type Host = H; *)
-    Definition _Host (IW H : Ty.t) : Ty.t := H.
-    
-    (*
-        fn exec(&self, interpreter: &mut Interpreter<Self::Wire>, host: &mut Self::Host) {
-            (self)(interpreter, host);
-        }
-    *)
-    Definition exec (IW H : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self IW H in
-      match ε, τ, α with
-      | [], [], [ self; interpreter; host ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [
-                  Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ]
-                        ];
-                      Ty.apply (Ty.path "&mut") [] [ H ]
-                    ]
-                    (Ty.tuple [])
-                ],
-              self
-            |) in
-          let interpreter :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_interpreter::interpreter::Interpreter")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_interpreter::table::CustomInstruction"
-                        []
-                        []
-                        (Ty.function
-                          [
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                  []
-                                  [ IW ]
-                              ];
-                            Ty.apply (Ty.path "&mut") [] [ H ]
-                          ]
-                          (Ty.tuple []))
-                        "Wire"
-                    ]
-                ],
-              interpreter
-            |) in
-          let host :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [
-                  Ty.associated_in_trait
-                    "revm_interpreter::table::CustomInstruction"
-                    []
-                    []
-                    (Ty.function
-                      [
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "revm_interpreter::interpreter::Interpreter")
-                              []
-                              [ IW ]
-                          ];
-                        Ty.apply (Ty.path "&mut") [] [ H ]
-                      ]
-                      (Ty.tuple []))
-                    "Host"
-                ],
-              host
-            |) in
-          M.read (|
-            let~ _ : Ty.tuple [] :=
-              M.call_closure (|
-                Ty.tuple [],
-                M.read (| M.deref (| M.read (| self |) |) |),
-                [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| interpreter |) |) |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| host |) |) |)
-                ]
-              |) in
-            M.alloc (| Ty.tuple [], Value.Tuple [] |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    (*
-        fn from_base(instruction: Instruction<Self::Wire, Self::Host>) -> Self {
-            instruction
-        }
-    *)
-    Definition from_base (IW H : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self IW H in
-      match ε, τ, α with
-      | [], [], [ instruction ] =>
-        ltac:(M.monadic
-          (let instruction :=
-            M.alloc (|
-              Ty.function
-                [
-                  Ty.apply
-                    (Ty.path "&mut")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "revm_interpreter::interpreter::Interpreter")
-                        []
-                        [
-                          Ty.associated_in_trait
-                            "revm_interpreter::table::CustomInstruction"
-                            []
-                            []
-                            (Ty.function
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                      []
-                                      [ IW ]
-                                  ];
-                                Ty.apply (Ty.path "&mut") [] [ H ]
-                              ]
-                              (Ty.tuple []))
-                            "Wire"
-                        ]
-                    ];
-                  Ty.apply
-                    (Ty.path "&mut")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_interpreter::table::CustomInstruction"
-                        []
-                        []
-                        (Ty.function
-                          [
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                  []
-                                  [ IW ]
-                              ];
-                            Ty.apply (Ty.path "&mut") [] [ H ]
-                          ]
-                          (Ty.tuple []))
-                        "Host"
-                    ]
-                ]
-                (Ty.tuple []),
-              instruction
-            |) in
-          M.read (| instruction |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (IW H : Ty.t),
-      M.IsTraitInstance
-        "revm_interpreter::table::CustomInstruction"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self IW H)
-        (* Instance *)
-        [
-          ("Wire", InstanceField.Ty (_Wire IW H));
-          ("Host", InstanceField.Ty (_Host IW H));
-          ("exec", InstanceField.Method (exec IW H));
-          ("from_base", InstanceField.Method (from_base IW H))
-        ].
-  End Impl_revm_interpreter_table_CustomInstruction_where_revm_interpreter_interpreter_types_InterpreterTypes_IW_where_revm_context_interface_host_Host_H_for_ref_mut_revm_interpreter_interpreter_Interpreter_IWref_mut_HToTuple_.
+  End Impl_revm_interpreter_interpreter_types_InterpreterTypes_for_revm_interpreter_interpreter_EthInterpreter_EXT_revm_interpreter_interpreter_shared_memory_SharedMemory.
   
   Module Impl_revm_interpreter_interpreter_Interpreter_IW.
     Definition Self (IW : Ty.t) : Ty.t :=
       Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ].
     
     (*
-        pub(crate) fn step<FN, H: Host>(&mut self, instruction_table: &[FN; 256], host: &mut H)
-        where
-            FN: CustomInstruction<Wire = IW, Host = H>,
-        {
-            // Get current opcode.
-            let opcode = self.bytecode.opcode();
-    
-            // SAFETY: In analysis we are doing padding of bytecode so that we are sure that last
-            // byte instruction is STOP so we are safe to just increment program_counter bcs on last instruction
-            // it will do noop and just stop execution of this contract
-            self.bytecode.relative_jump(1);
-    
-            // Execute instruction.
-            instruction_table[opcode as usize].exec(self, host)
+        pub fn resize_memory(&mut self, offset: usize, len: usize) -> bool {
+            resize_memory(&mut self.gas, &mut self.memory, offset, len)
         }
     *)
-    Definition step (IW : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition resize_memory
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
       let Self : Ty.t := Self IW in
       match ε, τ, α with
-      | [], [ FN; H ], [ self; instruction_table; host ] =>
+      | [], [], [ self; offset; len ] =>
         ltac:(M.monadic
           (let self :=
             M.alloc (|
@@ -1955,21 +2138,94 @@ Module interpreter.
                 [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
               self
             |) in
-          let instruction_table :=
+          let offset := M.alloc (| Ty.path "usize", offset |) in
+          let len := M.alloc (| Ty.path "usize", len |) in
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_function (|
+              "revm_interpreter::interpreter::shared_memory::resize_memory",
+              [],
+              [
+                Ty.associated_in_trait
+                  "revm_interpreter::interpreter_types::InterpreterTypes"
+                  []
+                  []
+                  IW
+                  "Memory"
+              ]
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_interpreter::interpreter::Interpreter",
+                      "gas"
+                    |)
+                  |)
+                |)
+              |);
+              M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_interpreter::interpreter::Interpreter",
+                      "memory"
+                    |)
+                  |)
+                |)
+              |);
+              M.read (| offset |);
+              M.read (| len |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_resize_memory :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "resize_memory" (resize_memory IW).
+    Admitted.
+    Global Typeclasses Opaque resize_memory.
+    
+    (*
+        pub fn take_next_action(&mut self) -> InterpreterAction {
+            self.bytecode.reset_action();
+            // Return next action if it is some.
+            let action = core::mem::take(self.bytecode.action()).expect("Interpreter to set action");
+            action
+        }
+    *)
+    Definition take_next_action
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&")
+                (Ty.path "&mut")
                 []
-                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 256 ] [ FN ] ],
-              instruction_table
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
             |) in
-          let host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], host |) in
           M.read (|
-            let~ opcode : Ty.path "u8" :=
+            let~ _ : Ty.tuple [] :=
               M.call_closure (|
-                Ty.path "u8",
+                Ty.tuple [],
                 M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::Jumps",
+                  "revm_interpreter::interpreter_types::LoopControl",
                   Ty.associated_in_trait
                     "revm_interpreter::interpreter_types::InterpreterTypes"
                     []
@@ -1978,13 +2234,13 @@ Module interpreter.
                     "Bytecode",
                   [],
                   [],
-                  "opcode",
+                  "reset_action",
                   [],
                   []
                 |),
                 [
                   M.borrow (|
-                    Pointer.Kind.Ref,
+                    Pointer.Kind.MutRef,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "revm_interpreter::interpreter::Interpreter",
@@ -1993,11 +2249,127 @@ Module interpreter.
                   |)
                 ]
               |) in
+            let~ action : Ty.path "revm_interpreter::interpreter_action::InterpreterAction" :=
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ],
+                  "expect",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ],
+                    M.get_function (|
+                      "core::mem::take",
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
+                      ]
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.path
+                                      "revm_interpreter::interpreter_action::InterpreterAction"
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::LoopControl",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                IW
+                                "Bytecode",
+                              [],
+                              [],
+                              "action",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "bytecode"
+                                |)
+                              |)
+                            ]
+                          |)
+                        |)
+                      |)
+                    ]
+                  |);
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "Interpreter to set action" |) |)
+                  |)
+                ]
+              |) in
+            action
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_take_next_action :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "take_next_action" (take_next_action IW).
+    Admitted.
+    Global Typeclasses Opaque take_next_action.
+    
+    (*
+        pub fn halt(&mut self, result: InstructionResult) {
+            self.bytecode
+                .set_action(InterpreterAction::new_halt(result, self.gas));
+        }
+    *)
+    Definition halt (IW : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self; result ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          let result :=
+            M.alloc (|
+              Ty.path "revm_interpreter::instruction_result::InstructionResult",
+              result
+            |) in
+          M.read (|
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
                 M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::Jumps",
+                  "revm_interpreter::interpreter_types::LoopControl",
                   Ty.associated_in_trait
                     "revm_interpreter::interpreter_types::InterpreterTypes"
                     []
@@ -2006,7 +2378,7 @@ Module interpreter.
                     "Bytecode",
                   [],
                   [],
-                  "relative_jump",
+                  "set_action",
                   [],
                   []
                 |),
@@ -2019,82 +2391,578 @@ Module interpreter.
                       "bytecode"
                     |)
                   |);
-                  Value.Integer IntegerKind.Isize 1
+                  M.call_closure (|
+                    Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                    M.get_associated_function (|
+                      Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                      "new_halt",
+                      [],
+                      []
+                    |),
+                    [
+                      M.read (| result |);
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::Interpreter",
+                          "gas"
+                        |)
+                      |)
+                    ]
+                  |)
                 ]
               |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_halt :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "halt" (halt IW).
+    Admitted.
+    Global Typeclasses Opaque halt.
+    
+    (*
+        pub fn halt_fatal(&mut self) {
+            self.bytecode.set_action(InterpreterAction::new_halt(
+                InstructionResult::FatalExternalError,
+                self.gas,
+            ));
+        }
+    *)
+    Definition halt_fatal (IW : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
             M.alloc (|
-              Ty.tuple [],
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
                 M.get_trait_method (|
-                  "revm_interpreter::table::CustomInstruction",
-                  FN,
+                  "revm_interpreter::interpreter_types::LoopControl",
+                  Ty.associated_in_trait
+                    "revm_interpreter::interpreter_types::InterpreterTypes"
+                    []
+                    []
+                    IW
+                    "Bytecode",
                   [],
                   [],
-                  "exec",
+                  "set_action",
                   [],
                   []
                 |),
                 [
                   M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_array_field (|
-                      M.deref (| M.read (| instruction_table |) |),
-                      M.cast (Ty.path "usize") (M.read (| opcode |))
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_interpreter::interpreter::Interpreter",
+                      "bytecode"
                     |)
                   |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| host |) |) |)
+                  M.call_closure (|
+                    Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                    M.get_associated_function (|
+                      Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                      "new_halt",
+                      [],
+                      []
+                    |),
+                    [
+                      Value.StructTuple
+                        "revm_interpreter::instruction_result::InstructionResult::FatalExternalError"
+                        []
+                        []
+                        [];
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::Interpreter",
+                          "gas"
+                        |)
+                      |)
+                    ]
+                  |)
                 ]
-              |)
-            |)
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_step :
+    Global Instance AssociatedFunction_halt_fatal :
       forall (IW : Ty.t),
-      M.IsAssociatedFunction.C (Self IW) "step" (step IW).
+      M.IsAssociatedFunction.C (Self IW) "halt_fatal" (halt_fatal IW).
     Admitted.
-    Global Typeclasses Opaque step.
+    Global Typeclasses Opaque halt_fatal.
     
     (*
-        pub fn run<FN, H: Host>(
-            &mut self,
-            instruction_table: &[FN; 256],
-            host: &mut H,
-        ) -> InterpreterAction
-        where
-            FN: CustomInstruction<Wire = IW, Host = H>,
-        {
-            self.control
-                .set_next_action(InterpreterAction::None, InstructionResult::Continue);
-    
-            // Main loop
-            while self.control.instruction_result().is_continue() {
-                self.step(instruction_table, host);
-            }
-    
-            // Return next action if it is some.
-            let action = self.control.take_next_action();
-            if action.is_some() {
-                return action;
-            }
-            // If not, return action without output as it is a halt.
-            InterpreterAction::Return {
-                result: InterpreterResult {
-                    result: self.control.instruction_result(),
-                    // Return empty bytecode
-                    output: Bytes::new(),
-                    gas: *self.control.gas(),
-                },
-            }
+        pub fn halt_oog(&mut self) {
+            self.gas.spend_all();
+            self.halt(InstructionResult::OutOfGas);
         }
     *)
-    Definition run (IW : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition halt_oog (IW : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self IW in
       match ε, τ, α with
-      | [], [ FN; H ], [ self; instruction_table; host ] =>
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (|
+                  Ty.path "revm_interpreter::gas::Gas",
+                  "spend_all",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_interpreter::interpreter::Interpreter",
+                      "gas"
+                    |)
+                  |)
+                ]
+              |) in
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "halt",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  Value.StructTuple
+                    "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
+                    []
+                    []
+                    []
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_halt_oog :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "halt_oog" (halt_oog IW).
+    Admitted.
+    Global Typeclasses Opaque halt_oog.
+    
+    (*
+        pub fn halt_memory_oog(&mut self) {
+            self.halt(InstructionResult::MemoryOOG);
+        }
+    *)
+    Definition halt_memory_oog
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "halt",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  Value.StructTuple
+                    "revm_interpreter::instruction_result::InstructionResult::MemoryOOG"
+                    []
+                    []
+                    []
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_halt_memory_oog :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "halt_memory_oog" (halt_memory_oog IW).
+    Admitted.
+    Global Typeclasses Opaque halt_memory_oog.
+    
+    (*
+        pub fn halt_memory_limit_oog(&mut self) {
+            self.halt(InstructionResult::MemoryLimitOOG);
+        }
+    *)
+    Definition halt_memory_limit_oog
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "halt",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  Value.StructTuple
+                    "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG"
+                    []
+                    []
+                    []
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_halt_memory_limit_oog :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "halt_memory_limit_oog" (halt_memory_limit_oog IW).
+    Admitted.
+    Global Typeclasses Opaque halt_memory_limit_oog.
+    
+    (*
+        pub fn halt_overflow(&mut self) {
+            self.halt(InstructionResult::StackOverflow);
+        }
+    *)
+    Definition halt_overflow
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "halt",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  Value.StructTuple
+                    "revm_interpreter::instruction_result::InstructionResult::StackOverflow"
+                    []
+                    []
+                    []
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_halt_overflow :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "halt_overflow" (halt_overflow IW).
+    Admitted.
+    Global Typeclasses Opaque halt_overflow.
+    
+    (*
+        pub fn halt_underflow(&mut self) {
+            self.halt(InstructionResult::StackUnderflow);
+        }
+    *)
+    Definition halt_underflow
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "halt",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  Value.StructTuple
+                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
+                    []
+                    []
+                    []
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_halt_underflow :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "halt_underflow" (halt_underflow IW).
+    Admitted.
+    Global Typeclasses Opaque halt_underflow.
+    
+    (*
+        pub fn halt_not_activated(&mut self) {
+            self.halt(InstructionResult::NotActivated);
+        }
+    *)
+    Definition halt_not_activated
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "halt",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  Value.StructTuple
+                    "revm_interpreter::instruction_result::InstructionResult::NotActivated"
+                    []
+                    []
+                    []
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_halt_not_activated :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "halt_not_activated" (halt_not_activated IW).
+    Admitted.
+    Global Typeclasses Opaque halt_not_activated.
+    
+    (*
+        pub fn return_with_output(&mut self, output: Bytes) {
+            self.bytecode.set_action(InterpreterAction::new_return(
+                InstructionResult::Return,
+                output,
+                self.gas,
+            ));
+        }
+    *)
+    Definition return_with_output
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self; output ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          let output := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", output |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_trait_method (|
+                  "revm_interpreter::interpreter_types::LoopControl",
+                  Ty.associated_in_trait
+                    "revm_interpreter::interpreter_types::InterpreterTypes"
+                    []
+                    []
+                    IW
+                    "Bytecode",
+                  [],
+                  [],
+                  "set_action",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_interpreter::interpreter::Interpreter",
+                      "bytecode"
+                    |)
+                  |);
+                  M.call_closure (|
+                    Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                    M.get_associated_function (|
+                      Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                      "new_return",
+                      [],
+                      []
+                    |),
+                    [
+                      Value.StructTuple
+                        "revm_interpreter::instruction_result::InstructionResult::Return"
+                        []
+                        []
+                        [];
+                      M.read (| output |);
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::Interpreter",
+                          "gas"
+                        |)
+                      |)
+                    ]
+                  |)
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_return_with_output :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "return_with_output" (return_with_output IW).
+    Admitted.
+    Global Typeclasses Opaque return_with_output.
+    
+    (*
+        pub fn step<H: Host + ?Sized>(
+            &mut self,
+            instruction_table: &InstructionTable<IW, H>,
+            host: &mut H,
+        ) {
+            // Get current opcode.
+            let opcode = self.bytecode.opcode();
+    
+            // SAFETY: In analysis we are doing padding of bytecode so that we are sure that last
+            // byte instruction is STOP so we are safe to just increment program_counter bcs on last instruction
+            // it will do noop and just stop execution of this contract
+            self.bytecode.relative_jump(1);
+    
+            let instruction = unsafe { instruction_table.get_unchecked(opcode as usize) };
+    
+            if self.gas.record_cost_unsafe(instruction.static_gas()) {
+                return self.halt_oog();
+            }
+            let context = InstructionContext {
+                interpreter: self,
+                host,
+            };
+            instruction.execute(context);
+        }
+    *)
+    Definition step (IW : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [ H ], [ self; instruction_table; host ] =>
         ltac:(M.monadic
           (let self :=
             M.alloc (|
@@ -2109,27 +2977,61 @@ Module interpreter.
               Ty.apply
                 (Ty.path "&")
                 []
-                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 256 ] [ FN ] ],
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 256 ]
+                    [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ IW; H ]
+                    ]
+                ],
               instruction_table
             |) in
           let host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], host |) in
-          M.catch_return (Ty.path "revm_interpreter::interpreter_action::InterpreterAction") (|
+          M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
+                let~ opcode : Ty.path "u8" :=
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_trait_method (|
+                      "revm_interpreter::interpreter_types::Jumps",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        IW
+                        "Bytecode",
+                      [],
+                      [],
+                      "opcode",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::Interpreter",
+                          "bytecode"
+                        |)
+                      |)
+                    ]
+                  |) in
                 let~ _ : Ty.tuple [] :=
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_trait_method (|
-                      "revm_interpreter::interpreter_types::LoopControl",
+                      "revm_interpreter::interpreter_types::Jumps",
                       Ty.associated_in_trait
                         "revm_interpreter::interpreter_types::InterpreterTypes"
                         []
                         []
                         IW
-                        "Control",
+                        "Bytecode",
                       [],
                       [],
-                      "set_next_action",
+                      "relative_jump",
                       [],
                       []
                     |),
@@ -2139,153 +3041,100 @@ Module interpreter.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "revm_interpreter::interpreter::Interpreter",
-                          "control"
+                          "bytecode"
                         |)
                       |);
-                      Value.StructTuple
-                        "revm_interpreter::interpreter_action::InterpreterAction::None"
-                        []
-                        []
-                        [];
-                      Value.StructTuple
-                        "revm_interpreter::instruction_result::InstructionResult::Continue"
-                        []
-                        []
-                        []
+                      Value.Integer IntegerKind.Isize 1
                     ]
                   |) in
-                let~ _ : Ty.tuple [] :=
-                  M.read (|
-                    M.loop (|
-                      Ty.tuple [],
-                      ltac:(M.monadic
-                        (M.alloc (|
-                          Ty.tuple [],
-                          M.match_operator (|
-                            Ty.tuple [],
-                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let γ :=
-                                    M.alloc (|
-                                      Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.path
-                                            "revm_interpreter::instruction_result::InstructionResult",
-                                          "is_continue",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
-                                            Ty.path
-                                              "revm_interpreter::instruction_result::InstructionResult",
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                IW
-                                                "Control",
-                                              [],
-                                              [],
-                                              "instruction_result",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    |) in
-                                  let _ :=
-                                    is_constant_or_break_match (|
-                                      M.read (| γ |),
-                                      Value.Bool true
-                                    |) in
-                                  M.read (|
-                                    let~ _ : Ty.tuple [] :=
-                                      M.call_closure (|
-                                        Ty.tuple [],
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                            []
-                                            [ IW ],
-                                          "step",
-                                          [],
-                                          [ FN; H ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| instruction_table |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| host |) |)
-                                          |)
-                                        ]
-                                      |) in
-                                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                  |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (M.never_to_any (|
-                                    M.read (|
-                                      let~ _ : Ty.tuple [] :=
-                                        M.never_to_any (| M.read (| M.break (||) |) |) in
-                                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                    |)
-                                  |)))
-                            ]
-                          |)
-                        |)))
-                    |)
-                  |) in
-                let~ action : Ty.path "revm_interpreter::interpreter_action::InterpreterAction" :=
-                  M.call_closure (|
-                    Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
-                    M.get_trait_method (|
-                      "revm_interpreter::interpreter_types::LoopControl",
-                      Ty.associated_in_trait
-                        "revm_interpreter::interpreter_types::InterpreterTypes"
-                        []
-                        []
-                        IW
-                        "Control",
-                      [],
-                      [],
-                      "take_next_action",
-                      [],
+                let~ instruction :
+                    Ty.apply
+                      (Ty.path "&")
                       []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instructions::Instruction")
+                          []
+                          [ IW; H ]
+                      ] :=
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instructions::Instruction")
+                          []
+                          [ IW; H ]
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "revm_interpreter::instructions::Instruction")
+                            []
+                            [ IW; H ]
+                        ],
+                      "get_unchecked",
+                      [],
+                      [ Ty.path "usize" ]
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::interpreter::Interpreter",
-                          "control"
-                        |)
-                      |)
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "revm_interpreter::instructions::Instruction")
+                                  []
+                                  [ IW; H ]
+                              ]
+                          ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 256 ]
+                                [
+                                  Ty.apply
+                                    (Ty.path "revm_interpreter::instructions::Instruction")
+                                    []
+                                    [ IW; H ]
+                                ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "revm_interpreter::instructions::Instruction")
+                                    []
+                                    [ IW; H ]
+                                ]
+                            ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| instruction_table |) |)
+                          |)
+                        ]
+                      |);
+                      M.cast (Ty.path "usize") (M.read (| opcode |))
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -2301,80 +3150,240 @@ Module interpreter.
                               M.call_closure (|
                                 Ty.path "bool",
                                 M.get_associated_function (|
-                                  Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
-                                  "is_some",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, action |) ]
-                              |)
-                            |) in
-                          let _ :=
-                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          M.never_to_any (| M.read (| M.return_ (| M.read (| action |) |) |) |)));
-                      fun γ => ltac:(M.monadic (Value.Tuple []))
-                    ]
-                  |) in
-                M.alloc (|
-                  Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
-                  Value.mkStructRecord
-                    "revm_interpreter::interpreter_action::InterpreterAction::Return"
-                    []
-                    []
-                    [
-                      ("result",
-                        Value.mkStructRecord
-                          "revm_interpreter::interpreter::InterpreterResult"
-                          []
-                          []
-                          [
-                            ("result",
-                              M.call_closure (|
-                                Ty.path "revm_interpreter::instruction_result::InstructionResult",
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    IW
-                                    "Control",
-                                  [],
-                                  [],
-                                  "instruction_result",
+                                  Ty.path "revm_interpreter::gas::Gas",
+                                  "record_cost_unsafe",
                                   [],
                                   []
                                 |),
                                 [
                                   M.borrow (|
-                                    Pointer.Kind.Ref,
+                                    Pointer.Kind.MutRef,
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "revm_interpreter::interpreter::Interpreter",
-                                      "control"
+                                      "gas"
                                     |)
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "u64",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "revm_interpreter::instructions::Instruction")
+                                        []
+                                        [ IW; H ],
+                                      "static_gas",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| instruction |) |)
+                                      |)
+                                    ]
                                   |)
                                 ]
-                              |));
-                            ("output",
-                              M.call_closure (|
-                                Ty.path "alloy_primitives::bytes_::Bytes",
-                                M.get_associated_function (|
-                                  Ty.path "alloy_primitives::bytes_::Bytes",
-                                  "new",
-                                  [],
-                                  []
-                                |),
-                                []
-                              |));
-                            ("gas",
-                              M.read (|
-                                M.deref (|
-                                  M.call_closure (|
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.tuple [],
+                                  M.get_associated_function (|
                                     Ty.apply
-                                      (Ty.path "&mut")
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      [ Ty.path "revm_interpreter::gas::Gas" ],
+                                      [ IW ],
+                                    "halt_oog",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| self |) |)
+                                    |)
+                                  ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                let~ context :
+                    Ty.apply
+                      (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                      []
+                      [ H; IW ] :=
+                  Value.mkStructRecord
+                    "revm_interpreter::instruction_context::InstructionContext"
+                    []
+                    [ H; IW ]
+                    [
+                      ("interpreter",
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |));
+                      ("host", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| host |) |) |))
+                    ] in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ IW; H ],
+                      "execute",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| instruction |) |) |); M.read (| context |) ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_step :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "step" (step IW).
+    Admitted.
+    Global Typeclasses Opaque step.
+    
+    (*
+        pub fn step_dummy(&mut self, instruction_table: &InstructionTable<IW, DummyHost>) {
+            self.step(instruction_table, &mut DummyHost);
+        }
+    *)
+    Definition step_dummy (IW : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self; instruction_table ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          let instruction_table :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 256 ]
+                    [
+                      Ty.apply
+                        (Ty.path "revm_interpreter::instructions::Instruction")
+                        []
+                        [ IW; Ty.path "revm_context_interface::host::DummyHost" ]
+                    ]
+                ],
+              instruction_table
+            |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "step",
+                  [],
+                  [ Ty.path "revm_context_interface::host::DummyHost" ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| instruction_table |) |) |);
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.alloc (|
+                          Ty.path "revm_context_interface::host::DummyHost",
+                          Value.StructTuple "revm_context_interface::host::DummyHost" [] [] []
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_step_dummy :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "step_dummy" (step_dummy IW).
+    Admitted.
+    Global Typeclasses Opaque step_dummy.
+    
+    (*
+        pub fn run_plain<H: Host + ?Sized>(
+            &mut self,
+            instruction_table: &InstructionTable<IW, H>,
+            host: &mut H,
+        ) -> InterpreterAction {
+            while self.bytecode.is_not_end() {
+                self.step(instruction_table, host);
+            }
+            self.take_next_action()
+        }
+    *)
+    Definition run_plain (IW : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [ H ], [ self; instruction_table; host ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          let instruction_table :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 256 ]
+                    [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ IW; H ]
+                    ]
+                ],
+              instruction_table
+            |) in
+          let host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], host |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.read (|
+                M.loop (|
+                  Ty.tuple [],
+                  ltac:(M.monadic
+                    (M.alloc (|
+                      Ty.tuple [],
+                      M.match_operator (|
+                        Ty.tuple [],
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ :=
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
+                                    Ty.path "bool",
                                     M.get_trait_method (|
                                       "revm_interpreter::interpreter_types::LoopControl",
                                       Ty.associated_in_trait
@@ -2382,39 +3391,250 @@ Module interpreter.
                                         []
                                         []
                                         IW
-                                        "Control",
+                                        "Bytecode",
                                       [],
                                       [],
-                                      "gas",
+                                      "is_not_end",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
+                                        Pointer.Kind.Ref,
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
                                           "revm_interpreter::interpreter::Interpreter",
-                                          "control"
+                                          "bytecode"
                                         |)
                                       |)
                                     ]
                                   |)
+                                |) in
+                              let _ :=
+                                is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                              M.read (|
+                                let~ _ : Ty.tuple [] :=
+                                  M.call_closure (|
+                                    Ty.tuple [],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                        []
+                                        [ IW ],
+                                      "step",
+                                      [],
+                                      [ H ]
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| self |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| instruction_table |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| host |) |)
+                                      |)
+                                    ]
+                                  |) in
+                                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (M.never_to_any (|
+                                M.read (|
+                                  let~ _ : Ty.tuple [] :=
+                                    M.never_to_any (| M.read (| M.break (||) |) |) in
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                 |)
-                              |))
-                          ])
-                    ]
+                              |)))
+                        ]
+                      |)
+                    |)))
                 |)
-              |)))
+              |) in
+            M.alloc (|
+              Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "take_next_action",
+                  [],
+                  []
+                |),
+                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+              |)
+            |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_run :
+    Global Instance AssociatedFunction_run_plain :
       forall (IW : Ty.t),
-      M.IsAssociatedFunction.C (Self IW) "run" (run IW).
+      M.IsAssociatedFunction.C (Self IW) "run_plain" (run_plain IW).
     Admitted.
-    Global Typeclasses Opaque run.
+    Global Typeclasses Opaque run_plain.
+    (*
+        pub fn take_next_action_as_output(&mut self) -> IW::Output {
+            From::from(self.take_next_action())
+        }
+    *)
+    Definition take_next_action_as_output
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          M.call_closure (|
+            Ty.associated_in_trait
+              "revm_interpreter::interpreter_types::InterpreterTypes"
+              []
+              []
+              IW
+              "Output",
+            M.get_trait_method (|
+              "core::convert::From",
+              Ty.associated_in_trait
+                "revm_interpreter::interpreter_types::InterpreterTypes"
+                []
+                []
+                IW
+                "Output",
+              [],
+              [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ],
+              "from",
+              [],
+              []
+            |),
+            [
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "take_next_action",
+                  [],
+                  []
+                |),
+                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_take_next_action_as_output :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C
+        (Self IW)
+        "take_next_action_as_output"
+        (take_next_action_as_output IW).
+    Admitted.
+    Global Typeclasses Opaque take_next_action_as_output.
+    
+    (*
+        pub fn run_plain_as_output<H: Host + ?Sized>(
+            &mut self,
+            instruction_table: &InstructionTable<IW, H>,
+            host: &mut H,
+        ) -> IW::Output {
+            From::from(self.run_plain(instruction_table, host))
+        }
+    *)
+    Definition run_plain_as_output
+        (IW : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self IW in
+      match ε, τ, α with
+      | [], [ H ], [ self; instruction_table; host ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ] ],
+              self
+            |) in
+          let instruction_table :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 256 ]
+                    [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ IW; H ]
+                    ]
+                ],
+              instruction_table
+            |) in
+          let host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], host |) in
+          M.call_closure (|
+            Ty.associated_in_trait
+              "revm_interpreter::interpreter_types::InterpreterTypes"
+              []
+              []
+              IW
+              "Output",
+            M.get_trait_method (|
+              "core::convert::From",
+              Ty.associated_in_trait
+                "revm_interpreter::interpreter_types::InterpreterTypes"
+                []
+                []
+                IW
+                "Output",
+              [],
+              [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ],
+              "from",
+              [],
+              []
+            |),
+            [
+              M.call_closure (|
+                Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ],
+                  "run_plain",
+                  [],
+                  [ H ]
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| instruction_table |) |) |);
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| host |) |) |)
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_run_plain_as_output :
+      forall (IW : Ty.t),
+      M.IsAssociatedFunction.C (Self IW) "run_plain_as_output" (run_plain_as_output IW).
+    Admitted.
+    Global Typeclasses Opaque run_plain_as_output.
   End Impl_revm_interpreter_interpreter_Interpreter_IW.
   
   (* StructRecord
@@ -3039,4 +4259,5 @@ Module interpreter.
     Admitted.
     Global Typeclasses Opaque is_error.
   End Impl_revm_interpreter_interpreter_InterpreterResult.
+  
 End interpreter.

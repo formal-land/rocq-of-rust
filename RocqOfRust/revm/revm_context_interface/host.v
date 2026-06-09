@@ -2,1205 +2,56 @@
 Require Import RocqOfRust.RocqOfRust.
 
 Module host.
-  (* Trait *)
-  (* Empty module 'Host' *)
+  (*
+  Enum LoadError
+  {
+    const_params := [];
+    ty_params := [];
+    variants :=
+      [
+        {
+          name := "DBError";
+          item := StructTuple [];
+        };
+        {
+          name := "ColdLoadSkipped";
+          item := StructTuple [];
+        }
+      ];
+  }
+  *)
   
-  Module underscore.
-    Module Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_TransactionGetter_ref_mut_T_where_revm_context_interface_block_BlockGetter_ref_mut_T_where_revm_context_interface_cfg_CfgGetter_ref_mut_T_for_ref_mut_T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition load_account_delegated
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "load_account_delegated",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition block_hash (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; number ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let number := M.alloc (| Ty.path "u64", number |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                    [ Value.Integer IntegerKind.Usize 32 ]
-                    []
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "block_hash",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| number |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition balance (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "balance",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition code (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.path "alloy_primitives::bytes_::Bytes" ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "code",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition code_hash (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        []
-                    ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "code_hash",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition sload (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; index ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let index :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                index
-              |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "sload",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| index |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition sstore (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; index; value ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let index :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                index
-              |) in
-            let value :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                value
-              |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [ Ty.path "revm_context_interface::host::SStoreResult" ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "sstore",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| index |);
-                M.read (| value |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition tload (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; index ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let index :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                index
-              |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "ruint::Uint")
-                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                [],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "tload",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| index |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition tstore (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; index; value ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let index :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                index
-              |) in
-            let value :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                value
-              |) in
-            M.call_closure (|
-              Ty.tuple [],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "tstore",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| index |);
-                M.read (| value |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition log (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; log ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let log :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "alloy_primitives::log::Log")
-                  []
-                  [ Ty.path "alloy_primitives::log::LogData" ],
-                log
-              |) in
-            M.call_closure (|
-              Ty.tuple [],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "log",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| log |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition selfdestruct
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; target ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let target :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", target |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [ Ty.path "revm_context_interface::host::SelfDestructResult" ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "selfdestruct",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| target |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::host::Host"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [
-            ("load_account_delegated", InstanceField.Method (load_account_delegated T));
-            ("block_hash", InstanceField.Method (block_hash T));
-            ("balance", InstanceField.Method (balance T));
-            ("code", InstanceField.Method (code T));
-            ("code_hash", InstanceField.Method (code_hash T));
-            ("sload", InstanceField.Method (sload T));
-            ("sstore", InstanceField.Method (sstore T));
-            ("tload", InstanceField.Method (tload T));
-            ("tstore", InstanceField.Method (tstore T));
-            ("log", InstanceField.Method (log T));
-            ("selfdestruct", InstanceField.Method (selfdestruct T))
-          ].
-    End Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_TransactionGetter_ref_mut_T_where_revm_context_interface_block_BlockGetter_ref_mut_T_where_revm_context_interface_cfg_CfgGetter_ref_mut_T_for_ref_mut_T.
-  End underscore.
+  Axiom IsDiscriminant_LoadError_DBError :
+    M.IsDiscriminant "revm_context_interface::host::LoadError::DBError" 0.
+  Axiom IsDiscriminant_LoadError_ColdLoadSkipped :
+    M.IsDiscriminant "revm_context_interface::host::LoadError::ColdLoadSkipped" 1.
   
-  Module underscore_1.
-    Module Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_TransactionGetter_alloc_boxed_Box_T_alloc_alloc_Global_where_revm_context_interface_block_BlockGetter_alloc_boxed_Box_T_alloc_alloc_Global_where_revm_context_interface_cfg_CfgGetter_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
-      Definition Self (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition load_account_delegated
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "load_account_delegated",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition block_hash (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; number ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let number := M.alloc (| Ty.path "u64", number |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                    [ Value.Integer IntegerKind.Usize 32 ]
-                    []
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "block_hash",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| number |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition balance (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "balance",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition code (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.path "alloy_primitives::bytes_::Bytes" ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "code",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition code_hash (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        []
-                    ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "code_hash",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition sload (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; index ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let index :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                index
-              |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "sload",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| index |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition sstore (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; index; value ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let index :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                index
-              |) in
-            let value :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                value
-              |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [ Ty.path "revm_context_interface::host::SStoreResult" ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "sstore",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| index |);
-                M.read (| value |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition tload (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; index ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let index :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                index
-              |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "ruint::Uint")
-                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                [],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "tload",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| index |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition tstore (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; index; value ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let index :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                index
-              |) in
-            let value :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                value
-              |) in
-            M.call_closure (|
-              Ty.tuple [],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "tstore",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| index |);
-                M.read (| value |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition log (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; log ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let log :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "alloy_primitives::log::Log")
-                  []
-                  [ Ty.path "alloy_primitives::log::LogData" ],
-                log
-              |) in
-            M.call_closure (|
-              Ty.tuple [],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "log",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| log |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&mut, Box)] *)
-      Definition selfdestruct
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self; address; target ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            let address :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
-            let target :=
-              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", target |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::option::Option")
-                []
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [ Ty.path "revm_context_interface::host::SelfDestructResult" ]
-                ],
-              M.get_trait_method (|
-                "revm_context_interface::host::Host",
-                T,
-                [],
-                [],
-                "selfdestruct",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| address |);
-                M.read (| target |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::host::Host"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [
-            ("load_account_delegated", InstanceField.Method (load_account_delegated T));
-            ("block_hash", InstanceField.Method (block_hash T));
-            ("balance", InstanceField.Method (balance T));
-            ("code", InstanceField.Method (code T));
-            ("code_hash", InstanceField.Method (code_hash T));
-            ("sload", InstanceField.Method (sload T));
-            ("sstore", InstanceField.Method (sstore T));
-            ("tload", InstanceField.Method (tload T));
-            ("tstore", InstanceField.Method (tstore T));
-            ("log", InstanceField.Method (log T));
-            ("selfdestruct", InstanceField.Method (selfdestruct T))
-          ].
-    End Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_TransactionGetter_alloc_boxed_Box_T_alloc_alloc_Global_where_revm_context_interface_block_BlockGetter_alloc_boxed_Box_T_alloc_alloc_Global_where_revm_context_interface_cfg_CfgGetter_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
-  End underscore_1.
+  Module Impl_core_marker_Copy_for_revm_context_interface_host_LoadError.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::LoadError".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_Copy_for_revm_context_interface_host_LoadError.
   
-  (* StructRecord
-    {
-      name := "SStoreResult";
-      const_params := [];
-      ty_params := [];
-      fields :=
-        [
-          ("original_value",
-            Ty.apply
-              (Ty.path "ruint::Uint")
-              [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-              []);
-          ("present_value",
-            Ty.apply
-              (Ty.path "ruint::Uint")
-              [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-              []);
-          ("new_value",
-            Ty.apply
-              (Ty.path "ruint::Uint")
-              [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-              [])
-        ];
-    } *)
+  Module Impl_core_clone_TrivialClone_for_revm_context_interface_host_LoadError.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::LoadError".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_context_interface_host_LoadError.
   
-  Module Impl_core_clone_Clone_for_revm_context_interface_host_SStoreResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SStoreResult".
+  Module Impl_core_clone_Clone_for_revm_context_interface_host_LoadError.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::LoadError".
     
     (* Clone *)
     Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1209,117 +60,10 @@ Module host.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::LoadError" ],
               self
             |) in
-          Value.mkStructRecord
-            "revm_context_interface::host::SStoreResult"
-            []
-            []
-            [
-              ("original_value",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      [],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::host::SStoreResult",
-                            "original_value"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("present_value",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      [],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::host::SStoreResult",
-                            "present_value"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("new_value",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      [],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::host::SStoreResult",
-                            "new_value"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+          M.read (| M.deref (| M.read (| self |) |) |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1330,10 +74,10 @@ Module host.
         (* Trait polymorphic types *) []
         Self
         (* Instance *) [ ("clone", InstanceField.Method clone) ].
-  End Impl_core_clone_Clone_for_revm_context_interface_host_SStoreResult.
+  End Impl_core_clone_Clone_for_revm_context_interface_host_LoadError.
   
-  Module Impl_core_fmt_Debug_for_revm_context_interface_host_SStoreResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SStoreResult".
+  Module Impl_core_fmt_Debug_for_revm_context_interface_host_LoadError.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::LoadError".
     
     (* Debug *)
     Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1342,7 +86,7 @@ Module host.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::LoadError" ],
               self
             |) in
           let f :=
@@ -1352,129 +96,34 @@ Module host.
               (Ty.path "core::result::Result")
               []
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            M.get_associated_function (|
-              Ty.path "core::fmt::Formatter",
-              "debug_struct_field3_finish",
-              [],
-              []
-            |),
+            M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SStoreResult" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "original_value" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+              M.match_operator (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                self,
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_context_interface::host::LoadError::DBError"
+                        |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DBError" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "revm_context_interface::host::LoadError::ColdLoadSkipped"
+                        |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::host::SStoreResult",
-                          "original_value"
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "present_value" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::host::SStoreResult",
-                          "present_value"
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "new_value" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            []
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "ruint::Uint")
-                                [
-                                  Value.Integer IntegerKind.Usize 256;
-                                  Value.Integer IntegerKind.Usize 4
-                                ]
-                                []
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::host::SStoreResult",
-                              "new_value"
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  |)
+                        M.deref (| mk_str (| "ColdLoadSkipped" |) |)
+                      |)))
                 ]
               |)
             ]
@@ -1489,96 +138,10 @@ Module host.
         (* Trait polymorphic types *) []
         Self
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-  End Impl_core_fmt_Debug_for_revm_context_interface_host_SStoreResult.
+  End Impl_core_fmt_Debug_for_revm_context_interface_host_LoadError.
   
-  Module Impl_core_default_Default_for_revm_context_interface_host_SStoreResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SStoreResult".
-    
-    (* Default *)
-    Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.mkStructRecord
-            "revm_context_interface::host::SStoreResult"
-            []
-            []
-            [
-              ("original_value",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  M.get_trait_method (|
-                    "core::default::Default",
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      [],
-                    [],
-                    [],
-                    "default",
-                    [],
-                    []
-                  |),
-                  []
-                |));
-              ("present_value",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  M.get_trait_method (|
-                    "core::default::Default",
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      [],
-                    [],
-                    [],
-                    "default",
-                    [],
-                    []
-                  |),
-                  []
-                |));
-              ("new_value",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  M.get_trait_method (|
-                    "core::default::Default",
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      [],
-                    [],
-                    [],
-                    "default",
-                    [],
-                    []
-                  |),
-                  []
-                |))
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("default", InstanceField.Method default) ].
-  End Impl_core_default_Default_for_revm_context_interface_host_SStoreResult.
-  
-  Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_host_SStoreResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SStoreResult".
+  Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_host_LoadError.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::LoadError".
     
     Axiom Implements :
       M.IsTraitInstance
@@ -1587,10 +150,10 @@ Module host.
         (* Trait polymorphic types *) []
         Self
         (* Instance *) [].
-  End Impl_core_marker_StructuralPartialEq_for_revm_context_interface_host_SStoreResult.
+  End Impl_core_marker_StructuralPartialEq_for_revm_context_interface_host_LoadError.
   
-  Module Impl_core_cmp_PartialEq_revm_context_interface_host_SStoreResult_for_revm_context_interface_host_SStoreResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SStoreResult".
+  Module Impl_core_cmp_PartialEq_revm_context_interface_host_LoadError_for_revm_context_interface_host_LoadError.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::LoadError".
     
     (* PartialEq *)
     Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1599,133 +162,43 @@ Module host.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::LoadError" ],
               self
             |) in
           let other :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::LoadError" ],
               other
             |) in
-          LogicalOp.and (|
-            LogicalOp.and (|
+          M.read (|
+            let~ __self_discr : Ty.path "isize" :=
+              M.call_closure (|
+                Ty.path "isize",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
+                  [],
+                  [ Ty.path "revm_context_interface::host::LoadError" ]
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              |) in
+            let~ __arg1_discr : Ty.path "isize" :=
+              M.call_closure (|
+                Ty.path "isize",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
+                  [],
+                  [ Ty.path "revm_context_interface::host::LoadError" ]
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              |) in
+            M.alloc (|
+              Ty.path "bool",
               M.call_closure (|
                 Ty.path "bool",
-                M.get_trait_method (|
-                  "core::cmp::PartialEq",
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  [],
-                  [
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      []
-                  ],
-                  "eq",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_context_interface::host::SStoreResult",
-                      "original_value"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_context_interface::host::SStoreResult",
-                      "original_value"
-                    |)
-                  |)
-                ]
-              |),
-              ltac:(M.monadic
-                (M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::cmp::PartialEq",
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      [],
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ],
-                    "eq",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_context_interface::host::SStoreResult",
-                        "present_value"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "revm_context_interface::host::SStoreResult",
-                        "present_value"
-                      |)
-                    |)
-                  ]
-                |)))
-            |),
-            ltac:(M.monadic
-              (M.call_closure (|
-                Ty.path "bool",
-                M.get_trait_method (|
-                  "core::cmp::PartialEq",
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  [],
-                  [
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      []
-                  ],
-                  "eq",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_context_interface::host::SStoreResult",
-                      "new_value"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_context_interface::host::SStoreResult",
-                      "new_value"
-                    |)
-                  |)
-                ]
-              |)))
+                BinOp.eq,
+                [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
+              |)
+            |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1734,13 +207,13 @@ Module host.
       M.IsTraitInstance
         "core::cmp::PartialEq"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) [ Ty.path "revm_context_interface::host::SStoreResult" ]
+        (* Trait polymorphic types *) [ Ty.path "revm_context_interface::host::LoadError" ]
         Self
         (* Instance *) [ ("eq", InstanceField.Method eq) ].
-  End Impl_core_cmp_PartialEq_revm_context_interface_host_SStoreResult_for_revm_context_interface_host_SStoreResult.
+  End Impl_core_cmp_PartialEq_revm_context_interface_host_LoadError_for_revm_context_interface_host_LoadError.
   
-  Module Impl_core_cmp_Eq_for_revm_context_interface_host_SStoreResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SStoreResult".
+  Module Impl_core_cmp_Eq_for_revm_context_interface_host_LoadError.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::LoadError".
     
     (* Eq *)
     Definition assert_receiver_is_total_eq
@@ -1753,14 +226,10 @@ Module host.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::LoadError" ],
               self
             |) in
-          M.match_operator (|
-            Ty.tuple [],
-            Value.DeclaredButUndefined,
-            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
-          |)))
+          Value.Tuple []))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1772,798 +241,10 @@ Module host.
         Self
         (* Instance *)
         [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
-  End Impl_core_cmp_Eq_for_revm_context_interface_host_SStoreResult.
+  End Impl_core_cmp_Eq_for_revm_context_interface_host_LoadError.
   
-  Module Impl_revm_context_interface_host_SStoreResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SStoreResult".
-    
-    (*
-        pub fn is_new_eq_present(&self) -> bool {
-            self.new_value == self.present_value
-        }
-    *)
-    Definition is_new_eq_present (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
-              self
-            |) in
-          M.call_closure (|
-            Ty.path "bool",
-            M.get_trait_method (|
-              "core::cmp::PartialEq",
-              Ty.apply
-                (Ty.path "ruint::Uint")
-                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                [],
-              [],
-              [
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  []
-              ],
-              "eq",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::host::SStoreResult",
-                  "new_value"
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::host::SStoreResult",
-                  "present_value"
-                |)
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_is_new_eq_present :
-      M.IsAssociatedFunction.C Self "is_new_eq_present" is_new_eq_present.
-    Admitted.
-    Global Typeclasses Opaque is_new_eq_present.
-    
-    (*
-        pub fn is_original_eq_present(&self) -> bool {
-            self.original_value == self.present_value
-        }
-    *)
-    Definition is_original_eq_present (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
-              self
-            |) in
-          M.call_closure (|
-            Ty.path "bool",
-            M.get_trait_method (|
-              "core::cmp::PartialEq",
-              Ty.apply
-                (Ty.path "ruint::Uint")
-                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                [],
-              [],
-              [
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  []
-              ],
-              "eq",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::host::SStoreResult",
-                  "original_value"
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::host::SStoreResult",
-                  "present_value"
-                |)
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_is_original_eq_present :
-      M.IsAssociatedFunction.C Self "is_original_eq_present" is_original_eq_present.
-    Admitted.
-    Global Typeclasses Opaque is_original_eq_present.
-    
-    (*
-        pub fn is_original_eq_new(&self) -> bool {
-            self.original_value == self.new_value
-        }
-    *)
-    Definition is_original_eq_new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
-              self
-            |) in
-          M.call_closure (|
-            Ty.path "bool",
-            M.get_trait_method (|
-              "core::cmp::PartialEq",
-              Ty.apply
-                (Ty.path "ruint::Uint")
-                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                [],
-              [],
-              [
-                Ty.apply
-                  (Ty.path "ruint::Uint")
-                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  []
-              ],
-              "eq",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::host::SStoreResult",
-                  "original_value"
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::host::SStoreResult",
-                  "new_value"
-                |)
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_is_original_eq_new :
-      M.IsAssociatedFunction.C Self "is_original_eq_new" is_original_eq_new.
-    Admitted.
-    Global Typeclasses Opaque is_original_eq_new.
-    
-    (*
-        pub fn is_original_zero(&self) -> bool {
-            self.original_value.is_zero()
-        }
-    *)
-    Definition is_original_zero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
-              self
-            |) in
-          M.call_closure (|
-            Ty.path "bool",
-            M.get_associated_function (|
-              Ty.apply
-                (Ty.path "ruint::Uint")
-                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                [],
-              "is_zero",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::host::SStoreResult",
-                  "original_value"
-                |)
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_is_original_zero :
-      M.IsAssociatedFunction.C Self "is_original_zero" is_original_zero.
-    Admitted.
-    Global Typeclasses Opaque is_original_zero.
-    
-    (*
-        pub fn is_present_zero(&self) -> bool {
-            self.present_value.is_zero()
-        }
-    *)
-    Definition is_present_zero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
-              self
-            |) in
-          M.call_closure (|
-            Ty.path "bool",
-            M.get_associated_function (|
-              Ty.apply
-                (Ty.path "ruint::Uint")
-                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                [],
-              "is_zero",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::host::SStoreResult",
-                  "present_value"
-                |)
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_is_present_zero :
-      M.IsAssociatedFunction.C Self "is_present_zero" is_present_zero.
-    Admitted.
-    Global Typeclasses Opaque is_present_zero.
-    
-    (*
-        pub fn is_new_zero(&self) -> bool {
-            self.new_value.is_zero()
-        }
-    *)
-    Definition is_new_zero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::SStoreResult" ],
-              self
-            |) in
-          M.call_closure (|
-            Ty.path "bool",
-            M.get_associated_function (|
-              Ty.apply
-                (Ty.path "ruint::Uint")
-                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                [],
-              "is_zero",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::host::SStoreResult",
-                  "new_value"
-                |)
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_is_new_zero :
-      M.IsAssociatedFunction.C Self "is_new_zero" is_new_zero.
-    Admitted.
-    Global Typeclasses Opaque is_new_zero.
-  End Impl_revm_context_interface_host_SStoreResult.
-  
-  (* StructRecord
-    {
-      name := "SelfDestructResult";
-      const_params := [];
-      ty_params := [];
-      fields :=
-        [
-          ("had_value", Ty.path "bool");
-          ("target_exists", Ty.path "bool");
-          ("previously_destroyed", Ty.path "bool")
-        ];
-    } *)
-  
-  Module Impl_core_clone_Clone_for_revm_context_interface_host_SelfDestructResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SelfDestructResult".
-    
-    (* Clone *)
-    Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.path "revm_context_interface::host::SelfDestructResult" ],
-              self
-            |) in
-          Value.mkStructRecord
-            "revm_context_interface::host::SelfDestructResult"
-            []
-            []
-            [
-              ("had_value",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.path "bool",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::host::SelfDestructResult",
-                            "had_value"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("target_exists",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.path "bool",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::host::SelfDestructResult",
-                            "target_exists"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("previously_destroyed",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.path "bool",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::host::SelfDestructResult",
-                            "previously_destroyed"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::clone::Clone"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("clone", InstanceField.Method clone) ].
-  End Impl_core_clone_Clone_for_revm_context_interface_host_SelfDestructResult.
-  
-  Module Impl_core_fmt_Debug_for_revm_context_interface_host_SelfDestructResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SelfDestructResult".
-    
-    (* Debug *)
-    Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self; f ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.path "revm_context_interface::host::SelfDestructResult" ],
-              self
-            |) in
-          let f :=
-            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-          M.call_closure (|
-            Ty.apply
-              (Ty.path "core::result::Result")
-              []
-              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            M.get_associated_function (|
-              Ty.path "core::fmt::Formatter",
-              "debug_struct_field3_finish",
-              [],
-              []
-            |),
-            [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SelfDestructResult" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "had_value" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::host::SelfDestructResult",
-                          "had_value"
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "target_exists" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::host::SelfDestructResult",
-                          "target_exists"
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "previously_destroyed" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::host::SelfDestructResult",
-                              "previously_destroyed"
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::fmt::Debug"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-  End Impl_core_fmt_Debug_for_revm_context_interface_host_SelfDestructResult.
-  
-  Module Impl_core_default_Default_for_revm_context_interface_host_SelfDestructResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SelfDestructResult".
-    
-    (* Default *)
-    Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.mkStructRecord
-            "revm_context_interface::host::SelfDestructResult"
-            []
-            []
-            [
-              ("had_value",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::default::Default",
-                    Ty.path "bool",
-                    [],
-                    [],
-                    "default",
-                    [],
-                    []
-                  |),
-                  []
-                |));
-              ("target_exists",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::default::Default",
-                    Ty.path "bool",
-                    [],
-                    [],
-                    "default",
-                    [],
-                    []
-                  |),
-                  []
-                |));
-              ("previously_destroyed",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::default::Default",
-                    Ty.path "bool",
-                    [],
-                    [],
-                    "default",
-                    [],
-                    []
-                  |),
-                  []
-                |))
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("default", InstanceField.Method default) ].
-  End Impl_core_default_Default_for_revm_context_interface_host_SelfDestructResult.
-  
-  Module Impl_core_marker_StructuralPartialEq_for_revm_context_interface_host_SelfDestructResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SelfDestructResult".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::StructuralPartialEq"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_StructuralPartialEq_for_revm_context_interface_host_SelfDestructResult.
-  
-  Module Impl_core_cmp_PartialEq_revm_context_interface_host_SelfDestructResult_for_revm_context_interface_host_SelfDestructResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SelfDestructResult".
-    
-    (* PartialEq *)
-    Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self; other ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.path "revm_context_interface::host::SelfDestructResult" ],
-              self
-            |) in
-          let other :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.path "revm_context_interface::host::SelfDestructResult" ],
-              other
-            |) in
-          LogicalOp.and (|
-            LogicalOp.and (|
-              M.call_closure (|
-                Ty.path "bool",
-                BinOp.eq,
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_context_interface::host::SelfDestructResult",
-                      "had_value"
-                    |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_context_interface::host::SelfDestructResult",
-                      "had_value"
-                    |)
-                  |)
-                ]
-              |),
-              ltac:(M.monadic
-                (M.call_closure (|
-                  Ty.path "bool",
-                  BinOp.eq,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_context_interface::host::SelfDestructResult",
-                        "target_exists"
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "revm_context_interface::host::SelfDestructResult",
-                        "target_exists"
-                      |)
-                    |)
-                  ]
-                |)))
-            |),
-            ltac:(M.monadic
-              (M.call_closure (|
-                Ty.path "bool",
-                BinOp.eq,
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_context_interface::host::SelfDestructResult",
-                      "previously_destroyed"
-                    |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_context_interface::host::SelfDestructResult",
-                      "previously_destroyed"
-                    |)
-                  |)
-                ]
-              |)))
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::cmp::PartialEq"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) [ Ty.path "revm_context_interface::host::SelfDestructResult" ]
-        Self
-        (* Instance *) [ ("eq", InstanceField.Method eq) ].
-  End Impl_core_cmp_PartialEq_revm_context_interface_host_SelfDestructResult_for_revm_context_interface_host_SelfDestructResult.
-  
-  Module Impl_core_cmp_Eq_for_revm_context_interface_host_SelfDestructResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SelfDestructResult".
-    
-    (* Eq *)
-    Definition assert_receiver_is_total_eq
-        (ε : list Value.t)
-        (τ : list Ty.t)
-        (α : list Value.t)
-        : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.path "revm_context_interface::host::SelfDestructResult" ],
-              self
-            |) in
-          M.match_operator (|
-            Ty.tuple [],
-            Value.DeclaredButUndefined,
-            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::cmp::Eq"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *)
-        [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
-  End Impl_core_cmp_Eq_for_revm_context_interface_host_SelfDestructResult.
-  
-  Module Impl_core_hash_Hash_for_revm_context_interface_host_SelfDestructResult.
-    Definition Self : Ty.t := Ty.path "revm_context_interface::host::SelfDestructResult".
+  Module Impl_core_hash_Hash_for_revm_context_interface_host_LoadError.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::LoadError".
     
     (* Hash *)
     Definition hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2572,71 +253,20 @@ Module host.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.path "revm_context_interface::host::SelfDestructResult" ],
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::LoadError" ],
               self
             |) in
           let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
           M.read (|
-            let~ _ : Ty.tuple [] :=
+            let~ __self_discr : Ty.path "isize" :=
               M.call_closure (|
-                Ty.tuple [],
-                M.get_trait_method (|
-                  "core::hash::Hash",
-                  Ty.path "bool",
+                Ty.path "isize",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
                   [],
-                  [],
-                  "hash",
-                  [],
-                  [ __H ]
+                  [ Ty.path "revm_context_interface::host::LoadError" ]
                 |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::host::SelfDestructResult",
-                          "had_value"
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                ]
-              |) in
-            let~ _ : Ty.tuple [] :=
-              M.call_closure (|
-                Ty.tuple [],
-                M.get_trait_method (|
-                  "core::hash::Hash",
-                  Ty.path "bool",
-                  [],
-                  [],
-                  "hash",
-                  [],
-                  [ __H ]
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::host::SelfDestructResult",
-                          "target_exists"
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                ]
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -2644,7 +274,7 @@ Module host.
                 Ty.tuple [],
                 M.get_trait_method (|
                   "core::hash::Hash",
-                  Ty.path "bool",
+                  Ty.path "isize",
                   [],
                   [],
                   "hash",
@@ -2654,16 +284,7 @@ Module host.
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::host::SelfDestructResult",
-                          "previously_destroyed"
-                        |)
-                      |)
-                    |)
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
                   |);
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
                 ]
@@ -2680,5 +301,5127 @@ Module host.
         (* Trait polymorphic types *) []
         Self
         (* Instance *) [ ("hash", InstanceField.Method hash) ].
-  End Impl_core_hash_Hash_for_revm_context_interface_host_SelfDestructResult.
+  End Impl_core_hash_Hash_for_revm_context_interface_host_LoadError.
+  
+  (* Trait *)
+  Module Host.
+    Definition sstore (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; address; key; value ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          let key :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              key
+            |) in
+          let value :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              value
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [ Ty.path "revm_context_interface::context::SStoreResult" ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::context::SStoreResult" ];
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              "ok",
+              [],
+              []
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [ Ty.path "revm_context_interface::context::SStoreResult" ];
+                    Ty.path "revm_context_interface::host::LoadError"
+                  ],
+                M.get_trait_method (|
+                  "revm_context_interface::host::Host",
+                  Self,
+                  [],
+                  [],
+                  "sstore_skip_cold_load",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| address |);
+                  M.read (| key |);
+                  M.read (| value |);
+                  Value.Bool false
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_sstore :
+      M.IsProvidedMethod "revm_context_interface::host::Host" "sstore" sstore.
+    Definition sload (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; address; key ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          let key :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              key
+            |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ];
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              "ok",
+              [],
+              []
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ];
+                    Ty.path "revm_context_interface::host::LoadError"
+                  ],
+                M.get_trait_method (|
+                  "revm_context_interface::host::Host",
+                  Self,
+                  [],
+                  [],
+                  "sload_skip_cold_load",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                  M.read (| address |);
+                  M.read (| key |);
+                  Value.Bool false
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_sload :
+      M.IsProvidedMethod "revm_context_interface::host::Host" "sload" sload.
+    Definition balance (Self : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; address ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
+              "map",
+              [],
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ];
+                Ty.function
+                  [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ]
+                  (Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ])
+              ]
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+                      Ty.path "revm_context_interface::host::LoadError"
+                    ],
+                  "ok",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+                        Ty.path "revm_context_interface::host::LoadError"
+                      ],
+                    M.get_trait_method (|
+                      "revm_context_interface::host::Host",
+                      Self,
+                      [],
+                      [],
+                      "load_account_info_skip_cold_load",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                      M.read (| address |);
+                      Value.Bool false;
+                      Value.Bool false
+                    ]
+                  |)
+                ]
+              |);
+              M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.apply
+                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ],
+                          M.alloc (|
+                            Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
+                            α0
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let load :=
+                                  M.copy (|
+                                    Ty.path
+                                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                                    γ
+                                  |) in
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.path
+                                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                                    "into_state_load",
+                                    [],
+                                    [
+                                      Ty.function
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::borrow::Cow")
+                                            []
+                                            [ Ty.path "revm_state::account_info::AccountInfo" ]
+                                        ]
+                                        (Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []);
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                  |),
+                                  [
+                                    M.read (| load |);
+                                    M.closure
+                                      (fun γ =>
+                                        ltac:(M.monadic
+                                          match γ with
+                                          | [ α0 ] =>
+                                            ltac:(M.monadic
+                                              (M.match_operator (|
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [],
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "alloc::borrow::Cow")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "revm_state::account_info::AccountInfo"
+                                                    ],
+                                                  α0
+                                                |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let i :=
+                                                        M.copy (|
+                                                          Ty.apply
+                                                            (Ty.path "alloc::borrow::Cow")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "revm_state::account_info::AccountInfo"
+                                                            ],
+                                                          γ
+                                                        |) in
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (|
+                                                            M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "revm_state::account_info::AccountInfo"
+                                                                ],
+                                                              M.get_trait_method (|
+                                                                "core::ops::deref::Deref",
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::borrow::Cow")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "revm_state::account_info::AccountInfo"
+                                                                  ],
+                                                                [],
+                                                                [],
+                                                                "deref",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [ M.borrow (| Pointer.Kind.Ref, i |) ]
+                                                            |)
+                                                          |),
+                                                          "revm_state::account_info::AccountInfo",
+                                                          "balance"
+                                                        |)
+                                                      |)))
+                                                ]
+                                              |)))
+                                          | _ => M.impossible "wrong number of arguments"
+                                          end))
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_balance :
+      M.IsProvidedMethod "revm_context_interface::host::Host" "balance" balance.
+    Definition load_account_delegated
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; address ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ]
+              ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ account : Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" :=
+                  M.match_operator (|
+                    Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "core::convert::Infallible" ];
+                          Ty.path "revm_context_interface::journaled_state::AccountInfoLoad"
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "core::convert::Infallible" ];
+                            Ty.path "revm_context_interface::journaled_state::AccountInfoLoad"
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path
+                                    "revm_context_interface::journaled_state::AccountInfoLoad";
+                                  Ty.path "revm_context_interface::host::LoadError"
+                                ],
+                              "ok",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path
+                                      "revm_context_interface::journaled_state::AccountInfoLoad";
+                                    Ty.path "revm_context_interface::host::LoadError"
+                                  ],
+                                M.get_trait_method (|
+                                  "revm_context_interface::host::Host",
+                                  Self,
+                                  [],
+                                  [],
+                                  "load_account_info_skip_cold_load",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |);
+                                  M.read (| address |);
+                                  Value.Bool true;
+                                  Value.Bool false
+                                ]
+                              |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::convert::Infallible" ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path
+                                          "revm_context_interface::journaled_state::StateLoad")
+                                        []
+                                        [
+                                          Ty.path
+                                            "revm_context_interface::journaled_state::AccountLoad"
+                                        ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path
+                                            "revm_context_interface::journaled_state::StateLoad")
+                                          []
+                                          [
+                                            Ty.path
+                                              "revm_context_interface::journaled_state::AccountLoad"
+                                          ]
+                                      ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val :=
+                            M.copy (|
+                              Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
+                              γ0_0
+                            |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ account_load :
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ] :=
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                      []
+                      [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      Value.mkStructRecord
+                        "revm_context_interface::journaled_state::AccountLoad"
+                        []
+                        []
+                        [
+                          ("is_delegate_account_cold",
+                            Value.StructTuple
+                              "core::option::Option::None"
+                              []
+                              [ Ty.path "bool" ]
+                              []);
+                          ("is_empty",
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                account,
+                                "revm_context_interface::journaled_state::AccountInfoLoad",
+                                "is_empty"
+                              |)
+                            |))
+                        ];
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          account,
+                          "revm_context_interface::journaled_state::AccountInfoLoad",
+                          "is_cold"
+                        |)
+                      |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
+                                ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_state::account_info::AccountInfo" ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::Deref",
+                                        Ty.path
+                                          "revm_context_interface::journaled_state::AccountInfoLoad",
+                                        [],
+                                        [],
+                                        "deref",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.borrow (| Pointer.Kind.Ref, account |) ]
+                                    |)
+                                  |),
+                                  "revm_state::account_info::AccountInfo",
+                                  "code"
+                                |)
+                              |)
+                            |) in
+                          let γ := M.deref (| M.read (| γ |) |) in
+                          let γ1_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::option::Option::Some",
+                              0
+                            |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ1_0,
+                              "revm_bytecode::bytecode::Bytecode::Eip7702",
+                              0
+                            |) in
+                          let code :=
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
+                              γ2_0
+                            |) in
+                          M.read (|
+                            let~ address : Ty.path "alloy_primitives::bits::address::Address" :=
+                              M.call_closure (|
+                                Ty.path "alloy_primitives::bits::address::Address",
+                                M.get_associated_function (|
+                                  Ty.path "revm_bytecode::eip7702::Eip7702Bytecode",
+                                  "address",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| code |) |) |) ]
+                              |) in
+                            let~ delegate_account :
+                                Ty.path
+                                  "revm_context_interface::journaled_state::AccountInfoLoad" :=
+                              M.match_operator (|
+                                Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ];
+                                      Ty.path
+                                        "revm_context_interface::journaled_state::AccountInfoLoad"
+                                    ],
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ];
+                                        Ty.path
+                                          "revm_context_interface::journaled_state::AccountInfoLoad"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::Try",
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.path
+                                            "revm_context_interface::journaled_state::AccountInfoLoad"
+                                        ],
+                                      [],
+                                      [],
+                                      "branch",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.path
+                                              "revm_context_interface::journaled_state::AccountInfoLoad"
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path
+                                                "revm_context_interface::journaled_state::AccountInfoLoad";
+                                              Ty.path "revm_context_interface::host::LoadError"
+                                            ],
+                                          "ok",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "revm_context_interface::journaled_state::AccountInfoLoad";
+                                                Ty.path "revm_context_interface::host::LoadError"
+                                              ],
+                                            M.get_trait_method (|
+                                              "revm_context_interface::host::Host",
+                                              Self,
+                                              [],
+                                              [],
+                                              "load_account_info_skip_cold_load",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| self |) |)
+                                              |);
+                                              M.read (| address |);
+                                              Value.Bool true;
+                                              Value.Bool false
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Break",
+                                          0
+                                        |) in
+                                      let residual :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ],
+                                          γ0_0
+                                        |) in
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.return_ (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "revm_context_interface::journaled_state::StateLoad")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "revm_context_interface::journaled_state::AccountLoad"
+                                                    ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::FromResidual",
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "revm_context_interface::journaled_state::StateLoad")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "revm_context_interface::journaled_state::AccountLoad"
+                                                      ]
+                                                  ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "core::convert::Infallible" ]
+                                                ],
+                                                "from_residual",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| residual |) ]
+                                            |)
+                                          |)
+                                        |)
+                                      |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Continue",
+                                          0
+                                        |) in
+                                      let val :=
+                                        M.copy (|
+                                          Ty.path
+                                            "revm_context_interface::journaled_state::AccountInfoLoad",
+                                          γ0_0
+                                        |) in
+                                      M.read (| val |)))
+                                ]
+                              |) in
+                            let~ _ : Ty.tuple [] :=
+                              M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    account_load,
+                                    "revm_context_interface::journaled_state::StateLoad",
+                                    "data"
+                                  |),
+                                  "revm_context_interface::journaled_state::AccountLoad",
+                                  "is_delegate_account_cold"
+                                |),
+                                Value.StructTuple
+                                  "core::option::Option::Some"
+                                  []
+                                  [ Ty.path "bool" ]
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        delegate_account,
+                                        "revm_context_interface::journaled_state::AccountInfoLoad",
+                                        "is_cold"
+                                      |)
+                                    |)
+                                  ]
+                              |) in
+                            let~ _ : Ty.tuple [] :=
+                              M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    account_load,
+                                    "revm_context_interface::journaled_state::StateLoad",
+                                    "data"
+                                  |),
+                                  "revm_context_interface::journaled_state::AccountLoad",
+                                  "is_empty"
+                                |),
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    delegate_account,
+                                    "revm_context_interface::journaled_state::AccountInfoLoad",
+                                    "is_empty"
+                                  |)
+                                |)
+                              |) in
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ]
+                    ],
+                  Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ]
+                    ]
+                    [ M.read (| account_load |) ]
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_load_account_delegated :
+      M.IsProvidedMethod
+        "revm_context_interface::host::Host"
+        "load_account_delegated"
+        load_account_delegated.
+    Definition load_account_code
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; address ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
+              "map",
+              [],
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                Ty.function
+                  [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ]
+                  (Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+              ]
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+                      Ty.path "revm_context_interface::host::LoadError"
+                    ],
+                  "ok",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+                        Ty.path "revm_context_interface::host::LoadError"
+                      ],
+                    M.get_trait_method (|
+                      "revm_context_interface::host::Host",
+                      Self,
+                      [],
+                      [],
+                      "load_account_info_skip_cold_load",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                      M.read (| address |);
+                      Value.Bool true;
+                      Value.Bool false
+                    ]
+                  |)
+                ]
+              |);
+              M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.apply
+                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                            []
+                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                          M.alloc (|
+                            Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
+                            α0
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let load :=
+                                  M.copy (|
+                                    Ty.path
+                                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                                    γ
+                                  |) in
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                  M.get_associated_function (|
+                                    Ty.path
+                                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                                    "into_state_load",
+                                    [],
+                                    [
+                                      Ty.function
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::borrow::Cow")
+                                            []
+                                            [ Ty.path "revm_state::account_info::AccountInfo" ]
+                                        ]
+                                        (Ty.path "alloy_primitives::bytes_::Bytes");
+                                      Ty.path "alloy_primitives::bytes_::Bytes"
+                                    ]
+                                  |),
+                                  [
+                                    M.read (| load |);
+                                    M.closure
+                                      (fun γ =>
+                                        ltac:(M.monadic
+                                          match γ with
+                                          | [ α0 ] =>
+                                            ltac:(M.monadic
+                                              (M.match_operator (|
+                                                Ty.path "alloy_primitives::bytes_::Bytes",
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "alloc::borrow::Cow")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "revm_state::account_info::AccountInfo"
+                                                    ],
+                                                  α0
+                                                |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let i :=
+                                                        M.copy (|
+                                                          Ty.apply
+                                                            (Ty.path "alloc::borrow::Cow")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "revm_state::account_info::AccountInfo"
+                                                            ],
+                                                          γ
+                                                        |) in
+                                                      M.call_closure (|
+                                                        Ty.path "alloy_primitives::bytes_::Bytes",
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "alloy_primitives::bytes_::Bytes"
+                                                            ],
+                                                          "unwrap_or_default",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "core::option::Option")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "alloy_primitives::bytes_::Bytes"
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "revm_bytecode::bytecode::Bytecode"
+                                                                    ]
+                                                                ],
+                                                              "map",
+                                                              [],
+                                                              [
+                                                                Ty.path
+                                                                  "alloy_primitives::bytes_::Bytes";
+                                                                Ty.function
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "revm_bytecode::bytecode::Bytecode"
+                                                                      ]
+                                                                  ]
+                                                                  (Ty.path
+                                                                    "alloy_primitives::bytes_::Bytes")
+                                                              ]
+                                                            |),
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::option::Option")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "revm_bytecode::bytecode::Bytecode"
+                                                                      ]
+                                                                  ],
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "core::option::Option")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "revm_bytecode::bytecode::Bytecode"
+                                                                    ],
+                                                                  "as_ref",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.deref (|
+                                                                        M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "revm_state::account_info::AccountInfo"
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::deref::Deref",
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "alloc::borrow::Cow")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "revm_state::account_info::AccountInfo"
+                                                                              ],
+                                                                            [],
+                                                                            [],
+                                                                            "deref",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              i
+                                                                            |)
+                                                                          ]
+                                                                        |)
+                                                                      |),
+                                                                      "revm_state::account_info::AccountInfo",
+                                                                      "code"
+                                                                    |)
+                                                                  |)
+                                                                ]
+                                                              |);
+                                                              M.closure
+                                                                (fun γ =>
+                                                                  ltac:(M.monadic
+                                                                    match γ with
+                                                                    | [ α0 ] =>
+                                                                      ltac:(M.monadic
+                                                                        (M.match_operator (|
+                                                                          Ty.path
+                                                                            "alloy_primitives::bytes_::Bytes",
+                                                                          M.alloc (|
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "revm_bytecode::bytecode::Bytecode"
+                                                                              ],
+                                                                            α0
+                                                                          |),
+                                                                          [
+                                                                            fun γ =>
+                                                                              ltac:(M.monadic
+                                                                                (let b :=
+                                                                                  M.copy (|
+                                                                                    Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "revm_bytecode::bytecode::Bytecode"
+                                                                                      ],
+                                                                                    γ
+                                                                                  |) in
+                                                                                M.call_closure (|
+                                                                                  Ty.path
+                                                                                    "alloy_primitives::bytes_::Bytes",
+                                                                                  M.get_associated_function (|
+                                                                                    Ty.path
+                                                                                      "revm_bytecode::bytecode::Bytecode",
+                                                                                    "original_bytes",
+                                                                                    [],
+                                                                                    []
+                                                                                  |),
+                                                                                  [
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          b
+                                                                                        |)
+                                                                                      |)
+                                                                                    |)
+                                                                                  ]
+                                                                                |)))
+                                                                          ]
+                                                                        |)))
+                                                                    | _ =>
+                                                                      M.impossible
+                                                                        "wrong number of arguments"
+                                                                    end))
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |)))
+                                                ]
+                                              |)))
+                                          | _ => M.impossible "wrong number of arguments"
+                                          end))
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_load_account_code :
+      M.IsProvidedMethod "revm_context_interface::host::Host" "load_account_code" load_account_code.
+    Definition load_account_code_hash
+        (Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; address ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
+          let address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      []
+                  ]
+              ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
+              "map",
+              [],
+              [
+                Ty.apply
+                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      []
+                  ];
+                Ty.function
+                  [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ]
+                  (Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        []
+                    ])
+              ]
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "revm_context_interface::journaled_state::AccountInfoLoad" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+                      Ty.path "revm_context_interface::host::LoadError"
+                    ],
+                  "ok",
+                  [],
+                  []
+                |),
+                [
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+                        Ty.path "revm_context_interface::host::LoadError"
+                      ],
+                    M.get_trait_method (|
+                      "revm_context_interface::host::Host",
+                      Self,
+                      [],
+                      [],
+                      "load_account_info_skip_cold_load",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                      M.read (| address |);
+                      Value.Bool false;
+                      Value.Bool false
+                    ]
+                  |)
+                ]
+              |);
+              M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.apply
+                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                []
+                            ],
+                          M.alloc (|
+                            Ty.path "revm_context_interface::journaled_state::AccountInfoLoad",
+                            α0
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let load :=
+                                  M.copy (|
+                                    Ty.path
+                                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                                    γ
+                                  |) in
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        []
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.path
+                                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                                    "into_state_load",
+                                    [],
+                                    [
+                                      Ty.function
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::borrow::Cow")
+                                            []
+                                            [ Ty.path "revm_state::account_info::AccountInfo" ]
+                                        ]
+                                        (Ty.apply
+                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                          []);
+                                      Ty.apply
+                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        []
+                                    ]
+                                  |),
+                                  [
+                                    M.read (| load |);
+                                    M.closure
+                                      (fun γ =>
+                                        ltac:(M.monadic
+                                          match γ with
+                                          | [ α0 ] =>
+                                            ltac:(M.monadic
+                                              (M.match_operator (|
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloy_primitives::bits::fixed::FixedBytes")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  [],
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "alloc::borrow::Cow")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "revm_state::account_info::AccountInfo"
+                                                    ],
+                                                  α0
+                                                |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let i :=
+                                                        M.copy (|
+                                                          Ty.apply
+                                                            (Ty.path "alloc::borrow::Cow")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "revm_state::account_info::AccountInfo"
+                                                            ],
+                                                          γ
+                                                        |) in
+                                                      M.match_operator (|
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloy_primitives::bits::fixed::FixedBytes")
+                                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                                          [],
+                                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                                        [
+                                                          fun γ =>
+                                                            ltac:(M.monadic
+                                                              (let γ :=
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    M.get_associated_function (|
+                                                                      Ty.path
+                                                                        "revm_state::account_info::AccountInfo",
+                                                                      "is_empty",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.call_closure (|
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "revm_state::account_info::AccountInfo"
+                                                                              ],
+                                                                            M.get_trait_method (|
+                                                                              "core::ops::deref::Deref",
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "alloc::borrow::Cow")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "revm_state::account_info::AccountInfo"
+                                                                                ],
+                                                                              [],
+                                                                              [],
+                                                                              "deref",
+                                                                              [],
+                                                                              []
+                                                                            |),
+                                                                            [
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                i
+                                                                              |)
+                                                                            ]
+                                                                          |)
+                                                                        |)
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
+                                                              let _ :=
+                                                                is_constant_or_break_match (|
+                                                                  M.read (| γ |),
+                                                                  Value.Bool true
+                                                                |) in
+                                                              M.read (|
+                                                                get_associated_constant (|
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloy_primitives::bits::fixed::FixedBytes")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        32
+                                                                    ]
+                                                                    [],
+                                                                  "ZERO",
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloy_primitives::bits::fixed::FixedBytes")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        32
+                                                                    ]
+                                                                    []
+                                                                |)
+                                                              |)));
+                                                          fun γ =>
+                                                            ltac:(M.monadic
+                                                              (M.read (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (|
+                                                                    M.call_closure (|
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "revm_state::account_info::AccountInfo"
+                                                                        ],
+                                                                      M.get_trait_method (|
+                                                                        "core::ops::deref::Deref",
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloc::borrow::Cow")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "revm_state::account_info::AccountInfo"
+                                                                          ],
+                                                                        [],
+                                                                        [],
+                                                                        "deref",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          i
+                                                                        |)
+                                                                      ]
+                                                                    |)
+                                                                  |),
+                                                                  "revm_state::account_info::AccountInfo",
+                                                                  "code_hash"
+                                                                |)
+                                                              |)))
+                                                        ]
+                                                      |)))
+                                                ]
+                                              |)))
+                                          | _ => M.impossible "wrong number of arguments"
+                                          end))
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod_load_account_code_hash :
+      M.IsProvidedMethod
+        "revm_context_interface::host::Host"
+        "load_account_code_hash"
+        load_account_code_hash.
+  End Host.
+  
+  Module underscore.
+    Module Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition basefee (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "basefee",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition blob_gasprice
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "blob_gasprice",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition gas_limit (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "gas_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition difficulty (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "difficulty",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition prevrandao (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    []
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "prevrandao",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition block_number
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "block_number",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition timestamp (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "timestamp",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition beneficiary (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "beneficiary",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition chain_id (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "chain_id",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition effective_gas_price
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "effective_gas_price",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition caller (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "caller",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition blob_hash (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; number ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let number := M.alloc (| Ty.path "usize", number |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    []
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "blob_hash",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| number |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition max_initcode_size
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "max_initcode_size",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition block_hash (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; number ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let number := M.alloc (| Ty.path "u64", number |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                    [ Value.Integer IntegerKind.Usize 32 ]
+                    []
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "block_hash",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| number |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition selfdestruct
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; target; skip_cold_load ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let target :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", target |) in
+            let skip_cold_load := M.alloc (| Ty.path "bool", skip_cold_load |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::context::SelfDestructResult" ];
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "selfdestruct",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| target |);
+                M.read (| skip_cold_load |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition log (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; log ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let log :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "alloy_primitives::log::Log")
+                  []
+                  [ Ty.path "alloy_primitives::log::LogData" ],
+                log
+              |) in
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "log",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| log |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition sstore_skip_cold_load
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key; value; skip_cold_load ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            let value :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                value
+              |) in
+            let skip_cold_load := M.alloc (| Ty.path "bool", skip_cold_load |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::context::SStoreResult" ];
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "sstore_skip_cold_load",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |);
+                M.read (| value |);
+                M.read (| skip_cold_load |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition sstore (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key; value ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            let value :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                value
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::context::SStoreResult" ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "sstore",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |);
+                M.read (| value |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition sload_skip_cold_load
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key; skip_cold_load ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            let skip_cold_load := M.alloc (| Ty.path "bool", skip_cold_load |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ];
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "sload_skip_cold_load",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |);
+                M.read (| skip_cold_load |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition sload (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "sload",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition tstore (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key; value ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            let value :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                value
+              |) in
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "tstore",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |);
+                M.read (| value |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition tload (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "tload",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition load_account_info_skip_cold_load
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; load_code; skip_cold_load ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let load_code := M.alloc (| Ty.path "bool", load_code |) in
+            let skip_cold_load := M.alloc (| Ty.path "bool", skip_cold_load |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "load_account_info_skip_cold_load",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| load_code |);
+                M.read (| skip_cold_load |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition balance (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "balance",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition load_account_delegated
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "load_account_delegated",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition load_account_code
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "load_account_code",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition load_account_code_hash
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        []
+                    ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "load_account_code_hash",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "revm_context_interface::host::Host"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *)
+          [
+            ("basefee", InstanceField.Method (basefee T));
+            ("blob_gasprice", InstanceField.Method (blob_gasprice T));
+            ("gas_limit", InstanceField.Method (gas_limit T));
+            ("difficulty", InstanceField.Method (difficulty T));
+            ("prevrandao", InstanceField.Method (prevrandao T));
+            ("block_number", InstanceField.Method (block_number T));
+            ("timestamp", InstanceField.Method (timestamp T));
+            ("beneficiary", InstanceField.Method (beneficiary T));
+            ("chain_id", InstanceField.Method (chain_id T));
+            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("caller", InstanceField.Method (caller T));
+            ("blob_hash", InstanceField.Method (blob_hash T));
+            ("max_initcode_size", InstanceField.Method (max_initcode_size T));
+            ("block_hash", InstanceField.Method (block_hash T));
+            ("selfdestruct", InstanceField.Method (selfdestruct T));
+            ("log", InstanceField.Method (log T));
+            ("sstore_skip_cold_load", InstanceField.Method (sstore_skip_cold_load T));
+            ("sstore", InstanceField.Method (sstore T));
+            ("sload_skip_cold_load", InstanceField.Method (sload_skip_cold_load T));
+            ("sload", InstanceField.Method (sload T));
+            ("tstore", InstanceField.Method (tstore T));
+            ("tload", InstanceField.Method (tload T));
+            ("load_account_info_skip_cold_load",
+              InstanceField.Method (load_account_info_skip_cold_load T));
+            ("balance", InstanceField.Method (balance T));
+            ("load_account_delegated", InstanceField.Method (load_account_delegated T));
+            ("load_account_code", InstanceField.Method (load_account_code T));
+            ("load_account_code_hash", InstanceField.Method (load_account_code_hash T))
+          ].
+    End Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.
+  End underscore.
+  
+  Module underscore_1.
+    Module Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition basefee (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "basefee",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition blob_gasprice
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "blob_gasprice",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition gas_limit (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "gas_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition difficulty (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "difficulty",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition prevrandao (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    []
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "prevrandao",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition block_number
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "block_number",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition timestamp (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "timestamp",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition beneficiary (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "beneficiary",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition chain_id (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "chain_id",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition effective_gas_price
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "effective_gas_price",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition caller (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "caller",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition blob_hash (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; number ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let number := M.alloc (| Ty.path "usize", number |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    []
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "blob_hash",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| number |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition max_initcode_size
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "max_initcode_size",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition block_hash (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; number ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let number := M.alloc (| Ty.path "u64", number |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                    [ Value.Integer IntegerKind.Usize 32 ]
+                    []
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "block_hash",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| number |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition selfdestruct
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; target; skip_cold_load ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let target :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", target |) in
+            let skip_cold_load := M.alloc (| Ty.path "bool", skip_cold_load |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::context::SelfDestructResult" ];
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "selfdestruct",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| target |);
+                M.read (| skip_cold_load |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition log (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; log ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let log :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "alloy_primitives::log::Log")
+                  []
+                  [ Ty.path "alloy_primitives::log::LogData" ],
+                log
+              |) in
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "log",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| log |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition sstore_skip_cold_load
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key; value; skip_cold_load ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            let value :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                value
+              |) in
+            let skip_cold_load := M.alloc (| Ty.path "bool", skip_cold_load |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::context::SStoreResult" ];
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "sstore_skip_cold_load",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |);
+                M.read (| value |);
+                M.read (| skip_cold_load |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition sstore (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key; value ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            let value :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                value
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::context::SStoreResult" ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "sstore",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |);
+                M.read (| value |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition sload_skip_cold_load
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key; skip_cold_load ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            let skip_cold_load := M.alloc (| Ty.path "bool", skip_cold_load |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ];
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "sload_skip_cold_load",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |);
+                M.read (| skip_cold_load |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition sload (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "sload",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition tstore (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key; value ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            let value :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                value
+              |) in
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "tstore",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |);
+                M.read (| value |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition tload (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; key ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let key :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [],
+                key
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "tload",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| key |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition load_account_info_skip_cold_load
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address; load_code; skip_cold_load ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            let load_code := M.alloc (| Ty.path "bool", load_code |) in
+            let skip_cold_load := M.alloc (| Ty.path "bool", skip_cold_load |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+                  Ty.path "revm_context_interface::host::LoadError"
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "load_account_info_skip_cold_load",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |);
+                M.read (| load_code |);
+                M.read (| skip_cold_load |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition balance (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "balance",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition load_account_delegated
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "load_account_delegated",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition load_account_code
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "load_account_code",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&mut, Box)] *)
+      Definition load_account_code_hash
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; address ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            let address :=
+              M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        []
+                    ]
+                ],
+              M.get_trait_method (|
+                "revm_context_interface::host::Host",
+                T,
+                [],
+                [],
+                "load_account_code_hash",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.read (| address |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "revm_context_interface::host::Host"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *)
+          [
+            ("basefee", InstanceField.Method (basefee T));
+            ("blob_gasprice", InstanceField.Method (blob_gasprice T));
+            ("gas_limit", InstanceField.Method (gas_limit T));
+            ("difficulty", InstanceField.Method (difficulty T));
+            ("prevrandao", InstanceField.Method (prevrandao T));
+            ("block_number", InstanceField.Method (block_number T));
+            ("timestamp", InstanceField.Method (timestamp T));
+            ("beneficiary", InstanceField.Method (beneficiary T));
+            ("chain_id", InstanceField.Method (chain_id T));
+            ("effective_gas_price", InstanceField.Method (effective_gas_price T));
+            ("caller", InstanceField.Method (caller T));
+            ("blob_hash", InstanceField.Method (blob_hash T));
+            ("max_initcode_size", InstanceField.Method (max_initcode_size T));
+            ("block_hash", InstanceField.Method (block_hash T));
+            ("selfdestruct", InstanceField.Method (selfdestruct T));
+            ("log", InstanceField.Method (log T));
+            ("sstore_skip_cold_load", InstanceField.Method (sstore_skip_cold_load T));
+            ("sstore", InstanceField.Method (sstore T));
+            ("sload_skip_cold_load", InstanceField.Method (sload_skip_cold_load T));
+            ("sload", InstanceField.Method (sload T));
+            ("tstore", InstanceField.Method (tstore T));
+            ("tload", InstanceField.Method (tload T));
+            ("load_account_info_skip_cold_load",
+              InstanceField.Method (load_account_info_skip_cold_load T));
+            ("balance", InstanceField.Method (balance T));
+            ("load_account_delegated", InstanceField.Method (load_account_delegated T));
+            ("load_account_code", InstanceField.Method (load_account_code T));
+            ("load_account_code_hash", InstanceField.Method (load_account_code_hash T))
+          ].
+    End Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+  End underscore_1.
+  
+  (* StructTuple
+    {
+      name := "DummyHost";
+      const_params := [];
+      ty_params := [];
+      fields := [];
+    } *)
+  
+  Module Impl_core_fmt_Debug_for_revm_context_interface_host_DummyHost.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::DummyHost".
+    
+    (* Debug *)
+    Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DummyHost" |) |) |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+  End Impl_core_fmt_Debug_for_revm_context_interface_host_DummyHost.
+  
+  Module Impl_revm_context_interface_host_Host_for_revm_context_interface_host_DummyHost.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::host::DummyHost".
+    
+    (*
+        fn basefee(&self) -> U256 {
+            U256::ZERO
+        }
+    *)
+    Definition basefee (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "ZERO",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn blob_gasprice(&self) -> U256 {
+            U256::ZERO
+        }
+    *)
+    Definition blob_gasprice (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "ZERO",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn gas_limit(&self) -> U256 {
+            U256::ZERO
+        }
+    *)
+    Definition gas_limit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "ZERO",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn difficulty(&self) -> U256 {
+            U256::ZERO
+        }
+    *)
+    Definition difficulty (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "ZERO",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn prevrandao(&self) -> Option<U256> {
+            None
+        }
+    *)
+    Definition prevrandao (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          Value.StructTuple
+            "core::option::Option::None"
+            []
+            [
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            ]
+            []))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn block_number(&self) -> U256 {
+            U256::ZERO
+        }
+    *)
+    Definition block_number (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "ZERO",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn timestamp(&self) -> U256 {
+            U256::ZERO
+        }
+    *)
+    Definition timestamp (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "ZERO",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn beneficiary(&self) -> Address {
+            Address::ZERO
+        }
+    *)
+    Definition beneficiary (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              "ZERO",
+              Ty.path "alloy_primitives::bits::address::Address"
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn chain_id(&self) -> U256 {
+            U256::ZERO
+        }
+    *)
+    Definition chain_id (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "ZERO",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn effective_gas_price(&self) -> U256 {
+            U256::ZERO
+        }
+    *)
+    Definition effective_gas_price (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "ZERO",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn caller(&self) -> Address {
+            Address::ZERO
+        }
+    *)
+    Definition caller (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.path "alloy_primitives::bits::address::Address",
+              "ZERO",
+              Ty.path "alloy_primitives::bits::address::Address"
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn blob_hash(&self, _number: usize) -> Option<U256> {
+            None
+        }
+    *)
+    Definition blob_hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; _number ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let _number := M.alloc (| Ty.path "usize", _number |) in
+          Value.StructTuple
+            "core::option::Option::None"
+            []
+            [
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            ]
+            []))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn max_initcode_size(&self) -> usize {
+            0
+        }
+    *)
+    Definition max_initcode_size (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          Value.Integer IntegerKind.Usize 0))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn block_hash(&mut self, _number: u64) -> Option<B256> {
+            None
+        }
+    *)
+    Definition block_hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; _number ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let _number := M.alloc (| Ty.path "u64", _number |) in
+          Value.StructTuple
+            "core::option::Option::None"
+            []
+            [
+              Ty.apply
+                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                [ Value.Integer IntegerKind.Usize 32 ]
+                []
+            ]
+            []))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn selfdestruct(
+            &mut self,
+            _address: Address,
+            _target: Address,
+            _skip_cold_load: bool,
+        ) -> Result<StateLoad<SelfDestructResult>, LoadError> {
+            Err(LoadError::ColdLoadSkipped)
+        }
+    *)
+    Definition selfdestruct (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; _address; _target; _skip_cold_load ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let _address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
+          let _target :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _target |) in
+          let _skip_cold_load := M.alloc (| Ty.path "bool", _skip_cold_load |) in
+          Value.StructTuple
+            "core::result::Result::Err"
+            []
+            [
+              Ty.apply
+                (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                []
+                [ Ty.path "revm_context_interface::context::SelfDestructResult" ];
+              Ty.path "revm_context_interface::host::LoadError"
+            ]
+            [ Value.StructTuple "revm_context_interface::host::LoadError::ColdLoadSkipped" [] [] []
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*     fn log(&mut self, _log: Log) {} *)
+    Definition log (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; _log ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let _log :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "alloy_primitives::log::Log")
+                []
+                [ Ty.path "alloy_primitives::log::LogData" ],
+              _log
+            |) in
+          Value.Tuple []))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*     fn tstore(&mut self, _address: Address, _key: StorageKey, _value: StorageValue) {} *)
+    Definition tstore (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; _address; _key; _value ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let _address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
+          let _key :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              _key
+            |) in
+          let _value :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              _value
+            |) in
+          Value.Tuple []))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn tload(&mut self, _address: Address, _key: StorageKey) -> StorageValue {
+            StorageValue::ZERO
+        }
+    *)
+    Definition tload (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; _address; _key ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let _address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
+          let _key :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              _key
+            |) in
+          M.read (|
+            get_associated_constant (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              "ZERO",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                []
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn load_account_info_skip_cold_load(
+            &mut self,
+            _address: Address,
+            _load_code: bool,
+            _skip_cold_load: bool,
+        ) -> Result<AccountInfoLoad<'_>, LoadError> {
+            Err(LoadError::DBError)
+        }
+    *)
+    Definition load_account_info_skip_cold_load
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; _address; _load_code; _skip_cold_load ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let _address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
+          let _load_code := M.alloc (| Ty.path "bool", _load_code |) in
+          let _skip_cold_load := M.alloc (| Ty.path "bool", _skip_cold_load |) in
+          Value.StructTuple
+            "core::result::Result::Err"
+            []
+            [
+              Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+              Ty.path "revm_context_interface::host::LoadError"
+            ]
+            [ Value.StructTuple "revm_context_interface::host::LoadError::DBError" [] [] [] ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn sstore_skip_cold_load(
+            &mut self,
+            _address: Address,
+            _key: StorageKey,
+            _value: StorageValue,
+            _skip_cold_load: bool,
+        ) -> Result<StateLoad<SStoreResult>, LoadError> {
+            Err(LoadError::DBError)
+        }
+    *)
+    Definition sstore_skip_cold_load (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; _address; _key; _value; _skip_cold_load ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let _address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
+          let _key :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              _key
+            |) in
+          let _value :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              _value
+            |) in
+          let _skip_cold_load := M.alloc (| Ty.path "bool", _skip_cold_load |) in
+          Value.StructTuple
+            "core::result::Result::Err"
+            []
+            [
+              Ty.apply
+                (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                []
+                [ Ty.path "revm_context_interface::context::SStoreResult" ];
+              Ty.path "revm_context_interface::host::LoadError"
+            ]
+            [ Value.StructTuple "revm_context_interface::host::LoadError::DBError" [] [] [] ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn sload_skip_cold_load(
+            &mut self,
+            _address: Address,
+            _key: StorageKey,
+            _skip_cold_load: bool,
+        ) -> Result<StateLoad<StorageValue>, LoadError> {
+            Err(LoadError::DBError)
+        }
+    *)
+    Definition sload_skip_cold_load (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; _address; _key; _skip_cold_load ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_context_interface::host::DummyHost" ],
+              self
+            |) in
+          let _address :=
+            M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
+          let _key :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
+              _key
+            |) in
+          let _skip_cold_load := M.alloc (| Ty.path "bool", _skip_cold_load |) in
+          Value.StructTuple
+            "core::result::Result::Err"
+            []
+            [
+              Ty.apply
+                (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    []
+                ];
+              Ty.path "revm_context_interface::host::LoadError"
+            ]
+            [ Value.StructTuple "revm_context_interface::host::LoadError::DBError" [] [] [] ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "revm_context_interface::host::Host"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *)
+        [
+          ("basefee", InstanceField.Method basefee);
+          ("blob_gasprice", InstanceField.Method blob_gasprice);
+          ("gas_limit", InstanceField.Method gas_limit);
+          ("difficulty", InstanceField.Method difficulty);
+          ("prevrandao", InstanceField.Method prevrandao);
+          ("block_number", InstanceField.Method block_number);
+          ("timestamp", InstanceField.Method timestamp);
+          ("beneficiary", InstanceField.Method beneficiary);
+          ("chain_id", InstanceField.Method chain_id);
+          ("effective_gas_price", InstanceField.Method effective_gas_price);
+          ("caller", InstanceField.Method caller);
+          ("blob_hash", InstanceField.Method blob_hash);
+          ("max_initcode_size", InstanceField.Method max_initcode_size);
+          ("block_hash", InstanceField.Method block_hash);
+          ("selfdestruct", InstanceField.Method selfdestruct);
+          ("log", InstanceField.Method log);
+          ("tstore", InstanceField.Method tstore);
+          ("tload", InstanceField.Method tload);
+          ("load_account_info_skip_cold_load",
+            InstanceField.Method load_account_info_skip_cold_load);
+          ("sstore_skip_cold_load", InstanceField.Method sstore_skip_cold_load);
+          ("sload_skip_cold_load", InstanceField.Method sload_skip_cold_load)
+        ].
+  End Impl_revm_context_interface_host_Host_for_revm_context_interface_host_DummyHost.
 End host.

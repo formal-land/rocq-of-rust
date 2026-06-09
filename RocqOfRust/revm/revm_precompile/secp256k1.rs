@@ -1,76 +1,40 @@
+//! `ecrecover` precompile.
+//!
+//! Depending on enabled features, it will use different implementations of `ecrecover`.
+//! * [`k256`](https://crates.io/crates/k256) - uses maintained pure rust lib `k256`, it is perfect use for no_std environments.
+//! * [`secp256k1`](https://crates.io/crates/secp256k1) - uses `bitcoin_secp256k1` lib, it is a C implementation of secp256k1 used in bitcoin core.
+//!   It is faster than k256 and enabled by default and in std environment.
+
+//!   Order of preference is `secp256k1` -> `k256`. Where if no features are enabled, it will use `k256`.
+//!
+//! Input format:
+//! [32 bytes for message][64 bytes for signature][1 byte for recovery id]
+//!
+//! Output format:
+//! [32 bytes for recovered address]
+#[cfg(feature = "secp256k1")]
+pub mod bitcoin_secp256k1;
+pub mod k256;
+
 use crate::{
-    utilities::right_pad, PrecompileError, PrecompileOutput, PrecompileResult,
-    PrecompileWithAddress,
+    crypto, utilities::right_pad, Precompile, PrecompileError, PrecompileId, PrecompileOutput,
+    PrecompileResult,
 };
 use primitives::{alloy_primitives::B512, Bytes, B256};
 
-pub const ECRECOVER: PrecompileWithAddress =
-    PrecompileWithAddress(crate::u64_to_address(1), ec_recover_run);
+/// `ecrecover` precompile, containing address and function to run.
+pub const ECRECOVER: Precompile = Precompile::new(
+    PrecompileId::EcRec,
+    crate::u64_to_address(1),
+    ec_recover_run,
+);
 
-pub use self::secp256k1::ecrecover;
-
-#[cfg(not(feature = "secp256k1"))]
-#[allow(clippy::module_inception)]
-mod secp256k1 {
-    use k256::ecdsa::{Error, RecoveryId, Signature, VerifyingKey};
-    use primitives::{alloy_primitives::B512, keccak256, B256};
-
-    pub fn ecrecover(sig: &B512, mut recid: u8, msg: &B256) -> Result<B256, Error> {
-        // Parse signature
-        let mut sig = Signature::from_slice(sig.as_slice())?;
-
-        // Normalize signature and flip recovery id if needed.
-        if let Some(sig_normalized) = sig.normalize_s() {
-            sig = sig_normalized;
-            recid ^= 1;
-        }
-        let recid = RecoveryId::from_byte(recid).expect("recovery ID is valid");
-
-        // Recover key
-        let recovered_key = VerifyingKey::recover_from_prehash(&msg[..], &sig, recid)?;
-        // Hash it
-        let mut hash = keccak256(
-            &recovered_key
-                .to_encoded_point(/* compress = */ false)
-                .as_bytes()[1..],
-        );
-
-        // Truncate to 20 bytes
-        hash[..12].fill(0);
-        Ok(hash)
-    }
-}
-
-#[cfg(feature = "secp256k1")]
-#[allow(clippy::module_inception)]
-mod secp256k1 {
-    use primitives::{alloy_primitives::B512, keccak256, B256};
-    use secp256k1::{
-        ecdsa::{RecoverableSignature, RecoveryId},
-        Message, SECP256K1,
-    };
-
-    // Silence the unused crate dependency warning.
-    use k256 as _;
-
-    pub fn ecrecover(sig: &B512, recid: u8, msg: &B256) -> Result<B256, secp256k1::Error> {
-        let recid = RecoveryId::from_i32(recid as i32).expect("recovery ID is valid");
-        let sig = RecoverableSignature::from_compact(sig.as_slice(), recid)?;
-
-        let msg = Message::from_digest(msg.0);
-        let public = SECP256K1.recover_ecdsa(&msg, &sig)?;
-
-        let mut hash = keccak256(&public.serialize_uncompressed()[1..]);
-        hash[..12].fill(0);
-        Ok(hash)
-    }
-}
-
-pub fn ec_recover_run(input: &Bytes, gas_limit: u64) -> PrecompileResult {
+/// `ecrecover` precompile function. Read more about input and output format in [this module docs](self).
+pub fn ec_recover_run(input: &[u8], gas_limit: u64) -> PrecompileResult {
     const ECRECOVER_BASE: u64 = 3_000;
 
     if ECRECOVER_BASE > gas_limit {
-        return Err(PrecompileError::OutOfGas.into());
+        return Err(PrecompileError::OutOfGas);
     }
 
     let input = right_pad::<128>(input);
@@ -84,8 +48,26 @@ pub fn ec_recover_run(input: &Bytes, gas_limit: u64) -> PrecompileResult {
     let recid = input[63] - 27;
     let sig = <&B512>::try_from(&input[64..128]).unwrap();
 
-    let out = secp256k1::ecrecover(sig, recid, msg)
-        .map(|o| o.to_vec().into())
-        .unwrap_or_default();
+    let res = crypto().secp256k1_ecrecover(&sig.0, recid, &msg.0).ok();
+    let out = res.map(|o| o.to_vec().into()).unwrap_or_default();
     Ok(PrecompileOutput::new(ECRECOVER_BASE, out))
+}
+
+pub(crate) fn ecrecover_bytes(sig: [u8; 64], recid: u8, msg: [u8; 32]) -> Option<[u8; 32]> {
+    let sig = B512::from_slice(&sig);
+    let msg = B256::from_slice(&msg);
+
+    match ecrecover(&sig, recid, &msg) {
+        Ok(address) => Some(address.0),
+        Err(_) => None,
+    }
+}
+
+// Select the correct implementation based on the enabled features.
+cfg_if::cfg_if! {
+    if #[cfg(feature = "secp256k1")] {
+        pub use bitcoin_secp256k1::ecrecover;
+    } else {
+        pub use k256::ecrecover;
+    }
 }

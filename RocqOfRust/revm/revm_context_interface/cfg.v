@@ -43,6 +43,74 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition tx_chain_id_check
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "tx_chain_id_check",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition tx_gas_limit_cap
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "tx_gas_limit_cap",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition spec (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
@@ -58,6 +126,40 @@ Module cfg.
                 [],
                 [],
                 "spec",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition max_blobs_per_tx
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "max_blobs_per_tx",
                 [],
                 []
               |),
@@ -106,6 +208,40 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition max_initcode_size
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "max_initcode_size",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition is_eip3607_disabled
           (T : Ty.t)
           (ε : list Value.t)
@@ -140,6 +276,74 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_eip3541_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_eip3541_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_eip7623_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_eip7623_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition is_balance_check_disabled
           (T : Ty.t)
           (ε : list Value.t)
@@ -160,40 +364,6 @@ Module cfg.
                 [],
                 [],
                 "is_balance_check_disabled",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition is_gas_refund_disabled
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_trait_method (|
-                "revm_context_interface::cfg::Cfg",
-                T,
-                [],
-                [],
-                "is_gas_refund_disabled",
                 [],
                 []
               |),
@@ -309,6 +479,108 @@ Module cfg.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_priority_fee_check_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_priority_fee_check_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_fee_charge_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_fee_charge_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition memory_limit
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "memory_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         forall (T : Ty.t),
         M.IsTraitInstance
@@ -320,14 +592,23 @@ Module cfg.
           [
             ("Spec", InstanceField.Ty (_Spec T));
             ("chain_id", InstanceField.Method (chain_id T));
+            ("tx_chain_id_check", InstanceField.Method (tx_chain_id_check T));
+            ("tx_gas_limit_cap", InstanceField.Method (tx_gas_limit_cap T));
             ("spec", InstanceField.Method (spec T));
+            ("max_blobs_per_tx", InstanceField.Method (max_blobs_per_tx T));
             ("max_code_size", InstanceField.Method (max_code_size T));
+            ("max_initcode_size", InstanceField.Method (max_initcode_size T));
             ("is_eip3607_disabled", InstanceField.Method (is_eip3607_disabled T));
+            ("is_eip3541_disabled", InstanceField.Method (is_eip3541_disabled T));
+            ("is_eip7623_disabled", InstanceField.Method (is_eip7623_disabled T));
             ("is_balance_check_disabled", InstanceField.Method (is_balance_check_disabled T));
-            ("is_gas_refund_disabled", InstanceField.Method (is_gas_refund_disabled T));
             ("is_block_gas_limit_disabled", InstanceField.Method (is_block_gas_limit_disabled T));
             ("is_nonce_check_disabled", InstanceField.Method (is_nonce_check_disabled T));
-            ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T))
+            ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T));
+            ("is_priority_fee_check_disabled",
+              InstanceField.Method (is_priority_fee_check_disabled T));
+            ("is_fee_charge_disabled", InstanceField.Method (is_fee_charge_disabled T));
+            ("memory_limit", InstanceField.Method (memory_limit T))
           ].
     End Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_ref__T.
   End underscore.
@@ -373,6 +654,80 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition tx_chain_id_check
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "tx_chain_id_check",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition tx_gas_limit_cap
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "tx_gas_limit_cap",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition spec (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
@@ -391,6 +746,43 @@ Module cfg.
                 [],
                 [],
                 "spec",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition max_blobs_per_tx
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "max_blobs_per_tx",
                 [],
                 []
               |),
@@ -442,6 +834,43 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition max_initcode_size
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "max_initcode_size",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition is_eip3607_disabled
           (T : Ty.t)
           (ε : list Value.t)
@@ -479,6 +908,80 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_eip3541_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_eip3541_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_eip7623_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_eip7623_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition is_balance_check_disabled
           (T : Ty.t)
           (ε : list Value.t)
@@ -502,43 +1005,6 @@ Module cfg.
                 [],
                 [],
                 "is_balance_check_disabled",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition is_gas_refund_disabled
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_trait_method (|
-                "revm_context_interface::cfg::Cfg",
-                T,
-                [],
-                [],
-                "is_gas_refund_disabled",
                 [],
                 []
               |),
@@ -663,6 +1129,117 @@ Module cfg.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_priority_fee_check_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_priority_fee_check_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_fee_charge_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_fee_charge_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition memory_limit
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "memory_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         forall (T : Ty.t),
         M.IsTraitInstance
@@ -674,14 +1251,23 @@ Module cfg.
           [
             ("Spec", InstanceField.Ty (_Spec T));
             ("chain_id", InstanceField.Method (chain_id T));
+            ("tx_chain_id_check", InstanceField.Method (tx_chain_id_check T));
+            ("tx_gas_limit_cap", InstanceField.Method (tx_gas_limit_cap T));
             ("spec", InstanceField.Method (spec T));
+            ("max_blobs_per_tx", InstanceField.Method (max_blobs_per_tx T));
             ("max_code_size", InstanceField.Method (max_code_size T));
+            ("max_initcode_size", InstanceField.Method (max_initcode_size T));
             ("is_eip3607_disabled", InstanceField.Method (is_eip3607_disabled T));
+            ("is_eip3541_disabled", InstanceField.Method (is_eip3541_disabled T));
+            ("is_eip7623_disabled", InstanceField.Method (is_eip7623_disabled T));
             ("is_balance_check_disabled", InstanceField.Method (is_balance_check_disabled T));
-            ("is_gas_refund_disabled", InstanceField.Method (is_gas_refund_disabled T));
             ("is_block_gas_limit_disabled", InstanceField.Method (is_block_gas_limit_disabled T));
             ("is_nonce_check_disabled", InstanceField.Method (is_nonce_check_disabled T));
-            ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T))
+            ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T));
+            ("is_priority_fee_check_disabled",
+              InstanceField.Method (is_priority_fee_check_disabled T));
+            ("is_fee_charge_disabled", InstanceField.Method (is_fee_charge_disabled T));
+            ("memory_limit", InstanceField.Method (memory_limit T))
           ].
     End Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_ref_mut_T.
   End underscore_1.
@@ -732,6 +1318,88 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition tx_chain_id_check
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "tx_chain_id_check",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition tx_gas_limit_cap
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "tx_gas_limit_cap",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition spec (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
@@ -754,6 +1422,47 @@ Module cfg.
                 [],
                 [],
                 "spec",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition max_blobs_per_tx
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "max_blobs_per_tx",
                 [],
                 []
               |),
@@ -809,6 +1518,47 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition max_initcode_size
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "max_initcode_size",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition is_eip3607_disabled
           (T : Ty.t)
           (ε : list Value.t)
@@ -850,6 +1600,88 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_eip3541_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_eip3541_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_eip7623_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_eip7623_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition is_balance_check_disabled
           (T : Ty.t)
           (ε : list Value.t)
@@ -877,47 +1709,6 @@ Module cfg.
                 [],
                 [],
                 "is_balance_check_disabled",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition is_gas_refund_disabled
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_trait_method (|
-                "revm_context_interface::cfg::Cfg",
-                T,
-                [],
-                [],
-                "is_gas_refund_disabled",
                 [],
                 []
               |),
@@ -1054,6 +1845,129 @@ Module cfg.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_priority_fee_check_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_priority_fee_check_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_fee_charge_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_fee_charge_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition memory_limit
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "memory_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         forall (T : Ty.t),
         M.IsTraitInstance
@@ -1065,14 +1979,23 @@ Module cfg.
           [
             ("Spec", InstanceField.Ty (_Spec T));
             ("chain_id", InstanceField.Method (chain_id T));
+            ("tx_chain_id_check", InstanceField.Method (tx_chain_id_check T));
+            ("tx_gas_limit_cap", InstanceField.Method (tx_gas_limit_cap T));
             ("spec", InstanceField.Method (spec T));
+            ("max_blobs_per_tx", InstanceField.Method (max_blobs_per_tx T));
             ("max_code_size", InstanceField.Method (max_code_size T));
+            ("max_initcode_size", InstanceField.Method (max_initcode_size T));
             ("is_eip3607_disabled", InstanceField.Method (is_eip3607_disabled T));
+            ("is_eip3541_disabled", InstanceField.Method (is_eip3541_disabled T));
+            ("is_eip7623_disabled", InstanceField.Method (is_eip7623_disabled T));
             ("is_balance_check_disabled", InstanceField.Method (is_balance_check_disabled T));
-            ("is_gas_refund_disabled", InstanceField.Method (is_gas_refund_disabled T));
             ("is_block_gas_limit_disabled", InstanceField.Method (is_block_gas_limit_disabled T));
             ("is_nonce_check_disabled", InstanceField.Method (is_nonce_check_disabled T));
-            ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T))
+            ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T));
+            ("is_priority_fee_check_disabled",
+              InstanceField.Method (is_priority_fee_check_disabled T));
+            ("is_fee_charge_disabled", InstanceField.Method (is_fee_charge_disabled T));
+            ("memory_limit", InstanceField.Method (memory_limit T))
           ].
     End Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
   End underscore_2.
@@ -1140,6 +2063,122 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition tx_chain_id_check
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "tx_chain_id_check",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition tx_gas_limit_cap
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "tx_gas_limit_cap",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition spec (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
@@ -1162,6 +2201,64 @@ Module cfg.
                 [],
                 [],
                 "spec",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition max_blobs_per_tx
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "max_blobs_per_tx",
                 [],
                 []
               |),
@@ -1251,6 +2348,64 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition max_initcode_size
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "max_initcode_size",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
       Definition is_eip3607_disabled
           (T : Ty.t)
           (ε : list Value.t)
@@ -1309,7 +2464,7 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition is_balance_check_disabled
+      Definition is_eip3541_disabled
           (T : Ty.t)
           (ε : list Value.t)
           (τ : list Ty.t)
@@ -1335,7 +2490,7 @@ Module cfg.
                 T,
                 [],
                 [],
-                "is_balance_check_disabled",
+                "is_eip3541_disabled",
                 [],
                 []
               |),
@@ -1367,7 +2522,7 @@ Module cfg.
         end.
       
       (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition is_gas_refund_disabled
+      Definition is_eip7623_disabled
           (T : Ty.t)
           (ε : list Value.t)
           (τ : list Ty.t)
@@ -1393,7 +2548,65 @@ Module cfg.
                 T,
                 [],
                 [],
-                "is_gas_refund_disabled",
+                "is_eip7623_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_balance_check_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_balance_check_disabled",
                 [],
                 []
               |),
@@ -1598,6 +2811,180 @@ Module cfg.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_priority_fee_check_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_priority_fee_check_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition is_fee_charge_disabled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "is_fee_charge_disabled",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition memory_limit
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.path "u64",
+              M.get_trait_method (|
+                "revm_context_interface::cfg::Cfg",
+                T,
+                [],
+                [],
+                "memory_limit",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         forall (T : Ty.t),
         M.IsTraitInstance
@@ -1609,14 +2996,23 @@ Module cfg.
           [
             ("Spec", InstanceField.Ty (_Spec T));
             ("chain_id", InstanceField.Method (chain_id T));
+            ("tx_chain_id_check", InstanceField.Method (tx_chain_id_check T));
+            ("tx_gas_limit_cap", InstanceField.Method (tx_gas_limit_cap T));
             ("spec", InstanceField.Method (spec T));
+            ("max_blobs_per_tx", InstanceField.Method (max_blobs_per_tx T));
             ("max_code_size", InstanceField.Method (max_code_size T));
+            ("max_initcode_size", InstanceField.Method (max_initcode_size T));
             ("is_eip3607_disabled", InstanceField.Method (is_eip3607_disabled T));
+            ("is_eip3541_disabled", InstanceField.Method (is_eip3541_disabled T));
+            ("is_eip7623_disabled", InstanceField.Method (is_eip7623_disabled T));
             ("is_balance_check_disabled", InstanceField.Method (is_balance_check_disabled T));
-            ("is_gas_refund_disabled", InstanceField.Method (is_gas_refund_disabled T));
             ("is_block_gas_limit_disabled", InstanceField.Method (is_block_gas_limit_disabled T));
             ("is_nonce_check_disabled", InstanceField.Method (is_nonce_check_disabled T));
-            ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T))
+            ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T));
+            ("is_priority_fee_check_disabled",
+              InstanceField.Method (is_priority_fee_check_disabled T));
+            ("is_fee_charge_disabled", InstanceField.Method (is_fee_charge_disabled T));
+            ("memory_limit", InstanceField.Method (memory_limit T))
           ].
     End Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
   End underscore_3.
@@ -1962,6 +3358,10 @@ Module cfg.
                     [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
                     [])
               ];
+        };
+        {
+          name := "Custom";
+          item := StructRecord [ ("address", Ty.path "alloy_primitives::bits::address::Address") ];
         }
       ];
   }
@@ -1971,6 +3371,8 @@ Module cfg.
     M.IsDiscriminant "revm_context_interface::cfg::CreateScheme::Create" 0.
   Axiom IsDiscriminant_CreateScheme_Create2 :
     M.IsDiscriminant "revm_context_interface::cfg::CreateScheme::Create2" 1.
+  Axiom IsDiscriminant_CreateScheme_Custom :
+    M.IsDiscriminant "revm_context_interface::cfg::CreateScheme::Custom" 2.
   
   Module Impl_core_clone_TrivialClone_for_revm_context_interface_cfg_CreateScheme.
     Definition Self : Ty.t := Ty.path "revm_context_interface::cfg::CreateScheme".
@@ -2000,7 +3402,15 @@ Module cfg.
           M.match_operator (|
             Ty.path "revm_context_interface::cfg::CreateScheme",
             Value.DeclaredButUndefined,
-            [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (M.match_operator (|
+                    Ty.path "revm_context_interface::cfg::CreateScheme",
+                    Value.DeclaredButUndefined,
+                    [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
+                  |)))
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2025,6 +3435,27 @@ Module cfg.
         Self
         (* Instance *) [].
   End Impl_core_marker_Copy_for_revm_context_interface_cfg_CreateScheme.
+  
+  Module Impl_core_default_Default_for_revm_context_interface_cfg_CreateScheme.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::cfg::CreateScheme".
+    
+    (* Default *)
+    Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("default", InstanceField.Method default) ].
+  End Impl_core_default_Default_for_revm_context_interface_cfg_CreateScheme.
   
   Module Impl_core_fmt_Debug_for_revm_context_interface_cfg_CreateScheme.
     Definition Self : Ty.t := Ty.path "revm_context_interface::cfg::CreateScheme".
@@ -2143,6 +3574,64 @@ Module cfg.
                         ]
                       |)
                     ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_record_field (|
+                      γ,
+                      "revm_context_interface::cfg::CreateScheme::Custom",
+                      "address"
+                    |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::bits::address::Address" ],
+                      γ1_0
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "debug_struct_field1_finish",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Custom" |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "address" |) |) |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bits::address::Address" ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                          |)
+                        ]
+                      |)
+                    ]
                   |)))
             ]
           |)))
@@ -2178,7 +3667,15 @@ Module cfg.
           M.match_operator (|
             Ty.tuple [],
             Value.DeclaredButUndefined,
-            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (M.match_operator (|
+                    Ty.tuple [],
+                    Value.DeclaredButUndefined,
+                    [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                  |)))
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2360,6 +3857,64 @@ Module cfg.
                               M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
                             ]
                           |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_0,
+                              "revm_context_interface::cfg::CreateScheme::Custom",
+                              "address"
+                            |) in
+                          let __self_0 :=
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bits::address::Address" ],
+                              γ2_0
+                            |) in
+                          let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                          let γ2_0 :=
+                            M.SubPointer.get_struct_record_field (|
+                              γ0_1,
+                              "revm_context_interface::cfg::CreateScheme::Custom",
+                              "address"
+                            |) in
+                          let __arg1_0 :=
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bits::address::Address" ],
+                              γ2_0
+                            |) in
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_trait_method (|
+                              "core::cmp::PartialEq",
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bits::address::Address" ],
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bits::address::Address" ]
+                              ],
+                              "eq",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                            ]
+                          |)));
                       fun γ => ltac:(M.monadic (Value.Bool true))
                     ]
                   |)))
@@ -2474,6 +4029,39 @@ Module cfg.
                           M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
                         ]
                       |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let γ1_0 :=
+                        M.SubPointer.get_struct_record_field (|
+                          γ,
+                          "revm_context_interface::cfg::CreateScheme::Custom",
+                          "address"
+                        |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "alloy_primitives::bits::address::Address" ],
+                          γ1_0
+                        |) in
+                      M.call_closure (|
+                        Ty.tuple [],
+                        M.get_trait_method (|
+                          "core::hash::Hash",
+                          Ty.path "alloy_primitives::bits::address::Address",
+                          [],
+                          [],
+                          "hash",
+                          [],
+                          [ __H ]
+                        |),
+                        [
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
+                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                        ]
+                      |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
                 ]
               |)
@@ -2490,275 +4078,4 @@ Module cfg.
         Self
         (* Instance *) [ ("hash", InstanceField.Method hash) ].
   End Impl_core_hash_Hash_for_revm_context_interface_cfg_CreateScheme.
-  
-  (* Trait *)
-  (* Empty module 'CfgGetter' *)
-  
-  Module underscore_4.
-    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref__T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Cfg (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::cfg::CfgGetter",
-                    T,
-                    [],
-                    [],
-                    "cfg",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::cfg::CfgGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
-    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref__T.
-  End underscore_4.
-  
-  Module underscore_5.
-    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Cfg (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::cfg::CfgGetter",
-                    T,
-                    [],
-                    [],
-                    "cfg",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::cfg::CfgGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
-    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
-  End underscore_5.
-  
-  Module underscore_6.
-    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-      Definition Self (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Cfg (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::cfg::CfgGetter",
-                    T,
-                    [],
-                    [],
-                    "cfg",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::cfg::CfgGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
-    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-  End underscore_6.
-  
-  Module underscore_7.
-    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-      Definition Self (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Cfg (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::cfg::CfgGetter",
-                    T,
-                    [],
-                    [],
-                    "cfg",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::cfg::CfgGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
-    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-  End underscore_7.
 End cfg.

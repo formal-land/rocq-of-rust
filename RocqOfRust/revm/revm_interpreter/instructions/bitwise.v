@@ -4,28 +4,24 @@ Require Import RocqOfRust.RocqOfRust.
 Module instructions.
   Module bitwise.
     (*
-    pub fn lt<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn lt<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
         *op2 = U256::from(op1 < *op2);
     }
     *)
     Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -41,57 +37,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -105,34 +99,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -146,93 +134,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -240,15 +299,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -258,7 +311,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -274,7 +327,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -338,44 +391,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -391,29 +406,25 @@ Module instructions.
     Global Typeclasses Opaque lt.
     
     (*
-    pub fn gt<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn gt<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
     
         *op2 = U256::from(op1 > *op2);
     }
     *)
     Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -429,57 +440,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -493,34 +502,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -534,93 +537,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -628,15 +702,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -646,7 +714,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -662,7 +730,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -726,44 +794,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -779,29 +809,27 @@ Module instructions.
     Global Typeclasses Opaque gt.
     
     (*
-    pub fn slt<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn clz<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        check!(context.interpreter, OSAKA);
+        //gas!(context.interpreter, gas::LOW);
+        popn_top!([], op1, context.interpreter);
     
-        *op2 = U256::from(i256_cmp(&op1, op2) == Ordering::Less);
+        let leading_zeros = op1.leading_zeros();
+        *op1 = U256::from(leading_zeros);
     }
     *)
-    Definition slt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition clz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -822,53 +850,52 @@ Module instructions.
                                   M.call_closure (|
                                     Ty.path "bool",
                                     M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                      Ty.path "revm_primitives::hardfork::SpecId",
+                                      "is_enabled_in",
                                       [],
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
+                                      M.call_closure (|
+                                        Ty.path "revm_primitives::hardfork::SpecId",
+                                        M.get_trait_method (|
+                                          "revm_interpreter::interpreter_types::RuntimeFlag",
+                                          Ty.associated_in_trait
+                                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                                            []
+                                            []
+                                            WIRE
+                                            "RuntimeFlag",
+                                          [],
+                                          [],
+                                          "spec_id",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    context,
+                                                    "revm_interpreter::instruction_context::InstructionContext",
+                                                    "interpreter"
+                                                  |)
                                                 |)
-                                              |)
-                                            ]
+                                              |),
+                                              "revm_interpreter::interpreter::Interpreter",
+                                              "runtime_flag"
+                                            |)
                                           |)
-                                        |)
+                                        ]
                                       |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
-                                      |)
+                                      Value.StructTuple
+                                        "revm_primitives::hardfork::SpecId::OSAKA"
+                                        []
+                                        []
+                                        []
                                     ]
                                   |)
                                 ]
@@ -881,34 +908,125 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_not_activated",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
+                                    |)
+                                  ]
+                                |) in
+                              M.return_ (| Value.Tuple [] |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
+                                      [],
                                       []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
+                                              |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
+                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      Value.Integer IntegerKind.Usize 0
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.never_to_any (|
+                            M.read (|
+                              let~ _ : Ty.tuple [] :=
+                                M.call_closure (|
+                                  Ty.tuple [],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
+                                      [ WIRE ],
+                                    "halt_underflow",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
+                                      |)
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -922,24 +1040,175 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 0 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ]
+                        ],
+                      M.call_closure (|
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 0 ]
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
+                              ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.tuple
                                 [
                                   Ty.apply
-                                    (Ty.path "ruint::Uint")
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 0 ]
                                     [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
                                     []
-                                ];
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 0 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 0 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let op1 :=
+                            M.copy (|
                               Ty.apply
                                 (Ty.path "&mut")
                                 []
@@ -951,64 +1220,358 @@ Module instructions.
                                       Value.Integer IntegerKind.Usize 4
                                     ]
                                     []
+                                ],
+                              γ0_1
+                            |) in
+                          M.read (|
+                            let~ leading_zeros : Ty.path "usize" :=
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [],
+                                  "leading_zeros",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| op1 |) |) |) ]
+                              |) in
+                            let~ _ : Ty.tuple [] :=
+                              M.write (|
+                                M.deref (| M.read (| op1 |) |),
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      [],
+                                    "from",
+                                    [],
+                                    [ Ty.path "usize" ]
+                                  |),
+                                  [ M.read (| leading_zeros |) ]
+                                |)
+                              |) in
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                          |)))
+                    ]
+                  |)
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_clz :
+      M.IsFunction.C "revm_interpreter::instructions::bitwise::clz" clz.
+    Admitted.
+    Global Typeclasses Opaque clz.
+    
+    (*
+    pub fn slt<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
+    
+        *op2 = U256::from(i256_cmp(&op1, op2) == Ordering::Less);
+    }
+    *)
+    Definition slt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ WIRE; H ], [ context ] =>
+        ltac:(M.monadic
+          (let context :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
+                []
+                [ H; WIRE ],
+              context
+            |) in
+          M.catch_return (Ty.tuple []) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
+                                              |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
+                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
+                                      |)
+                                    ]
+                                  |)
                                 ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.never_to_any (|
+                            M.read (|
+                              let~ _ : Ty.tuple [] :=
+                                M.call_closure (|
+                                  Ty.tuple [],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                      []
+                                      [ WIRE ],
+                                    "halt_underflow",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
+                                      |)
+                                    |)
+                                  ]
+                                |) in
+                              M.return_ (| Value.Tuple [] |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.tuple [],
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (|
+                      Ty.tuple
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -1016,15 +1579,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -1034,7 +1591,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -1050,7 +1607,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -1126,44 +1683,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -1179,29 +1698,25 @@ Module instructions.
     Global Typeclasses Opaque slt.
     
     (*
-    pub fn sgt<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn sgt<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
     
         *op2 = U256::from(i256_cmp(&op1, op2) == Ordering::Greater);
     }
     *)
     Definition sgt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -1217,57 +1732,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -1281,34 +1794,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -1322,93 +1829,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -1416,15 +1994,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -1434,7 +2006,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -1450,7 +2022,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -1530,44 +2102,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -1583,29 +2117,25 @@ Module instructions.
     Global Typeclasses Opaque sgt.
     
     (*
-    pub fn eq<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn eq<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
     
         *op2 = U256::from(op1 == *op2);
     }
     *)
     Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -1621,57 +2151,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -1685,34 +2213,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -1726,93 +2248,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -1820,15 +2413,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -1838,7 +2425,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -1854,7 +2441,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -1918,44 +2505,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -1971,28 +2520,24 @@ Module instructions.
     Global Typeclasses Opaque eq.
     
     (*
-    pub fn iszero<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([], op1, interpreter);
+    pub fn iszero<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([], op1, context.interpreter);
         *op1 = U256::from(op1.is_zero());
     }
     *)
     Definition iszero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -2008,58 +2553,49 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
-                                        |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
                                       |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      Value.Integer IntegerKind.Usize 0
                                     ]
                                   |)
                                 ]
@@ -2072,34 +2608,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -2113,93 +2643,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 0 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 0 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 0 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 0 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 0 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 0 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -2207,14 +2808,8 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -2229,7 +2824,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -2281,44 +2876,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -2334,28 +2891,24 @@ Module instructions.
     Global Typeclasses Opaque iszero.
     
     (*
-    pub fn bitand<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn bitand<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
         *op2 = op1 & *op2;
     }
     *)
     Definition bitand (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -2371,57 +2924,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -2435,34 +2986,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -2476,93 +3021,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -2570,15 +3186,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -2588,7 +3198,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -2604,7 +3214,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -2645,44 +3255,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -2698,29 +3270,25 @@ Module instructions.
     Global Typeclasses Opaque bitand.
     
     (*
-    pub fn bitor<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn bitor<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
     
         *op2 = op1 | *op2;
     }
     *)
     Definition bitor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -2736,57 +3304,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -2800,34 +3366,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -2841,93 +3401,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -2935,15 +3566,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -2953,7 +3578,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -2969,7 +3594,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -3010,44 +3635,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -3063,29 +3650,25 @@ Module instructions.
     Global Typeclasses Opaque bitor.
     
     (*
-    pub fn bitxor<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn bitxor<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
     
         *op2 = op1 ^ *op2;
     }
     *)
     Definition bitxor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -3101,57 +3684,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -3165,34 +3746,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -3206,93 +3781,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -3300,15 +3946,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -3318,7 +3958,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -3334,7 +3974,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -3375,44 +4015,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -3428,29 +4030,25 @@ Module instructions.
     Global Typeclasses Opaque bitxor.
     
     (*
-    pub fn not<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([], op1, interpreter);
+    pub fn not<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([], op1, context.interpreter);
     
         *op1 = !*op1;
     }
     *)
     Definition not (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -3466,58 +4064,49 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
-                                        |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
                                       |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      Value.Integer IntegerKind.Usize 0
                                     ]
                                   |)
                                 ]
@@ -3530,34 +4119,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -3571,93 +4154,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 0 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 0 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 0 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 0 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 0 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 0 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -3665,14 +4319,8 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -3687,7 +4335,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -3720,44 +4368,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -3773,12 +4383,9 @@ Module instructions.
     Global Typeclasses Opaque not.
     
     (*
-    pub fn byte<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn byte<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
     
         let o1 = as_usize_saturated!(op1);
         *op2 = if o1 < 32 {
@@ -3791,17 +4398,16 @@ Module instructions.
     *)
     Definition byte (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -3817,57 +4423,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -3881,34 +4485,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -3922,93 +4520,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -4016,15 +4685,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -4034,7 +4697,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -4050,7 +4713,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ o1 : Ty.path "usize" :=
@@ -4353,44 +5016,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -4406,13 +5031,10 @@ Module instructions.
     Global Typeclasses Opaque byte.
     
     (*
-    pub fn shl<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        check!(interpreter, CONSTANTINOPLE);
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn shl<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        check!(context.interpreter, CONSTANTINOPLE);
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
     
         let shift = as_usize_saturated!(op1);
         *op2 = if shift < 256 {
@@ -4424,17 +5046,16 @@ Module instructions.
     *)
     Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -4455,14 +5076,14 @@ Module instructions.
                                   M.call_closure (|
                                     Ty.path "bool",
                                     M.get_associated_function (|
-                                      Ty.path "revm_specification::hardfork::SpecId",
+                                      Ty.path "revm_primitives::hardfork::SpecId",
                                       "is_enabled_in",
                                       [],
                                       []
                                     |),
                                     [
                                       M.call_closure (|
-                                        Ty.path "revm_specification::hardfork::SpecId",
+                                        Ty.path "revm_primitives::hardfork::SpecId",
                                         M.get_trait_method (|
                                           "revm_interpreter::interpreter_types::RuntimeFlag",
                                           Ty.associated_in_trait
@@ -4481,7 +5102,15 @@ Module instructions.
                                           M.borrow (|
                                             Pointer.Kind.Ref,
                                             M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| interpreter |) |),
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    context,
+                                                    "revm_interpreter::instruction_context::InstructionContext",
+                                                    "interpreter"
+                                                  |)
+                                                |)
+                                              |),
                                               "revm_interpreter::interpreter::Interpreter",
                                               "runtime_flag"
                                             |)
@@ -4489,7 +5118,7 @@ Module instructions.
                                         ]
                                       |);
                                       Value.StructTuple
-                                        "revm_specification::hardfork::SpecId::CONSTANTINOPLE"
+                                        "revm_primitives::hardfork::SpecId::CONSTANTINOPLE"
                                         []
                                         []
                                         []
@@ -4505,34 +5134,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_not_activated",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::NotActivated"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -4553,57 +5176,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -4617,34 +5238,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -4658,93 +5273,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -4752,15 +5438,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -4770,7 +5450,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -4786,7 +5466,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ shift : Ty.path "usize" :=
@@ -5068,44 +5748,6 @@ Module instructions.
                                 |)
                               |)
                             |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -5121,13 +5763,10 @@ Module instructions.
     Global Typeclasses Opaque shl.
     
     (*
-    pub fn shr<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        check!(interpreter, CONSTANTINOPLE);
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn shr<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        check!(context.interpreter, CONSTANTINOPLE);
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
     
         let shift = as_usize_saturated!(op1);
         *op2 = if shift < 256 {
@@ -5139,17 +5778,16 @@ Module instructions.
     *)
     Definition shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -5170,14 +5808,14 @@ Module instructions.
                                   M.call_closure (|
                                     Ty.path "bool",
                                     M.get_associated_function (|
-                                      Ty.path "revm_specification::hardfork::SpecId",
+                                      Ty.path "revm_primitives::hardfork::SpecId",
                                       "is_enabled_in",
                                       [],
                                       []
                                     |),
                                     [
                                       M.call_closure (|
-                                        Ty.path "revm_specification::hardfork::SpecId",
+                                        Ty.path "revm_primitives::hardfork::SpecId",
                                         M.get_trait_method (|
                                           "revm_interpreter::interpreter_types::RuntimeFlag",
                                           Ty.associated_in_trait
@@ -5196,7 +5834,15 @@ Module instructions.
                                           M.borrow (|
                                             Pointer.Kind.Ref,
                                             M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| interpreter |) |),
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    context,
+                                                    "revm_interpreter::instruction_context::InstructionContext",
+                                                    "interpreter"
+                                                  |)
+                                                |)
+                                              |),
                                               "revm_interpreter::interpreter::Interpreter",
                                               "runtime_flag"
                                             |)
@@ -5204,7 +5850,7 @@ Module instructions.
                                         ]
                                       |);
                                       Value.StructTuple
-                                        "revm_specification::hardfork::SpecId::CONSTANTINOPLE"
+                                        "revm_primitives::hardfork::SpecId::CONSTANTINOPLE"
                                         []
                                         []
                                         []
@@ -5220,34 +5866,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_not_activated",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::NotActivated"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -5268,57 +5908,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -5332,34 +5970,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -5373,93 +6005,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -5467,15 +6170,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -5485,7 +6182,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -5501,7 +6198,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ shift : Ty.path "usize" :=
@@ -5783,44 +6480,6 @@ Module instructions.
                                 |)
                               |)
                             |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)
@@ -5836,13 +6495,10 @@ Module instructions.
     Global Typeclasses Opaque shr.
     
     (*
-    pub fn sar<WIRE: InterpreterTypes, H: Host + ?Sized>(
-        interpreter: &mut Interpreter<WIRE>,
-        _host: &mut H,
-    ) {
-        check!(interpreter, CONSTANTINOPLE);
-        gas!(interpreter, gas::VERYLOW);
-        popn_top!([op1], op2, interpreter);
+    pub fn sar<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>) {
+        check!(context.interpreter, CONSTANTINOPLE);
+        //gas!(context.interpreter, gas::VERYLOW);
+        popn_top!([op1], op2, context.interpreter);
     
         let shift = as_usize_saturated!(op1);
         *op2 = if shift < 256 {
@@ -5856,17 +6512,16 @@ Module instructions.
     *)
     Definition sar (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ WIRE; H ], [ interpreter; _host ] =>
+      | [], [ WIRE; H ], [ context ] =>
         ltac:(M.monadic
-          (let interpreter :=
+          (let context :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "revm_interpreter::instruction_context::InstructionContext")
                 []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
-              interpreter
+                [ H; WIRE ],
+              context
             |) in
-          let _host := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], _host |) in
           M.catch_return (Ty.tuple []) (|
             ltac:(M.monadic
               (M.read (|
@@ -5887,14 +6542,14 @@ Module instructions.
                                   M.call_closure (|
                                     Ty.path "bool",
                                     M.get_associated_function (|
-                                      Ty.path "revm_specification::hardfork::SpecId",
+                                      Ty.path "revm_primitives::hardfork::SpecId",
                                       "is_enabled_in",
                                       [],
                                       []
                                     |),
                                     [
                                       M.call_closure (|
-                                        Ty.path "revm_specification::hardfork::SpecId",
+                                        Ty.path "revm_primitives::hardfork::SpecId",
                                         M.get_trait_method (|
                                           "revm_interpreter::interpreter_types::RuntimeFlag",
                                           Ty.associated_in_trait
@@ -5913,7 +6568,15 @@ Module instructions.
                                           M.borrow (|
                                             Pointer.Kind.Ref,
                                             M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| interpreter |) |),
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    context,
+                                                    "revm_interpreter::instruction_context::InstructionContext",
+                                                    "interpreter"
+                                                  |)
+                                                |)
+                                              |),
                                               "revm_interpreter::interpreter::Interpreter",
                                               "runtime_flag"
                                             |)
@@ -5921,7 +6584,7 @@ Module instructions.
                                         ]
                                       |);
                                       Value.StructTuple
-                                        "revm_specification::hardfork::SpecId::CONSTANTINOPLE"
+                                        "revm_primitives::hardfork::SpecId::CONSTANTINOPLE"
                                         []
                                         []
                                         []
@@ -5937,34 +6600,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_not_activated",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::NotActivated"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -5985,57 +6642,55 @@ Module instructions.
                               Ty.path "bool",
                               M.call_closure (|
                                 Ty.path "bool",
-                                UnOp.not,
+                                BinOp.lt,
                                 [
                                   M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_interpreter::gas::Gas",
-                                      "record_cost",
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "revm_interpreter::interpreter_types::StackTr",
+                                      Ty.associated_in_trait
+                                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                                        []
+                                        []
+                                        WIRE
+                                        "Stack",
+                                      [],
+                                      [],
+                                      "len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "revm_interpreter::gas::Gas" ],
-                                            M.get_trait_method (|
-                                              "revm_interpreter::interpreter_types::LoopControl",
-                                              Ty.associated_in_trait
-                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                []
-                                                []
-                                                WIRE
-                                                "Control",
-                                              [],
-                                              [],
-                                              "gas",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| interpreter |) |),
-                                                  "revm_interpreter::interpreter::Interpreter",
-                                                  "control"
-                                                |)
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                context,
+                                                "revm_interpreter::instruction_context::InstructionContext",
+                                                "interpreter"
                                               |)
-                                            ]
-                                          |)
+                                            |)
+                                          |),
+                                          "revm_interpreter::interpreter::Interpreter",
+                                          "stack"
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::VERYLOW",
-                                          Ty.path "u64"
-                                        |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      Value.Integer IntegerKind.Usize 1;
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          Value.Integer IntegerKind.Usize 1;
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -6049,34 +6704,28 @@ Module instructions.
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_trait_method (|
-                                    "revm_interpreter::interpreter_types::LoopControl",
-                                    Ty.associated_in_trait
-                                      "revm_interpreter::interpreter_types::InterpreterTypes"
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
                                       []
-                                      []
-                                      WIRE
-                                      "Control",
-                                    [],
-                                    [],
-                                    "set_instruction_result",
+                                      [ WIRE ],
+                                    "halt_underflow",
                                     [],
                                     []
                                   |),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter |) |),
-                                        "revm_interpreter::interpreter::Interpreter",
-                                        "control"
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            context,
+                                            "revm_interpreter::instruction_context::InstructionContext",
+                                            "interpreter"
+                                          |)
+                                        |)
                                       |)
-                                    |);
-                                    Value.StructTuple
-                                      "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                      []
-                                      []
-                                      []
+                                    |)
                                   ]
                                 |) in
                               M.return_ (| Value.Tuple [] |)
@@ -6090,93 +6739,164 @@ Module instructions.
                   M.match_operator (|
                     Ty.tuple [],
                     M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
+                      Ty.tuple
                         [
-                          Ty.tuple
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
                             [
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
+                                (Ty.path "ruint::Uint")
                                 [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ];
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
                                 ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
                             ]
                         ],
                       M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        Ty.tuple
                           [
-                            Ty.tuple
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
+                              ];
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
                           ],
-                        M.get_trait_method (|
-                          "revm_interpreter::interpreter_types::StackTrait",
-                          Ty.associated_in_trait
-                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            []
-                            WIRE
-                            "Stack",
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ]
+                            ],
+                          "unwrap_unchecked",
                           [],
-                          [],
-                          "popn_top",
-                          [ Value.Integer IntegerKind.Usize 1 ],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| interpreter |) |),
-                              "revm_interpreter::interpreter::Interpreter",
-                              "stack"
-                            |)
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]
+                                  ]
+                              ],
+                            M.get_trait_method (|
+                              "revm_interpreter::interpreter_types::StackTr",
+                              Ty.associated_in_trait
+                                "revm_interpreter::interpreter_types::InterpreterTypes"
+                                []
+                                []
+                                WIRE
+                                "Stack",
+                              [],
+                              [],
+                              "popn_top",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        context,
+                                        "revm_interpreter::instruction_context::InstructionContext",
+                                        "interpreter"
+                                      |)
+                                    |)
+                                  |),
+                                  "revm_interpreter::interpreter::Interpreter",
+                                  "stack"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
@@ -6184,15 +6904,9 @@ Module instructions.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let γ1_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
-                          let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
-                          let γ2_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                           let op1 :=
                             M.copy (|
                               Ty.apply
@@ -6202,7 +6916,7 @@ Module instructions.
                                   Value.Integer IntegerKind.Usize 4
                                 ]
                                 [],
-                              γ2_0
+                              γ1_0
                             |) in
                           let op2 :=
                             M.copy (|
@@ -6218,7 +6932,7 @@ Module instructions.
                                     ]
                                     []
                                 ],
-                              γ1_1
+                              γ0_1
                             |) in
                           M.read (|
                             let~ shift : Ty.path "usize" :=
@@ -6562,44 +7276,6 @@ Module instructions.
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.read (|
-                            let~ _ : Ty.tuple [] :=
-                              M.call_closure (|
-                                Ty.tuple [],
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    WIRE
-                                    "Control",
-                                  [],
-                                  [],
-                                  "set_instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| interpreter |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |);
-                                  Value.StructTuple
-                                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |) in
-                            M.return_ (| Value.Tuple [] |)
                           |)))
                     ]
                   |)

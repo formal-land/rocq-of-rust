@@ -183,7 +183,10 @@ Module block.
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
             M.call_closure (|
-              Ty.path "u64",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
               M.get_trait_method (|
                 "revm_context_interface::block::Block",
                 T,
@@ -241,7 +244,10 @@ Module block.
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
             M.call_closure (|
-              Ty.path "u64",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
               M.get_trait_method (|
                 "revm_context_interface::block::Block",
                 T,
@@ -532,7 +538,10 @@ Module block.
                 self
               |) in
             M.call_closure (|
-              Ty.path "u64",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
               M.get_trait_method (|
                 "revm_context_interface::block::Block",
                 T,
@@ -596,7 +605,10 @@ Module block.
                 self
               |) in
             M.call_closure (|
-              Ty.path "u64",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
               M.get_trait_method (|
                 "revm_context_interface::block::Block",
                 T,
@@ -913,7 +925,10 @@ Module block.
                 self
               |) in
             M.call_closure (|
-              Ty.path "u64",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
               M.get_trait_method (|
                 "revm_context_interface::block::Block",
                 T,
@@ -985,7 +1000,10 @@ Module block.
                 self
               |) in
             M.call_closure (|
-              Ty.path "u64",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
               M.get_trait_method (|
                 "revm_context_interface::block::Block",
                 T,
@@ -1330,7 +1348,10 @@ Module block.
                 self
               |) in
             M.call_closure (|
-              Ty.path "u64",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
               M.get_trait_method (|
                 "revm_context_interface::block::Block",
                 T,
@@ -1436,7 +1457,10 @@ Module block.
                 self
               |) in
             M.call_closure (|
-              Ty.path "u64",
+              Ty.apply
+                (Ty.path "ruint::Uint")
+                [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                [],
               M.get_trait_method (|
                 "revm_context_interface::block::Block",
                 T,
@@ -1895,426 +1919,4 @@ Module block.
           ].
     End Impl_revm_context_interface_block_Block_where_revm_context_interface_block_Block_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
   End underscore_3.
-  
-  (* Trait *)
-  (* Empty module 'BlockGetter' *)
-  
-  Module underscore_4.
-    Module Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_ref__T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Block (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::block::BlockGetter" [] [] T "Block".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition block (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::block::BlockGetter"
-                        []
-                        []
-                        T
-                        "Block"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::block::BlockGetter",
-                    T,
-                    [],
-                    [],
-                    "block",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::block::BlockGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Block", InstanceField.Ty (_Block T)); ("block", InstanceField.Method (block T)) ].
-    End Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_ref__T.
-  End underscore_4.
-  
-  Module underscore_5.
-    Module Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Block (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::block::BlockGetter" [] [] T "Block".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition block (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::block::BlockGetter"
-                        []
-                        []
-                        T
-                        "Block"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::block::BlockGetter",
-                    T,
-                    [],
-                    [],
-                    "block",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::block::BlockGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Block", InstanceField.Ty (_Block T)); ("block", InstanceField.Method (block T)) ].
-    End Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
-  End underscore_5.
-  
-  Module underscore_6.
-    Module Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-      Definition Self (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Block (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::block::BlockGetter" [] [] T "Block".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition block (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::block::BlockGetter"
-                        []
-                        []
-                        T
-                        "Block"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::block::BlockGetter",
-                    T,
-                    [],
-                    [],
-                    "block",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::block::BlockGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Block", InstanceField.Ty (_Block T)); ("block", InstanceField.Method (block T)) ].
-    End Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-  End underscore_6.
-  
-  Module underscore_7.
-    Module Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-      Definition Self (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Block (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::block::BlockGetter" [] [] T "Block".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition block (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "revm_context_interface::block::BlockGetter"
-                        []
-                        []
-                        T
-                        "Block"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::block::BlockGetter",
-                    T,
-                    [],
-                    [],
-                    "block",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::block::BlockGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Block", InstanceField.Ty (_Block T)); ("block", InstanceField.Method (block T)) ].
-    End Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-  End underscore_7.
-  
-  (* Trait *)
-  (* Empty module 'BlockSetter' *)
-  
-  Module Impl_revm_context_interface_block_BlockSetter_where_revm_context_interface_block_BlockSetter_T_for_ref_mut_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
-    
-    (*
-        fn set_block(&mut self, block: <Self as BlockGetter>::Block) {
-            ( **self).set_block(block)
-        }
-    *)
-    Definition set_block (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self; block ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-              self
-            |) in
-          let block :=
-            M.alloc (|
-              Ty.associated_in_trait
-                "revm_context_interface::block::BlockGetter"
-                []
-                []
-                (Ty.apply (Ty.path "&mut") [] [ T ])
-                "Block",
-              block
-            |) in
-          M.call_closure (|
-            Ty.tuple [],
-            M.get_trait_method (|
-              "revm_context_interface::block::BlockSetter",
-              T,
-              [],
-              [],
-              "set_block",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| block |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "revm_context_interface::block::BlockSetter"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("set_block", InstanceField.Method (set_block T)) ].
-  End Impl_revm_context_interface_block_BlockSetter_where_revm_context_interface_block_BlockSetter_T_for_ref_mut_T.
-  
-  Module Impl_revm_context_interface_block_BlockSetter_where_revm_context_interface_block_BlockSetter_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-    Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
-    
-    (*
-        fn set_block(&mut self, block: <Self as BlockGetter>::Block) {
-            ( **self).set_block(block)
-        }
-    *)
-    Definition set_block (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self; block ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&mut")
-                []
-                [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ] ],
-              self
-            |) in
-          let block :=
-            M.alloc (|
-              Ty.associated_in_trait
-                "revm_context_interface::block::BlockGetter"
-                []
-                []
-                (Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ])
-                "Block",
-              block
-            |) in
-          M.call_closure (|
-            Ty.tuple [],
-            M.get_trait_method (|
-              "revm_context_interface::block::BlockSetter",
-              T,
-              [],
-              [],
-              "set_block",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| block |)
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "revm_context_interface::block::BlockSetter"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("set_block", InstanceField.Method (set_block T)) ].
-  End Impl_revm_context_interface_block_BlockSetter_where_revm_context_interface_block_BlockSetter_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
 End block.

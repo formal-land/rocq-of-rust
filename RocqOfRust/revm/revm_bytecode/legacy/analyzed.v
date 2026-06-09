@@ -997,7 +997,7 @@ Module legacy.
               Self {
                   bytecode: Bytes::from_static(&[0]),
                   original_len: 0,
-                  jump_table: JumpTable(Arc::new(bitvec![u8, Lsb0; 0])),
+                  jump_table: JumpTable::default(),
               }
           }
       *)
@@ -1062,200 +1062,19 @@ Module legacy.
                   |));
                 ("original_len", Value.Integer IntegerKind.Usize 0);
                 ("jump_table",
-                  Value.StructTuple
-                    "revm_bytecode::legacy::jump_map::JumpTable"
+                  M.call_closure (|
+                    Ty.path "revm_bytecode::legacy::jump_map::JumpTable",
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "revm_bytecode::legacy::jump_map::JumpTable",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::sync::Arc")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "bitvec::vec::BitVec")
-                              []
-                              [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ];
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "alloc::sync::Arc")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "bitvec::vec::BitVec")
-                                []
-                                [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ];
-                              Ty.path "alloc::alloc::Global"
-                            ],
-                          "new",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "bitvec::vec::BitVec")
-                              []
-                              [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "bitvec::vec::BitVec")
-                                []
-                                [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ],
-                              "from_bitslice",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "bitvec::slice::BitSlice")
-                                              []
-                                              [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ]
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply
-                                            (Ty.path "bitvec::array::BitArray")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.path "u8" ];
-                                              Ty.path "bitvec::order::Lsb0"
-                                            ],
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "bitvec::array::BitArray")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.path "u8" ];
-                                                  Ty.path "bitvec::order::Lsb0"
-                                                ],
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "bitvec::array::BitArray")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                                      [ Ty.path "u8" ];
-                                                    Ty.path "bitvec::order::Lsb0"
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "bitvec::array::BitArray")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [ Ty.path "u8" ];
-                                                      Ty.path "bitvec::order::Lsb0"
-                                                    ],
-                                                  "new",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  Value.Array
-                                                    [
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.alloc (|
-                                                            Ty.apply
-                                                              (Ty.path "bitvec::mem::BitElement")
-                                                              []
-                                                              [ Ty.path "u8" ],
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "bitvec::mem::BitElement")
-                                                                []
-                                                                [ Ty.path "u8" ],
-                                                              M.get_associated_function (|
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "bitvec::mem::BitElement")
-                                                                  []
-                                                                  [ Ty.path "u8" ],
-                                                                "new",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.read (|
-                                                                  get_constant (|
-                                                                    "revm_bytecode::legacy::analyzed::default::ELEM",
-                                                                    Ty.path "u8"
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |),
-                                                          "bitvec::mem::BitElement",
-                                                          "elem"
-                                                        |)
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [
-                                              ("end_",
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_bytecode::legacy::analyzed::default::BITS",
-                                                    Ty.path "usize"
-                                                  |)
-                                                |))
-                                            ]
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    ])
+                  |))
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -1273,7 +1092,112 @@ Module legacy.
       Definition Self : Ty.t := Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode".
       
       (*
+          pub fn analyze(bytecode: Bytes) -> Self {
+              let original_len = bytecode.len();
+              let (jump_table, padded_bytecode) = super::analysis::analyze_legacy(bytecode);
+              Self::new(padded_bytecode, original_len, jump_table)
+          }
+      *)
+      Definition analyze (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ bytecode ] =>
+          ltac:(M.monadic
+            (let bytecode := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", bytecode |) in
+            M.read (|
+              let~ original_len : Ty.path "usize" :=
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "len", [], [] |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.path "alloy_primitives::bytes_::Bytes",
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, bytecode |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                M.match_operator (|
+                  Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                  M.alloc (|
+                    Ty.tuple
+                      [
+                        Ty.path "revm_bytecode::legacy::jump_map::JumpTable";
+                        Ty.path "alloy_primitives::bytes_::Bytes"
+                      ],
+                    M.call_closure (|
+                      Ty.tuple
+                        [
+                          Ty.path "revm_bytecode::legacy::jump_map::JumpTable";
+                          Ty.path "alloy_primitives::bytes_::Bytes"
+                        ],
+                      M.get_function (|
+                        "revm_bytecode::legacy::analysis::analyze_legacy",
+                        [],
+                        []
+                      |),
+                      [ M.read (| bytecode |) ]
+                    |)
+                  |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                        let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                        let jump_table :=
+                          M.copy (| Ty.path "revm_bytecode::legacy::jump_map::JumpTable", γ0_0 |) in
+                        let padded_bytecode :=
+                          M.copy (| Ty.path "alloy_primitives::bytes_::Bytes", γ0_1 |) in
+                        M.call_closure (|
+                          Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                          M.get_associated_function (|
+                            Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                            "new",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| padded_bytecode |);
+                            M.read (| original_len |);
+                            M.read (| jump_table |)
+                          ]
+                        |)))
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_analyze : M.IsAssociatedFunction.C Self "analyze" analyze.
+      Admitted.
+      Global Typeclasses Opaque analyze.
+      
+      (*
           pub fn new(bytecode: Bytes, original_len: usize, jump_table: JumpTable) -> Self {
+              assert!(
+                  original_len <= bytecode.len(),
+                  "original_len is greater than bytecode length"
+              );
+              assert!(
+                  original_len <= jump_table.len(),
+                  "jump table length is less than original length"
+              );
+              assert!(!bytecode.is_empty(), "bytecode cannot be empty");
               Self {
                   bytecode,
                   original_len,
@@ -1289,15 +1213,231 @@ Module legacy.
             let original_len := M.alloc (| Ty.path "usize", original_len |) in
             let jump_table :=
               M.alloc (| Ty.path "revm_bytecode::legacy::jump_map::JumpTable", jump_table |) in
-            Value.mkStructRecord
-              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
-              []
-              []
-              [
-                ("bytecode", M.read (| bytecode |));
-                ("original_len", M.read (| original_len |));
-                ("jump_table", M.read (| jump_table |))
-              ]))
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [
+                                    M.read (| original_len |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.path "bytes::bytes::Bytes",
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "bytes::bytes::Bytes" ],
+                                              M.get_trait_method (|
+                                                "core::ops::deref::Deref",
+                                                Ty.path "alloy_primitives::bytes_::Bytes",
+                                                [],
+                                                [],
+                                                "deref",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.borrow (| Pointer.Kind.Ref, bytecode |) ]
+                                            |)
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.never_to_any (|
+                          M.call_closure (|
+                            Ty.path "never",
+                            M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::Arguments",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "from_str",
+                                  [],
+                                  []
+                                |),
+                                [ mk_str (| "original_len is greater than bytecode length" |) ]
+                              |)
+                            ]
+                          |)
+                        |)));
+                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                  ]
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [
+                                    M.read (| original_len |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.path "revm_bytecode::legacy::jump_map::JumpTable",
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.borrow (| Pointer.Kind.Ref, jump_table |) ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.never_to_any (|
+                          M.call_closure (|
+                            Ty.path "never",
+                            M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::Arguments",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "from_str",
+                                  [],
+                                  []
+                                |),
+                                [ mk_str (| "jump table length is less than original length" |) ]
+                              |)
+                            ]
+                          |)
+                        |)));
+                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                  ]
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.path "bytes::bytes::Bytes",
+                                        "is_empty",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "bytes::bytes::Bytes" ],
+                                              M.get_trait_method (|
+                                                "core::ops::deref::Deref",
+                                                Ty.path "alloy_primitives::bytes_::Bytes",
+                                                [],
+                                                [],
+                                                "deref",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.borrow (| Pointer.Kind.Ref, bytecode |) ]
+                                            |)
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.never_to_any (|
+                          M.call_closure (|
+                            Ty.path "never",
+                            M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::Arguments",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "from_str",
+                                  [],
+                                  []
+                                |),
+                                [ mk_str (| "bytecode cannot be empty" |) ]
+                              |)
+                            ]
+                          |)
+                        |)));
+                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                  ]
+                |) in
+              M.alloc (|
+                Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                Value.mkStructRecord
+                  "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
+                  []
+                  []
+                  [
+                    ("bytecode", M.read (| bytecode |));
+                    ("original_len", M.read (| original_len |));
+                    ("jump_table", M.read (| jump_table |))
+                  ]
+              |)
+            |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       

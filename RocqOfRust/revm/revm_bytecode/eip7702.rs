@@ -1,5 +1,9 @@
 use core::fmt;
-use primitives::{bytes, Address, Bytes};
+use primitives::{b256, bytes, Address, Bytes, B256};
+
+/// Hash of EF01 bytes that is used for EXTCODEHASH when called from legacy bytecode.
+pub const EIP7702_MAGIC_HASH: B256 =
+    b256!("0xeadcdba66a79ab5dce91622d1d75c8cff5cff0b96944c3bf1072cd08ce018329");
 
 /// EIP-7702 Version Magic in u16 form
 pub const EIP7702_MAGIC: u16 = 0xEF01;
@@ -13,12 +17,15 @@ pub const EIP7702_VERSION: u8 = 0;
 /// Bytecode of delegated account, specified in EIP-7702
 ///
 /// Format of EIP-7702 bytecode consist of:
-/// `0xEF00` (MAGIC) + `0x00` (VERSION) + 20 bytes of address.
+/// `0xEF01` (MAGIC) + `0x00` (VERSION) + 20 bytes of address.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Ord, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Eip7702Bytecode {
+    /// Address of the delegated account.
     pub delegated_address: Address,
+    /// Version of the EIP-7702 bytecode. Currently only version 0 is supported.
     pub version: u8,
+    /// Raw bytecode.
     pub raw: Bytes,
 }
 
@@ -40,7 +47,7 @@ impl Eip7702Bytecode {
 
         Ok(Self {
             delegated_address: Address::new(raw[3..].try_into().unwrap()),
-            version: EIP7702_VERSION,
+            version: raw[2],
             raw,
         })
     }
@@ -67,6 +74,12 @@ impl Eip7702Bytecode {
     #[inline]
     pub fn address(&self) -> Address {
         self.delegated_address
+    }
+
+    /// Returns the EIP7702 version of the delegated contract.
+    #[inline]
+    pub fn version(&self) -> u8 {
+        self.version
     }
 }
 
