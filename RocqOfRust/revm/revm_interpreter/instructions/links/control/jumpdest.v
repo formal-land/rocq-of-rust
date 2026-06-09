@@ -26,19 +26,19 @@ Require Import ruint.links.from.
 Require Import ruint.links.lib.
 
 (*
-pub fn jumpdest_or_nop<WIRE: InterpreterTypes, H: Host + ?Sized>(
+pub fn jumpdest<WIRE: InterpreterTypes, H: ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
     _host: &mut H,
 )
 *)
-Instance run_jumpdest_or_nop
+Instance run_jumpdest
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
     (_host : '&mut H) :
   Run.Trait
-    instructions.control.jumpdest_or_nop [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.control.jumpdest [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
@@ -46,4 +46,4 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
-Global Opaque run_jumpdest_or_nop.
+Global Opaque run_jumpdest.

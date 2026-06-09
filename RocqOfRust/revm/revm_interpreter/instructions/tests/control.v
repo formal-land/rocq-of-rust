@@ -4,7 +4,7 @@ Require Import revm.revm_interpreter.instructions.simulate.control.invalid.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump_inner.
-Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest_or_nop.
+Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
 Require Import revm.revm_interpreter.instructions.simulate.control.pc.
 Require Import revm.revm_interpreter.instructions.simulate.control.ret.
@@ -110,13 +110,13 @@ Proof.
   reflexivity.
 Qed.
 
-(** ** JUMPDEST_OR_NOP tests *)
+(** ** JUMPDEST tests *)
 
-(** Test that JUMPDEST_OR_NOP just deducts gas, no error *)
+(** Test that JUMPDEST just deducts gas, no error *)
 Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
-  let result := jumpdest_or_nop interpreter in
+  let result := jumpdest interpreter in
   result.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
   timeout 1 vm_compute.

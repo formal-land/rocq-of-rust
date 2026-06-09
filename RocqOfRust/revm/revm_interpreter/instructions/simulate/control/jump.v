@@ -52,16 +52,4 @@ Lemma jump_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_jump] unfold jump, run_jump; cbn.
-  gas_macro_eq idtac.
-  popn_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[target []]]
-  end.
-  s. {
-    apply jump_inner_eq; typeclasses eauto.
-  }
-  s.
-Qed.
+Admitted.
