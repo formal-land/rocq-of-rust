@@ -9,7 +9,6 @@ Require Import core.links.option.
 Require Import core.slice.links.index.
 Require Import core.slice.links.mod.
 Require Import revm.revm_bytecode.eof.links.types_section.
-Require Import revm_bytecode.eof.body.
 
 Module EofBody.
   Record t : Set := {

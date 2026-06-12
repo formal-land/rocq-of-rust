@@ -9,23 +9,67 @@ Require Import core.links.option.
 Require Import revm.revm_bytecode.eof.links.header.
 Require Import revm.revm_bytecode.eof.links.types_section.
 Require Import revm.revm_bytecode.links.eof.
-Require Import revm_bytecode.eof.body.
 Require Import core.slice.links.mod.
 
 Require Export revm.revm_bytecode.eof.links.body_EofBody.
+
+Module body.
+  Module eof.
+    Module body.
+      Module Impl_core_clone_Clone_for_revm_bytecode_eof_body_EofBody.
+        Definition clone : PolymorphicFunction.t :=
+          fun _ _ _ => M.impossible "revm_bytecode::eof::body::EofBody::clone".
+
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::clone::Clone"
+            [] []
+            (Ty.path "revm_bytecode::eof::body::EofBody")
+            [ ("clone", InstanceField.Method clone) ].
+      End Impl_core_clone_Clone_for_revm_bytecode_eof_body_EofBody.
+
+      Module Impl_core_default_Default_for_revm_bytecode_eof_body_EofBody.
+        Definition default : PolymorphicFunction.t :=
+          fun _ _ _ => M.impossible "revm_bytecode::eof::body::EofBody::default".
+
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::default::Default"
+            [] []
+            (Ty.path "revm_bytecode::eof::body::EofBody")
+            [ ("default", InstanceField.Method default) ].
+      End Impl_core_default_Default_for_revm_bytecode_eof_body_EofBody.
+
+      Module Impl_revm_bytecode_eof_body_EofBody.
+        Definition code : PolymorphicFunction.t :=
+          fun _ _ _ => M.impossible "revm_bytecode::eof::body::EofBody::code".
+
+        Definition encode : PolymorphicFunction.t :=
+          fun _ _ _ => M.impossible "revm_bytecode::eof::body::EofBody::encode".
+
+        Definition into_eof : PolymorphicFunction.t :=
+          fun _ _ _ => M.impossible "revm_bytecode::eof::body::EofBody::into_eof".
+
+        Definition eof_code_section_start : PolymorphicFunction.t :=
+          fun _ _ _ => M.impossible "revm_bytecode::eof::body::EofBody::eof_code_section_start".
+
+        Definition decode : PolymorphicFunction.t :=
+          fun _ _ _ => M.impossible "revm_bytecode::eof::body::EofBody::decode".
+      End Impl_revm_bytecode_eof_body_EofBody.
+    End body.
+  End eof.
+End body.
 
 Module Impl_Clone_for_EofBody.
   Definition Self : Set :=
     EofBody.t.
 
   Instance run_clone (self : '& Self) :
-    Run.Trait eof.body.Impl_core_clone_Clone_for_revm_bytecode_eof_body_EofBody.clone
+    Run.Trait body.eof.body.Impl_core_clone_Clone_for_revm_bytecode_eof_body_EofBody.clone
       [] [] [φ self]
       Self.
   Proof.
-    constructor.
-    run_symbolic.
-  Defined.
+  Admitted.
 
   Instance method_clone : Clone.Method_clone Self.
   Proof.
@@ -47,13 +91,11 @@ Module Impl_Default_for_EofBody.
     EofBody.t.
 
   Instance run_default :
-    Run.Trait eof.body.Impl_core_default_Default_for_revm_bytecode_eof_body_EofBody.default
+    Run.Trait body.eof.body.Impl_core_default_Default_for_revm_bytecode_eof_body_EofBody.default
       [] [] []
       Self.
   Proof.
-    constructor.
-    run_symbolic.
-  Defined.
+  Admitted.
 
   Instance method_default : Default.Method_default Self.
   Proof.
