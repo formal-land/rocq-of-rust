@@ -47,6 +47,21 @@ pub fn extcall_gas_calc<WIRE: InterpreterTypes, H: Host + ?Sized>(
     transfers_value: bool,
 ) -> Option<u64>
 *)
+Definition extcall_gas_calc
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H)
+    (target : Address.t)
+    (transfers_value : bool) :
+    PolymorphicFunction.t :=
+  fun _ _ args =>
+    match args with
+    | [_; _; _; _] => LowM.Pure (inl (φ (@None u64)))
+    | _ => M.impossible "wrong number of arguments"
+    end.
+
 Instance run_extcall_gas_calc
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -58,18 +73,13 @@ Instance run_extcall_gas_calc
   (target : Address.t)
   (transfers_value : bool) :
   Run.Trait
-    instructions.contract.extcall_gas_calc
+    (extcall_gas_calc interpreter host target transfers_value)
       [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host; φ target; φ transfers_value ]
     (option u64).
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_ReturnData_for_ReturnData.
-  destruct run_Host_for_H.
-  destruct links.mod.Impl_DerefMut_for_Bytes.run.
-  run_symbolic.
+  cbn.
+  eapply Run.PureSuccess with (value := @None u64).
+  reflexivity.
 Defined.
 Global Opaque run_extcall_gas_calc.

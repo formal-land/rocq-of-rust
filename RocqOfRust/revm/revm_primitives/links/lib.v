@@ -2,12 +2,13 @@
 Require Import links.RocqOfRust.
 Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.links.aliases.
+Require Import revm.revm_primitives.constants.
 Require Import revm.revm_primitives.lib.
 
 (* pub const KECCAK_EMPTY: B256 *)
 Instance run_KECCAK_EMPTY :
   Run.Trait
-    value_KECCAK_EMPTY [] [] []
+    constants.value_KECCAK_EMPTY [] [] []
     ('* aliases.B256.t).
 Proof.
   constructor.

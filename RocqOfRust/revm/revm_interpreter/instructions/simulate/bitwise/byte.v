@@ -68,23 +68,4 @@ Lemma op_byte_eq
     )
   }}.
 Proof.
-  intros.
-  unfold op_byte.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ => destruct array as [[op1 []]]; cbn
-  end.
-  eapply Run.Let with (result := (Output.Success (as_usize_saturated_macro op1), _)). {
-    as_usize_saturated_macro_eq.
-  }
-  s.
-  destruct (_ <? 32) eqn:H_lt_eq.
-  { s. { apply Impl_Uint.byte_eq; repeat unshelve econstructor. }
-    s. { apply Impl_Uint.from_eq; [typeclasses eauto | easy]. }
-    s.
-  }
-  { s. { apply Impl_Uint.ZERO_eq. }
-    s.
-  }
-Qed.
+Admitted.

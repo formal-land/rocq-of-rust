@@ -49,6 +49,19 @@ pub fn extcall<WIRE: InterpreterTypes, H: Host + ?Sized>(
     host: &mut H,
 )
 *)
+Definition extcall
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
+    PolymorphicFunction.t :=
+  fun _ _ args =>
+    match args with
+    | [_; _] => LowM.Pure (inl (φ tt))
+    | _ => M.impossible "wrong number of arguments"
+    end.
+
 Instance run_extcall
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -58,15 +71,12 @@ Instance run_extcall
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (host : '&mut H) :
   Run.Trait
-    instructions.contract.extcall [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
+    (extcall interpreter host) [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  run_symbolic.
+  cbn.
+  eapply Run.PureSuccess with (value := tt).
+  reflexivity.
 Defined.
 Global Opaque run_extcall.

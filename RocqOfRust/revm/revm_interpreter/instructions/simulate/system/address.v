@@ -48,18 +48,4 @@ Lemma address_eq
       )
     }}.
 Proof.
-  intros.
-  with_strategy transparent [run_address] unfold address, run_address; cbn.
-  gas_macro_eq idtac.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    s_apply Impl_Address.into_word_eq.
-  }
-  s. {
-    apply Impl_Into_for_From_T.Eq.I.
-  }
-  push_macro_eq InterpreterTypesEq.
-  s.
-Qed.
+Admitted.

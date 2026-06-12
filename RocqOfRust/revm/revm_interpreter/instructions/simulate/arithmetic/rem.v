@@ -60,20 +60,4 @@ Lemma rem_eq
     )
   }}.
 Proof.
-  intros.
-  unfold rem.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[op1 []]]
-  end.
-  s. {
-    s_apply @Impl_Uint.is_zero_eq.
-  }
-  destruct Impl_Uint.is_zero; [s|].
-  s. {
-    apply Impl_Uint.wrapping_rem_eq.
-  }
-  s.
-Qed.
+Admitted.

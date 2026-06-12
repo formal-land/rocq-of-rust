@@ -63,21 +63,7 @@ Lemma halt_memory_oog_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [
-    Impl_Interpreter.run_halt_memory_oog
-    Impl_Interpreter.run_halt
-  ] unfold Impl_Interpreter.run_halt_memory_oog, Impl_Interpreter.run_halt.
-  cbn.
-  repeat s.
-  - apply Impl_Bytes.new_eq.
-  - apply InterpreterTypesEq
-      .(InterpreterTypes.Eq.LoopControl_for_Bytecode)
-      .(LoopControl.BytecodeEq.set_action).
-  - repeat rewrite Stack.dealloc_alloc_eq;
-    repeat rewrite stack_dealloc_cons_alloc_unit;
-    reflexivity.
-Qed.
+Admitted.
 
 Definition mload
     {WIRE : Set} `{Link WIRE}

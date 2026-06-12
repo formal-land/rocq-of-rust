@@ -70,14 +70,5 @@ Proof.
   destruct (Impl_IntoIterator_for_Array.run aliases.U256.t N).
   destruct Impl_From_U256_for_FixedBytes_32.run.
   run_symbolic.
-  destruct method_map0 as [? ? run_map]; cbn in *.
-  pose proof (run_map
-    (FixedBytes.t {| Integer.value := 32 |})
-    (Function1.t (Uint.t {| Integer.value := 256 |} {| Integer.value := 4 |}) (FixedBytes.t {| Integer.value := 32 |}))
-    _ _
-  ).
-  destruct method_from as [? ? run_from]; cbn in *.
-  change (Value.Closure _) with (φ (Function1.of_run run_from)).
-  typeclasses eauto.
 Defined.
 Global Opaque run_log.

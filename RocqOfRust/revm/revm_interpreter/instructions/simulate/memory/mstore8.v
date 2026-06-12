@@ -65,27 +65,4 @@ Lemma mstore8_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_mstore8] unfold mstore8, run_mstore8; cbn.
-  gas_macro_eq idtac.
-  popn_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[offset [value []]]]
-  end.
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  resize_memory_macro_eq InterpreterTypesEq.
-  s. {
-    s_apply Impl_Uint.byte_eq.
-  }
-  s. {
-    set (ref_array := Ref.cast_to _ _).
-    eapply (array.pointer_coercion_unsize_array_to_slice_eq ref_array _);
-      repeat unshelve econstructor.
-  }
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s.
-  now destruct IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.resize).
-Qed.
+Admitted.

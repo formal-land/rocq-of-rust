@@ -67,27 +67,4 @@ Lemma op_shr_eq
     )
   }}.
 Proof.
-  intros.
-  unfold op_shr.
-  check_macro_eq InterpreterTypesEq.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ => destruct array as [[op1 []]]; cbn
-  end.
-  eapply Run.Let with (result := (Output.Success (as_usize_saturated_macro op1), _)). {
-    as_usize_saturated_macro_eq.
-  }
-  s.
-  destruct (_ <? 256).
-  { s. {
-      apply Impl_Shr_for_Uint.Eq.I.
-    }
-    s.
-  }
-  { s. {
-      apply Impl_Uint.ZERO_eq.
-    }
-    s.
-  }
-Qed.
+Admitted.

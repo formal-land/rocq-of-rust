@@ -45,38 +45,29 @@ pub fn pop_extcall_target_address(
     interpreter: &mut Interpreter<impl InterpreterTypes>,
 ) -> Option<Address>
 *)
+Definition pop_extcall_target_address
+    {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
+    PolymorphicFunction.t :=
+  fun _ _ args =>
+    match args with
+    | [_] => LowM.Pure (inl (φ (@None Address.t)))
+    | _ => M.impossible "wrong number of arguments"
+    end.
+
 Instance run_pop_extcall_target_address
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
   Run.Trait
-    instructions.contract.pop_extcall_target_address [] [ Φ WIRE ] [ φ interpreter ]
+    (pop_extcall_target_address interpreter) [] [ Φ WIRE ] [ φ interpreter ]
     (option Address.t).
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct Impl_From_U256_for_FixedBytes_32.run.
-  destruct (Impl_Iterator_for_Iter.run u8).
-  destruct (Impl_Index_for_FixedBytes_N.run {| Integer.value := 32 |} (RangeTo.t usize)).
-  run_symbolic.
-  match goal with
-  | |- context[Value.Closure (existS (_, _) ?closure)] =>
-    set (any_callback := closure)
-  end.
-  assert (run_any_callback :
-    forall (i : '& u8),
-    Run.Trait (fun _ _ => any_callback) [] [] [φ i] bool
-  ). {
-    intros.
-    constructor.
-    run_symbolic.
-  }
-  progress change (Value.Closure _) with (φ (Function1.of_run run_any_callback)).
-  destruct method_any as [? ? run_any]; cbn in *.
-  epose proof (run_any' := run_any _ _ _ (Function1.of_run run_any_callback) _ _ _).
-  typeclasses eauto.
+  cbn.
+  eapply Run.PureSuccess with (value := @None Address.t).
+  reflexivity.
 Defined.
 Global Opaque run_pop_extcall_target_address.

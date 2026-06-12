@@ -212,6 +212,54 @@ Module Eip7702CodeLoad.
 End Eip7702CodeLoad.
 Export (hints) Eip7702CodeLoad.
 
+Module Impl_Eip7702CodeLoad.
+  Definition Self (T : Set) : Set :=
+    Eip7702CodeLoad.t T.
+
+  Definition into_components {T : Set} `{Link T} (self : Self T) : PolymorphicFunction.t :=
+    fun _ _ args =>
+      match args with
+      | [_] =>
+          LowM.Pure (inl (φ (
+            self.(Eip7702CodeLoad.state_load).(StateLoad.data),
+            {|
+              Eip7702CodeLoad.state_load := {|
+                StateLoad.data := tt;
+                StateLoad.is_cold :=
+                  self.(Eip7702CodeLoad.state_load).(StateLoad.is_cold);
+              |};
+              Eip7702CodeLoad.is_delegate_account_cold :=
+                self.(Eip7702CodeLoad.is_delegate_account_cold);
+            |}
+          )))
+      | _ => M.impossible "wrong number of arguments"
+      end.
+
+  Instance run_into_components {T : Set} `{Link T} (self : Self T) :
+    Run.Trait
+      (into_components self)
+      [] [] [φ self] (T * Self unit).
+  Proof.
+    constructor.
+    cbn.
+    eapply Run.PureSuccess with (value := (
+      self.(Eip7702CodeLoad.state_load).(StateLoad.data),
+      {|
+        Eip7702CodeLoad.state_load := {|
+          StateLoad.data := tt;
+          StateLoad.is_cold :=
+            self.(Eip7702CodeLoad.state_load).(StateLoad.is_cold);
+        |};
+        Eip7702CodeLoad.is_delegate_account_cold :=
+          self.(Eip7702CodeLoad.is_delegate_account_cold);
+      |}
+    )).
+    reflexivity.
+  Defined.
+  Global Opaque run_into_components.
+End Impl_Eip7702CodeLoad.
+Export (hints) Impl_Eip7702CodeLoad.
+
 (*
 pub struct AccountLoad {
     pub load: Eip7702CodeLoad<()>,

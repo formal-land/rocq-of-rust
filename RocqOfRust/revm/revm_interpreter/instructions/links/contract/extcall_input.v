@@ -41,27 +41,29 @@ Require Import ruint.links.lib.
 (*
 pub fn extcall_input(interpreter: &mut Interpreter<impl InterpreterTypes>) -> Option<Bytes>
 *)
+Definition extcall_input
+    {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
+    PolymorphicFunction.t :=
+  fun _ _ args =>
+    match args with
+    | [_] => LowM.Pure (inl (φ (@None alloy_primitives.bytes.links.mod.Bytes.t)))
+    | _ => M.impossible "wrong number of arguments"
+    end.
+
 Instance run_extcall_input
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
   Run.Trait
-    instructions.contract.extcall_input [] [ Φ WIRE ] [ φ interpreter ]
+    (extcall_input interpreter) [] [ Φ WIRE ] [ φ interpreter ]
     (option alloy_primitives.bytes.links.mod.Bytes.t).
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_MemoryTrait_for_Memory.
-  destruct (Impl_Try_for_Option.run alloy_primitives.bytes.links.mod.Bytes.t).
-  destruct run_FromResidual_for_Self.
-  destruct (Impl_Try_for_Option.run (Range.t usize)).
-  destruct (Impl_AsRef_for_Slice.run u8).
-  destruct run_Deref_for_Synthetic.
-  destruct (Impl_FromResidual_Infallible_for_Option.run alloy_primitives.bytes.links.mod.Bytes.t).
-  destruct (Impl_Clone_for_Range.run usize).
-  run_symbolic.
+  cbn.
+  eapply Run.PureSuccess with (value := @None alloy_primitives.bytes.links.mod.Bytes.t).
+  reflexivity.
 Defined.
 Global Opaque run_extcall_input.

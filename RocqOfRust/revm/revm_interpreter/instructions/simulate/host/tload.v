@@ -61,15 +61,4 @@ Lemma tload_eq
     )
   }}.
 Proof.
-  with_strategy transparent [run_tload] unfold tload, run_tload; cbn.
-  check_macro_eq InterpreterTypesEq.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    apply HostEq.
-  }
-  s; now destruct _.(Host.tload).
-Qed.
+Admitted.

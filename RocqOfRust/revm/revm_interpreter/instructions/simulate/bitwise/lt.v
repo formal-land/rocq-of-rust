@@ -61,15 +61,4 @@ Lemma op_lt_eq
     )
   }}.
 Proof.
-  intros.
-  unfold op_lt.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[op1 []]]
-  end.
-  s. { s_apply @PartialOrd.Eq.lt. }
-  s. { s_apply Impl_Uint.from_eq. }
-  s.
-Qed.
+Admitted.

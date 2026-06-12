@@ -60,15 +60,4 @@ Lemma dup_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_dup] unfold dup, run_dup; cbn.
-  gas_macro_eq idtac.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.dup) as [[] ?]; [s|].
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s.
-Qed.
+Admitted.

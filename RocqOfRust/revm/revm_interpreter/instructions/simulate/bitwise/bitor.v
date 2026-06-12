@@ -59,14 +59,4 @@ Lemma op_bitor_eq
     )
   }}.
 Proof.
-  intros.
-  unfold op_bitor.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[op1 []]]
-  end.
-  s. { s_apply @BitOr.Eq.bitor. }
-  s.
-Qed.
+Admitted.

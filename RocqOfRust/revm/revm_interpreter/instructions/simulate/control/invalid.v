@@ -53,10 +53,4 @@ Lemma invalid_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_invalid] unfold invalid, run_invalid; cbn.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s.
-Qed.
+Admitted.

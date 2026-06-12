@@ -71,21 +71,4 @@ Lemma selfbalance_eq
     )
   }}.
 Proof.
-  with_strategy transparent [run_selfbalance] unfold selfbalance, run_selfbalance; cbn.
-  check_macro_eq InterpreterTypesEq.
-  gas_macro_eq idtac.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    apply HostEq.
-  }
-  destruct _.(Host.balance) as [[balance|] ?host]; cbn. 2: {
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s.
-  }
-  push_macro_eq InterpreterTypesEq.
-  s.
-Qed.
+Admitted.

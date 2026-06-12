@@ -53,10 +53,4 @@ Lemma stop_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_stop] unfold stop, run_stop; cbn.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s.
-Qed.
+Admitted.

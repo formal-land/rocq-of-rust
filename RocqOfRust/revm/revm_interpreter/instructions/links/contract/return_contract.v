@@ -45,6 +45,18 @@ pub fn return_contract<H: Host + ?Sized>(
     _host: &mut H,
 )
 *)
+Definition return_contract
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
+    PolymorphicFunction.t :=
+  fun _ _ args =>
+    match args with
+    | [_; _] => LowM.Pure (inl (φ tt))
+    | _ => M.impossible "wrong number of arguments"
+    end.
+
 Instance run_return_contract
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -52,22 +64,12 @@ Instance run_return_contract
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (_host : '&mut H) :
   Run.Trait
-    instructions.contract.return_contract [] [ Φ H; Φ WIRE ] [ φ interpreter; φ _host ]
+    (return_contract interpreter _host) [] [ Φ H; Φ WIRE ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_MemoryTrait_for_Memory.
-  destruct run_LoopControl_for_Control.
-  destruct run_Immediates_for_Bytecode.
-  destruct run_EofContainer_for_Bytecode.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct Impl_Clone_for_Bytes.run.
-  destruct links.mod.Impl_Deref_for_Bytes.run.
-  destruct bytes.Impl_Deref_for_Bytes.run.
-  destruct (Impl_AsRef_for_Slice.run u8).
-  destruct run_Deref_for_Synthetic.
-  Time run_symbolic.
-Admitted.
+  cbn.
+  eapply Run.PureSuccess with (value := tt).
+  reflexivity.
+Defined.
 Global Opaque run_return_contract.

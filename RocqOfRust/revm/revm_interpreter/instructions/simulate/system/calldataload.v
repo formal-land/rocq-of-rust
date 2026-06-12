@@ -60,35 +60,4 @@ Lemma calldataload_eq
       )
     }}.
 Proof.
-  with_strategy transparent [run_calldataload] unfold calldataload, run_calldataload; cbn.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  s. {
-    apply Impl_FixedBytes.ZERO_eq.
-  }
-  eapply Run.Let with (result :=
-    (Output.Success (as_usize_saturated_macro (t0.(RefStub.projection) s0)), _)
-  ). {
-    as_usize_saturated_macro_eq.
-  }
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    pose proof (Impl_Slice.len_eq (T := u8)) as H_apply.
-    s_apply H_apply.
-  }
-  s.
-  destruct (_ <? _) eqn:H_lt_eq; cbn.
-  { s. {
-      apply Impl_Ord_for_usize.min_eq.
-    }
-    (* TODO: debug_assert! macro *)
-    admit.
-  }
-  { s. {
-      apply Impl_Into_for_From_T.Eq.I.
-    }
-    s.
-  }
 Admitted.

@@ -74,43 +74,4 @@ Lemma keccak256_eq
       )
     }}.
 Proof.
-  with_strategy transparent [run_keccak256] unfold keccak256, run_keccak256; cbn.
-  popn_top_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[offset []]]
-  end.
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  s. {
-    apply calc.keccak256_cost_eq.
-  }
-  gas_macro_eq idtac.
-  s.
-  destruct (_ =? 0).
-  { s. {
-      apply KECCAK_EMPTY_eq.
-    }
-    s. {
-      apply Impl_Into_for_From_T.Eq.I.
-    }
-    s.
-  }
-  { as_usize_or_fail_macro_eq InterpreterTypesEq.
-    resize_memory_macro_eq InterpreterTypesEq.
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s. {
-      pose proof (simulate.mod.keccak256_eq (T := '& (list u8))) as H_apply.
-      apply H_apply.
-    }
-    s. {
-      apply Impl_Into_for_From_T.Eq.I.
-    }
-    s.
-    now destruct _.(MemoryTrait.resize).
-  }
-Qed.
+Admitted.

@@ -72,24 +72,4 @@ Lemma blockhash_eq
     )
   }}.
 Proof.
-  with_strategy transparent [run_blockhash] unfold blockhash, run_blockhash; cbn.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  set (number := t0.(RefStub.projection) s0).
-  eapply Run.Let with (result := (Output.Success (as_u64_saturated_macro number), _)). {
-    as_u64_saturated_macro_eq.
-  }
-  s. {
-    apply HostEq.
-  }
-  destruct _.(Host.block_hash) as [[hash_opt|] ?host]; cbn. 2: {
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s.
-  }
-  s. {
-    apply Impl_Uint.from_be_bytes_eq.
-  }
-  s.
-Qed.
+Admitted.

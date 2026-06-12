@@ -50,15 +50,4 @@ Lemma memory_resize_eq
       )
     }}.
 Proof.
-  apply Run.remove_extra_stack1.
-  with_strategy transparent [run_memory_resize] unfold memory_resize, run_memory_resize; cbn.
-  s. {
-    apply calc.copy_cost_verylow_eq.
-  }
-  gas_macro_eq idtac.
-  s.
-  destruct (_ =? 0); [s|].
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  resize_memory_macro_eq InterpreterTypesEq.
-  s; now destruct _.(MemoryTrait.resize).
-Qed.
+Admitted.

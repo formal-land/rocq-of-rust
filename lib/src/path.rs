@@ -149,7 +149,8 @@ pub(crate) fn to_valid_rocq_name(is_value: IsValue, str: &str) -> String {
     let str = str.replace("::", "_");
     let str = str.replace('+', "_plus_");
     let characters_to_replace = [
-        ' ', '$', '(', ')', '&', '?', ',', '<', '>', '=', '[', ']', '*',
+        ' ', '$', '(', ')', '&', '?', ',', '<', '>', '=', '[', ']', '*', ';', ':', '{', '}', '/',
+        '\\', '\'', '"', '`', '!', '@', '#', '%', '^', '~', '.', '-',
     ];
     let str = characters_to_replace
         .iter()

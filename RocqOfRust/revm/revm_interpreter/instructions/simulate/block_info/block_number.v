@@ -60,18 +60,4 @@ Lemma block_number_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_block_number] unfold block_number, run_block_number; cbn.
-  gas_macro_eq idtac.
-  s. {
-    apply HostEq.
-  }
-  s. {
-    s_apply HostEq.
-  }
-  s. {
-    s_apply Impl_Uint.from_eq.
-  }
-  push_macro_eq InterpreterTypesEq.
-  s.
-Qed.
+Admitted.

@@ -12428,12 +12428,12 @@ Module bls12_381.
     Definition p1_msm_bytes (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [],
-          [ impl_Iterator_Item___Result__G1Point___u8;_SCALAR_LENGTH____PrecompileError__ ],
+          [ impl_Iterator_Item___Result__G1Point___u8__SCALAR_LENGTH____PrecompileError__ ],
           [ point_scalar_pairs ] =>
         ltac:(M.monadic
           (let point_scalar_pairs :=
             M.alloc (|
-              impl_Iterator_Item___Result__G1Point___u8;_SCALAR_LENGTH____PrecompileError__,
+              impl_Iterator_Item___Result__G1Point___u8__SCALAR_LENGTH____PrecompileError__,
               point_scalar_pairs
             |) in
           M.catch_return
@@ -12556,12 +12556,12 @@ Module bls12_381.
                         M.match_operator (|
                           Ty.tuple [],
                           M.alloc (|
-                            impl_Iterator_Item___Result__G1Point___u8;_SCALAR_LENGTH____PrecompileError__,
+                            impl_Iterator_Item___Result__G1Point___u8__SCALAR_LENGTH____PrecompileError__,
                             M.call_closure (|
-                              impl_Iterator_Item___Result__G1Point___u8;_SCALAR_LENGTH____PrecompileError__,
+                              impl_Iterator_Item___Result__G1Point___u8__SCALAR_LENGTH____PrecompileError__,
                               M.get_trait_method (|
                                 "core::iter::traits::collect::IntoIterator",
-                                impl_Iterator_Item___Result__G1Point___u8;_SCALAR_LENGTH____PrecompileError__,
+                                impl_Iterator_Item___Result__G1Point___u8__SCALAR_LENGTH____PrecompileError__,
                                 [],
                                 [],
                                 "into_iter",
@@ -12575,7 +12575,7 @@ Module bls12_381.
                             fun γ =>
                               ltac:(M.monadic
                                 (let~ iter :
-                                    impl_Iterator_Item___Result__G1Point___u8;_SCALAR_LENGTH____PrecompileError__ :=
+                                    impl_Iterator_Item___Result__G1Point___u8__SCALAR_LENGTH____PrecompileError__ :=
                                   M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
@@ -12650,7 +12650,7 @@ Module bls12_381.
                                                 ],
                                               M.get_trait_method (|
                                                 "core::iter::traits::iterator::Iterator",
-                                                impl_Iterator_Item___Result__G1Point___u8;_SCALAR_LENGTH____PrecompileError__,
+                                                impl_Iterator_Item___Result__G1Point___u8__SCALAR_LENGTH____PrecompileError__,
                                                 [],
                                                 [],
                                                 "next",
@@ -14132,12 +14132,12 @@ Module bls12_381.
     Definition p2_msm_bytes (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [],
-          [ impl_Iterator_Item___Result__G2Point___u8;_SCALAR_LENGTH____PrecompileError__ ],
+          [ impl_Iterator_Item___Result__G2Point___u8__SCALAR_LENGTH____PrecompileError__ ],
           [ point_scalar_pairs ] =>
         ltac:(M.monadic
           (let point_scalar_pairs :=
             M.alloc (|
-              impl_Iterator_Item___Result__G2Point___u8;_SCALAR_LENGTH____PrecompileError__,
+              impl_Iterator_Item___Result__G2Point___u8__SCALAR_LENGTH____PrecompileError__,
               point_scalar_pairs
             |) in
           M.catch_return
@@ -14260,12 +14260,12 @@ Module bls12_381.
                         M.match_operator (|
                           Ty.tuple [],
                           M.alloc (|
-                            impl_Iterator_Item___Result__G2Point___u8;_SCALAR_LENGTH____PrecompileError__,
+                            impl_Iterator_Item___Result__G2Point___u8__SCALAR_LENGTH____PrecompileError__,
                             M.call_closure (|
-                              impl_Iterator_Item___Result__G2Point___u8;_SCALAR_LENGTH____PrecompileError__,
+                              impl_Iterator_Item___Result__G2Point___u8__SCALAR_LENGTH____PrecompileError__,
                               M.get_trait_method (|
                                 "core::iter::traits::collect::IntoIterator",
-                                impl_Iterator_Item___Result__G2Point___u8;_SCALAR_LENGTH____PrecompileError__,
+                                impl_Iterator_Item___Result__G2Point___u8__SCALAR_LENGTH____PrecompileError__,
                                 [],
                                 [],
                                 "into_iter",
@@ -14279,7 +14279,7 @@ Module bls12_381.
                             fun γ =>
                               ltac:(M.monadic
                                 (let~ iter :
-                                    impl_Iterator_Item___Result__G2Point___u8;_SCALAR_LENGTH____PrecompileError__ :=
+                                    impl_Iterator_Item___Result__G2Point___u8__SCALAR_LENGTH____PrecompileError__ :=
                                   M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
@@ -14372,7 +14372,7 @@ Module bls12_381.
                                                 ],
                                               M.get_trait_method (|
                                                 "core::iter::traits::iterator::Iterator",
-                                                impl_Iterator_Item___Result__G2Point___u8;_SCALAR_LENGTH____PrecompileError__,
+                                                impl_Iterator_Item___Result__G2Point___u8__SCALAR_LENGTH____PrecompileError__,
                                                 [],
                                                 [],
                                                 "next",

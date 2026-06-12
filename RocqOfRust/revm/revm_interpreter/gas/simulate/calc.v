@@ -224,16 +224,6 @@ Definition call_cost
     u64 :=
   {| Integer.value := 0 |}.
 
-Lemma call_cost_eq (stack : Stack.t)
-    (spec_id : SpecId.t) (transfers_value : bool) (account_load : AccountLoad.t) :
-  {{
-    SimulateM.eval_f
-      (run_call_cost spec_id transfers_value account_load)
-      stack 🌲
-    (Output.Success (call_cost spec_id transfers_value account_load), stack)
-  }}.
-Admitted.
-
 Definition warm_cold_cost (is_cold : bool) : u64 :=
   {| Integer.value := 0 |}.
 

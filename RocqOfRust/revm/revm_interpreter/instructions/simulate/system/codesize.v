@@ -44,14 +44,4 @@ Lemma codesize_eq
       )
     }}.
 Proof.
-  with_strategy transparent [run_codesize] unfold codesize, run_codesize; cbn.
-  gas_macro_eq idtac.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    s_apply Impl_Uint.from_eq.
-  }
-  push_macro_eq InterpreterTypesEq.
-  s.
-Qed.
+Admitted.

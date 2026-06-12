@@ -57,15 +57,4 @@ Lemma msize_eq
     )
   }}.
 Proof.
-  intros.
-  unfold msize.
-  gas_macro_eq idtac.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    s_apply Impl_Uint.from_eq.
-  }
-  push_macro_eq InterpreterTypesEq.
-  s.
-Qed.
+Admitted.

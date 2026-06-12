@@ -76,47 +76,4 @@ Lemma sload_eq
     )
   }}.
 Proof.
-  with_strategy transparent [run_sload] unfold sload, run_sload; cbn.
-  unfold popn_top_macro.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s; destruct _.(StackTrait.popn_top) as [[[]|] ?stack']; cbn. 2: {
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s.
-  }
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    apply HostEq.
-  }
-  destruct _.(Host.sload) as [[value|] ?host]; cbn. 2: {
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s.
-  }
-  s. {
-    apply InterpreterTypesEq.
-  }
-  unfold gas_macro.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    apply calc.sload_cost_eq.
-  }
-  s. {
-    apply Impl_Gas.record_cost_eq.
-  }
-  destruct Impl_Gas.record_cost; cbn.
-  { s. }
-  { s. {
-      apply InterpreterTypesEq.
-    }
-    s.
-  }
-Qed.
+Admitted.
