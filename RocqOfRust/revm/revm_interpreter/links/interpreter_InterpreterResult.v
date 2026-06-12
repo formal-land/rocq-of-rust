@@ -4,6 +4,7 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.interpreter.
+
 (*
 pub struct InterpreterResult {
     pub result: InstructionResult,

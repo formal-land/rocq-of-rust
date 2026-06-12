@@ -495,7 +495,7 @@ Module Impl_Gas.
     pub fn memory(&self) -> &MemoryGas {
         &self.memory
     }
-*)
+  *)
   Instance run_memory (self : '& Self) :
   Run.Trait gas.Impl_revm_interpreter_gas_Gas.memory [] [] [φ self] ('& MemoryGas.t).
   Proof.
@@ -508,7 +508,7 @@ Module Impl_Gas.
     pub fn memory_mut(&mut self) -> &mut MemoryGas {
         &mut self.memory
     }
-*)
+  *)
   Instance run_memory_mut (self : '&mut Self) :
   Run.Trait gas.Impl_revm_interpreter_gas_Gas.memory_mut [] [] [φ self] ('&mut MemoryGas.t).
   Proof.
@@ -651,6 +651,6 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
-  Global Opaque run_record_cost.  
+  Global Opaque run_record_cost.
 End Impl_Gas.
 Export (hints) Impl_Gas.
