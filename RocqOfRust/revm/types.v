@@ -8737,3 +8737,63 @@ Module SpecId.
 
   End SubPointer.
 End SpecId.
+
+Module AccountInfo.
+  Record t : Set := {
+    balance: ruint.Uint.t 256 4;
+    nonce: U64.t;
+    code_hash: fixed.FixedBytes.t 32;
+    code: option.Option.t bytecode.Bytecode.t;
+  }.
+
+  Global Instance IsLink : Link t := {
+    Φ := Ty.path "revm_state::account_info::AccountInfo";
+    φ '(Build_t balance nonce code_hash code) :=
+      Value.StructRecord "revm_state::account_info::AccountInfo" [
+        ("balance", φ balance);
+        ("nonce", φ nonce);
+        ("code_hash", φ code_hash);
+        ("code", φ code)
+      ]
+  }.
+End AccountInfo.
+
+Module Account.
+  Record t : Set := {
+    info: account_info.AccountInfo.t;
+    transaction_id: Usize.t;
+    storage: map.HashMap.t (ruint.Uint.t 256 4) revm_state.EvmStorageSlot.t random.RandomState.t;
+    status: revm_state.AccountStatus.t;
+  }.
+
+  Global Instance IsLink : Link t := {
+    Φ := Ty.path "revm_state::Account";
+    φ '(Build_t info transaction_id storage status) :=
+      Value.StructRecord "revm_state::Account" [
+        ("info", φ info);
+        ("transaction_id", φ transaction_id);
+        ("storage", φ storage);
+        ("status", φ status)
+      ]
+  }.
+End Account.
+
+Module EvmStorageSlot.
+  Record t : Set := {
+    original_value: ruint.Uint.t 256 4;
+    present_value: ruint.Uint.t 256 4;
+    transaction_id: Usize.t;
+    is_cold: bool;
+  }.
+
+  Global Instance IsLink : Link t := {
+    Φ := Ty.path "revm_state::EvmStorageSlot";
+    φ '(Build_t original_value present_value transaction_id is_cold) :=
+      Value.StructRecord "revm_state::EvmStorageSlot" [
+        ("original_value", φ original_value);
+        ("present_value", φ present_value);
+        ("transaction_id", φ transaction_id);
+        ("is_cold", φ is_cold)
+      ]
+  }.
+End EvmStorageSlot.
