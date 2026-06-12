@@ -3,8 +3,12 @@ Require Import links.RocqOfRust.
 Require Import alloc.links.alloc.
 Require Import alloc.vec.links.mod.
 Require Import core.links.array.
+Require Import core.links.cmp.
 Require Import core.links.option.
 Require Import core.num.links.mod.
+Require Import revm_interpreter.links.gas.
+Require Import revm_interpreter.links.interpreter_types.
+Require Import revm_interpreter.gas.links.calc.
 Require Import revm_interpreter.interpreter.shared_memory.
 
 (*
@@ -34,3 +38,44 @@ Proof.
   run_symbolic.
 Defined.
 Global Opaque run_num_words.
+
+Instance run_resize_memory_cold
+    {Memory Synthetic Synthetic1 : Set}
+    `{Link Memory} `{Link Synthetic} `{Link Synthetic1}
+    (run_MemoryTrait_for_Memory : MemoryTrait.Run Memory Synthetic Synthetic1)
+    (gas : '&mut Gas.t)
+    (memory : '&mut Memory)
+    (new_num_words : usize) :
+  Run.Trait
+    interpreter.shared_memory.resize_memory_cold [] [ Φ Memory ]
+    [ φ gas; φ memory; φ new_num_words ]
+    bool.
+Proof.
+  constructor.
+  destruct run_MemoryTrait_for_Memory.
+  destruct method_resize.
+  run_symbolic.
+Defined.
+Global Opaque run_resize_memory_cold.
+
+Instance run_resize_memory
+    {Memory Synthetic Synthetic1 : Set}
+    `{Link Memory} `{Link Synthetic} `{Link Synthetic1}
+    (run_MemoryTrait_for_Memory : MemoryTrait.Run Memory Synthetic Synthetic1)
+    (gas : '&mut Gas.t)
+    (memory : '&mut Memory)
+    (offset len : usize) :
+  Run.Trait
+    interpreter.shared_memory.resize_memory [] [ Φ Memory ]
+    [ φ gas; φ memory; φ offset; φ len ]
+    bool.
+Proof.
+  constructor.
+  pose proof run_MemoryTrait_for_Memory as run_MemoryTrait_for_Memory_copy.
+  destruct run_MemoryTrait_for_Memory.
+  destruct method_resize.
+  run_symbolic.
+  Unshelve.
+  all: eapply (@run_resize_memory_cold Memory Synthetic Synthetic1 H H0 H1 run_MemoryTrait_for_Memory_copy).
+Defined.
+Global Opaque run_resize_memory.

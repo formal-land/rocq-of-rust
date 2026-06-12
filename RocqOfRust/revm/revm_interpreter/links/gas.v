@@ -492,17 +492,30 @@ Module Impl_Gas.
   Global Opaque run_limit.
 
   (*
-      pub const fn memory(&self) -> u64 {
-          0
-      }
-  *)
+    pub fn memory(&self) -> &MemoryGas {
+        &self.memory
+    }
+*)
   Instance run_memory (self : '& Self) :
-    Run.Trait gas.Impl_revm_interpreter_gas_Gas.memory [] [] [φ self] u64.
+  Run.Trait gas.Impl_revm_interpreter_gas_Gas.memory [] [] [φ self] ('& MemoryGas.t).
   Proof.
     constructor.
     run_symbolic.
   Defined.
   Global Opaque run_memory.
+
+  (*
+    pub fn memory_mut(&mut self) -> &mut MemoryGas {
+        &mut self.memory
+    }
+*)
+  Instance run_memory_mut (self : '&mut Self) :
+  Run.Trait gas.Impl_revm_interpreter_gas_Gas.memory_mut [] [] [φ self] ('&mut MemoryGas.t).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_memory_mut.
 
   (*
       pub const fn refunded(&self) -> i64 {
@@ -638,31 +651,6 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
-  Global Opaque run_record_cost.
-
-  (*
-      pub fn record_memory_expansion(&mut self, new_len: usize) -> MemoryExtensionResult {
-          let Some(additional_cost) = self.memory.record_new_len(new_len) else {
-              return MemoryExtensionResult::Same;
-          };
-
-          if !self.record_cost(additional_cost) {
-              return MemoryExtensionResult::OutOfGas;
-          }
-
-          MemoryExtensionResult::Extended
-      }
-  *)
-  Instance run_record_memory_expansion
-      (self : '&mut Self)
-      (new_len : usize) :
-    Run.Trait
-      gas.Impl_revm_interpreter_gas_Gas.record_memory_expansion [] [] [φ self; φ new_len]
-      MemoryExtensionResult.t.
-  Proof.
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_record_memory_expansion.
+  Global Opaque run_record_cost.  
 End Impl_Gas.
 Export (hints) Impl_Gas.

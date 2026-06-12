@@ -201,19 +201,18 @@ Proof.
 Admitted.
 Global Opaque run_selfdestruct_cost.
 
-(* pub const fn call_cost(spec_id: SpecId, transfers_value: bool, account_load: AccountLoad) -> u64 *)
-Instance run_call_cost
+(* pub fn calc_call_static_gas(spec_id: SpecId, has_transfer: bool) -> u64 *)
+Instance run_calc_call_static_gas
     (spec_id : SpecId.t)
-    (transfers_value : bool)
-    (account_load : AccountLoad.t) :
+    (has_transfer : bool) :
   Run.Trait
-    gas.calc.call_cost [] [] [ φ spec_id; φ transfers_value; φ account_load ]
+    gas.calc.calc_call_static_gas [] [] [ φ spec_id; φ has_transfer ]
     u64.
 Proof.
   constructor.
   run_symbolic.
 Admitted.
-Global Opaque run_call_cost.
+Global Opaque run_calc_call_static_gas.
 
 (* pub const fn warm_cold_cost(is_cold: bool) -> u64 *)
 Instance run_warm_cold_cost (is_cold : bool) :
@@ -247,26 +246,3 @@ Proof.
   run_symbolic.
 Defined.
 Global Opaque run_memory_gas.
-
-(* pub fn validate_initial_tx_gas<AccessListT: AccessListTrait>(
-    spec_id: SpecId,
-    input: &[u8],
-    is_create: bool,
-    access_list: Option<&AccessListT>,
-    authorization_list_num: u64,
-) -> u64 *)
-Instance run_validate_initial_tx_gas
-    {AccessListT : Set} `{Link AccessListT}
-    (spec_id : SpecId.t)
-    (input : '& (list u8))
-    (is_create : bool)
-    (access_list : option ('& AccessListT))
-    (authorization_list_num : u64) :
-  Run.Trait
-    gas.calc.validate_initial_tx_gas [] [ Φ AccessListT ]
-      [ φ spec_id; φ input; φ is_create; φ access_list; φ authorization_list_num ]
-    u64.
-Proof.
-  constructor.
-Admitted.
-Global Opaque run_validate_initial_tx_gas.

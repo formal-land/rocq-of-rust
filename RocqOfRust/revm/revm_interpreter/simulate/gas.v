@@ -116,8 +116,26 @@ Module Impl_Gas.
   Proof.
   Admitted.
 
-  Definition memory (self : Self) : u64 :=
-    {| Integer.value := 0 |}.
+  Definition memory
+    {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t) :
+    '& MemoryGas.t :=
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let ref_control : '&mut _ := {| Ref.core :=
+      SubPointer.Runner.apply
+        ref_interpreter.(Ref.core)
+        Interpreter.SubPointer.get_control
+  |} in
+  let ref_gas : '&mut _ := RefStub.apply ref_control gas_stub in
+  let ref_memory : '&mut MemoryGas.t := {|
+    Ref.core :=
+      SubPointer.Runner.apply
+        ref_gas.(Ref.core)
+        Gas.SubPointer.get_memory
+  |} in
+  Ref.cast_to Pointer.Kind.Ref ref_memory.
 
   Lemma memory_eq
       {WIRE : Set} `{Link WIRE}
@@ -132,12 +150,94 @@ Module Impl_Gas.
           Interpreter.SubPointer.get_control
     |} in
     let ref_self := RefStub.apply ref_control gas_stub in
-    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
     {{
       SimulateM.eval_f (Impl_Gas.run_memory ref_self) (interpreter :: stack)%stack 🌲
-      (Output.Success (memory self), interpreter :: stack)%stack
+      (Output.Success (memory interpreter gas_stub), interpreter :: stack)%stack
     }}.
   Proof.
+    with_strategy transparent [Impl_Gas.run_memory] cbn.
+    p.
+  Qed.
+
+  Definition memory_of_interpreter
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (_interpreter : Interpreter.t WIRE WIRE_types) :
+      '& MemoryGas.t :=
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_gas : '&mut Gas.t := {|
+      Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_gas
+    |} in
+    let ref_memory : '&mut MemoryGas.t := {|
+      Ref.core :=
+        SubPointer.Runner.apply
+          ref_gas.(Ref.core)
+          Gas.SubPointer.get_memory
+    |} in
+    Ref.cast_to Pointer.Kind.Ref ref_memory.
+
+  Lemma memory_of_interpreter_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_gas : '&mut Gas.t := {|
+        Ref.core :=
+          SubPointer.Runner.apply
+            ref_interpreter.(Ref.core)
+            Interpreter.SubPointer.get_gas
+      |} in
+    let ref_self : '& Gas.t := Ref.cast_to Pointer.Kind.Ref ref_gas in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_memory ref_self) (interpreter :: stack)%stack 🌲
+      (Output.Success (memory_of_interpreter interpreter), interpreter :: stack)%stack
+    }}.
+  Proof.
+    with_strategy transparent [Impl_Gas.run_memory] cbn.
+    p.
+  Qed.
+
+  Definition memory_mut_of_interpreter
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (_interpreter : Interpreter.t WIRE WIRE_types) :
+      '&mut MemoryGas.t :=
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_gas : '&mut Gas.t := {|
+      Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_gas
+    |} in
+    {|
+      Ref.core :=
+        SubPointer.Runner.apply
+          ref_gas.(Ref.core)
+          Gas.SubPointer.get_memory
+    |}.
+
+  Lemma memory_mut_of_interpreter_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_self : '&mut Gas.t := {|
+      Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_gas
+    |} in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_memory_mut ref_self) (interpreter :: stack)%stack 🌲
+      (Output.Success (memory_mut_of_interpreter interpreter), interpreter :: stack)%stack
+    }}.
+  Proof.
+    with_strategy transparent [Impl_Gas.run_memory_mut] cbn.
     p.
   Qed.
 
@@ -428,12 +528,10 @@ Module Impl_Gas.
   Qed.
 
   Definition record_cost (self : Self) (cost : u64) : option Self :=
-    let (remaining, overflow) := Impl_u64.overflowing_sub self.(Gas.remaining) cost in
-    let success := negb overflow in
-    if success then
-      Some (self <| Gas.remaining := remaining |>)
-    else
-      None.
+    match Impl_u64.checked_sub self.(Gas.remaining) cost with
+    | Some remaining => Some (self <| Gas.remaining := remaining |>)
+    | None => None
+    end.
 
   Lemma record_cost_eq
       {WIRE : Set} `{Link WIRE}
@@ -471,18 +569,20 @@ Module Impl_Gas.
       )
     }}.
   Proof.
-    Opaque Impl_u64.overflowing_sub.
-    apply Run.remove_extra_stack1.
-    with_strategy transparent [Impl_Gas.run_record_cost] (
-      unfold record_cost;
-      cbn
-    ).
-    cw Impl_u64.overflowing_sub_eq.
-    destruct Impl_u64.overflowing_sub as [remaining overflow].
-    s.
-    destruct (negb overflow); cbn; repeat (lu || p).
-    Transparent Impl_u64.overflowing_sub.
-  Qed.
+  Opaque Impl_u64.checked_sub.
+  apply Run.remove_extra_stack1.
+  with_strategy transparent [Impl_Gas.run_record_cost] (
+    unfold record_cost;
+    cbn
+  ).
+  lu.
+  cw Impl_u64.checked_sub_eq.
+  destruct (Impl_u64.checked_sub
+    (gas_stub.(RefStub.projection) interpreter.(Interpreter.control)).(Gas.remaining)
+    cost) as [remaining |].
+  all: cbn; repeat (lu || p).
+  Transparent Impl_u64.checked_sub.
+Qed.
 
   (* Help some proofs later *)
   Global Opaque record_cost.
@@ -490,7 +590,7 @@ Module Impl_Gas.
   Definition record_memory_expansion (self : Self) (new_len : usize) : MemoryExtensionResult.t * Self :=
     (MemoryExtensionResult.Extended, self).
 
-  Lemma record_memory_expansion_eq
+  (* Lemma record_memory_expansion_eq
       {WIRE : Set} `{Link WIRE}
       {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
       (interpreter : Interpreter.t WIRE WIRE_types)
@@ -518,5 +618,5 @@ Module Impl_Gas.
       )
     }}.
   Proof.
-  Admitted.
+  Admitted. *)
 End Impl_Gas.

@@ -212,57 +212,6 @@ Module Eip7702CodeLoad.
 End Eip7702CodeLoad.
 Export (hints) Eip7702CodeLoad.
 
-Module Impl_Deref_for_Eip7702CodeLoad.
-  Definition Self (T : Set) : Set :=
-    Eip7702CodeLoad.t T.
-
-  Instance run_deref (T : Set) `{Link T} (self : '& (Self T)) :
-    Run.Trait
-      (journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.deref (Φ T))
-      [] [] [ φ self ] ('& (StateLoad.t T)).
-  Proof.
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_deref.
-
-  Instance method_deref (T : Set) `{Link T} : Deref.Method_deref (Self T) (StateLoad.t T).
-  Proof.
-    econstructor.
-    { constructor.
-      eapply IsTraitMethod.Defined.
-      { apply journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.Implements. }
-      { reflexivity. }
-    }
-    { typeclasses eauto. }
-  Defined.
-
-  Instance run (T : Set) `{Link T} : Deref.Run (Self T) (StateLoad.t T) :=
-  {}.
-End Impl_Deref_for_Eip7702CodeLoad.
-Export (hints) Impl_Deref_for_Eip7702CodeLoad.
-
-Module Impl_Eip7702CodeLoad.
-  Definition Self (T : Set) `{Link T} : Set :=
-    Eip7702CodeLoad.t T.
-
-  (* pub fn into_components(self) -> (T, Eip7702CodeLoad<()>) *)
-  Instance run_into_components (T : Set) `{Link T} (self : Self T) :
-    Run.Trait
-      (journaled_state.Impl_revm_context_interface_journaled_state_Eip7702CodeLoad_T.into_components (Φ T))
-      [] [] [ φ self ] (T * Self unit).
-  Proof.
-    constructor.
-    run_symbolic.
-    eapply Run.CallPrimitiveGetTraitMethod. {
-      apply Impl_Deref_for_Eip7702CodeLoad.method_deref.
-    }
-    run_symbolic.
-  Defined.
-  Global Opaque run_into_components.
-End Impl_Eip7702CodeLoad.
-Export (hints) Impl_Eip7702CodeLoad.
-
 (*
 pub struct AccountLoad {
     pub load: Eip7702CodeLoad<()>,

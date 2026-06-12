@@ -245,6 +245,19 @@ Module Impl_Gas.
   Global Opaque run_memory.
 
   (*
+      pub const fn memory_mut(&mut self) -> &mut MemoryGas {
+          &mut self.memory
+      }
+  *)
+  Instance run_memory_mut (self : '&mut Self) :
+    Run.Trait gas.Impl_revm_interpreter_gas_Gas.memory_mut [] [] [φ self] ('&mut MemoryGas.t).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_memory_mut.
+
+  (*
       pub const fn refunded(&self) -> i64 {
           self.refunded
       }

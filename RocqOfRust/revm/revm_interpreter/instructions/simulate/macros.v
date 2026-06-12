@@ -1,4 +1,5 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.bytes.simulate.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.num.simulate.mod.
 Require Import core.simulate.result.
@@ -6,6 +7,8 @@ Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_action.
+Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
@@ -214,41 +217,199 @@ Definition popn_top_macro {WIRE K : Set} `{Link WIRE}
     ) :
     K :=
   let stack := interpreter.(Interpreter.stack) in
-  let (result, stack) :=
+  let stack_len :=
     IInterpreterTypes
-        .(InterpreterTypes.StackTrait_for_Stack)
-        .(StackTrait.popn_top)
-      N stack in
-  let interpreter :=
-    interpreter
-      <| Interpreter.stack := stack |> in
-  match result with
-  | Some (arr, top) =>
-    k arr top interpreter
-  | None =>
-    let control :=
-      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.StackUnderflow in
-    let interpreter := interpreter
-      <| Interpreter.control := control |> in
-    k_exit interpreter
-  end.
+      .(InterpreterTypes.StackTrait_for_Stack)
+      .(StackTrait.len)
+      stack in
+	  if i[stack_len] <? 1 + i[N] then
+	    let action :=
+	      interpreter_action.InterpreterAction.Return {|
+	        InterpreterResult.result := instruction_result.InstructionResult.StackUnderflow;
+	        InterpreterResult.output := Impl_Bytes.new;
+	        InterpreterResult.gas := interpreter.(Interpreter.gas);
+	      |} in
+	    let bytecode :=
+	      IInterpreterTypes
+	        .(InterpreterTypes.LoopControl_for_Bytecode)
+	        .(LoopControl.set_action)
+	        interpreter.(Interpreter.bytecode)
+	        action in
+	    let interpreter :=
+	      interpreter <| Interpreter.bytecode := bytecode |> in
+	    k_exit interpreter
+  else
+    let (result, stack) :=
+      IInterpreterTypes
+          .(InterpreterTypes.StackTrait_for_Stack)
+          .(StackTrait.popn_top)
+        N stack in
+    let interpreter :=
+      interpreter
+        <| Interpreter.stack := stack |> in
+    match result with
+    | Some (arr, top) =>
+      k arr top interpreter
+	    | None =>
+	      k_exit interpreter
+	    end.
+
+Lemma stack_dealloc_cons_alloc_unit
+    (A : Set)
+    (value : A)
+    (stack : Stack.t) :
+  Stack.dealloc (value :: Stack.alloc stack tt)%stack =
+  (value :: stack)%stack.
+Proof.
+  revert A value.
+  induction stack as [|B head stack IH]; intros A value; cbn.
+  { reflexivity. }
+  {
+    replace
+      (match Stack.alloc stack tt with
+       | []%stack => []%stack
+       | (_ :: _)%stack => (head :: Stack.dealloc (Stack.alloc stack tt))%stack
+       end)
+      with (head :: stack)%stack.
+    - specialize (IH B head).
+      cbn in IH.
+      rewrite IH.
+      reflexivity.
+    - specialize (IH B head).
+      cbn in IH.
+      symmetry.
+      exact IH.
+  }
+Qed.
+
+Lemma halt_eq {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (InterpreterTypesEq :
+      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (stack_rest : Stack.t)
+    (result : instruction_result.InstructionResult.t) :
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let action :=
+    interpreter_action.InterpreterAction.Return {|
+      InterpreterResult.result := result;
+      InterpreterResult.output := Impl_Bytes.new;
+      InterpreterResult.gas := interpreter.(Interpreter.gas);
+    |} in
+  {{
+    SimulateM.eval_f
+      (Impl_Interpreter.run_halt WIRE ref_interpreter result)
+      (interpreter :: stack_rest)%stack 🌲
+    (
+      Output.Success tt,
+      (
+        interpreter
+          <| Interpreter.bytecode :=
+            IInterpreterTypes
+              .(InterpreterTypes.LoopControl_for_Bytecode)
+              .(LoopControl.set_action)
+              interpreter.(Interpreter.bytecode)
+              action
+          |>
+        :: stack_rest
+      )%stack
+    )
+  }}.
+Proof.
+  intros.
+  with_strategy transparent [
+    Impl_Interpreter.run_halt
+  ] unfold Impl_Interpreter.run_halt.
+  cbn.
+  repeat s.
+  - apply Impl_Bytes.new_eq.
+  - apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.LoopControl_for_Bytecode)
+      .(LoopControl.BytecodeEq.set_action).
+  - repeat rewrite Stack.dealloc_alloc_eq;
+    repeat rewrite stack_dealloc_cons_alloc_unit;
+    reflexivity.
+Qed.
+
+Lemma halt_underflow_eq {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (InterpreterTypesEq :
+      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (stack_rest : Stack.t) :
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let action :=
+    interpreter_action.InterpreterAction.Return {|
+      InterpreterResult.result := instruction_result.InstructionResult.StackUnderflow;
+      InterpreterResult.output := Impl_Bytes.new;
+      InterpreterResult.gas := interpreter.(Interpreter.gas);
+    |} in
+  {{
+    SimulateM.eval_f
+      (Impl_Interpreter.run_halt_underflow WIRE ref_interpreter)
+      (interpreter :: stack_rest)%stack 🌲
+    (
+      Output.Success tt,
+      (
+        interpreter
+          <| Interpreter.bytecode :=
+            IInterpreterTypes
+              .(InterpreterTypes.LoopControl_for_Bytecode)
+              .(LoopControl.set_action)
+              interpreter.(Interpreter.bytecode)
+              action
+          |>
+        :: stack_rest
+      )%stack
+    )
+  }}.
+Proof.
+  intros.
+  with_strategy transparent [
+    Impl_Interpreter.run_halt_underflow
+    Impl_Interpreter.run_halt
+  ] unfold Impl_Interpreter.run_halt_underflow, Impl_Interpreter.run_halt.
+  cbn.
+  repeat s.
+  - apply Impl_Bytes.new_eq.
+  - apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.LoopControl_for_Bytecode)
+      .(LoopControl.BytecodeEq.set_action).
+  - repeat rewrite Stack.dealloc_alloc_eq;
+    repeat rewrite stack_dealloc_cons_alloc_unit;
+    reflexivity.
+Qed.
 
 Ltac popn_top_macro_eq InterpreterTypesEq :=
   unfold popn_top_macro;
   s; [
     apply InterpreterTypesEq
       .(InterpreterTypes.Eq.StackTrait_for_Stack)
+      .(StackTrait.Eq.len)
+  |];
+  repeat s;
+  destruct (_ <? _) eqn:?; cbn;
+  [
+    s; [
+      eapply halt_underflow_eq;
+      try exact InterpreterTypesEq
+    |];
+    repeat s
+  |];
+  eapply Run.Call; [
+    apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.StackTrait_for_Stack)
       .(StackTrait.Eq.popn_top)
   |];
+  cbn;
   destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn_top) as [[[? ?]|] ?];
-  [|
-    s; [
-      apply InterpreterTypesEq
-        .(InterpreterTypes.Eq.LoopControl_for_Control)
-        .(LoopControl.Eq.set_instruction_result)
-    |];
+  [
+    idtac
+  |
     s
   ].
 
@@ -409,13 +570,19 @@ Definition as_usize_or_fail_ret_macro {WIRE K : Set} `{Link WIRE}
       | Some reason => reason
       | None => instruction_result.InstructionResult.InvalidOperandOOG
       end in
-    let control :=
+    let action :=
+      interpreter_action.InterpreterAction.Return {|
+        InterpreterResult.result := reason;
+        InterpreterResult.output := Impl_Bytes.new;
+        InterpreterResult.gas := interpreter.(Interpreter.gas);
+      |} in
+    let bytecode :=
       IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        reason in
-    let interpreter := interpreter <| Interpreter.control := control |> in
+          .(InterpreterTypes.LoopControl_for_Bytecode)
+          .(LoopControl.set_action)
+        interpreter.(Interpreter.bytecode)
+        action in
+    let interpreter := interpreter <| Interpreter.bytecode := bytecode |> in
     k_exit interpreter
   else
     k (M.cast_integer IntegerKind.Usize (v0 : u64)) interpreter.
@@ -431,9 +598,10 @@ Ltac as_usize_or_fail_ret_macro_eq InterpreterTypesEq :=
   s;
   destruct (_ || _); [
     s; [
-      apply InterpreterTypesEq
+      eapply halt_eq;
+      try exact InterpreterTypesEq
     |];
-    s
+    repeat s
   |].
 
 Definition as_usize_or_fail_macro {WIRE K : Set} `{Link WIRE}
@@ -492,17 +660,17 @@ Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
 
 Ltac resize_memory_macro_eq InterpreterTypesEq :=
   unfold resize_memory_macro;
-  s; [
+  cbn;
+  repeat (apply Run.LetUnfold || cbn);
+  eapply Run.Call; [
     apply Impl_usize.saturating_add_eq
   |];
+  cbn;
   s; [
     apply num_words_eq
   |];
   s; [
     apply InterpreterTypesEq
-  |];
-  s; [
-    apply Impl_Gas.record_memory_expansion_eq
   |];
   s; [
     apply InterpreterTypesEq

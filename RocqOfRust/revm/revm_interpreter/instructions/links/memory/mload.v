@@ -13,6 +13,7 @@ Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_specification.links.hardfork.
 Require Import ruint.links.bits.
 Require Import ruint.links.bytes.
@@ -23,21 +24,31 @@ Instance run_mload
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (host : '&mut H) :
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.memory.mload [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
+    instructions.memory.mload [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  pose proof run_InterpreterTypes_for_WIRE as run_InterpreterTypes_for_WIRE_copy.
   destruct run_InterpreterTypes_for_WIRE.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
+  destruct method_popn_top.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_MemoryTrait_for_Memory.
   destruct run_Deref_for_Synthetic.
   destruct (Impl_AsRef_for_Slice.run u8).
+  pose proof
+    (@Impl_Interpreter.run_halt_memory_oog WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy)
+    as run_halt_memory_oog_for_WIRE.
+  pose proof
+    (@Impl_Interpreter.run_halt_underflow WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy)
+    as run_halt_underflow_for_WIRE.
+  pose proof
+    (@Impl_Interpreter.run_halt WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy)
+    as run_halt_for_WIRE.
   run_symbolic.
 Defined.
 Global Opaque run_mload.

@@ -749,19 +749,6 @@ Module Impl_InstructionResult.
   Defined.
   Global Opaque run_is_ok_or_revert.
 
-  (* pub const fn is_continue(self) -> bool *)
-  Instance run_is_continue (self : Self) :
-    Run.Trait
-      instruction_result.Impl_revm_interpreter_instruction_result_InstructionResult.is_continue
-        [] [] [ φ self ]
-      bool.
-  Proof.
-    (* This is the only one that is fast in this file, for some reasons! *)
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_is_continue.
-
   (* pub const fn is_revert(self) -> bool *)
   Instance run_is_revert (self : Self) :
     Run.Trait

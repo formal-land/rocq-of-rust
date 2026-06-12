@@ -10,6 +10,7 @@ Require Import revm_interpreter.interpreter.
 (*
 pub struct Interpreter<WIRE: InterpreterTypes> {
     pub bytecode: WIRE::Bytecode,
+    pub gas: Gas,
     pub stack: WIRE::Stack,
     pub return_data: WIRE::ReturnData,
     pub memory: WIRE::Memory,
@@ -26,6 +27,7 @@ Module Interpreter.
       {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
       Set := {
     bytecode : WIRE_types.(InterpreterTypes.Types.Bytecode);
+    gas : Gas.t;
     stack : WIRE_types.(InterpreterTypes.Types.Stack);
     return_data : WIRE_types.(InterpreterTypes.Types.ReturnData);
     memory : WIRE_types.(InterpreterTypes.Types.Memory);
@@ -45,6 +47,7 @@ Module Interpreter.
     φ x :=
       Value.StructRecord "revm_interpreter::interpreter::Interpreter" [] [] [
         ("bytecode", φ x.(bytecode));
+        ("gas", φ x.(gas));
         ("stack", φ x.(stack));
         ("return_data", φ x.(return_data));
         ("memory", φ x.(memory));
@@ -90,6 +93,24 @@ Module Interpreter.
       SubPointer.Runner.Valid.t (get_bytecode (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_bytecode_is_valid : run_sub_pointer.
+
+    Definition get_gas
+        {WIRE : Set} `{Link WIRE}
+        {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
+      SubPointer.Runner.t
+        (t WIRE WIRE_types)
+        (Pointer.Index.StructRecord "revm_interpreter::interpreter::Interpreter" "gas") :=
+      {|
+        SubPointer.Runner.projection x := Some x.(gas);
+        SubPointer.Runner.injection x y := Some (x <| gas := y |>);
+      |}.
+
+    Lemma get_gas_is_valid
+        {WIRE : Set} `{Link WIRE}
+        {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
+      SubPointer.Runner.Valid.t (get_gas (WIRE := WIRE) (WIRE_types := WIRE_types)).
+    Proof. now constructor. Qed.
+    Smpl Add apply get_gas_is_valid : run_sub_pointer.
 
     Definition get_stack
         {WIRE : Set} `{Link WIRE}

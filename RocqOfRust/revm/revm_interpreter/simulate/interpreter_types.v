@@ -884,6 +884,8 @@ Export (hints) StackTrait.
 
 Module LoopControl.
   Class C (Self : Set) `{Link Self} : Set := {
+    (* fn set_action(&mut self, action: InterpreterAction); *)
+    set_action (self : Self) (action : InterpreterAction.t) : Self;
     (* fn set_instruction_result(&mut self, result: InstructionResult); *)
     set_instruction_result (self : Self) (result : InstructionResult.t) : Self;
     (* fn set_next_action(&mut self, action: InterpreterAction, result: InstructionResult); *)
@@ -897,16 +899,36 @@ Module LoopControl.
   }.
 
   Module Eq.
-    Class t
-        (WIRE : Set) {WIRE_types : InterpreterTypes.Types.t}
-        `{Link WIRE} `{InterpreterTypes.Types.AreLinks WIRE_types}
-        `{!links.interpreter_types.LoopControl.Run WIRE_types.(InterpreterTypes.Types.Control)}
-        (I : C WIRE_types.(InterpreterTypes.Types.Control)) :
-        Prop := {
-      set_instruction_result
-        (interpreter : Interpreter.t WIRE WIRE_types)
-        (stack_rest : Stack.t)
-        (result : InstructionResult.t) :
+	    Class t
+	        (WIRE : Set) {WIRE_types : InterpreterTypes.Types.t}
+	        `{Link WIRE} `{InterpreterTypes.Types.AreLinks WIRE_types}
+	        `{!links.interpreter_types.LoopControl.Run WIRE_types.(InterpreterTypes.Types.Control)}
+	        (I : C WIRE_types.(InterpreterTypes.Types.Control)) :
+	        Prop := {
+	      set_action
+	        (interpreter : Interpreter.t WIRE WIRE_types)
+	        (stack_rest : Stack.t)
+	        (action : InterpreterAction.t) :
+	        let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+	        let ref_self := {| Ref.core :=
+	          SubPointer.Runner.apply
+	            ref_interpreter.(Ref.core)
+	            Interpreter.SubPointer.get_control
+	        |} in
+	        let control' := I.(set_action) interpreter.(Interpreter.control) action in
+	        {{
+	          SimulateM.eval_f
+	            (links.interpreter_types.LoopControl.run_set_action ref_self action)
+	            (interpreter :: stack_rest)%stack 🌲
+	          (
+	            Output.Success tt,
+	            (interpreter <| Interpreter.control := control' |> :: stack_rest)%stack
+	          )
+	        }};
+	      set_instruction_result
+	        (interpreter : Interpreter.t WIRE WIRE_types)
+	        (stack_rest : Stack.t)
+	        (result : InstructionResult.t) :
         let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
           SubPointer.Runner.apply
@@ -1000,9 +1022,39 @@ Module LoopControl.
           )
         }};
     }.
-  End Eq.
-End LoopControl.
-Export (hints) LoopControl.
+	  End Eq.
+
+	  Module BytecodeEq.
+	    Class t
+	        (WIRE : Set) {WIRE_types : InterpreterTypes.Types.t}
+	        `{Link WIRE} `{InterpreterTypes.Types.AreLinks WIRE_types}
+	        `{!links.interpreter_types.LoopControl.Run WIRE_types.(InterpreterTypes.Types.Bytecode)}
+	        (I : C WIRE_types.(InterpreterTypes.Types.Bytecode)) :
+	        Prop := {
+	      set_action
+	        (interpreter : Interpreter.t WIRE WIRE_types)
+	        (stack_rest : Stack.t)
+	        (action : InterpreterAction.t) :
+	        let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+	        let ref_self := {| Ref.core :=
+	          SubPointer.Runner.apply
+	            ref_interpreter.(Ref.core)
+	            Interpreter.SubPointer.get_bytecode
+	        |} in
+	        let bytecode' := I.(set_action) interpreter.(Interpreter.bytecode) action in
+	        {{
+	          SimulateM.eval_f
+	            (links.interpreter_types.LoopControl.run_set_action ref_self action)
+	            (interpreter :: stack_rest)%stack 🌲
+	          (
+	            Output.Success tt,
+	            (interpreter <| Interpreter.bytecode := bytecode' |> :: stack_rest)%stack
+	          )
+	        }};
+	    }.
+	  End BytecodeEq.
+	End LoopControl.
+	Export (hints) LoopControl.
 
 Module RuntimeFlag.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -1115,6 +1167,11 @@ Module MemoryTrait.
     Deref_for_Synthetic :: Deref.C Synthetic (list u8);
     (* fn slice_len(&self, offset: usize, len: usize) -> impl Deref<Target = [u8]> + '_; *)
     slice_len (self : Self) (offset len : usize) : Synthetic;
+    slice_len_length (self : Self) (offset len : usize) :
+    List.length
+      (Deref_for_Synthetic.(Deref.deref).(RefStub.projection)
+         (slice_len self offset len)) =
+      Z.to_nat len.(Integer.value);
     Deref_for_Synthetic1 :: Deref.C Synthetic1 (list u8);
     (* fn resize(&mut self, new_size: usize) -> bool; *)
     resize (self : Self) (new_size : usize) : bool * Self;
@@ -1488,10 +1545,11 @@ Module InterpreterTypes.
       WIRE_types.(InterpreterTypes.Types.Memory)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1);
-    (* type Bytecode: Jumps + Immediates + LegacyBytecode + EofData + EofContainer + EofCodeInfo; *)
-    Jumps_for_Bytecode :: Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode);
-    Immediates_for_Bytecode :: Immediates.C WIRE_types.(InterpreterTypes.Types.Bytecode);
-    LegacyBytecode_for_Bytecode :: LegacyBytecode.C WIRE_types.(InterpreterTypes.Types.Bytecode);
+	    (* type Bytecode: Jumps + Immediates + LegacyBytecode + EofData + EofContainer + EofCodeInfo; *)
+	    LoopControl_for_Bytecode :: LoopControl.C WIRE_types.(InterpreterTypes.Types.Bytecode);
+	    Jumps_for_Bytecode :: Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode);
+	    Immediates_for_Bytecode :: Immediates.C WIRE_types.(InterpreterTypes.Types.Bytecode);
+	    LegacyBytecode_for_Bytecode :: LegacyBytecode.C WIRE_types.(InterpreterTypes.Types.Bytecode);
     EofData_for_Bytecode :: EofData.C WIRE_types.(InterpreterTypes.Types.Bytecode);
     EofContainer_for_Bytecode :: EofContainer.C WIRE_types.(InterpreterTypes.Types.Bytecode);
     EofCodeInfo_for_Bytecode :: EofCodeInfo.C WIRE_types.(InterpreterTypes.Types.Bytecode);
@@ -1514,10 +1572,11 @@ Module InterpreterTypes.
         (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
         (I : C WIRE_types) :
         Prop := {
-      StackTrait_for_Stack :: StackTrait.Eq.t WIRE I.(StackTrait_for_Stack);
-      MemoryTrait_for_Memory :: MemoryTrait.Eq.t WIRE I.(MemoryTrait_for_Memory);
-      Jumps_for_Bytecode :: Jumps.Eq.t WIRE I.(Jumps_for_Bytecode);
-      Immediates_for_Bytecode :: Immediates.Eq.t WIRE I.(Immediates_for_Bytecode);
+	      StackTrait_for_Stack :: StackTrait.Eq.t WIRE I.(StackTrait_for_Stack);
+	      MemoryTrait_for_Memory :: MemoryTrait.Eq.t WIRE I.(MemoryTrait_for_Memory);
+	      LoopControl_for_Bytecode :: LoopControl.BytecodeEq.t WIRE I.(LoopControl_for_Bytecode);
+	      Jumps_for_Bytecode :: Jumps.Eq.t WIRE I.(Jumps_for_Bytecode);
+	      Immediates_for_Bytecode :: Immediates.Eq.t WIRE I.(Immediates_for_Bytecode);
       LegacyBytecode_for_Bytecode :: LegacyBytecode.Eq.t WIRE I.(LegacyBytecode_for_Bytecode);
       EofData_for_Bytecode :: EofData.Eq.t WIRE I.(EofData_for_Bytecode);
       EofContainer_for_Bytecode :: EofContainer.Eq.t WIRE I.(EofContainer_for_Bytecode);
