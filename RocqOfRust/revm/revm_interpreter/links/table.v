@@ -1,7 +1,6 @@
 Require Import links.RocqOfRust.
 Require Import revm.revm_interpreter.links.interpreter_Interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_interpreter.table.
 
 (*
 pub type Instruction<W, H> = for<'a> fn(&'a mut Interpreter<W>, &'a mut H);
