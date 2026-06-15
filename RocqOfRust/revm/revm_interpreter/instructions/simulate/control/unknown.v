@@ -53,4 +53,10 @@ Lemma unknown_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_unknown] unfold unknown, run_unknown; cbn.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s.
+Qed.

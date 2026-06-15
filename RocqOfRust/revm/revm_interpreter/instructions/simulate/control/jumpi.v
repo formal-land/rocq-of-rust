@@ -55,4 +55,20 @@ Lemma jumpi_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_jumpi] unfold jumpi, run_jumpi; cbn.
+  gas_macro_eq idtac.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[target [cond []]]]
+  end.
+  s. {
+    s_apply @Impl_Uint.is_zero_eq.
+  }
+  destruct Impl_Uint.is_zero; [s|].
+  s. {
+    apply jump_inner_eq; typeclasses eauto.
+  }
+  s.
+Qed.

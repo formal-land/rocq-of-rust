@@ -63,4 +63,51 @@ Lemma extcall_input_eq
     )
   }}.
 Proof.
-Admitted.
+  apply Run.remove_extra_stack1.
+  with_strategy transparent [run_extcall_input]
+    unfold run_extcall_input, extcall_input; cbn.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t _ _ |- _ =>
+    destruct array as [[input_offset [input_size []]]]
+  end.
+  s. {
+    apply call_helpers.resize_memory_eq; typeclasses eauto.
+  }
+  destruct call_helpers.resize_memory as [[return_memory_offset|] ?interpreter]; cbn. 2: {
+    s. {
+      s_apply Impl_Try_for_Option.Eq.I.
+    }
+    s. {
+      s_apply Impl_FromResidual_Infallible_for_Option.Eq.I.
+    }
+    s.
+  }
+  s. {
+    s_apply Impl_Try_for_Option.Eq.I.
+  }
+  s. {
+    s_apply Impl_Range.is_empty_eq.
+  }
+  s.
+  destruct Impl_Range.is_empty; cbn.
+  { s. {
+      apply Impl_Bytes.new_eq.
+    }
+    s.
+  }
+  { s. {
+      s_apply @Impl_Clone_for_Range.Eq.I.
+    }
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      s_apply @Impl_Bytes.copy_from_slice_eq.
+    }
+    s.
+  }
+Qed.

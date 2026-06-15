@@ -63,4 +63,19 @@ Lemma basefee_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_basefee] unfold basefee, run_basefee; cbn.
+  check_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
+  s. {
+    apply HostEq.
+  }
+  s. {
+    s_apply HostEq.
+  }
+  s. {
+    s_apply Impl_Uint.from_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.

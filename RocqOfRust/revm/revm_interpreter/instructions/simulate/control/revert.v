@@ -49,4 +49,15 @@ Lemma revert_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_revert] unfold revert, run_revert; cbn.
+  check_macro_eq InterpreterTypesEq.
+  s. {
+    apply (return_inner_eq
+      run_InterpreterTypes_for_WIRE
+      IInterpreterTypes
+      InterpreterTypesEq
+    ).
+  }
+  s.
+Qed.

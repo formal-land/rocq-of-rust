@@ -69,4 +69,23 @@ Lemma jump_inner_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  apply Run.remove_extra_stack1.
+  with_strategy transparent [run_jump_inner] unfold jump_inner, run_jump_inner; cbn.
+  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s.
+  destruct _.(Jumps.is_valid_legacy_jump) as [is_valid bytecode], is_valid; cbn.
+  { s. {
+      apply InterpreterTypesEq.
+    }
+    s.
+  }
+  { s. {
+      apply InterpreterTypesEq.
+    }
+    s.
+  }
+Qed.

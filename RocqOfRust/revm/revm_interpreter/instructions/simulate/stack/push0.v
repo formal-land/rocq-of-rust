@@ -51,4 +51,13 @@ Lemma push0_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_push0] unfold push0, run_push0; cbn.
+  check_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
+  s. {
+    apply Impl_Uint.ZERO_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.

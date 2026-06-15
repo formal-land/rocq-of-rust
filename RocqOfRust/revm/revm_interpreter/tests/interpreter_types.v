@@ -51,13 +51,6 @@ Module Memory.
       end
     end.
 
-  Lemma length_take_pad (len : nat) (l : list u8) :
-    List.length (take_pad len l) = len.
-  Proof.
-    revert l.
-    induction len; intros [| x xs]; cbn; auto.
-  Qed.  
-
   (** Get a slice of memory, returning zeros for out-of-bounds *)
   Definition slice (self : t) (offset len : usize) : list u8 :=
     take_pad (Z.to_nat i[len]) (List.skipn (Z.to_nat i[offset]) self.(value)).
@@ -366,9 +359,6 @@ Module LoopControl.
   Definition Self : Set :=
     Control.t.
 
-  Definition set_action (self : Self) (_action : InterpreterAction.t) : Self :=
-    self.   
-
   Definition set_instruction_result (self : Self) (result : InstructionResult.t) : Self :=
     self <| Control.instruction_result := Some result |>.
 
@@ -394,7 +384,6 @@ Module LoopControl.
   Admitted.
 
   Instance I : LoopControl.C WIRE_types.(InterpreterTypes.Types.Control) := {|
-    simulate.interpreter_types.LoopControl.set_action := set_action;
     simulate.interpreter_types.LoopControl.set_instruction_result := set_instruction_result;
     simulate.interpreter_types.LoopControl.set_next_action := set_next_action;
     simulate.interpreter_types.LoopControl.gas := gas;
@@ -403,43 +392,6 @@ Module LoopControl.
   |}.
 End LoopControl.
 Export (hints) LoopControl.
-
-Module BytecodeLoopControl.
-  Definition Self : Set :=
-    WIRE_types.(InterpreterTypes.Types.Bytecode).
-
-  Definition set_action (self : Self) (_action : InterpreterAction.t) : Self :=
-    self.
-
-  Definition set_instruction_result (self : Self) (_result : InstructionResult.t) : Self :=
-    self.
-
-  Definition set_next_action
-      (self : Self)
-      (_action : InterpreterAction.t)
-      (_result : InstructionResult.t) :
-      Self :=
-    self.
-
-  Definition gas : RefStub.t Self Gas.t.
-  Admitted.
-
-  Definition instruction_result (_self : Self) : InstructionResult.t.
-  Admitted.
-
-  Definition take_next_action (self : Self) : InterpreterAction.t * Self.
-  Admitted.
-
-  Instance I : LoopControl.C Self := {|
-    simulate.interpreter_types.LoopControl.set_action := set_action;
-    simulate.interpreter_types.LoopControl.set_instruction_result := set_instruction_result;
-    simulate.interpreter_types.LoopControl.set_next_action := set_next_action;
-    simulate.interpreter_types.LoopControl.gas := gas;
-    simulate.interpreter_types.LoopControl.instruction_result := instruction_result;
-    simulate.interpreter_types.LoopControl.take_next_action := take_next_action;
-  |}.
-End BytecodeLoopControl.
-Export (hints) BytecodeLoopControl.
 
 Module RuntimeFlag.
   Definition Self : Set := SpecId.t.
@@ -492,11 +444,6 @@ Module MemoryTrait.
     simulate.interpreter_types.MemoryTrait.slice := slice;
     simulate.interpreter_types.MemoryTrait.Deref_for_Synthetic := MemorySlice.Deref_I;
     simulate.interpreter_types.MemoryTrait.slice_len := slice_len;
-    simulate.interpreter_types.MemoryTrait.slice_len_length :=
-      fun self offset len =>
-        Memory.length_take_pad
-          (Z.to_nat i[len])
-          (List.skipn (Z.to_nat i[offset]) self.(Memory.value));
     simulate.interpreter_types.MemoryTrait.Deref_for_Synthetic1 := MemorySlice.Deref_I;
     simulate.interpreter_types.MemoryTrait.resize := resize;
   |}.
@@ -516,9 +463,6 @@ End ReturnData.
 Export (hints) ReturnData.
 
 Module InterpreterTypes.
-  Instance I : InterpreterTypes.C WIRE_types := {
-    InterpreterTypes.LoopControl_for_Bytecode := BytecodeLoopControl.I;
-  }.
+  Instance I : InterpreterTypes.C WIRE_types := {}.
 End InterpreterTypes.
 Export (hints) InterpreterTypes.
-

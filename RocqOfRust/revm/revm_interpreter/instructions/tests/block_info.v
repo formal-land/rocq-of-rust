@@ -26,7 +26,9 @@ Goal
   let '(result_interpreter, _) := block_number interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 1 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** timestamp *)
 
@@ -38,7 +40,9 @@ Goal
   let '(result_interpreter, _) := timestamp interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** basefee *)
 
@@ -51,7 +55,9 @@ Goal
   let '(result_interpreter, _) := basefee interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** gaslimit *)
 
@@ -63,7 +69,9 @@ Goal
   let '(result_interpreter, _) := gaslimit interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** coinbase *)
 
@@ -75,7 +83,9 @@ Goal
   let '(result_interpreter, _) := coinbase interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** difficulty *)
 
@@ -88,7 +98,9 @@ Goal
   let '(result_interpreter, _) := difficulty interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** blob_basefee *)
 
@@ -101,7 +113,9 @@ Goal
   let '(result_interpreter, _) := blob_basefee interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** chainid *)
 
@@ -114,4 +128,6 @@ Goal
   let '(result_interpreter, _) := chainid interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 1 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.

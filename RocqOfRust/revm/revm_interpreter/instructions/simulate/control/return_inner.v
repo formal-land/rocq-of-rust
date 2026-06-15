@@ -96,4 +96,49 @@ Lemma return_inner_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  apply Run.remove_extra_stack1.
+  with_strategy transparent [run_return_inner] unfold return_inner, run_return_inner; cbn.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[offset [len []]]]
+  end.
+  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  s. {
+    apply simulate.mod.Impl_Default_for_Bytes.default_eq.
+  }
+  s; destruct negb; cbn.
+  { as_usize_or_fail_macro_eq InterpreterTypesEq.
+    resize_memory_macro_eq InterpreterTypesEq.
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      set (ref_self := Ref.cast_to _ _).
+      apply (Impl_Slice.to_vec_eq _ ref_self); repeat unshelve econstructor.
+    }
+    s. {
+      apply Impl_Into_for_From_T.Eq.I.
+    }
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s.
+    now destruct _.(MemoryTrait.resize).
+  }
+  { s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s.
+  }
+Qed.

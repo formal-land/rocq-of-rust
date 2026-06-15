@@ -71,4 +71,39 @@ Lemma op_sar_eq
     )
   }}.
 Proof.
-Admitted.
+Opaque Impl_Uint.bit.
+  intros.
+  unfold op_sar.
+  check_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
+  popn_top_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ => destruct array as [[op1 []]]; cbn
+  end.
+  eapply Run.Let with (result := (Output.Success (as_usize_saturated_macro op1), _)). {
+    as_usize_saturated_macro_eq.
+  }
+  s.
+  destruct (_ <? 256).
+  { s. {
+      apply Impl_Uint.arithmetic_shr_eq.
+    }
+    s.
+  }
+  { s. {
+      apply Impl_Uint.bit_eq; repeat unshelve econstructor.
+    }
+    destruct Impl_Uint.bit in |- *.
+    { s. {
+        apply Impl_Uint.MAX_eq.
+      }
+      s.
+    }
+    { s. {
+        apply Impl_Uint.ZERO_eq.
+      }
+      s.
+    }
+  }
+Transparent Impl_Uint.bit.
+Qed.

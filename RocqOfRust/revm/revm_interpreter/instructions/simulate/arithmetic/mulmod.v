@@ -55,4 +55,16 @@ Lemma mulmod_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  unfold mulmod.
+  gas_macro_eq idtac.
+  popn_top_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 [op2 []]]]
+  end.
+  s. {
+    apply Impl_Uint.mul_mod_eq.
+  }
+  s.
+Qed.

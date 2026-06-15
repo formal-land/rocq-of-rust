@@ -48,4 +48,9 @@ Lemma pop_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_pop] unfold pop, run_pop; cbn.
+  gas_macro_eq idtac.
+  popn_macro_eq InterpreterTypesEq.
+  s.
+Qed.

@@ -123,4 +123,44 @@ Lemma static_call_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_static_call] unfold static_call, run_static_call; cbn.
+  check_macro_eq InterpreterTypesEq.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ => destruct array as [[local_gas_limit [to []]]]; cbn
+  end.
+  l. {
+    cw Impl_From_U256_for_FixedBytes_32.from_eq.
+    cw Impl_Address.from_word_eq.
+    p.
+  }
+  l. {
+    cw TryFrom_Uint_for_u64.try_from_eq.
+    cw Impl_u64.max_eq.
+    cw @Impl_Result_T_E.unwrap_or_eq.
+    p.
+  }
+  cw @call_helpers.get_memory_input_and_out_ranges_eq.
+  destruct get_memory_input_and_out_ranges as [[[input_data return_memory_offset]|] ?interpreter];
+    cbn;
+    [| apply Run.Pure].
+  cw HostEq.
+  lu.
+  destruct _.(Host.load_account_delegated) as [[load|] ?host]; cbn. 2: {
+    lu.
+    cw InterpreterTypesEq.
+    p.
+  }
+  lu.
+  cw @call_helpers.calc_call_gas_eq.
+  destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
+  gas_macro_eq idtac.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  cw Impl_Uint.ZERO_eq.
+  cw @Impl_Box.new_eq.
+  cw InterpreterTypesEq.
+  p.
+Qed.

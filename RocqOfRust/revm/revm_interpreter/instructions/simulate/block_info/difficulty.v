@@ -80,4 +80,40 @@ Lemma difficulty_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_difficulty] unfold difficulty, run_difficulty; cbn.
+  gas_macro_eq idtac.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply Impl_SpecId.is_enabled_in_eq.
+  }
+  destruct Impl_SpecId.is_enabled_in; cbn.
+  { s. {
+      apply HostEq.
+    }
+    s. {
+      s_apply HostEq.
+    }
+    s. {
+      apply Impl_Option.unwrap_eq.
+      exact H_prevrandao.
+    }
+    s. {
+      apply Impl_IntoU256_for_B256.into_u256_eq.
+    }
+    rewrite H_prevrandao.
+    push_macro_eq InterpreterTypesEq.
+    s.
+  }
+  { s. {
+      apply HostEq.
+    }
+    s. {
+      s_apply HostEq.
+    }
+    push_macro_eq InterpreterTypesEq.
+    s.
+  }
+Qed.

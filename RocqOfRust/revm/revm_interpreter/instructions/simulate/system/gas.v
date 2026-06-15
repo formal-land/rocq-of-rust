@@ -47,4 +47,18 @@ Lemma gas_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_gas] unfold gas, run_gas; cbn.
+  gas_macro_eq idtac.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply Impl_Gas.remaining_eq.
+  }
+  s. {
+    s_apply Impl_Uint.from_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.

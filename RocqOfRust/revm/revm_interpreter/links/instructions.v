@@ -12,9 +12,6 @@ Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.links.table.
 Require Import revm.revm_interpreter.instructions.
 
-Definition instruction : PolymorphicFunction.t :=
-  fun _ _ _ => M.impossible "revm_interpreter::instructions::instruction".
-
 (*
 pub const fn instruction_table<WIRE: InterpreterTypes, H: Host + ?Sized>(
 ) -> [crate::table::Instruction<WIRE, H>; 256]
@@ -30,7 +27,35 @@ Instance run_instruction_table
     instructions.instruction_table [] [ Φ WIRE; Φ H ] []
     (array.t (Instruction.t WIRE H WIRE_types) {| Integer.value := 256 |}).
 Proof.
-Admitted.
+  constructor.
+  run_symbolic; cbn.
+  { change (Value.Closure _) with
+      (φ (Function2.of_run (run_unknown (H := H) run_InterpreterTypes_for_WIRE))).
+    set (F := Function2.t _ _ _).
+    now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
+  }
+  { (* unknown *)
+    eapply Run.Rewrite. {
+      exact (array.repeat_φ_eq 256 _).
+    }
+    run_symbolic.
+  }
+  { change (Value.Closure _) with
+      (φ (Function2.of_run (run_stop (H := H) run_InterpreterTypes_for_WIRE))).
+    set (F := Function2.t _ _ _).
+    now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
+  }
+  { change (Value.Closure _) with
+      (φ (Function2.of_run (run_add (H := H) run_InterpreterTypes_for_WIRE))).
+    set (F := Function2.t _ _ _).
+    now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
+  }
+  { change (Value.Closure _) with
+      (φ (Function2.of_run (run_balance run_InterpreterTypes_for_WIRE run_Host_for_H))).
+    set (F := Function2.t _ _ _).
+    now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
+  }
+Defined.
 Global Opaque run_instruction_table.
 
 (*
@@ -46,7 +71,7 @@ Instance run_instruction
     (run_Host_for_H : Host.Run H H_types)
     (opcode : u8) :
   Run.Trait
-    instruction [] [ Φ WIRE; Φ H ] [ φ opcode ]
+    instructions.instruction [] [ Φ WIRE; Φ H ] [ φ opcode ]
     (Instruction.t WIRE H WIRE_types).
 Proof.
   constructor.

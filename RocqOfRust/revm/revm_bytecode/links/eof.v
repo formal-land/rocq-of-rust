@@ -5,13 +5,7 @@ Require Import core.links.result.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import revm.revm_bytecode.eof.links.body_EofBody.
 Require Import revm.revm_bytecode.eof.links.header.
-
-Module eof.
-  Module Impl_revm_bytecode_eof_Eof.
-    Definition decode : PolymorphicFunction.t :=
-      fun _ _ _ => M.impossible "revm_bytecode::eof::Eof::decode".
-  End Impl_revm_bytecode_eof_Eof.
-End eof.
+Require Import revm.revm_bytecode.eof.
 
 Module Eof.
   Record t : Set := {

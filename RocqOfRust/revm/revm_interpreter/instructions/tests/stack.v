@@ -22,7 +22,9 @@ Goal
   let result := pop interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 10 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that POP on empty stack returns StackUnderflow *)
 Goal
@@ -32,7 +34,9 @@ Goal
   result.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** PUSH0 tests *)
 
@@ -43,7 +47,9 @@ Goal
   let result := push0 interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** DUP tests *)
 
@@ -61,7 +67,9 @@ Goal
     {| Uint.value := 10 |}
   ].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that DUP2 duplicates the second element: [a, b, c] -> [b, a, b, c] *)
 Goal
@@ -79,7 +87,9 @@ Goal
     {| Uint.value := 3 |}
   ].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** SWAP tests *)
 
@@ -98,7 +108,9 @@ Goal
     {| Uint.value := 3 |}
   ].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that SWAP2 swaps top and third element: [a, b, c, d] -> [c, b, a, d] *)
 Goal
@@ -117,7 +129,9 @@ Goal
     {| Uint.value := 4 |}
   ].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** PUSH tests *)
 
@@ -128,7 +142,9 @@ Goal
   let result := push 1 interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that PUSH1 does not set an error *)
 Goal
@@ -137,4 +153,6 @@ Goal
   let result := push 1 interpreter in
   result.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.

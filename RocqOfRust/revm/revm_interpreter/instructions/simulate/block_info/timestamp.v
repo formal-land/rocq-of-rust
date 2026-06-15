@@ -60,4 +60,19 @@ Lemma timestamp_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_timestamp]
+    unfold timestamp, run_timestamp; cbn.
+  gas_macro_eq idtac.
+  s. {
+    apply HostEq.
+  }
+  s. {
+    apply HostEq; repeat unshelve econstructor.
+  }
+  s. {
+    apply Impl_Uint.from_eq; [typeclasses eauto | easy].
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.

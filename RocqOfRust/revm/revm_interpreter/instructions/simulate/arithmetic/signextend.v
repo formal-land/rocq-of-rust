@@ -74,4 +74,53 @@ Lemma signextend_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  unfold signextend.
+  gas_macro_eq idtac.
+  popn_top_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[ext []]]
+  end.
+  s. {
+    s_apply @Impl_Uint.from_eq.
+  }
+  s. {
+    s_apply @Impl_PartialOrd_for_Uint.Eq.I.
+  }
+  s.
+  destruct Impl_PartialOrd_for_Uint.lt; [|s].
+  s. {
+    s_apply Impl_Uint.as_limbs_eq.
+  }
+  s. {
+    s_apply Impl_Uint.bit_eq.
+  }
+  s. {
+    s_apply @Impl_Uint.from_eq.
+  }
+  s. {
+    apply Impl_Shl_for_Uint.Eq.I.
+  }
+  s. {
+    s_apply @Impl_Uint.from_eq.
+  }
+  s. {
+    apply Impl_Sub_for_Uint.Eq.I.
+  }
+  s.
+  destruct Impl_Uint.bit.
+  { s. {
+      apply Impl_Not_for_Uint.Eq.I.
+    }
+    s. {
+      apply Impl_BitOr_for_Uint.Eq.I.
+    }
+    s.
+  }
+  { s. {
+      apply Impl_BitAnd_for_Uint.Eq.I.
+    }
+    s.
+  }
+Qed.

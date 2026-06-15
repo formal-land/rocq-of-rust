@@ -59,4 +59,14 @@ Lemma op_bitand_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  unfold op_bitand.
+  gas_macro_eq idtac.
+  popn_top_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s. { s_apply @BitAnd.Eq.bitand. }
+  s.
+Qed.

@@ -16,7 +16,9 @@ Goal
   let '(result_interpreter, _) := gasprice interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 42 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that GASPRICE does not set an error *)
 Goal
@@ -26,4 +28,6 @@ Goal
   let '(result_interpreter, _) := gasprice interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.

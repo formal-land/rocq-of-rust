@@ -27,7 +27,9 @@ Goal
   result.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.Stop.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** INVALID tests *)
 
@@ -39,7 +41,9 @@ Goal
   result.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.InvalidFEOpcode.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** UNKNOWN tests *)
 
@@ -51,7 +55,9 @@ Goal
   result.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.OpcodeNotFound.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** RET tests *)
 
@@ -66,7 +72,9 @@ Goal
   result.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.Return.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that RET with offset=0, len=0 sets next_action to Return *)
 Goal
@@ -98,7 +106,9 @@ Goal
   result.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.Revert.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** JUMPDEST_OR_NOP tests *)
 
@@ -109,7 +119,9 @@ Goal
   let result := jumpdest_or_nop interpreter in
   result.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** PC tests *)
 
@@ -121,7 +133,9 @@ Goal
   let result := pc interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 18446744073709551615 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** JUMP tests *)
 
@@ -132,7 +146,9 @@ Goal
   let result := jump interpreter in
   result.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that JUMP pops the target from stack *)
 Goal
@@ -141,7 +157,9 @@ Goal
   let result := jump interpreter in
   result.(Interpreter.stack).(Stack.value) = [].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that JUMP with empty stack gives StackUnderflow *)
 Goal
@@ -151,7 +169,9 @@ Goal
   result.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** JUMPI tests *)
 
@@ -165,7 +185,9 @@ Goal
   let result := jumpi interpreter in
   result.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that JUMPI with cond=0 pops both values *)
 Goal
@@ -177,7 +199,9 @@ Goal
   let result := jumpi interpreter in
   result.(Interpreter.stack).(Stack.value) = [].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that JUMPI with cond=1 takes the jump *)
 Goal
@@ -189,7 +213,9 @@ Goal
   let result := jumpi interpreter in
   result.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** Test that JUMPI with empty stack gives StackUnderflow *)
 Goal
@@ -199,7 +225,9 @@ Goal
   result.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** JUMP_INNER tests *)
 
@@ -211,4 +239,6 @@ Goal
   let result := jump_inner interpreter target in
   result.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.

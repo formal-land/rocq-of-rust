@@ -19,5 +19,7 @@ Module Impl_SpecId.
       (Output.Success (is_enabled_in self other), stack)
     }}.
   Proof.
-  Admitted.
+    unfold is_enabled_in; cbn.
+    s; now rewrite get_discriminant_mod_256_eq.
+  Qed.
 End Impl_SpecId.

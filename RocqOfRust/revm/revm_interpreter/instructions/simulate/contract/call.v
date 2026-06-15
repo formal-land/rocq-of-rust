@@ -150,4 +150,109 @@ Lemma call_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_call] unfold call, run_call; cbn.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[local_gas_limit [to [value []]]]]
+  end.
+  l. {
+    cw Impl_IntoAddress_for_U256.into_address_eq.
+    p.
+  }
+  l. {
+    cw TryFrom_Uint_for_u64.try_from_eq.
+    cw Impl_u64.max_eq.
+    cw @Impl_Result_T_E.unwrap_or_eq.
+    p.
+  }
+  l. {
+    cw @Impl_Uint.is_zero_eq.
+    s.
+    reflexivity.
+  }
+  match goal with
+  | |- context[?e1 && ?e2] =>
+    set (condition1 := e1);
+    set (condition2 := e2)
+  end.
+  eapply Run.Let with (result :=
+    if condition1 then
+      if condition2 then
+        _
+      else
+        _
+    else
+      _
+  ). {
+    s. {
+      apply InterpreterTypesEq.
+    }
+    destruct IInterpreterTypes
+      .(InterpreterTypes.RuntimeFlag_for_RuntimeFlag)
+      .(RuntimeFlag.is_static).
+    { s.
+      destruct Impl_Uint.is_zero.
+      { s.
+        change false with condition2.
+        reflexivity.
+      }
+      { s. {
+          apply InterpreterTypesEq.
+        }
+        s.
+        reflexivity.
+      }
+    }
+    { s.
+      reflexivity.
+    }
+  }
+  s.
+  destruct (condition1 && condition2) eqn:H_conditions.
+  { replace condition1 with true by
+      (destruct condition1, condition2; cbn in H_conditions; congruence).
+    replace condition2 with true by
+      (destruct condition1, condition2; cbn in H_conditions; congruence).
+    s.
+  }
+  { set (if_result := if _ : bool then _ else _).
+    set (common_result := (Output.Success tt, _)) in if_result.
+    replace if_result with common_result. 2: {
+      unfold if_result.
+      destruct condition1, condition2; cbn in H_conditions; congruence.
+    }
+    unfold common_result, condition1, condition2.
+    s. {
+      s_apply @call_helpers.get_memory_input_and_out_ranges_eq.
+    }
+    destruct get_memory_input_and_out_ranges as [[[input return_memory_offset]|] ?interpreter]. 2: {
+      s.
+    }
+    s. {
+      apply HostEq.
+    }
+    destruct _.(Host.load_account_delegated) as [[account_load|] ?host]; cbn. 2: {
+      s. {
+        apply InterpreterTypesEq.
+      }
+      s.
+    }
+    s. {
+      s_apply @call_helpers.calc_call_gas_eq.
+    }
+    destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn. 2: {
+      s.
+    }
+    gas_macro_eq idtac.
+    step.
+    1: s; [apply Impl_u64.saturating_add_eq |].
+    all:
+      s; [apply InterpreterTypesEq |];
+      s; [apply InterpreterTypesEq |];
+      s; [apply @Impl_Box.new_eq |];
+      s; [apply InterpreterTypesEq |];
+      s.
+  }
+Qed.

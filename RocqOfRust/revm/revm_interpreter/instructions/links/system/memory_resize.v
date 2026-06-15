@@ -46,5 +46,5 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
-Admitted.
+Defined.
 Global Opaque run_memory_resize.

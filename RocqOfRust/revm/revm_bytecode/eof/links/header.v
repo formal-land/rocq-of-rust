@@ -4,26 +4,7 @@ Require Import alloc.links.alloc.
 Require Import alloc.vec.links.mod.
 Require Import alloc.vec.links.mod.
 Require Import core.links.result.
-
-Module header.
-  Module eof.
-    Module header.
-      Module Impl_revm_bytecode_eof_header_EofHeader.
-        Definition size : PolymorphicFunction.t :=
-          fun _ _ _ => M.impossible "revm_bytecode::eof::header::EofHeader::size".
-
-        Definition eof_size : PolymorphicFunction.t :=
-          fun _ _ _ => M.impossible "revm_bytecode::eof::header::EofHeader::eof_size".
-
-        Definition encode : PolymorphicFunction.t :=
-          fun _ _ _ => M.impossible "revm_bytecode::eof::header::EofHeader::encode".
-
-        Definition decode : PolymorphicFunction.t :=
-          fun _ _ _ => M.impossible "revm_bytecode::eof::header::EofHeader::decode".
-      End Impl_revm_bytecode_eof_header_EofHeader.
-    End header.
-  End eof.
-End header.
+Require Import revm_bytecode.eof.header.
 
 Module EofHeader.
   Record t : Set := {

@@ -64,4 +64,20 @@ Lemma tstore_eq
     )
   }}.
 Proof.
-Admitted.
+  with_strategy transparent [run_tstore] unfold tstore, run_tstore; cbn.
+  check_macro_eq InterpreterTypesEq.
+  require_non_staticcall_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[index [value []]]]
+  end.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply HostEq.
+  }
+  s.
+Qed.

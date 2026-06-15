@@ -37,7 +37,7 @@ Instance run_resize_memory
 Proof.
   constructor.
   run_symbolic.
-Admitted.
+Defined.
 Global Opaque run_resize_memory.
 
 (*
@@ -63,7 +63,7 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   destruct run_Deref_for_Synthetic.
   run_symbolic.
-Admitted.
+Defined.
 Global Opaque run_get_memory_input_and_out_ranges.
 
 (*
@@ -74,20 +74,6 @@ pub fn calc_call_gas(
     local_gas_limit: u64,
 ) -> Option<u64>
 *)
-Definition calc_call_gas
-    {WIRE : Set} `{Link WIRE}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (account_load : AccountLoad.t)
-    (has_transfer : bool)
-    (local_gas_limit : u64) :
-    PolymorphicFunction.t :=
-  fun _ _ args =>
-    match args with
-    | [_; _; _; _] => LowM.Pure (inl (φ (@None u64)))
-    | _ => M.impossible "wrong number of arguments"
-    end.
-
 Instance run_calc_call_gas
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -97,13 +83,11 @@ Instance run_calc_call_gas
   (has_transfer : bool)
   (local_gas_limit : u64) :
   Run.Trait
-    (calc_call_gas interpreter account_load has_transfer local_gas_limit)
+    instructions.contract.call_helpers.calc_call_gas
     [] [Φ WIRE] [φ interpreter; φ account_load; φ has_transfer; φ local_gas_limit]
     (option u64).
 Proof.
   constructor.
-  cbn.
-  eapply Run.PureSuccess with (value := @None u64).
-  reflexivity.
+  run_symbolic.
 Defined.
 Global Opaque run_calc_call_gas.

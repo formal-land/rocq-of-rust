@@ -96,4 +96,94 @@ Lemma extcodecopy_eq
     )
   }}.
 Proof.
-Admitted.
+Opaque Impl_Eip7702CodeLoad.into_components.
+  with_strategy transparent [run_extcodecopy] unfold extcodecopy, run_extcodecopy; cbn.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t _ _ |- _ =>
+    destruct array as [[address [memory_offset [code_offset [len []]]]]]
+  end.
+  s. {
+    apply Impl_IntoAddress_for_U256.into_address_eq.
+  }
+  s. {
+    apply HostEq.
+  }
+  destruct _.(Host.code) as [[code|] ?host]; cbn. 2: {
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s.
+  }
+  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  s. {
+    apply Impl_Eip7702CodeLoad.into_components_eq.
+  }
+  destruct Impl_Eip7702CodeLoad.into_components as [?code ?load]; cbn.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply calc.extcodecopy_cost_eq.
+  }
+  gas_macro_eq idtac.
+  s.
+  destruct (_ =? 0); cbn; [s|].
+  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  eapply Run.Let with (result :=
+    (Output.Success (Z.min
+      (i[as_usize_saturated_macro code_offset] mod 2^64)
+      i[Impl_Bytes.len _.(Bytes.value)] : usize
+    ), _)
+  ). {
+    unfold as_usize_saturated_macro, as_u64_saturated_macro; cbn.
+    s. {
+      s_apply Impl_Uint.as_limbs_eq.
+    }
+    s.
+    destruct (_ && _) in |- *; cbn.
+    { s. {
+        apply Impl_usize.max_eq.
+      }
+      s. {
+        apply simulate.mod.Impl_Deref_for_Bytes.Eq.I.
+      }
+      s. {
+        s_apply Impl_Bytes.len_eq.
+      }
+      s. {
+        apply Impl_Ord_for_usize.toplevel_min_eq.
+      }
+      s.
+    }
+    { s. {
+        apply Impl_u64.max_eq.
+      }
+      s. {
+        apply Impl_usize.max_eq.
+      }
+      s. {
+        apply simulate.mod.Impl_Deref_for_Bytes.Eq.I.
+      }
+      s. {
+        s_apply Impl_Bytes.len_eq.
+      }
+      s. {
+        apply Impl_Ord_for_usize.toplevel_min_eq.
+      }
+      s.
+    }
+  }
+  resize_memory_macro_eq InterpreterTypesEq.
+  s. {
+    apply simulate.mod.Impl_Deref_for_Bytes.Eq.I.
+  }
+  s. {
+    apply Impl_Deref_for_Bytes.Eq.I.
+  }
+  s. {
+    s_apply InterpreterTypesEq.
+  }
+  s; now destruct _.(MemoryTrait.resize).
+Transparent Impl_Eip7702CodeLoad.into_components.
+Qed.

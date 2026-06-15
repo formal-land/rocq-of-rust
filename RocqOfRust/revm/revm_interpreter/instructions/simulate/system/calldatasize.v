@@ -46,4 +46,18 @@ Lemma calldatasize_eq
       )
     }}.
 Proof.
-Admitted.
+  with_strategy transparent [run_calldatasize] unfold calldatasize, run_calldatasize; cbn.
+  gas_macro_eq idtac.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    pose proof (Impl_Slice.len_eq (T := u8)) as H_apply.
+    s_apply H_apply.
+  }
+  s. {
+    s_apply Impl_Uint.from_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.

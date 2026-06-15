@@ -65,4 +65,22 @@ Lemma blob_basefee_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_blob_basefee] unfold blob_basefee, run_blob_basefee; cbn.
+  check_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
+  s. {
+    apply HostEq.
+  }
+  s. {
+    s_apply HostEq.
+  }
+  s. {
+    apply Impl_Option.unwrap_or_default_eq.
+  }
+  s. {
+    s_apply Impl_Uint.from_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.

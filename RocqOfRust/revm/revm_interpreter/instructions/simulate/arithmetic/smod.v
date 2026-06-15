@@ -55,4 +55,16 @@ Lemma smod_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  unfold smod.
+  gas_macro_eq idtac.
+  popn_top_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s. {
+    apply i256_mod_eq.
+  }
+  s.
+Qed.

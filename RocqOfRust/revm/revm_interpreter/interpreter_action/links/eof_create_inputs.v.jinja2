@@ -4,16 +4,8 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_bytecode.links.eof.
+Require Import revm.revm_interpreter.interpreter_action.eof_create_inputs.
 Require Import ruint.links.lib.
-
-Module interpreter_action.
-  Module eof_create_inputs.
-    Module Impl_revm_interpreter_interpreter_action_eof_create_inputs_EOFCreateInputs.
-      Definition new_opcode : PolymorphicFunction.t :=
-        fun _ _ _ => M.impossible "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs::new_opcode".
-    End Impl_revm_interpreter_interpreter_action_eof_create_inputs_EOFCreateInputs.
-  End eof_create_inputs.
-End interpreter_action.
 
 (*
 pub enum EOFCreateKind {

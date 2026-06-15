@@ -56,4 +56,28 @@ Lemma codecopy_eq
       )
     }}.
 Proof.
-Admitted.
+Opaque memory_resize.
+  with_strategy transparent [run_codecopy] unfold codecopy, run_codecopy; cbn.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[memory_offset [code_offset [len []]]]]
+  end.
+  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  s. {
+    apply memory_resize_eq.
+  }
+  destruct memory_resize as [[?memory_offset|] ?interpreter]; cbn. 2: {
+    s.
+  }
+  eapply Run.Let with (result := (Output.Success (as_usize_saturated_macro code_offset), _)). {
+    as_usize_saturated_macro_eq.
+  }
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    s_apply InterpreterTypesEq.
+  }
+  s.
+Qed.

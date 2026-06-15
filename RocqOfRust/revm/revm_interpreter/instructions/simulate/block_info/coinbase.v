@@ -64,4 +64,21 @@ Lemma coinbase_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_coinbase] unfold coinbase, run_coinbase; cbn.
+  gas_macro_eq idtac.
+  s. {
+    apply HostEq.
+  }
+  s. {
+    apply HostEq; repeat unshelve econstructor.
+  }
+  s. {
+    apply Impl_Address.into_word_eq; repeat unshelve econstructor.
+  }
+  s. {
+    apply Impl_Into_for_From_T.Eq.I.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.

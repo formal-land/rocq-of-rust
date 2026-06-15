@@ -41,5 +41,14 @@ Instance run_unknown
     instructions.control.unknown [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
-Admitted.
+  constructor.
+  cbn.
+  eapply Run.Rewrite. {
+    erewrite IsTraitAssociatedType_eq by apply run_InterpreterTypes_for_WIRE.
+    reflexivity.
+  }
+  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_LoopControl_for_Control.
+  run_symbolic.
+Defined.
 Global Opaque run_unknown.

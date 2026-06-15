@@ -20,7 +20,9 @@ Goal
   let result := msize interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** MSTORE tests *)
 
@@ -34,7 +36,9 @@ Goal
   let result := mstore interpreter in
   result.(Interpreter.stack).(Stack.value) = [].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** MLOAD tests *)
 
@@ -42,7 +46,6 @@ Admitted.
 Definition make_interpreter_with_memory (stack : Stack.t) (memory : Memory.t)
     (gas_val : Gas.t) : Interpreter.t WIRE WIRE_types := {|
   Interpreter.bytecode := 0;
-  Interpreter.gas := gas_val;
   Interpreter.stack := stack;
   Interpreter.return_data := tt;
   Interpreter.memory := memory;
@@ -74,7 +77,9 @@ Goal
   let after_load := mload interpreter_for_load in
   after_load.(Interpreter.stack).(Stack.value) = [{| Uint.value := 42 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** MSTORE8 tests *)
 
@@ -88,7 +93,9 @@ Goal
   let result := mstore8 interpreter in
   List.hd (0 : u8) result.(Interpreter.memory).(Memory.value) = (65 : u8).
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** MCOPY tests *)
 
@@ -116,4 +123,6 @@ Goal
   Memory.slice after_copy.(Interpreter.memory) 32 32 =
   Memory.slice after_copy.(Interpreter.memory) 0 32.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.

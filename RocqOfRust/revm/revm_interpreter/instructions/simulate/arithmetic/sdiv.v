@@ -55,4 +55,16 @@ Lemma sdiv_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  unfold sdiv.
+  gas_macro_eq idtac.
+  popn_top_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s. {
+    apply i256_div_eq.
+  }
+  s.
+Qed.

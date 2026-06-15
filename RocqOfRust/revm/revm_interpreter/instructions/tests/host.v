@@ -33,9 +33,11 @@ Goal
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := balance interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    None.
+    Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 0 |}] |} in
@@ -45,7 +47,9 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** BLOCKHASH *)
 
@@ -55,9 +59,11 @@ Goal
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := blockhash interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    None.
+    Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 0 |}] |} in
@@ -67,7 +73,9 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** EXTCODECOPY / EXTCODEHASH / EXTCODESIZE *)
 
@@ -77,9 +85,11 @@ Goal
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := extcodecopy interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    None.
+    Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [
@@ -92,7 +102,9 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 0 |}] |} in
@@ -102,7 +114,9 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 0 |}] |} in
@@ -112,7 +126,9 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** LOG *)
 
@@ -122,9 +138,11 @@ Goal
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := log {| Integer.value := 0 |} interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    None.
+    Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 0 |}; {| Uint.value := 0 |}] |} in
@@ -133,7 +151,9 @@ Goal
   let '(result_interpreter, _) := log {| Integer.value := 0 |} interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** SELFBALANCE *)
 
@@ -145,7 +165,9 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** SELFDESTRUCT *)
 
@@ -155,9 +177,11 @@ Goal
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := selfdestruct interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    None.
+    Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 0 |}] |} in
@@ -167,7 +191,9 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 (** ** SLOAD / SSTORE *)
 
@@ -177,9 +203,11 @@ Goal
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := sload interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    None.
+    Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 0 |}] |} in
@@ -189,7 +217,9 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [] |} in
@@ -199,9 +229,13 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.StateChangeDuringStaticCall \/
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    None.
+    Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  repeat match goal with
+  | |- context [RuntimeFlag.is_static ?x] => destruct (RuntimeFlag.is_static x)
+  end; auto.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 0 |}; {| Uint.value := 0 |}] |} in
@@ -213,7 +247,11 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  repeat match goal with
+  | |- context [RuntimeFlag.is_static ?x] => destruct (RuntimeFlag.is_static x)
+  end; auto.
+Qed.
 
 (** ** TLOAD / TSTORE *)
 
@@ -223,9 +261,11 @@ Goal
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := tload interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    None.
+    Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 7 |}] |} in
@@ -234,7 +274,9 @@ Goal
   let '(result_interpreter, _) := tload interpreter host in
   result_interpreter.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
 
 Goal
   let stack := {| Stack.value := [] |} in
@@ -244,9 +286,13 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.StateChangeDuringStaticCall \/
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    None.
+    Some InstructionResult.StackUnderflow.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  repeat match goal with
+  | |- context [RuntimeFlag.is_static ?x] => destruct (RuntimeFlag.is_static x)
+  end; auto.
+Qed.
 
 Goal
   let stack := {| Stack.value := [{| Uint.value := 0 |}; {| Uint.value := 0 |}] |} in
@@ -257,4 +303,8 @@ Goal
     Some InstructionResult.StateChangeDuringStaticCall \/
   result_interpreter.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
-Admitted.
+  timeout 1 vm_compute.
+  repeat match goal with
+  | |- context [RuntimeFlag.is_static ?x] => destruct (RuntimeFlag.is_static x)
+  end; auto.
+Qed.

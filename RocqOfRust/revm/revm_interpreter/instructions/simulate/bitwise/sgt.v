@@ -62,4 +62,17 @@ Lemma op_sgt_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  unfold op_sgt.
+  gas_macro_eq idtac.
+  popn_top_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s. { s_apply i256_cmp_eq. }
+  s. { s_apply @PartialEq.Eq.eq. }
+  s. { s_apply Impl_Uint.from_eq. }
+  s.
+  now destruct i256_cmp.
+Qed.
