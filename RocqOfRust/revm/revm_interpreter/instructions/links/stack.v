@@ -11,18 +11,6 @@ Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
 Require Import ruint.links.lib.
 
-Definition stack_instruction
-    {WIRE H : Set} `{Link WIRE} `{Link H}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
-    PolymorphicFunction.t :=
-  fun _ _ args =>
-    match args with
-    | [_; _] => LowM.Pure (inl (φ tt))
-    | _ => M.impossible "wrong number of arguments"
-    end.
-
 (*
 pub fn pop<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -162,13 +150,17 @@ Instance run_dupn
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (_host : '&mut H) :
   Run.Trait
-    (stack_instruction interpreter _host) [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.stack.dupn [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  cbn.
-  eapply Run.PureSuccess with (value := tt).
-  reflexivity.
+  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_LoopControl_for_Control.
+  destruct run_StackTrait_for_Stack.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
+  destruct run_Jumps_for_Bytecode.
+  destruct run_Immediates_for_Bytecode.
+  run_symbolic.
 Defined.
 Global Opaque run_dupn.
 
@@ -185,13 +177,17 @@ Instance run_swapn
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (_host : '&mut H) :
   Run.Trait
-    (stack_instruction interpreter _host) [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.stack.swapn [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  cbn.
-  eapply Run.PureSuccess with (value := tt).
-  reflexivity.
+  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_LoopControl_for_Control.
+  destruct run_StackTrait_for_Stack.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
+  destruct run_Jumps_for_Bytecode.
+  destruct run_Immediates_for_Bytecode.
+  run_symbolic.
 Defined.
 Global Opaque run_swapn.
 
@@ -208,12 +204,16 @@ Instance run_exchange
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (_host : '&mut H) :
   Run.Trait
-    (stack_instruction interpreter _host) [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.stack.exchange [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  cbn.
-  eapply Run.PureSuccess with (value := tt).
-  reflexivity.
+  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_LoopControl_for_Control.
+  destruct run_StackTrait_for_Stack.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
+  destruct run_Jumps_for_Bytecode.
+  destruct run_Immediates_for_Bytecode.
+  run_symbolic.
 Defined.
 Global Opaque run_exchange.

@@ -16,22 +16,11 @@ Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.instructions.data.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import ruint.links.bytes.
 Require Import ruint.links.from.
 Require Import ruint.links.lib.
-
-Definition data_instruction
-    {WIRE H : Set} `{Link WIRE} `{Link H}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
-    PolymorphicFunction.t :=
-  fun _ _ args =>
-    match args with
-    | [_; _] => LowM.Pure (inl (φ tt))
-    | _ => M.impossible "wrong number of arguments"
-    end.
 
 (*
 pub fn data_load<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -46,13 +35,30 @@ Instance run_data_load
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (_host : '&mut H) :
   Run.Trait
-    (data_instruction interpreter _host) [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.data.data_load [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  cbn.
-  eapply Run.PureSuccess with (value := tt).
-  reflexivity.
+  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_StackTrait_for_Stack.
+  destruct run_LoopControl_for_Control.
+  destruct run_EofData_for_Bytecode.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
+  destruct Impl_TryFrom_u64_for_usize.run.
+  destruct (Impl_IndexMut_for_Array.run
+    u8
+    (RangeTo.t usize)
+    {| Integer.value := 32 |}
+    (list u8)
+  ). {
+    apply Impl_IndexMut_for_Slice.run.
+    apply Impl_SliceIndex_for_RangeTo.run.
+  }
+  run_symbolic.
+  eapply Run.Rewrite. {
+    exact (array.repeat_φ_eq 32 (Integer.Build_t IntegerKind.U8 0)).
+  }
+  run_symbolic.
 Defined.
 Global Opaque run_data_load.
 
@@ -69,13 +75,32 @@ Instance run_data_loadn
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (_host : '&mut H) :
   Run.Trait
-    (data_instruction interpreter _host) [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.data.data_loadn [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  cbn.
-  eapply Run.PureSuccess with (value := tt).
-  reflexivity.
+  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_StackTrait_for_Stack.
+  destruct run_Jumps_for_Bytecode.
+  destruct run_Immediates_for_Bytecode.
+  destruct run_LoopControl_for_Control.
+  destruct run_EofData_for_Bytecode.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
+  destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
+  destruct (Impl_IndexMut_for_Array.run
+    u8
+    (RangeTo.t usize)
+    {| Integer.value := 32 |}
+    (list u8)
+  ). {
+    apply Impl_IndexMut_for_Slice.run.
+    apply Impl_SliceIndex_for_RangeTo.run.
+  }
+  run_symbolic.
+  eapply Run.Rewrite. {
+    exact (array.repeat_φ_eq 32 (Integer.Build_t IntegerKind.U8 0)).
+  }
+  run_symbolic.
 Defined.
 Global Opaque run_data_loadn.
 
@@ -92,13 +117,16 @@ Instance run_data_size
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (_host : '&mut H) :
   Run.Trait
-    (data_instruction interpreter _host) [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.data.data_size [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  cbn.
-  eapply Run.PureSuccess with (value := tt).
-  reflexivity.
+  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_StackTrait_for_Stack.
+  destruct run_LoopControl_for_Control.
+  destruct run_EofData_for_Bytecode.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
+  run_symbolic.
 Defined.
 Global Opaque run_data_size.
 
@@ -115,12 +143,17 @@ Instance run_data_copy
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (_host : '&mut H) :
   Run.Trait
-    (data_instruction interpreter _host) [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.data.data_copy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  cbn.
-  eapply Run.PureSuccess with (value := tt).
-  reflexivity.
+  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_StackTrait_for_Stack.
+  destruct run_MemoryTrait_for_Memory.
+  destruct run_LoopControl_for_Control.
+  destruct run_EofData_for_Bytecode.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
+  destruct Impl_TryFrom_u64_for_usize.run.
+  run_symbolic.
 Defined.
 Global Opaque run_data_copy.

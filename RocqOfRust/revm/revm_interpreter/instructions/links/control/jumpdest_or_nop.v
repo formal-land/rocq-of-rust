@@ -31,18 +31,6 @@ pub fn jumpdest_or_nop<WIRE: InterpreterTypes, H: Host + ?Sized>(
     _host: &mut H,
 )
 *)
-Definition jumpdest_or_nop
-    {WIRE H : Set} `{Link WIRE} `{Link H}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
-    PolymorphicFunction.t :=
-  fun _ _ args =>
-    match args with
-    | [_; _] => LowM.Pure (inl (φ tt))
-    | _ => M.impossible "wrong number of arguments"
-    end.
-
 Instance run_jumpdest_or_nop
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -50,12 +38,12 @@ Instance run_jumpdest_or_nop
     (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
     (_host : '&mut H) :
   Run.Trait
-    (jumpdest_or_nop interpreter _host) [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.control.jumpdest_or_nop [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  cbn.
-  eapply Run.PureSuccess with (value := tt).
-  reflexivity.
+  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_LoopControl_for_Control.
+  run_symbolic.
 Defined.
 Global Opaque run_jumpdest_or_nop.
