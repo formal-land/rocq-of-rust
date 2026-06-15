@@ -48,7 +48,61 @@ Module Impl_Interpreter.
   Defined.
   Global Opaque run_step.
 
-  (*
+   (* pub fn halt(&mut self, result: InstructionResult) *)
+  Instance run_halt
+      (IW : Set) `{Link IW}
+      {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
+      {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW))
+      (result : InstructionResult.t) :
+    Run.Trait
+      (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt (Φ IW))
+      [] [] [φ self; φ result]
+      unit.
+  Proof.
+    constructor.
+    destruct run_InterpreterTypes_for_IW.
+    destruct run_LoopControl_for_Bytecode.
+    run_symbolic.
+  Defined.
+  Global Opaque run_halt.
+
+  (* pub fn halt_underflow(&mut self) *)
+  Instance run_halt_underflow
+      (IW : Set) `{Link IW}
+      {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
+      {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW)) :
+    Run.Trait
+      (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_underflow (Φ IW))
+      [] [] [φ self]
+      unit.
+    Proof.
+    constructor.
+    run_symbolic.
+    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
+  Defined.
+
+  Global Opaque run_halt_underflow.
+
+  (* pub fn halt_memory_oog(&mut self) *)
+  Instance run_halt_memory_oog
+      (IW : Set) `{Link IW}
+      {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
+      {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW)) :
+    Run.Trait
+      (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_memory_oog (Φ IW))
+      [] [] [φ self]
+      unit.
+  Proof.
+    constructor.
+    run_symbolic.
+    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
+  Defined.
+  Global Opaque run_halt_memory_oog.
+
+  (* (*
   pub fn run<FN, H: Host>(
       &mut self,
       instruction_table: &[FN; 256],
@@ -79,6 +133,6 @@ Module Impl_Interpreter.
     (* now eapply run_step.
   Defined. *)
   Admitted.
-  Global Opaque run_run.
+  Global Opaque run_run. *)
 End Impl_Interpreter.
 Export (hints) Impl_Interpreter.

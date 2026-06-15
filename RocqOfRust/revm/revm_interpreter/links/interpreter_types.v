@@ -251,7 +251,7 @@ pub trait MemoryTrait {
 Module MemoryTrait.
   Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
     {|
-      TraitHeader.trait_name := "revm_interpreter::interpreter_types::MemoryTrait";
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::MemoryTr";
       TraitHeader.trait_consts := [];
       TraitHeader.trait_tys := [];
       TraitHeader.self_ty := Φ Self;
@@ -313,12 +313,12 @@ Module MemoryTrait.
     method_size :: Method_size Self;
     method_copy :: Method_copy Self;
     Synthetic_IsAssociated :
-      IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTrait" [] [] (Φ Self)
+      IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTr" [] [] (Φ Self)
       "{{anon_assoc}}" (Φ Synthetic);
     run_Deref_for_Synthetic :: deref.Deref.Run Synthetic (list u8);
     method_slice :: Method_slice Self Synthetic;
     Synthetic1_IsAssociated :
-      IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTrait" [] [] (Φ Self)
+      IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTr" [] [] (Φ Self)
       "{{synthetic}}'1" (Φ Synthetic1);
     run_Deref_for_Synthetic1 :: deref.Deref.Run Synthetic1 (list u8);
     method_slice_len :: Method_slice_len Self Synthetic;
@@ -440,7 +440,7 @@ pub trait StackTrait {
 Module StackTrait.
   Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
     {|
-      TraitHeader.trait_name := "revm_interpreter::interpreter_types::StackTrait";
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::StackTr";
       TraitHeader.trait_consts := [];
       TraitHeader.trait_tys := [];
       TraitHeader.self_ty := Φ Self;
@@ -669,6 +669,13 @@ Module LoopControl.
       TraitHeader.self_ty := Φ Self;
     |}.
 
+  Class Method_set_action (Self : Set) `{Link Self} : Set := {
+    set_action : PolymorphicFunction.t;
+    set_action_is_method :: IsTraitMethod.C (trait Self) "set_action" set_action;
+    run_set_action (self : '&mut Self) (action : InterpreterAction.t) ::
+      Run.Trait set_action [] [] [ φ self; φ action ] unit;
+  }.
+
   Class Method_set_instruction_result (Self : Set) `{Link Self} : Set := {
     set_instruction_result : PolymorphicFunction.t;
     set_instruction_result_is_method :: IsTraitMethod.C (trait Self) "set_instruction_result" set_instruction_result;
@@ -702,6 +709,7 @@ Module LoopControl.
   }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
+    method_set_action :: Method_set_action Self;
     method_set_instruction_result :: Method_set_instruction_result Self;
     method_set_next_action :: Method_set_next_action Self;
     method_gas :: Method_gas Self;
@@ -830,6 +838,7 @@ Module InterpreterTypes.
         "Bytecode" (Φ types.(Types.Bytecode));
     run_Jumps_for_Bytecode :: Jumps.Run types.(Types.Bytecode);
     run_Immediates_for_Bytecode :: Immediates.Run types.(Types.Bytecode);
+    run_LoopControl_for_Bytecode :: LoopControl.Run types.(Types.Bytecode);
     run_LegacyBytecode_for_Bytecode :: LegacyBytecode.Run types.(Types.Bytecode);
     run_EofData_for_Bytecode :: EofData.Run types.(Types.Bytecode);
     run_EofContainer_for_Bytecode :: EofContainer.Run types.(Types.Bytecode);

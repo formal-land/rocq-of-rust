@@ -3,11 +3,13 @@ Require Import links.RocqOfRust.
 Require Import alloc.links.alloc.
 Require Import alloc.links.boxed.
 Require Import core.links.option.
+Require Import alloy_primitives.bytes.links.mod.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.create_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.interpreter_action.
 
 (*
@@ -183,15 +185,13 @@ Export (hints) FrameInput.
 (*
 pub enum InterpreterAction {
     NewFrame(FrameInput),
-    Return { result: InterpreterResult },
-    None,
+    Return(InterpreterResult),
 }
 *)
 Module InterpreterAction.
   Inductive t : Set :=
   | NewFrame (frame : FrameInput.t)
   | Return (result : InterpreterResult.t)
-  | None_
   .
 
   Instance IsLink : Link t := {
@@ -201,11 +201,7 @@ Module InterpreterAction.
       | NewFrame frame =>
           Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" [] [] [φ frame]
       | Return result =>
-          Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [
-            ("result", φ result)
-          ]
-      | None_ =>
-          Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" [] [] []
+          Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [φ result]
       end
   }.
 
@@ -240,9 +236,7 @@ Module InterpreterAction.
   Instance IsOfValueWith_Return
       (result' : Value.t) {H_result : OfValueWith.C (InterpreterResult.t) result'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [
-      ("result", result')
-    ]) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [result']) :=
   {
     value := Return
       H_result.(OfValueWith.value)
@@ -253,28 +247,12 @@ Module InterpreterAction.
   Instance IsOfValue_Return
       (result' : Value.t) {H_result : OfValueWith.C (InterpreterResult.t) result'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [
-      ("result", result')
-    ]) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [result']) :=
   {
     value := Return
       H_result.(OfValueWith.value)
 ;
     eq := ltac:(sauto lq: on);
-  }.
-
-  Instance IsOfValueWith_None_ :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" [] [] []) :=
-  {
-    value := None_;
-    eq := eq_refl;
-  }.
-
-  Instance IsOfValue_None_ :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" [] [] []) :=
-  {
-    value := None_;
-    eq := eq_refl;
   }.
 
   Module SubPointer.
@@ -300,8 +278,8 @@ Module InterpreterAction.
     Qed.
     Smpl Add apply get_NewFrame_0_is_valid : run_sub_pointer.
 
-    Definition get_Return_result : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" "result") :=
+    Definition get_Return_0 : SubPointer.Runner.t t
+      (Pointer.Index.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::Return" 0) :=
     {|
       SubPointer.Runner.projection x :=
         match x with
@@ -315,12 +293,12 @@ Module InterpreterAction.
         end;
     |}.
 
-    Lemma get_Return_result_is_valid :
-      SubPointer.Runner.Valid.t get_Return_result.
+    Lemma get_Return_0_is_valid :
+      SubPointer.Runner.Valid.t get_Return_0.
     Proof.
       constructor; intros; destruct a; try reflexivity; discriminate.
     Qed.
-    Smpl Add apply get_Return_result_is_valid : run_sub_pointer.
+    Smpl Add apply get_Return_0_is_valid : run_sub_pointer.
 
   End SubPointer.
 End InterpreterAction.
@@ -330,6 +308,18 @@ Export (hints) InterpreterAction.
 Module Impl_InterpreterAction.
   Definition Self : Set :=
     InterpreterAction.t.
+
+  (* pub fn new_halt(result: InstructionResult, gas: Gas) -> Self *)
+  Instance run_new_halt (result : InstructionResult.t) (gas : Gas.t) :
+    Run.Trait
+      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.new_halt
+        [] [] [φ result; φ gas]
+      Self.
+  Proof.
+    constructor.
+    destruct Impl_Bytes.run_new.
+    run_symbolic.
+  Defined.   
 
   (* pub fn is_call(&self) -> bool *)
   Instance run_is_call (self : '& Self) :
@@ -366,30 +356,6 @@ Module Impl_InterpreterAction.
     run_symbolic.
   Defined.
   Global Opaque run_is_return.
-
-  (* pub fn is_none(&self) -> bool *)
-  Instance run_is_none (self : '& Self) :
-    Run.Trait
-      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_none
-        [] [] [φ self]
-      bool.
-  Proof.
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_is_none.
-
-  (* pub fn is_some(&self) -> bool *)
-  Instance run_is_some (self : '& Self) :
-    Run.Trait
-      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_some
-        [] [] [φ self]
-      bool.
-  Proof.
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_is_some.
 
   (* pub fn into_result_return(self) -> Option<InterpreterResult> *)
   Instance run_into_result_return (self : Self) :
