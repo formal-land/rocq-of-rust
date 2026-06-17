@@ -1,5 +1,5 @@
 Require Import simulate.RocqOfRust.
-Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 
 Module Impl_SpecId.
   Definition Self : Set := SpecId.t.

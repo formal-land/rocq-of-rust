@@ -32,7 +32,7 @@ Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.instructions.contract.links.call_helpers.
 Require Import revm.revm_interpreter.instructions.contract.
 Require Import revm.revm_interpreter.instructions.links.utility.
-Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.bytes.
 Require Import ruint.links.cmp.
 Require Import ruint.links.from.

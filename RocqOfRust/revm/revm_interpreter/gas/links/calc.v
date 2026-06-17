@@ -7,7 +7,7 @@ Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.gas.calc.
-Require Import revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 
 (* pub fn sstore_refund(spec_id: SpecId, vals: &SStoreResult) -> i64 *)

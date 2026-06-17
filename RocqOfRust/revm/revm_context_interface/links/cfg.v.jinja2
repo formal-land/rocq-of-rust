@@ -2,7 +2,7 @@
 Require Import links.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import core.convert.links.mod.
-Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 
 (*
