@@ -122,69 +122,6 @@ Module List.
   Proof.
     revert l; induction index; intros; destruct l; cbn; f_equal; auto.
   Qed.
-
-  Definition nth_error_rev {A : Set} (l : list A) (index : nat) : option A :=
-    List.nth_error l (List.length l - S index).
-
-  Definition slice_rest {A : Set} (l : list A) (n k : nat) : option (list A) :=
-    if Nat.leb (n + k) (List.length l) then
-      Some (List.firstn (List.length l - n - k) (List.skipn n l))
-    else
-      None.
-
-  Definition replace_slice_rest {A : Set}
-      (l : list A) (n k : nat) (update : list A) :
-      option (list A) :=
-    if Nat.leb (n + k) (List.length l) then
-      Some (List.firstn n l ++ update ++ List.skipn (List.length l - k) l)
-    else
-      None.
-
-  Lemma firstn_map_eq {A B : Set} (f : A -> B) n (l : list A) :
-    List.map f (List.firstn n l) = List.firstn n (List.map f l).
-  Proof.
-    revert l; induction n; intros [|x xs]; cbn; auto.
-    now rewrite IHn.
-  Qed.
-
-  Lemma skipn_map_eq {A B : Set} (f : A -> B) n (l : list A) :
-    List.map f (List.skipn n l) = List.skipn n (List.map f l).
-  Proof.
-    revert l; induction n; intros [|x xs]; cbn; auto.
-  Qed.
-
-  Lemma nth_error_rev_map_eq {A B : Set} (f : A -> B) (l : list A) index :
-    List.nth_error_rev (List.map f l) index =
-    option_map f (List.nth_error_rev l index).
-  Proof.
-    unfold nth_error_rev.
-    rewrite List.length_map.
-    rewrite List.nth_error_map.
-    reflexivity.
-  Qed.
-
-  Lemma slice_rest_map_eq {A B : Set} (f : A -> B) (l : list A) n k :
-    option_map (List.map f) (slice_rest l n k) =
-    slice_rest (List.map f l) n k.
-  Proof.
-    unfold slice_rest.
-    rewrite List.length_map.
-    destruct Nat.leb; cbn.
-    { now rewrite firstn_map_eq, skipn_map_eq. }
-    { reflexivity. }
-  Qed.
-
-  Lemma replace_slice_rest_map_eq {A B : Set}
-      (f : A -> B) (l : list A) n k update :
-    option_map (List.map f) (replace_slice_rest l n k update) =
-    replace_slice_rest (List.map f l) n k (List.map f update).
-  Proof.
-    unfold replace_slice_rest.
-    rewrite List.length_map.
-    destruct Nat.leb; cbn.
-    { now rewrite !List.map_app, firstn_map_eq, skipn_map_eq. }
-    { reflexivity. }
-  Qed.
 End List.
 
 Module IntegerKind.
@@ -241,8 +178,6 @@ Module Pointer.
     Inductive t : Set :=
     | Tuple (index : Z)
     | Array (index : Z)
-    | ArrayFromEnd (index : Z)
-    | SliceRest (n k : Z)
     | StructRecord (constructor field : string)
     | StructTuple (constructor : string) (index : Z).
   End Index.
@@ -348,20 +283,6 @@ Module Value.
       | Array fields => List.nth_error fields (Z.to_nat index)
       | _ => None
       end
-    | Pointer.Index.ArrayFromEnd index =>
-      match value with
-      | Array fields => List.nth_error_rev fields (Z.to_nat index)
-      | _ => None
-      end
-    | Pointer.Index.SliceRest n k =>
-      match value with
-      | Array fields =>
-        match List.slice_rest fields (Z.to_nat n) (Z.to_nat k) with
-        | Some fields => Some (Array fields)
-        | None => None
-        end
-      | _ => None
-      end
     | Pointer.Index.StructRecord constructor field =>
       match value with
       | StructRecord c _ _ fields =>
@@ -401,25 +322,6 @@ Module Value.
         | None => None
         end
       | _ => None
-      end
-    | Pointer.Index.ArrayFromEnd index =>
-      match value with
-      | Array fields =>
-        match List.nth_error_rev fields (Z.to_nat index) with
-        | Some _ =>
-          Some (Array (List.replace_at fields (List.length fields - S (Z.to_nat index)) update))
-        | None => None
-        end
-      | _ => None
-      end
-    | Pointer.Index.SliceRest n k =>
-      match value, update with
-      | Array fields, Array update_fields =>
-        match List.replace_slice_rest fields (Z.to_nat n) (Z.to_nat k) update_fields with
-        | Some fields => Some (Array fields)
-        | None => None
-        end
-      | _, _ => None
       end
     | Pointer.Index.StructRecord constructor field =>
       match value with
@@ -1074,13 +976,11 @@ Module SubPointer.
     get_sub_pointer value (Pointer.Index.Array index).
 
   (** Get an element of a slice by index counting from the end. *)
-  Definition get_slice_rev_index (value : Value.t) (index : Z) : M :=
-    get_sub_pointer value (Pointer.Index.ArrayFromEnd index).
+  Parameter get_slice_rev_index : Value.t -> Z -> M.
 
   (** For two indices n and k, get all elements of a slice without
       the first n elements and without the last k elements. *)
-  Definition get_slice_rest (value : Value.t) (n k : Z) : M :=
-    get_sub_pointer value (Pointer.Index.SliceRest n k).
+  Parameter get_slice_rest : Value.t -> Z -> Z -> M.
 End SubPointer.
 
 Definition if_then_else_bool (ty : Ty.t) (condition : Value.t) (then_ else_ : M) : M :=

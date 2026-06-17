@@ -77,9 +77,10 @@ Module Impl_Interpreter.
       (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_underflow (Φ IW))
       [] [] [φ self]
       unit.
-    Proof.
+  Proof.
     constructor.
     run_symbolic.
+    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
   Defined.
 
   Global Opaque run_halt_underflow.
@@ -97,6 +98,7 @@ Module Impl_Interpreter.
   Proof.
     constructor.
     run_symbolic.
+    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
   Defined.
   Global Opaque run_halt_overflow.
 
@@ -113,6 +115,7 @@ Module Impl_Interpreter.
   Proof.
     constructor.
     run_symbolic.
+    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
   Defined.
   Global Opaque run_halt_memory_oog.
 
