@@ -1,10 +1,10 @@
 {# Template for SpecId links file #}
 Require Import links.RocqOfRust.
 Require Import core.links.option.
-Require Import revm.revm_specification.hardfork.
+Require Import revm.revm_primitives.hardfork.
 
 Module SpecId.
-{{ macros.enum_body("revm_specification::hardfork::SpecId", [
+{{ macros.enum_body("revm_primitives::hardfork::SpecId", [
   ("FRONTIER", []),
   ("FRONTIER_THAWING", []),
   ("HOMESTEAD", []),
@@ -25,7 +25,7 @@ Module SpecId.
   ("CANCUN", []),
   ("PRAGUE", []),
   ("OSAKA", []),
-  ("LATEST", []),
+  ("AMSTERDAM", []),
 ]) }}
   Definition get_discriminant (x : t) : Z :=
     match x with
@@ -49,7 +49,7 @@ Module SpecId.
     | CANCUN => 17
     | PRAGUE => 18
     | OSAKA => 19
-    | LATEST => 20
+    | AMSTERDAM => 20
     end.
 
   Lemma cast_integer_eq (kind : IntegerKind.t) (x : t) :
@@ -80,7 +80,7 @@ Module SpecId.
         apply hardfork.IsDiscriminant_SpecId_CANCUN ||
         apply hardfork.IsDiscriminant_SpecId_PRAGUE ||
         apply hardfork.IsDiscriminant_SpecId_OSAKA ||
-        apply hardfork.IsDiscriminant_SpecId_LATEST
+        apply hardfork.IsDiscriminant_SpecId_AMSTERDAM
       ).
   Qed.
 End SpecId.
@@ -89,29 +89,9 @@ Export (hints) SpecId.
 Module Impl_SpecId.
   Definition Self : Set := SpecId.t.
 
-  Instance run_n (spec_id : u8) :
-    Run.Trait
-      hardfork.Impl_revm_specification_hardfork_SpecId.n [] [] [ φ spec_id ]
-      (option Self).
-  Proof.
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_n.
-
-  Instance run_try_from_u8 (spec_id : u8) :
-    Run.Trait
-      hardfork.Impl_revm_specification_hardfork_SpecId.try_from_u8 [] [] [ φ spec_id ]
-      (option Self).
-  Proof.
-    constructor.
-    run_symbolic.
-  Defined.
-  Global Opaque run_try_from_u8.
-
   Instance run_is_enabled_in (self other : Self) :
     Run.Trait
-      hardfork.Impl_revm_specification_hardfork_SpecId.is_enabled_in [] [] [ φ self; φ other ]
+      hardfork.Impl_revm_primitives_hardfork_SpecId.is_enabled_in [] [] [ φ self; φ other ]
       bool.
   Proof.
     constructor.

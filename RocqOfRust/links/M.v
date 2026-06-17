@@ -388,6 +388,7 @@ Module Slice.
     reflexivity. 
   Defined.
   Smpl Add apply of_ty : of_ty.
+
 End Slice.
 
 Module Str.
@@ -849,6 +850,22 @@ Module Run.
       {{ k (φ ref) 🔽 R, Output }}
     ) ->
     {{ LowM.CallPrimitive (Primitive.StateAlloc ty' value') k 🔽 R, Output }}
+  | CallPrimitiveStateAllocPointerCast
+      (ty' : Ty.t)
+      {A : Set} `{Link A}
+      {kind_source kind_target : Pointer.Kind.t}
+      (ref_value : Ref.t kind_source A)
+      (k : Value.t -> M) :
+    let value : Ref.t kind_target A := Ref.cast_to kind_target ref_value in
+    ty' = Φ (Ref.t kind_target A) ->
+    (forall (ref : '* (Ref.t kind_target A)),
+      {{ k (φ ref) 🔽 R, Output }}
+    ) ->
+    {{
+      LowM.CallPrimitive
+        (Primitive.StateAlloc ty' (φ ref_value)) k 🔽
+      R, Output
+    }}
   | CallPrimitiveStateAllocImmediate
       (ty' : Ty.t)
       (value' : Value.t)
@@ -1172,6 +1189,14 @@ Proof.
     | H : forall _, _ |- _ => apply (H {| Ref.core := ref_core |})
     end.
   }
+  { (* Alloc pointer cast *)
+    apply (LinkM.CallPrimitive (Primitive.StateAlloc value)).
+    intros ref_core.
+    eapply evaluate.
+    match goal with
+    | H : forall _, _ |- _ => apply (H {| Ref.core := ref_core |})
+    end.
+  }
   { (* AllocImmediate *)
     eapply evaluate.
     match goal with
@@ -1343,6 +1368,23 @@ Ltac run_symbolic_state_alloc :=
     now repeat (smpl of_ty || smpl of_value) |
     |
     repeat (smpl of_value) |
+    intro
+  ].
+
+Ltac run_symbolic_state_alloc_pointer_cast :=
+  first [
+    unshelve eapply Run.CallPrimitiveStateAllocPointerCast
+      with (kind_target := Pointer.Kind.MutRef) |
+    unshelve eapply Run.CallPrimitiveStateAllocPointerCast
+      with (kind_target := Pointer.Kind.Ref) |
+    unshelve eapply Run.CallPrimitiveStateAllocPointerCast
+      with (kind_target := Pointer.Kind.ConstPointer) |
+    unshelve eapply Run.CallPrimitiveStateAllocPointerCast
+      with (kind_target := Pointer.Kind.MutPointer) |
+    unshelve eapply Run.CallPrimitiveStateAllocPointerCast
+      with (kind_target := Pointer.Kind.Raw)
+  ]; cbn; [
+    reflexivity |
     intro
   ].
 
@@ -1521,6 +1563,89 @@ Ltac run_sub_pointer :=
     smpl run_sub_pointer
   |]; intro.
 
+Module SliceSubPointer.
+  Definition get_rev_index (A : Set) `{Link A} (index : Z) :
+    SubPointer.Runner.t (list A) (Pointer.Index.ArrayFromEnd index) :=
+  {|
+    SubPointer.Runner.projection x :=
+      List.nth_error_rev x (Z.to_nat index);
+    SubPointer.Runner.injection x y :=
+      match List.nth_error_rev x (Z.to_nat index) with
+      | Some _ =>
+        Some (List.replace_at x (List.length x - S (Z.to_nat index)) y)
+      | None => None
+      end;
+  |}.
+
+  Lemma get_rev_index_is_valid {A : Set} `{Link A} index :
+    SubPointer.Runner.Valid.t (get_rev_index A index).
+  Proof.
+    constructor; intros; cbn.
+    { symmetry; apply List.nth_error_rev_map_eq. }
+    {
+      pose proof (List.nth_error_rev_map_eq φ a (Z.to_nat index)) as H_lookup.
+      destruct (List.nth_error_rev a (Z.to_nat index)) eqn:H_nth; cbn.
+      {
+        change ((Slice.IsLink A).(φ) a) with (Value.Array (List.map φ a)).
+        cbn.
+        rewrite H_lookup; cbn.
+        rewrite List.length_map.
+        change
+          ((Slice.IsLink A).(φ)
+            (List.replace_at a (List.length a - S (Z.to_nat index)) sub_a))
+          with
+          (Value.Array
+            (List.map φ
+              (List.replace_at a (List.length a - S (Z.to_nat index)) sub_a))).
+        rewrite List.replace_at_map_eq.
+        reflexivity.
+      }
+      {
+        change ((Slice.IsLink A).(φ) a) with (Value.Array (List.map φ a)).
+        cbn.
+        rewrite H_lookup; reflexivity.
+      }
+    }
+  Qed.
+  Smpl Add apply get_rev_index_is_valid : run_sub_pointer.
+
+  Definition get_slice_rest (A : Set) `{Link A} (n k : Z) :
+    SubPointer.Runner.t (list A) (Pointer.Index.SliceRest n k) :=
+  {|
+    SubPointer.Runner.projection x :=
+      List.slice_rest x (Z.to_nat n) (Z.to_nat k);
+    SubPointer.Runner.injection x y :=
+      List.replace_slice_rest x (Z.to_nat n) (Z.to_nat k) y;
+  |}.
+
+  Lemma get_slice_rest_is_valid {A : Set} `{Link A} n k :
+    SubPointer.Runner.Valid.t (get_slice_rest A n k).
+  Proof.
+    constructor; intros; cbn.
+    {
+      change ((Slice.IsLink A).(φ) a) with (Value.Array (List.map φ a)).
+      cbn.
+      rewrite <- List.slice_rest_map_eq.
+      destruct (List.slice_rest a (Z.to_nat n) (Z.to_nat k)) as [rest|]; cbn.
+      { change ((Slice.IsLink A).(φ) rest) with (Value.Array (List.map φ rest)).
+        reflexivity. }
+      { reflexivity. }
+    }
+    {
+      change ((Slice.IsLink A).(φ) a) with (Value.Array (List.map φ a)).
+      change ((Slice.IsLink A).(φ) sub_a) with (Value.Array (List.map φ sub_a)).
+      cbn.
+      rewrite <- List.replace_slice_rest_map_eq.
+      destruct (List.replace_slice_rest a (Z.to_nat n) (Z.to_nat k) sub_a)
+        as [rest|]; cbn.
+      { change ((Slice.IsLink A).(φ) rest) with (Value.Array (List.map φ rest)).
+        reflexivity. }
+      { reflexivity. }
+    }
+  Qed.
+  Smpl Add apply get_slice_rest_is_valid : run_sub_pointer.
+End SliceSubPointer.
+
 Ltac run_main_rewrites :=
   eapply Run.Rewrite; [
     (repeat (
@@ -1631,6 +1756,7 @@ Ltac run_symbolic_one_step :=
     run_main_rewrites ||
     rewrite_cast_integer ||
     run_symbolic_pure ||
+    run_symbolic_state_alloc_pointer_cast ||
     run_symbolic_state_alloc ||
     (* run_symbolic_state_alloc_immediate || *)
     run_symbolic_state_read ||
