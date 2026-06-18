@@ -276,6 +276,13 @@ Module MemoryTrait.
     run_size (self : '& Self) :: Run.Trait size [] [] [ φ self ] usize;
   }.
 
+  Class Method_local_memory_offset (Self : Set) `{Link Self} : Set := {
+    local_memory_offset : PolymorphicFunction.t;
+    local_memory_offset_is_method :: IsTraitMethod.C (trait Self) "local_memory_offset" local_memory_offset;
+    run_local_memory_offset (self : '& Self) ::
+      Run.Trait local_memory_offset [] [] [ φ self ] usize;
+  }.
+
   Class Method_copy (Self : Set) `{Link Self} : Set := {
     copy : PolymorphicFunction.t;
     copy_is_method :: IsTraitMethod.C (trait Self) "copy" copy;
@@ -310,6 +317,7 @@ Module MemoryTrait.
     method_set_data :: Method_set_data Self;
     method_set :: Method_set Self;
     method_size :: Method_size Self;
+    method_local_memory_offset :: Method_local_memory_offset Self;
     method_copy :: Method_copy Self;
     Synthetic_IsAssociated :
       IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTr" [] [] (Φ Self)

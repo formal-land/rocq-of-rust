@@ -64,19 +64,5 @@ Module Impl_Eip7702CodeLoad.
       |}
     ).
 
-  Lemma into_components_eq
-      {T : Set} `{Link T}
-      (self : Self T)
-      (stack : Stack.t) :
-    {{
-      SimulateM.eval_f
-        (@Impl_Eip7702CodeLoad.run_into_components T _ self)
-        stack 🌲
-      (
-        Output.Success (into_components self),
-        stack
-      )
-    }}.
-  Admitted.
 End Impl_Eip7702CodeLoad.
 Export (hints) Impl_Eip7702CodeLoad.

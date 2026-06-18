@@ -59,6 +59,40 @@ Module Range.
     value := Build_t H_Idx.(OfTy.A) H_start.(OfValueWith.value) H_end_.(OfValueWith.value);
     eq := ltac:(sauto lq: on);
   }.
+
+  Definition get_start_subpointer {Idx : Set} `{Link Idx} :
+      SubPointer.Runner.t (t Idx)
+        (Pointer.Index.StructRecord "core::ops::range::Range" "start") := {|
+    SubPointer.Runner.Sub_A := Idx;
+    SubPointer.Runner.H_Sub_A := H;
+    SubPointer.Runner.projection x := Some x.(start);
+    SubPointer.Runner.injection x start_value :=
+      Some (Build_t Idx start_value x.(end_));
+  |}.
+
+  Lemma get_start_subpointer_is_valid {Idx : Set} `{Link Idx} :
+      SubPointer.Runner.Valid.t (@get_start_subpointer Idx H).
+  Proof.
+    constructor; intros []; reflexivity.
+  Qed.
+  Smpl Add apply get_start_subpointer_is_valid : run_sub_pointer.
+
+  Definition get_end_subpointer {Idx : Set} `{Link Idx} :
+      SubPointer.Runner.t (t Idx)
+        (Pointer.Index.StructRecord "core::ops::range::Range" "end_") := {|
+    SubPointer.Runner.Sub_A := Idx;
+    SubPointer.Runner.H_Sub_A := H;
+    SubPointer.Runner.projection x := Some x.(end_);
+    SubPointer.Runner.injection x end_value :=
+      Some (Build_t Idx x.(start) end_value);
+  |}.
+
+  Lemma get_end_subpointer_is_valid {Idx : Set} `{Link Idx} :
+      SubPointer.Runner.Valid.t (@get_end_subpointer Idx H).
+  Proof.
+    constructor; intros []; reflexivity.
+  Qed.
+  Smpl Add apply get_end_subpointer_is_valid : run_sub_pointer.
 End Range.
 Export (hints) Range.
 

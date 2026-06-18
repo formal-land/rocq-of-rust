@@ -50,9 +50,25 @@ Module Memory.
       end
     end.
 
+  Lemma take_pad_length (len : nat) (l : list u8) :
+    List.length (take_pad len l) = len.
+  Proof.
+    revert l.
+    induction len as [| len IH]; intros l; cbn; [reflexivity|].
+    destruct l; cbn; rewrite IH; reflexivity.
+  Qed.
+
   (** Get a slice of memory, returning zeros for out-of-bounds *)
   Definition slice (self : t) (offset len : usize) : list u8 :=
     take_pad (Z.to_nat i[len]) (List.skipn (Z.to_nat i[offset]) self.(value)).
+
+  Lemma slice_length (self : t) (offset len : usize) :
+    List.length (slice self offset len) = Z.to_nat len.(Integer.value).
+  Proof.
+    unfold slice.
+    rewrite take_pad_length.
+    reflexivity.
+  Qed.
 
   (** Extend list to given length, padding with zeros *)
   Fixpoint extend_to (l : list u8) (len : nat) : list u8 :=
@@ -355,6 +371,9 @@ Module LoopControl.
   Definition set_instruction_result (self : Self) (result : InstructionResult.t) : Self :=
     self <| Control.instruction_result := Some result |>.
 
+  Definition set_action (self : Self) (action : InterpreterAction.t) : Self :=
+    self <| Control.next_action := Some action |>.
+
   Definition set_next_action
       (self : Self)
       (action : InterpreterAction.t)
@@ -377,11 +396,66 @@ Module LoopControl.
   Admitted.
 
   Instance I : LoopControl.C WIRE_types.(InterpreterTypes.Types.Control) := {|
+    simulate.interpreter_types.LoopControl.set_action := set_action;
     simulate.interpreter_types.LoopControl.set_instruction_result := set_instruction_result;
     simulate.interpreter_types.LoopControl.set_next_action := set_next_action;
     simulate.interpreter_types.LoopControl.gas := gas;
     simulate.interpreter_types.LoopControl.instruction_result := instruction_result;
     simulate.interpreter_types.LoopControl.take_next_action := take_next_action;
+  |}.
+
+  Definition BytecodeSelf : Set :=
+    usize.
+
+  Definition set_action_bytecode (self : BytecodeSelf) (_action : InterpreterAction.t) :
+      BytecodeSelf :=
+    self.
+
+  Definition set_instruction_result_bytecode
+      (self : BytecodeSelf)
+      (_result : InstructionResult.t) :
+      BytecodeSelf :=
+    self.
+
+  Definition set_next_action_bytecode
+      (self : BytecodeSelf)
+      (_action : InterpreterAction.t)
+      (_result : InstructionResult.t) :
+      BytecodeSelf :=
+    self.
+
+  Definition default_memory_gas : MemoryGas.t := {|
+    MemoryGas.expansion_cost := 0;
+    MemoryGas.words_num := 0;
+  |}.
+
+  Definition default_gas : Gas.t := {|
+    Gas.limit := 0;
+    Gas.memory := default_memory_gas;
+    Gas.refunded := 0;
+    Gas.remaining := 0;
+  |}.
+
+  Definition gas_bytecode : RefStub.t BytecodeSelf Gas.t := {|
+    RefStub.path := [];
+    RefStub.projection := fun _ => default_gas;
+    RefStub.injection := fun x _ => x;
+  |}.
+
+  Definition instruction_result_bytecode (_self : BytecodeSelf) : InstructionResult.t :=
+    InstructionResult.Continue.
+
+  Definition take_next_action_bytecode (self : BytecodeSelf) :
+      InterpreterAction.t * BytecodeSelf :=
+    (InterpreterAction.NewFrame FrameInput.Empty, self).
+
+  Instance Bytecode_I : LoopControl.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
+    simulate.interpreter_types.LoopControl.set_action := set_action_bytecode;
+    simulate.interpreter_types.LoopControl.set_instruction_result := set_instruction_result_bytecode;
+    simulate.interpreter_types.LoopControl.set_next_action := set_next_action_bytecode;
+    simulate.interpreter_types.LoopControl.gas := gas_bytecode;
+    simulate.interpreter_types.LoopControl.instruction_result := instruction_result_bytecode;
+    simulate.interpreter_types.LoopControl.take_next_action := take_next_action_bytecode;
   |}.
 End LoopControl.
 Export (hints) LoopControl.
@@ -417,6 +491,9 @@ Module MemoryTrait.
   Definition size (self : Self) : usize :=
     Memory.size self.
 
+  Definition local_memory_offset (_self : Self) : usize :=
+    0.
+
   Definition copy (self : Self) (dst src len : usize) : Self :=
     Memory.copy self dst src len.
 
@@ -426,6 +503,15 @@ Module MemoryTrait.
   Definition slice_len (self : Self) (offset len : usize) : Synthetic :=
     Memory.slice self offset len.
 
+  Lemma slice_len_length (self : Self) (offset len : usize) :
+    List.length
+      (MemorySlice.Deref_I.(Deref.deref).(RefStub.projection)
+        (slice_len self offset len)) =
+    Z.to_nat len.(Integer.value).
+  Proof.
+    apply Memory.slice_length.
+  Qed.
+
   Definition resize (self : Self) (new_size : usize) : bool * Self :=
     (true, Memory.resize self new_size).
 
@@ -433,10 +519,12 @@ Module MemoryTrait.
     simulate.interpreter_types.MemoryTrait.set_data := set_data;
     simulate.interpreter_types.MemoryTrait.set := set;
     simulate.interpreter_types.MemoryTrait.size := size;
+    simulate.interpreter_types.MemoryTrait.local_memory_offset := local_memory_offset;
     simulate.interpreter_types.MemoryTrait.copy := copy;
     simulate.interpreter_types.MemoryTrait.slice := slice;
     simulate.interpreter_types.MemoryTrait.Deref_for_Synthetic := MemorySlice.Deref_I;
     simulate.interpreter_types.MemoryTrait.slice_len := slice_len;
+    simulate.interpreter_types.MemoryTrait.slice_len_length := slice_len_length;
     simulate.interpreter_types.MemoryTrait.Deref_for_Synthetic1 := MemorySlice.Deref_I;
     simulate.interpreter_types.MemoryTrait.resize := resize;
   |}.

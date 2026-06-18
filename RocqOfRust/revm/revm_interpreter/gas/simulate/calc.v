@@ -217,22 +217,28 @@ Lemma selfdestruct_cost_eq (stack : Stack.t)
   }}.
 Admitted.
 
-Definition call_cost
+Definition calc_call_static_gas
     (spec_id : SpecId.t)
-    (transfers_value : bool)
-    (account_load : AccountLoad.t) :
+    (has_transfer : bool) :
     u64 :=
   {| Integer.value := 0 |}.
 
-Lemma call_cost_eq (stack : Stack.t)
-    (spec_id : SpecId.t) (transfers_value : bool) (account_load : AccountLoad.t) :
+Lemma calc_call_static_gas_eq (stack : Stack.t)
+    (spec_id : SpecId.t) (has_transfer : bool) :
   {{
     SimulateM.eval_f
-      (run_call_cost spec_id transfers_value account_load)
+      (run_calc_call_static_gas spec_id has_transfer)
       stack 🌲
-    (Output.Success (call_cost spec_id transfers_value account_load), stack)
+    (Output.Success (calc_call_static_gas spec_id has_transfer), stack)
   }}.
 Admitted.
+
+Definition call_cost
+    (spec_id : SpecId.t)
+    (transfers_value : bool)
+    (_account_load : AccountLoad.t) :
+    u64 :=
+  calc_call_static_gas spec_id transfers_value.
 
 Definition warm_cold_cost (is_cold : bool) : u64 :=
   {| Integer.value := 0 |}.

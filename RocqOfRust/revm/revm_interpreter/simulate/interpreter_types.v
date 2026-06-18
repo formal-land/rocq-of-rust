@@ -1100,6 +1100,8 @@ Module MemoryTrait.
     set (self : Self) (memory_offset : usize) (data : list u8) : Self;
     (* fn size(&self) -> usize; *)
     size (self : Self) : usize;
+    (* fn local_memory_offset(&self) -> usize; *)
+    local_memory_offset (self : Self) : usize;
     (* fn copy(&mut self, destination: usize, source: usize, len: usize); *)
     copy (self : Self) (destination source len : usize) : Self;
     (* fn slice(&self, range: Range<usize>) -> impl Deref<Target = [u8]> + '_; *)
@@ -1186,14 +1188,32 @@ Module MemoryTrait.
           SimulateM.eval_f
             (links.interpreter_types.MemoryTrait.run_size ref_self)
             (interpreter :: stack)%stack 🌲
+	          (
+	            Output.Success (I.(size) interpreter.(Interpreter.memory)),
+	            (interpreter :: stack)%stack
+	          )
+	        }};
+      local_memory_offset
+        (interpreter : Interpreter.t WIRE WIRE_types)
+        (stack : Stack.t) :
+        let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+        let ref_self : '& _ := {| Ref.core :=
+          SubPointer.Runner.apply
+            ref_interpreter.(Ref.core)
+            Interpreter.SubPointer.get_memory
+        |} in
+        {{
+          SimulateM.eval_f
+            (links.interpreter_types.MemoryTrait.run_local_memory_offset ref_self)
+            (interpreter :: stack)%stack 🌲
           (
-            Output.Success (I.(size) interpreter.(Interpreter.memory)),
+            Output.Success (I.(local_memory_offset) interpreter.(Interpreter.memory)),
             (interpreter :: stack)%stack
           )
         }};
-      copy
-        (interpreter : Interpreter.t WIRE WIRE_types)
-        (stack_rest : Stack.t)
+	      copy
+	        (interpreter : Interpreter.t WIRE WIRE_types)
+	        (stack_rest : Stack.t)
         (destination source len : usize) :
         let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=

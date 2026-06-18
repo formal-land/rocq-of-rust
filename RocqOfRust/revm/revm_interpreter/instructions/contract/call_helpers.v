@@ -458,7 +458,7 @@ Module instructions.
                                                       M.SubPointer.get_struct_record_field (|
                                                         in_range,
                                                         "core::ops::range::Range",
-                                                        "end"
+                                                        "end_"
                                                       |)
                                                     |);
                                                     M.read (| offset |)
