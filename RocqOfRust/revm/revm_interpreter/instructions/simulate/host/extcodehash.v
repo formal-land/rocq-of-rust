@@ -16,8 +16,8 @@ Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
-Require Import revm.revm_specification.links.hardfork.
-Require Import revm.revm_specification.simulate.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
+Require Import revm.revm_primitives.simulate.hardfork.
 
 Definition extcodehash
     {WIRE H : Set} `{Link WIRE} `{Link H}

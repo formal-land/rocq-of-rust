@@ -3,7 +3,7 @@ Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.tests.interpreter_types.
-Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 
 Definition make_interpreter (stack : Stack.t) : Interpreter.t WIRE WIRE_types := {|
   Interpreter.bytecode := {| Integer.value := 0 |};

@@ -6,7 +6,7 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
-Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.from.
 

@@ -7,12 +7,11 @@ Require Import core.links.array.
 Require Import core.ops.links.deref.
 Require Import core.ops.links.range.
 Require Import core.links.option.
-Require Import revm.revm_bytecode.eof.links.types_section.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.interpreter_types.
-Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 
 (*
@@ -582,42 +581,6 @@ End EofData.
 Export (hints) EofData.
 
 (*
-pub trait EofCodeInfo {
-    fn code_section_info(&self, idx: usize) -> Option<&TypesSection>;
-    fn code_section_pc(&self, idx: usize) -> Option<usize>;
-}
-*)
-Module EofCodeInfo.
-  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
-    {|
-      TraitHeader.trait_name := "revm_interpreter::interpreter_types::EofCodeInfo";
-      TraitHeader.trait_consts := [];
-      TraitHeader.trait_tys := [];
-      TraitHeader.self_ty := Φ Self;
-    |}.
-
-  Class Method_code_section_info (Self : Set) `{Link Self} : Set := {
-    code_section_info : PolymorphicFunction.t;
-    code_section_info_is_method :: IsTraitMethod.C (trait Self) "code_section_info" code_section_info;
-    run_code_section_info (self : '& Self) (idx : usize) ::
-      Run.Trait code_section_info [] [] [ φ self; φ idx ] (option ('& TypesSection.t));
-  }.
-
-  Class Method_code_section_pc (Self : Set) `{Link Self} : Set := {
-    code_section_pc : PolymorphicFunction.t;
-    code_section_pc_is_method :: IsTraitMethod.C (trait Self) "code_section_pc" code_section_pc;
-    run_code_section_pc (self : '& Self) (idx : usize) ::
-      Run.Trait code_section_pc [] [] [ φ self; φ idx ] (option usize);
-  }.
-
-  Class Run (Self : Set) `{Link Self} : Set := {
-    method_code_section_info :: Method_code_section_info Self;
-    method_code_section_pc :: Method_code_section_pc Self;
-  }.
-End EofCodeInfo.
-Export (hints) EofCodeInfo.
-
-(*
 pub trait ReturnData {
     fn buffer(&self) -> &[u8];
     fn buffer_mut(&mut self) -> &mut Bytes;
@@ -773,7 +736,7 @@ Export (hints) RuntimeFlag.
 pub trait InterpreterTypes {
     type Stack: StackTrait;
     type Memory: MemoryTrait;
-    type Bytecode: Jumps + Immediates + LegacyBytecode + EofData + EofContainer + EofCodeInfo;
+    type Bytecode: Jumps + Immediates + LegacyBytecode + EofData + EofContainer;
     type ReturnData: ReturnData;
     type Input: InputsTrait;
     type SubRoutineStack: SubRoutineStack;
@@ -842,7 +805,6 @@ Module InterpreterTypes.
     run_LegacyBytecode_for_Bytecode :: LegacyBytecode.Run types.(Types.Bytecode);
     run_EofData_for_Bytecode :: EofData.Run types.(Types.Bytecode);
     run_EofContainer_for_Bytecode :: EofContainer.Run types.(Types.Bytecode);
-    run_EofCodeInfo_for_Bytecode :: EofCodeInfo.Run types.(Types.Bytecode);
     ReturnData_IsAssociated :
       IsTraitAssociatedType
         "revm_interpreter::interpreter_types::InterpreterTypes" [] [] (Φ Self)

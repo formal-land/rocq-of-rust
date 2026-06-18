@@ -11,7 +11,6 @@ Require Import core.links.option.
 Require Import core.links.panicking.
 Require Import core.links.result.
 Require Import core.num.links.mod.
-Require Import revm.revm_bytecode.eof.links.types_section.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.control.
 Require Import revm.revm_interpreter.instructions.links.control.jump_inner.
@@ -21,7 +20,7 @@ Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.cmp.
 Require Import ruint.links.from.
 Require Import ruint.links.lib.

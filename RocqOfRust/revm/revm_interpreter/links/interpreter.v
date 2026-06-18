@@ -77,13 +77,30 @@ Module Impl_Interpreter.
       (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_underflow (Φ IW))
       [] [] [φ self]
       unit.
-    Proof.
+  Proof.
     constructor.
     run_symbolic.
     eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
   Defined.
 
   Global Opaque run_halt_underflow.
+
+  (* pub fn halt_overflow(&mut self) *)
+  Instance run_halt_overflow
+      (IW : Set) `{Link IW}
+      {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
+      {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW)) :
+    Run.Trait
+      (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_overflow (Φ IW))
+      [] [] [φ self]
+      unit.
+  Proof.
+    constructor.
+    run_symbolic.
+    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
+  Defined.
+  Global Opaque run_halt_overflow.
 
   (* pub fn halt_memory_oog(&mut self) *)
   Instance run_halt_memory_oog

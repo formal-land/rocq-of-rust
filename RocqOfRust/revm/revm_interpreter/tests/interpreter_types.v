@@ -6,13 +6,12 @@ Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
-Require Import revm.revm_bytecode.eof.links.types_section.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
-Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 
 Parameter WIRE : Set.
@@ -199,12 +198,6 @@ Module EofContainer.
   Admitted.
 End EofContainer.
 Export (hints) EofContainer.
-
-Module EofCodeInfo.
-  Instance I : EofCodeInfo.C WIRE_types.(InterpreterTypes.Types.Bytecode).
-  Admitted.
-End EofCodeInfo.
-Export (hints) EofCodeInfo.
 
 Module InputTraits.
   Instance I : InputTraits.C WIRE_types.(InterpreterTypes.Types.Input).

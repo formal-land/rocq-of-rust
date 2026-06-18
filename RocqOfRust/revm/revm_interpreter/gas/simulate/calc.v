@@ -4,7 +4,7 @@ Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_interpreter.gas.links.calc.
 Require Import revm.revm_interpreter.gas.simulate.constants.
-Require Import revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 
 Definition sstore_refund (spec_id : SpecId.t) (vals : '& SStoreResult.t) : i64 :=
   {| Integer.value := 0 |}.

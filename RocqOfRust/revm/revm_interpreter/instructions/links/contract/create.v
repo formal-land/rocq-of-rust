@@ -18,14 +18,12 @@ Require Import core.num.links.mod.
 Require Import core.ops.links.control_flow.
 Require Import core.ops.links.range.
 Require Import core.slice.links.iter.
-Require Import revm.revm_bytecode.links.eof.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.gas.links.calc.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.create_inputs.
-Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
@@ -35,7 +33,7 @@ Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.instructions.contract.links.call_helpers.
 Require Import revm.revm_interpreter.instructions.contract.
 Require Import revm.revm_interpreter.instructions.links.utility.
-Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.bytes.
 Require Import ruint.links.cmp.
 Require Import ruint.links.from.

@@ -81,6 +81,15 @@ Module Impl_Slice.
   Admitted.
   Global Opaque run_iter_mut.
 
+  (* pub const fn last_mut(&mut self) -> Option<&mut T> *)
+  Instance run_last_mut
+      (T : Set) `{Link T}
+      (self : '&mut (Self T)) :
+    Run.Trait (slice.Impl_slice_T.last_mut (Φ T)) [] [] [φ self]
+      (option ('&mut T)).
+  Admitted.
+  Global Opaque run_last_mut.
+
   (* pub const fn as_ptr(&self) -> *const T *)
   Instance run_as_ptr
       (T : Set) `{Link T}
