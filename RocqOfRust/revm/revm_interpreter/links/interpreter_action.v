@@ -6,7 +6,6 @@ Require Import core.links.option.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.create_inputs.
-Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.links.instruction_result.
@@ -14,34 +13,48 @@ Require Import revm.revm_interpreter.interpreter_action.
 
 (*
 pub enum FrameInput {
+    Empty,
     Call(Box<CallInputs>),
     Create(Box<CreateInputs>),
-    EOFCreate(Box<EOFCreateInputs>),
 }
 *)
 Module FrameInput.
   Inductive t : Set :=
+  | Empty
   | Call (inputs : (Box.t CallInputs.t Global.t))
   | Create (inputs : (Box.t CreateInputs.t Global.t))
-  | EOFCreate (inputs : (Box.t EOFCreateInputs.t Global.t))
   .
 
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::FrameInput";
     φ x :=
       match x with
+      | Empty =>
+          Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Empty" [] [] []
       | Call inputs =>
           Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Call" [] [] [φ inputs]
       | Create inputs =>
           Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [] [] [φ inputs]
-      | EOFCreate inputs =>
-          Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [] [] [φ inputs]
       end
   }.
 
   Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::FrameInput") :=
   {
     A := t;
+    eq := eq_refl;
+  }.
+
+  Instance IsOfValueWith_Empty :
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Empty" [] [] []) :=
+  {
+    value := Empty;
+    eq := eq_refl;
+  }.
+
+  Instance IsOfValue_Empty :
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Empty" [] [] []) :=
+  {
+    value := Empty;
     eq := eq_refl;
   }.
 
@@ -84,28 +97,6 @@ Module FrameInput.
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [] [] [inputs']) :=
   {
     value := Create
-      H_inputs.(OfValueWith.value)
-;
-    eq := ltac:(sauto lq: on);
-  }.
-
-  Instance IsOfValueWith_EOFCreate
-      (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t EOFCreateInputs.t Global.t)) inputs'}
-      :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [] [] [inputs']) :=
-  {
-    value := EOFCreate
-      H_inputs.(OfValueWith.value)
-;
-    eq := ltac:(sauto lq: on);
-  }.
-
-  Instance IsOfValue_EOFCreate
-      (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t EOFCreateInputs.t Global.t)) inputs'}
-      :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [] [] [inputs']) :=
-  {
-    value := EOFCreate
       H_inputs.(OfValueWith.value)
 ;
     eq := ltac:(sauto lq: on);
@@ -155,28 +146,6 @@ Module FrameInput.
       constructor; intros; destruct a; try reflexivity; discriminate.
     Qed.
     Smpl Add apply get_Create_0_is_valid : run_sub_pointer.
-
-    Definition get_EOFCreate_0 : SubPointer.Runner.t t
-      (Pointer.Index.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" 0) :=
-    {|
-      SubPointer.Runner.projection x :=
-        match x with
-        | EOFCreate inputs => Some inputs
-        | _ => None
-        end;
-      SubPointer.Runner.injection x y :=
-        match x with
-        | EOFCreate _ => Some (EOFCreate y)
-        | _ => None
-        end;
-    |}.
-
-    Lemma get_EOFCreate_0_is_valid :
-      SubPointer.Runner.Valid.t get_EOFCreate_0.
-    Proof.
-      constructor; intros; destruct a; try reflexivity; discriminate.
-    Qed.
-    Smpl Add apply get_EOFCreate_0_is_valid : run_sub_pointer.
 
   End SubPointer.
 End FrameInput.

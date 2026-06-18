@@ -5,7 +5,6 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
-Require Import revm.revm_bytecode.eof.links.types_section.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
@@ -465,65 +464,6 @@ Module EofContainer.
   End Eq.
 End EofContainer.
 Export (hints) EofContainer.
-
-Module EofCodeInfo.
-  Class C (Self : Set) `{Link Self} : Set := {
-    (* fn code_section_info(&self, idx: usize) -> Option<&TypesSection>; *)
-    code_section_info (self : Self) (idx : usize) : option TypesSection.t;
-    (* fn code_section_pc(&self, idx: usize) -> Option<usize>; *)
-    code_section_pc (self : Self) (idx : usize) : option usize;
-  }.
-
-  Module Eq.
-    Class t
-        (WIRE : Set) {WIRE_types : InterpreterTypes.Types.t}
-        `{Link WIRE} `{InterpreterTypes.Types.AreLinks WIRE_types}
-        `{!links.interpreter_types.EofCodeInfo.Run WIRE_types.(InterpreterTypes.Types.Bytecode)}
-        (I : C WIRE_types.(InterpreterTypes.Types.Bytecode)) :
-        Prop := {
-      code_section_info
-        (interpreter : Interpreter.t WIRE WIRE_types)
-        (stack : Stack.t)
-        (idx : usize) :
-        let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-        let ref_self : '& _ := {| Ref.core :=
-          SubPointer.Runner.apply
-            ref_interpreter.(Ref.core)
-            Interpreter.SubPointer.get_bytecode
-        |} in
-        let result := I.(code_section_info) interpreter.(Interpreter.bytecode) idx in
-        {{
-          SimulateM.eval_f
-            (links.interpreter_types.EofCodeInfo.run_code_section_info ref_self idx)
-            (interpreter :: stack)%stack 🌲
-          (
-            Output.Success (option_map (fun _ => make_ref 0) result),
-            (interpreter :: stack)%stack
-          )
-        }};
-      code_section_pc
-        (interpreter : Interpreter.t WIRE WIRE_types)
-        (stack : Stack.t)
-        (idx : usize) :
-        let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-        let ref_self : '& _ := {| Ref.core :=
-          SubPointer.Runner.apply
-            ref_interpreter.(Ref.core)
-            Interpreter.SubPointer.get_bytecode
-        |} in
-        {{
-          SimulateM.eval_f
-            (links.interpreter_types.EofCodeInfo.run_code_section_pc ref_self idx)
-            (interpreter :: stack)%stack 🌲
-          (
-            Output.Success (I.(code_section_pc) interpreter.(Interpreter.bytecode) idx),
-            (interpreter :: stack)%stack
-          )
-        }};
-    }.
-  End Eq.
-End EofCodeInfo.
-Export (hints) EofCodeInfo.
 
 Module InputTraits.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -1545,14 +1485,13 @@ Module InterpreterTypes.
       WIRE_types.(InterpreterTypes.Types.Memory)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1);
-	    (* type Bytecode: Jumps + Immediates + LegacyBytecode + EofData + EofContainer + EofCodeInfo; *)
+	    (* type Bytecode: Jumps + Immediates + LegacyBytecode + EofData + EofContainer; *)
 	    LoopControl_for_Bytecode :: LoopControl.C WIRE_types.(InterpreterTypes.Types.Bytecode);
 	    Jumps_for_Bytecode :: Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode);
 	    Immediates_for_Bytecode :: Immediates.C WIRE_types.(InterpreterTypes.Types.Bytecode);
 	    LegacyBytecode_for_Bytecode :: LegacyBytecode.C WIRE_types.(InterpreterTypes.Types.Bytecode);
     EofData_for_Bytecode :: EofData.C WIRE_types.(InterpreterTypes.Types.Bytecode);
     EofContainer_for_Bytecode :: EofContainer.C WIRE_types.(InterpreterTypes.Types.Bytecode);
-    EofCodeInfo_for_Bytecode :: EofCodeInfo.C WIRE_types.(InterpreterTypes.Types.Bytecode);
     (* type ReturnData: ReturnData; *)
     ReturnData_for_ReturnData :: ReturnData.C WIRE_types.(InterpreterTypes.Types.ReturnData);
     (* type Input: InputsTrait; *)
@@ -1580,7 +1519,6 @@ Module InterpreterTypes.
       LegacyBytecode_for_Bytecode :: LegacyBytecode.Eq.t WIRE I.(LegacyBytecode_for_Bytecode);
       EofData_for_Bytecode :: EofData.Eq.t WIRE I.(EofData_for_Bytecode);
       EofContainer_for_Bytecode :: EofContainer.Eq.t WIRE I.(EofContainer_for_Bytecode);
-      EofCodeInfo_for_Bytecode :: EofCodeInfo.Eq.t WIRE I.(EofCodeInfo_for_Bytecode);
       ReturnData_for_ReturnData : ReturnData.Eq.t WIRE I.(ReturnData_for_ReturnData);
       InputsTrait_for_Input :: InputTraits.Eq.t WIRE I.(InputsTrait_for_Input);
       SubRoutineStack_for_SubRoutineStack :: SubRoutineStack.Eq.t WIRE I.(SubRoutineStack_for_SubRoutineStack);

@@ -6,7 +6,6 @@ Require Import core.links.option.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.create_inputs.
-Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.links.instruction_result.
@@ -14,16 +13,16 @@ Require Import revm.revm_interpreter.interpreter_action.
 
 (*
 pub enum FrameInput {
+    Empty,
     Call(Box<CallInputs>),
     Create(Box<CreateInputs>),
-    EOFCreate(Box<EOFCreateInputs>),
 }
 *)
 Module FrameInput.
 {{ macros.enum_body("revm_interpreter::interpreter_action::FrameInput", [
+  ("Empty", []),
   ("Call", [("inputs", "(Box.t CallInputs.t Global.t)")]),
   ("Create", [("inputs", "(Box.t CreateInputs.t Global.t)")]),
-  ("EOFCreate", [("inputs", "(Box.t EOFCreateInputs.t Global.t)")]),
 ]) }}
 End FrameInput.
 Export (hints) FrameInput.
