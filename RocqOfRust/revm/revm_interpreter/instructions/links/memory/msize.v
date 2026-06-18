@@ -31,17 +31,12 @@ Instance run_msize
     unit.
 Proof.
   constructor.
-  pose proof run_InterpreterTypes_for_WIRE as run_InterpreterTypes_for_WIRE_copy.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
-  destruct method_push.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_MemoryTrait_for_Memory.
-  destruct method_size.
-  pose proof
-    (@Impl_Interpreter.run_halt_overflow WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy)
-    as run_halt_overflow_for_WIRE.
   run_symbolic.
+  eapply Impl_Interpreter.run_halt_overflow.
 Defined.
 Global Opaque run_msize.

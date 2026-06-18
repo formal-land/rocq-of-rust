@@ -12,7 +12,7 @@ Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
-Require Import revm.revm_specification.simulate.hardfork.
+Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.cmp.
 Require Import ruint.simulate.from.
