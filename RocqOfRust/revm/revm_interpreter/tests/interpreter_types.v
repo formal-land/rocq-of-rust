@@ -50,7 +50,7 @@ Module Memory.
       end
     end.
 
-  Lemma take_pad_length (len : nat) (l : list u8) :
+  Lemma take_pad_length_eq (len : nat) (l : list u8) :
     List.length (take_pad len l) = len.
   Proof.
     revert l.
@@ -62,11 +62,11 @@ Module Memory.
   Definition slice (self : t) (offset len : usize) : list u8 :=
     take_pad (Z.to_nat i[len]) (List.skipn (Z.to_nat i[offset]) self.(value)).
 
-  Lemma slice_length (self : t) (offset len : usize) :
+  Lemma slice_length_eq (self : t) (offset len : usize) :
     List.length (slice self offset len) = Z.to_nat len.(Integer.value).
   Proof.
     unfold slice.
-    rewrite take_pad_length.
+    rewrite take_pad_length_eq.
     reflexivity.
   Qed.
 
@@ -509,7 +509,7 @@ Module MemoryTrait.
         (slice_len self offset len)) =
     Z.to_nat len.(Integer.value).
   Proof.
-    apply Memory.slice_length.
+    apply Memory.slice_length_eq.
   Qed.
 
   Definition resize (self : Self) (new_size : usize) : bool * Self :=

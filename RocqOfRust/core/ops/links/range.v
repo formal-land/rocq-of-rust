@@ -93,6 +93,21 @@ Module Range.
     constructor; intros []; reflexivity.
   Qed.
   Smpl Add apply get_end_subpointer_is_valid : run_sub_pointer.
+
+  Definition get_end_rust_subpointer {Idx : Set} `{Link Idx} :
+      SubPointer.Runner.t (t Idx)
+        (Pointer.Index.StructRecord "core::ops::range::Range" "end") := {|
+    SubPointer.Runner.Sub_A := Idx;
+    SubPointer.Runner.H_Sub_A := H;
+    SubPointer.Runner.projection x := Some x.(end_);
+    SubPointer.Runner.injection x end_value :=
+      Some (Build_t Idx x.(start) end_value);
+  |}.
+
+  Lemma get_end_rust_subpointer_is_valid {Idx : Set} `{Link Idx} :
+      SubPointer.Runner.Valid.t (@get_end_rust_subpointer Idx H).
+  Admitted.
+  Smpl Add apply get_end_rust_subpointer_is_valid : run_sub_pointer.
 End Range.
 Export (hints) Range.
 
