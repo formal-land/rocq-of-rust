@@ -19,9 +19,13 @@ Module Impl_MemoryGas.
     {{
       SimulateM.eval_f Impl_MemoryGas.run_new stack 🌲
       (Output.Success new, stack)
-    }}.
+  }}.
   Proof.
+    Transparent revm.revm_interpreter.links.gas.Impl_Gas.run_memory.
+    unfold revm.revm_interpreter.links.gas.Impl_Gas.run_memory.
+    cbn.
     p.
+    Opaque revm.revm_interpreter.links.gas.Impl_Gas.run_memory.
   Qed.
 
   Definition record_new_len (self : Self) (new_num : usize) : option u64 * Self :=
@@ -116,8 +120,11 @@ Module Impl_Gas.
   Proof.
   Admitted.
 
-  Definition memory (self : Self) : u64 :=
-    {| Integer.value := 0 |}.
+  Definition memory : RefStub.t Self MemoryGas.t := {|
+    RefStub.path := [Pointer.Index.StructRecord "revm_interpreter::gas::Gas" "memory"];
+    RefStub.projection := Gas.memory;
+    RefStub.injection := fun self memory => self <| Gas.memory := memory |>;
+  |}.
 
   Lemma memory_eq
       {WIRE : Set} `{Link WIRE}
@@ -132,14 +139,11 @@ Module Impl_Gas.
           Interpreter.SubPointer.get_control
     |} in
     let ref_self := RefStub.apply ref_control gas_stub in
-    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
     {{
       SimulateM.eval_f (Impl_Gas.run_memory ref_self) (interpreter :: stack)%stack 🌲
-      (Output.Success (memory self), interpreter :: stack)%stack
+      (Output.Success (RefStub.apply ref_self memory), interpreter :: stack)%stack
     }}.
-  Proof.
-    p.
-  Qed.
+  Admitted.
 
   Definition refunded (self : Self) : i64 :=
     self.(Gas.refunded).
@@ -428,12 +432,12 @@ Module Impl_Gas.
   Qed.
 
   Definition record_cost (self : Self) (cost : u64) : option Self :=
-    let (remaining, overflow) := Impl_u64.overflowing_sub self.(Gas.remaining) cost in
-    let success := negb overflow in
-    if success then
+    match Impl_u64.checked_sub self.(Gas.remaining) cost with
+    | Some remaining =>
       Some (self <| Gas.remaining := remaining |>)
-    else
-      None.
+    | None =>
+      None
+    end.
 
   Lemma record_cost_eq
       {WIRE : Set} `{Link WIRE}
@@ -471,52 +475,22 @@ Module Impl_Gas.
       )
     }}.
   Proof.
-    Opaque Impl_u64.overflowing_sub.
     apply Run.remove_extra_stack1.
     with_strategy transparent [Impl_Gas.run_record_cost] (
       unfold record_cost;
       cbn
     ).
-    cw Impl_u64.overflowing_sub_eq.
-    destruct Impl_u64.overflowing_sub as [remaining overflow].
     s.
-    destruct (negb overflow); cbn; repeat (lu || p).
-    Transparent Impl_u64.overflowing_sub.
+    { apply Impl_u64.checked_sub_eq. }
+    { destruct (Impl_u64.checked_sub
+        (gas_stub.(RefStub.projection) interpreter.(Interpreter.control)).(Gas.remaining)
+        cost); cbn.
+      { s. }
+      { repeat (lu || p). }
+    }
   Qed.
 
   (* Help some proofs later *)
   Global Opaque record_cost.
 
-  Definition record_memory_expansion (self : Self) (new_len : usize) : MemoryExtensionResult.t * Self :=
-    (MemoryExtensionResult.Extended, self).
-
-  Lemma record_memory_expansion_eq
-      {WIRE : Set} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (interpreter : Interpreter.t WIRE WIRE_types)
-      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
-      (new_len : usize)
-      (stack : Stack.t) :
-    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : '&mut _ := {| Ref.core :=
-        SubPointer.Runner.apply
-          ref_interpreter.(Ref.core)
-          Interpreter.SubPointer.get_control
-    |} in
-    let ref_self := RefStub.apply ref_control gas_stub in
-    let gas := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
-    let result := record_memory_expansion gas new_len in
-    {{
-      SimulateM.eval_f (Impl_Gas.run_record_memory_expansion ref_self new_len) (interpreter :: stack)%stack 🌲
-      (
-        Output.Success (fst result),
-        (
-          (interpreter <| Interpreter.control :=
-            gas_stub.(RefStub.injection) interpreter.(Interpreter.control) (snd result)
-          |>) :: stack
-        )%stack
-      )
-    }}.
-  Proof.
-  Admitted.
 End Impl_Gas.
