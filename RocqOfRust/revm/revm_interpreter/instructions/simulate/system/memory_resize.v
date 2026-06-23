@@ -60,5 +60,4 @@ Proof.
   destruct (_ =? 0); [s|].
   as_usize_or_fail_macro_eq InterpreterTypesEq.
   resize_memory_macro_eq InterpreterTypesEq.
-  s; now destruct _.(MemoryTrait.resize).
 Qed.

@@ -42,9 +42,28 @@ Instance run_memory_resize
     (option usize).
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
+  pose proof run_MemoryTrait_for_Memory as run_MemoryTrait_for_Memory_copy.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
+  all: match goal with
+  | |- Run.Trait
+      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_oog _)
+      _ _ _ _ =>
+      eapply Impl_Interpreter.run_halt_oog
+  | |- Run.Trait
+      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt _)
+      _ _ _ _ =>
+      eapply Impl_Interpreter.run_halt
+  | |- Run.Trait
+      shared_memory.interpreter.shared_memory.resize_memory
+      _ _ _ _ =>
+      eapply (@shared_memory.run_resize_memory _ _ _ _ _ _ run_MemoryTrait_for_Memory_copy)
+  | |- Run.Trait
+      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_memory_oog _)
+      _ _ _ _ =>
+      eapply Impl_Interpreter.run_halt_memory_oog
+  end.
 Defined.
 Global Opaque run_memory_resize.
