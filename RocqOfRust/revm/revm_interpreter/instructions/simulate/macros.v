@@ -57,6 +57,43 @@ Ltac require_non_staticcall_macro_eq InterpreterTypesEq :=
     s
   |].
 
+Definition halt {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (result : instruction_result.InstructionResult.t) :
+    Interpreter.t WIRE WIRE_types :=
+  let action :=
+    interpreter_action.InterpreterAction.Return {|
+      InterpreterResult.result := result;
+      InterpreterResult.output := Impl_Bytes.new;
+      InterpreterResult.gas := interpreter.(Interpreter.gas);
+    |} in
+  interpreter
+    <| Interpreter.bytecode :=
+      IInterpreterTypes
+        .(InterpreterTypes.LoopControl_for_Bytecode)
+        .(LoopControl.set_action)
+        interpreter.(Interpreter.bytecode)
+        action
+    |>.
+
+Definition halt_oog {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  halt
+    (interpreter <| Interpreter.gas := Impl_Gas.spend_all interpreter.(Interpreter.gas) |>)
+    instruction_result.InstructionResult.OutOfGas.
+
+Definition halt_memory_oog {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  halt interpreter instruction_result.InstructionResult.MemoryOOG.
+
 Definition gas_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -65,69 +102,11 @@ Definition gas_macro {WIRE K : Set} `{Link WIRE}
     (k_exit : Interpreter.t WIRE WIRE_types -> K)
     (k : Interpreter.t WIRE WIRE_types -> K) :
     K :=
-  let gas :=
-    IInterpreterTypes
-        .(InterpreterTypes.LoopControl_for_Control)
-        .(LoopControl.gas)
-        .(RefStub.projection)
-      interpreter.(Interpreter.control) in
-  match Impl_Gas.record_cost gas cost with
+  match Impl_Gas.record_cost interpreter.(Interpreter.gas) cost with
   | None =>
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.OutOfGas in
-    let interpreter := interpreter
-      <| Interpreter.control := control |> in
-    k_exit interpreter
+    k_exit (halt_oog interpreter)
   | Some gas =>
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.gas)
-          .(RefStub.injection)
-        interpreter.(Interpreter.control) gas in
-    let interpreter :=
-      interpreter
-        <| Interpreter.control := control |> in
-    k interpreter
-  end.
-
-Ltac gas_macro_eq gas_eq :=
-  match goal with
-  | InterpreterTypesEq : InterpreterTypes.Eq.t _ _ _ _ |- _ =>
-  unfold gas_macro;
-  s; [
-    apply InterpreterTypesEq
-      .(InterpreterTypes.Eq.LoopControl_for_Control)
-      .(LoopControl.Eq.gas)
-  |];
-  gas_eq;
-  s; [
-    apply Impl_Gas.record_cost_eq
-  |];
-  destruct Impl_Gas.record_cost;
-  (
-    eapply Run.Call; [
-      apply Run.Pure
-    |]
-  );
-  cbn;
-  [|
-    eapply Run.Call; [
-      apply Run.Pure
-    |];
-    apply Run.LetUnfold;
-    eapply Run.Call; [
-      apply InterpreterTypesEq
-        .(InterpreterTypes.Eq.LoopControl_for_Control)
-        .(LoopControl.Eq.set_instruction_result)
-    |];
-    cbn;
-    apply Run.Pure
-  ]
+    k (interpreter <| Interpreter.gas := gas |>)
   end.
 
 Definition gas_or_fail_macro {WIRE K : Set} `{Link WIRE}
@@ -140,29 +119,9 @@ Definition gas_or_fail_macro {WIRE K : Set} `{Link WIRE}
     K :=
   match gas_opt with
   | None =>
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.OutOfGas in
-    let interpreter := interpreter
-      <| Interpreter.control := control |> in
-    k_exit interpreter
+    k_exit (halt_oog interpreter)
   | Some gas_used =>
     gas_macro interpreter gas_used k_exit k
-  end.
-
-Ltac gas_or_fail_macro_eq :=
-  match goal with
-  | InterpreterTypesEq : InterpreterTypes.Eq.t _ _ _ _ |- _ =>
-  step; [
-    gas_macro_eq idtac |
-    s; [
-      apply InterpreterTypesEq
-    |];
-    s
-  ]
   end.
 
 Definition popn_macro {WIRE K : Set} `{Link WIRE}
@@ -332,6 +291,116 @@ Proof.
     repeat rewrite stack_dealloc_cons_alloc_unit;
     reflexivity.
 Qed.
+
+Lemma halt_oog_eq {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (InterpreterTypesEq :
+      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (stack_rest : Stack.t) :
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  {{
+    SimulateM.eval_f
+      (Impl_Interpreter.run_halt_oog WIRE ref_interpreter)
+      (interpreter :: stack_rest)%stack 🌲
+    (
+      Output.Success tt,
+      (halt_oog interpreter :: stack_rest)%stack
+    )
+  }}.
+Proof.
+  intros.
+  unfold halt_oog, halt.
+  with_strategy transparent [
+    Impl_Interpreter.run_halt_oog
+    Impl_Interpreter.run_halt
+  ] unfold Impl_Interpreter.run_halt_oog, Impl_Interpreter.run_halt.
+  cbn.
+  s.
+  - apply Impl_Gas.spend_all_interpreter_eq.
+  - repeat s.
+    + apply Impl_Bytes.new_eq.
+    + apply InterpreterTypesEq
+        .(InterpreterTypes.Eq.LoopControl_for_Bytecode)
+        .(LoopControl.BytecodeEq.set_action).
+    + repeat rewrite Stack.dealloc_alloc_eq;
+      repeat rewrite stack_dealloc_cons_alloc_unit;
+      reflexivity.
+Qed.
+
+Lemma halt_memory_oog_eq {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (InterpreterTypesEq :
+      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (stack_rest : Stack.t) :
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  {{
+    SimulateM.eval_f
+      (Impl_Interpreter.run_halt_memory_oog WIRE ref_interpreter)
+      (interpreter :: stack_rest)%stack 🌲
+    (
+      Output.Success tt,
+      (halt_memory_oog interpreter :: stack_rest)%stack
+    )
+  }}.
+Proof.
+  intros.
+  unfold halt_memory_oog, halt.
+  with_strategy transparent [
+    Impl_Interpreter.run_halt_memory_oog
+    Impl_Interpreter.run_halt
+  ] unfold Impl_Interpreter.run_halt_memory_oog, Impl_Interpreter.run_halt.
+  cbn.
+  repeat s.
+  - apply Impl_Bytes.new_eq.
+  - apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.LoopControl_for_Bytecode)
+      .(LoopControl.BytecodeEq.set_action).
+  - repeat rewrite Stack.dealloc_alloc_eq;
+    repeat rewrite stack_dealloc_cons_alloc_unit;
+    reflexivity.
+Qed.
+
+Ltac gas_macro_eq gas_eq :=
+  unfold gas_macro;
+  gas_eq;
+  s; [
+    apply Impl_Gas.record_cost_interpreter_eq
+  |];
+  destruct Impl_Gas.record_cost;
+  (
+    eapply Run.Call; [
+      apply Run.Pure
+    |]
+  );
+  cbn;
+  [|
+    eapply Run.Call; [
+      apply Run.Pure
+    |];
+    apply Run.LetUnfold;
+    s; [
+      eapply halt_oog_eq;
+      try eassumption
+    |];
+    cbn;
+    apply Run.Pure
+  ].
+
+Ltac gas_or_fail_macro_eq :=
+  step; [
+    gas_macro_eq idtac |
+    s; [
+      eapply halt_oog_eq;
+      try eassumption
+    |];
+    s
+  ].
 
 Lemma halt_underflow_eq {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -627,67 +696,55 @@ Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
     (k_exit : Interpreter.t WIRE WIRE_types -> K)
     (k : Interpreter.t WIRE WIRE_types -> K) :
     K :=
-  let words_num := num_words (Impl_usize.saturating_add offset len) in
-  let ref_gas :=
-    IInterpreterTypes
-      .(InterpreterTypes.LoopControl_for_Control)
-      .(LoopControl.gas) in
-  let gas := ref_gas.(RefStub.projection) interpreter.(Interpreter.control) in
-  if i[words_num] >? i[gas.(Gas.memory).(MemoryGas.words_num)] then
-    let '(cost, memory_gas) := Impl_MemoryGas.record_new_len gas.(Gas.memory) words_num in
-    let gas := gas <| Gas.memory := memory_gas |> in
-    match cost with
-    | None =>
-      let control := ref_gas.(RefStub.injection) interpreter.(Interpreter.control) gas in
-      let control :=
-        IInterpreterTypes
-            .(InterpreterTypes.LoopControl_for_Control)
-            .(LoopControl.set_instruction_result)
-          control
-          instruction_result.InstructionResult.MemoryOOG in
-      let interpreter := interpreter <| Interpreter.control := control |> in
-      k_exit interpreter
-    | Some cost =>
-      match Impl_Gas.record_cost gas cost with
-      | None =>
-        let control := ref_gas.(RefStub.injection) interpreter.(Interpreter.control) gas in
-        let control :=
-          IInterpreterTypes
-              .(InterpreterTypes.LoopControl_for_Control)
-              .(LoopControl.set_instruction_result)
-            control
-            instruction_result.InstructionResult.MemoryOOG in
-        let interpreter := interpreter <| Interpreter.control := control |> in
-        k_exit interpreter
-      | Some gas =>
-        let interpreter :=
-          interpreter <| Interpreter.control :=
-            ref_gas.(RefStub.injection) interpreter.(Interpreter.control) gas
-          |> in
-        let '(_, memory) :=
-          IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.resize)
-            interpreter.(Interpreter.memory) (words_num *i 32) in
-        let interpreter := interpreter <| Interpreter.memory := memory |> in
-        k interpreter
-      end
-    end
+  let '(success, (gas, memory)) :=
+    @shared_memory.resize_memory
+      WIRE_types.(InterpreterTypes.Types.Memory)
+      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
+      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
+      H0.(InterpreterTypes.Types.H_Memory)
+      H0.(InterpreterTypes.Types.H_Memory_Synthetic)
+      H0.(InterpreterTypes.Types.H_Memory_Synthetic1)
+      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
+      interpreter.(Interpreter.gas)
+      interpreter.(Interpreter.memory)
+      offset
+      len in
+  let interpreter :=
+    interpreter
+      <| Interpreter.gas := gas |>
+      <| Interpreter.memory := memory |> in
+  if success then
+    k interpreter
   else
-    k interpreter.
+    k_exit (halt_memory_oog interpreter).
 
 Ltac resize_memory_macro_eq InterpreterTypesEq :=
   unfold resize_memory_macro;
   cbn;
-  repeat (apply Run.LetUnfold || cbn);
+  repeat (apply Run.LetUnfold || cbn || get_can_access);
   eapply Run.Call; [
-    apply Impl_usize.saturating_add_eq
+    eapply shared_memory.resize_memory_eq;
+    try eassumption
   |];
   cbn;
-  s; [
-    apply num_words_eq
-  |];
-  s; [
-    apply InterpreterTypesEq
-  |];
-  s; [
-    apply InterpreterTypesEq
-  |].
+  let success := fresh "success" in
+  let gas' := fresh "gas" in
+  let memory' := fresh "memory" in
+  match goal with
+  | |- context[shared_memory.resize_memory ?gas ?memory ?offset ?len] =>
+    destruct (shared_memory.resize_memory gas memory offset len) as [success [gas' memory']] eqn:?
+  end;
+  destruct success;
+  cbn;
+  repeat s;
+  try (eapply halt_memory_oog_eq; try eassumption);
+  repeat s;
+  try apply Impl_Bytes.new_eq;
+  try apply InterpreterTypesEq
+    .(InterpreterTypes.Eq.LoopControl_for_Bytecode)
+    .(LoopControl.BytecodeEq.set_action);
+  try (
+    repeat rewrite Stack.dealloc_alloc_eq;
+    repeat rewrite stack_dealloc_cons_alloc_unit;
+    reflexivity
+  ).

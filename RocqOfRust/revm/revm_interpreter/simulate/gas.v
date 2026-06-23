@@ -145,6 +145,54 @@ Module Impl_Gas.
     }}.
   Admitted.
 
+  Lemma memory_interpreter_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_self : '& _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_gas
+    |} in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_memory ref_self) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success (RefStub.apply ref_self memory),
+        (interpreter :: stack)%stack
+      )
+    }}.
+  Proof.
+    apply Run.remove_extra_stack1.
+    with_strategy transparent [Impl_Gas.run_memory] cbn.
+    s.
+  Qed.
+
+  Lemma memory_mut_interpreter_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_self : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_gas
+    |} in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_memory_mut ref_self) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success (RefStub.apply ref_self memory),
+        (interpreter :: stack)%stack
+      )
+    }}.
+  Proof.
+    apply Run.remove_extra_stack1.
+    with_strategy transparent [Impl_Gas.run_memory_mut] cbn.
+    s.
+  Qed.
+
   Definition refunded (self : Self) : i64 :=
     self.(Gas.refunded).
 
@@ -309,6 +357,33 @@ Module Impl_Gas.
           (interpreter <| Interpreter.control :=
             gas_stub.(RefStub.injection) interpreter.(Interpreter.control) result
           |>) :: stack
+        )%stack
+      )
+    }}.
+  Proof.
+    apply Run.remove_extra_stack1.
+    with_strategy transparent [Impl_Gas.run_spend_all] cbn.
+    s.
+  Qed.
+
+  Lemma spend_all_interpreter_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_self : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_gas
+    |} in
+    let result := spend_all interpreter.(Interpreter.gas) in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_spend_all ref_self) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success tt,
+        (
+          (interpreter <| Interpreter.gas := result |>) :: stack
         )%stack
       )
     }}.
@@ -485,6 +560,50 @@ Module Impl_Gas.
     { destruct (Impl_u64.checked_sub
         (gas_stub.(RefStub.projection) interpreter.(Interpreter.control)).(Gas.remaining)
         cost); cbn.
+      { s. }
+      { repeat (lu || p). }
+    }
+  Qed.
+
+  Lemma record_cost_interpreter_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (cost : u64)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_self : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_gas
+    |} in
+    let result := record_cost interpreter.(Interpreter.gas) cost in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_record_cost ref_self cost) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success (
+          match result with
+          | None => false
+          | Some _ => true
+          end
+        ),
+        (
+          match result with
+          | None => interpreter
+          | Some gas => interpreter <| Interpreter.gas := gas |>
+          end :: stack
+        )%stack
+      )
+    }}.
+  Proof.
+    apply Run.remove_extra_stack1.
+    with_strategy transparent [Impl_Gas.run_record_cost] (
+      unfold record_cost;
+      cbn
+    ).
+    s.
+    { apply Impl_u64.checked_sub_eq. }
+    { destruct (Impl_u64.checked_sub interpreter.(Interpreter.gas).(Gas.remaining) cost); cbn.
       { s. }
       { repeat (lu || p). }
     }
