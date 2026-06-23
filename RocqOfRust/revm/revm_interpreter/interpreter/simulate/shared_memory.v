@@ -90,9 +90,7 @@ Lemma resize_memory_cold_eq
       WIRE_types.(InterpreterTypes.Types.Memory)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
-      H0.(InterpreterTypes.Types.H_Memory)
-      H0.(InterpreterTypes.Types.H_Memory_Synthetic)
-      H0.(InterpreterTypes.Types.H_Memory_Synthetic1)
+      _ _ _
       IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
       interpreter.(Interpreter.gas)
       interpreter.(Interpreter.memory)
@@ -143,9 +141,7 @@ Lemma resize_memory_eq
       WIRE_types.(InterpreterTypes.Types.Memory)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
-      H0.(InterpreterTypes.Types.H_Memory)
-      H0.(InterpreterTypes.Types.H_Memory_Synthetic)
-      H0.(InterpreterTypes.Types.H_Memory_Synthetic1)
+      _ _ _
       IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
       interpreter.(Interpreter.gas)
       interpreter.(Interpreter.memory)

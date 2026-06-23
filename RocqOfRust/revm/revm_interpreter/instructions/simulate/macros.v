@@ -213,57 +213,6 @@ Ltac gas_or_fail_macro_eq :=
     s
   ].
 
-Lemma halt_underflow_eq {WIRE : Set} `{Link WIRE}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    (InterpreterTypesEq :
-      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
-    (interpreter : Interpreter.t WIRE WIRE_types)
-    (stack_rest : Stack.t) :
-  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-  let action :=
-    interpreter_action.InterpreterAction.Return {|
-      InterpreterResult.result := instruction_result.InstructionResult.StackUnderflow;
-      InterpreterResult.output := Impl_Bytes.new;
-      InterpreterResult.gas := interpreter.(Interpreter.gas);
-    |} in
-  {{
-    SimulateM.eval_f
-      (Impl_Interpreter.run_halt_underflow WIRE ref_interpreter)
-      (interpreter :: stack_rest)%stack 🌲
-    (
-      Output.Success tt,
-      (
-        interpreter
-          <| Interpreter.bytecode :=
-            IInterpreterTypes
-              .(InterpreterTypes.LoopControl_for_Bytecode)
-              .(LoopControl.set_action)
-              interpreter.(Interpreter.bytecode)
-              action
-          |>
-        :: stack_rest
-      )%stack
-    )
-  }}.
-Proof.
-  intros.
-  with_strategy transparent [
-    Impl_Interpreter.run_halt_underflow
-    Impl_Interpreter.run_halt
-  ] unfold Impl_Interpreter.run_halt_underflow, Impl_Interpreter.run_halt.
-  cbn.
-  repeat s.
-  - apply Impl_Bytes.new_eq.
-  - apply InterpreterTypesEq
-      .(InterpreterTypes.Eq.LoopControl_for_Bytecode)
-      .(LoopControl.BytecodeEq.set_action).
-  - repeat rewrite Stack.dealloc_alloc_eq;
-    repeat rewrite stack_dealloc_cons_alloc_unit;
-    reflexivity.
-Qed.
-
 Ltac popn_top_macro_eq InterpreterTypesEq :=
   unfold popn_top_macro;
   s; [
@@ -512,9 +461,7 @@ Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
       WIRE_types.(InterpreterTypes.Types.Memory)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
-      H0.(InterpreterTypes.Types.H_Memory)
-      H0.(InterpreterTypes.Types.H_Memory_Synthetic)
-      H0.(InterpreterTypes.Types.H_Memory_Synthetic1)
+      _ _ _
       IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
       interpreter.(Interpreter.gas)
       interpreter.(Interpreter.memory)
