@@ -64,11 +64,64 @@ Definition resize_memory
   else
     (true, (gas, memory)).
 
+Lemma resize_memory_cold_eq
+    {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    `{IInterpreterTypes : ! InterpreterTypes.C WIRE_types}
+    (InterpreterTypesEq :
+      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (new_num_words : usize)
+    (stack : Stack.t) :
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let ref_gas : '&mut Gas.t := {| Ref.core :=
+    SubPointer.Runner.apply
+      ref_interpreter.(Ref.core)
+      Interpreter.SubPointer.get_gas
+  |} in
+  let ref_memory : '&mut WIRE_types.(InterpreterTypes.Types.Memory) := {| Ref.core :=
+    SubPointer.Runner.apply
+      ref_interpreter.(Ref.core)
+      Interpreter.SubPointer.get_memory
+  |} in
+  let result :=
+    @resize_memory_cold
+      WIRE_types.(InterpreterTypes.Types.Memory)
+      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
+      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
+      H0.(InterpreterTypes.Types.H_Memory)
+      H0.(InterpreterTypes.Types.H_Memory_Synthetic)
+      H0.(InterpreterTypes.Types.H_Memory_Synthetic1)
+      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
+      interpreter.(Interpreter.gas)
+      interpreter.(Interpreter.memory)
+      new_num_words in
+  {{
+    SimulateM.eval_f
+      (run_resize_memory_cold
+        run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_MemoryTrait_for_Memory)
+        ref_gas
+        ref_memory
+        new_num_words)
+      (interpreter :: stack)%stack 🌲
+    (
+      Output.Success (fst result),
+      (
+        interpreter
+          <| Interpreter.gas := fst (snd result) |>
+          <| Interpreter.memory := snd (snd result) |>
+        :: stack
+      )%stack
+    )
+  }}.
+Admitted.
+
 Lemma resize_memory_eq
     {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    `{IInterpreterTypes : ! InterpreterTypes.C WIRE_types}
     (InterpreterTypesEq :
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (interpreter : Interpreter.t WIRE WIRE_types)
