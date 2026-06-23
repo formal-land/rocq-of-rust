@@ -25,13 +25,12 @@ Proof.
 Qed.
 
 Definition resize_memory_cold
-    {Memory Synthetic Synthetic1 : Set}
-    `{Link Memory} `{Link Synthetic} `{Link Synthetic1}
-    {IMemoryTrait : MemoryTrait.C Memory Synthetic Synthetic1}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    `{IInterpreterTypes : ! InterpreterTypes.C WIRE_types}
     (gas : Gas.t)
-    (memory : Memory)
+    (memory : WIRE_types.(InterpreterTypes.Types.Memory))
     (new_num_words : usize) :
-    bool * (Gas.t * Memory) :=
+    bool * (Gas.t * WIRE_types.(InterpreterTypes.Types.Memory)) :=
   let '(cost, memory_gas) :=
     Impl_MemoryGas.record_new_len gas.(Gas.memory) new_num_words in
   let gas := gas <| Gas.memory := memory_gas |> in
@@ -44,23 +43,25 @@ Definition resize_memory_cold
       (false, (gas, memory))
     | Some gas =>
       let '(_, memory) :=
-        IMemoryTrait.(MemoryTrait.resize) memory (new_num_words *i 32) in
+        IInterpreterTypes
+          .(InterpreterTypes.MemoryTrait_for_Memory)
+          .(MemoryTrait.resize)
+          memory
+          (new_num_words *i 32) in
       (true, (gas, memory))
     end
   end.
 
 Definition resize_memory
-    {Memory Synthetic Synthetic1 : Set}
-    `{Link Memory} `{Link Synthetic} `{Link Synthetic1}
-    {IMemoryTrait : MemoryTrait.C Memory Synthetic Synthetic1}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    `{IInterpreterTypes : ! InterpreterTypes.C WIRE_types}
     (gas : Gas.t)
-    (memory : Memory)
+    (memory : WIRE_types.(InterpreterTypes.Types.Memory))
     (offset len : usize) :
-    bool * (Gas.t * Memory) :=
+    bool * (Gas.t * WIRE_types.(InterpreterTypes.Types.Memory)) :=
   let new_num_words := num_words (Impl_usize.saturating_add offset len) in
   if i[new_num_words] >? i[gas.(Gas.memory).(MemoryGas.words_num)] then
-    @resize_memory_cold
-      Memory Synthetic Synthetic1 H H0 H1 IMemoryTrait gas memory new_num_words
+    resize_memory_cold gas memory new_num_words
   else
     (true, (gas, memory)).
 
@@ -86,12 +87,7 @@ Lemma resize_memory_cold_eq
       Interpreter.SubPointer.get_memory
   |} in
   let result :=
-    @resize_memory_cold
-      WIRE_types.(InterpreterTypes.Types.Memory)
-      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
-      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
-      _ _ _
-      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
+    resize_memory_cold
       interpreter.(Interpreter.gas)
       interpreter.(Interpreter.memory)
       new_num_words in
@@ -137,12 +133,7 @@ Lemma resize_memory_eq
       Interpreter.SubPointer.get_memory
   |} in
   let result :=
-    @resize_memory
-      WIRE_types.(InterpreterTypes.Types.Memory)
-      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
-      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
-      _ _ _
-      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
+    resize_memory
       interpreter.(Interpreter.gas)
       interpreter.(Interpreter.memory)
       offset

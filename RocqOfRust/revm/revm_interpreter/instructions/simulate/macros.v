@@ -457,12 +457,7 @@ Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
     (k : Interpreter.t WIRE WIRE_types -> K) :
     K :=
   let '(success, (gas, memory)) :=
-    @shared_memory.resize_memory
-      WIRE_types.(InterpreterTypes.Types.Memory)
-      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
-      WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
-      _ _ _
-      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
+    shared_memory.resize_memory
       interpreter.(Interpreter.gas)
       interpreter.(Interpreter.memory)
       offset
