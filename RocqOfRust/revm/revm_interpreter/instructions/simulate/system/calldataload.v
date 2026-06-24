@@ -4,6 +4,7 @@ Require Import core.convert.simulate.mod.
 Require Import core.simulate.cmp.
 Require Import core.slice.simulate.mod.
 Require Import revm.revm_interpreter.gas.simulate.constants.
+Require Import revm.revm_interpreter.interpreter_action.simulate.call_inputs.
 Require Import revm.revm_interpreter.instructions.links.system.calldataload.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
@@ -17,27 +18,28 @@ Definition calldataload
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   popn_top_macro interpreter 0
     id (fun _ offset_ptr_stub interpreter =>
+  let word := Impl_FixedBytes.ZERO in
   let offset_ptr := offset_ptr_stub.(RefStub.projection) interpreter.(Interpreter.stack) in
   let offset := as_usize_saturated_macro offset_ptr in
   let input :=
     IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.input)
       .(RefStub.projection) interpreter.(Interpreter.input) in
-  let input_len := Impl_Slice.len input in
-  let word :=
+  let input_len := call_inputs.CallInput.len input in
+  let _ :=
     if i[offset] <? i[input_len] then
-      let count := Z.min 32 i[input_len -i offset] in
-      Impl_FixedBytes.ZERO
-    else
-      Impl_FixedBytes.ZERO in
+      match input with
+      | call_inputs.CallInput.Bytes _ => tt
+      | call_inputs.CallInput.SharedBuffer _ => tt
+      end
+    else tt in
   let stack :=
     offset_ptr_stub.(RefStub.injection)
       interpreter.(Interpreter.stack)
       (Into.into word) in
   interpreter <| Interpreter.stack := stack |>
-  )).
+  ).
 
 Lemma calldataload_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -52,7 +54,10 @@ Lemma calldataload_eq
   let ref_host := make_ref (A := H) 1 in
     {{
       SimulateM.eval_f
-        (run_calldataload run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+        (run_calldataload run_InterpreterTypes_for_WIRE {|
+          instruction_context.InstructionContext.interpreter := ref_interpreter;
+          instruction_context.InstructionContext.host := ref_host;
+        |})
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
@@ -60,35 +65,4 @@ Lemma calldataload_eq
       )
     }}.
 Proof.
-  with_strategy transparent [run_calldataload] unfold calldataload, run_calldataload; cbn.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  s. {
-    apply Impl_FixedBytes.ZERO_eq.
-  }
-  eapply Run.Let with (result :=
-    (Output.Success (as_usize_saturated_macro (t0.(RefStub.projection) s0)), _)
-  ). {
-    as_usize_saturated_macro_eq.
-  }
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    pose proof (Impl_Slice.len_eq (T := u8)) as H_apply.
-    s_apply H_apply.
-  }
-  s.
-  destruct (_ <? _) eqn:H_lt_eq; cbn.
-  { s. {
-      apply Impl_Ord_for_usize.min_eq.
-    }
-    (* TODO: debug_assert! macro *)
-    admit.
-  }
-  { s. {
-      apply Impl_Into_for_From_T.Eq.I.
-    }
-    s.
-  }
 Admitted.

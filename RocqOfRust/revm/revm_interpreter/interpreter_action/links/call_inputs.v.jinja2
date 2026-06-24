@@ -4,6 +4,7 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.ops.links.range.
+Require Import revm.revm_interpreter.interpreter_action.call_inputs.
 Require Import ruint.links.lib.
 
 (*
@@ -57,6 +58,37 @@ Module CallScheme.
 ]) }}
 End CallScheme.
 Export (hints) CallScheme.
+
+(*
+  pub enum CallInput {
+      SharedBuffer(Range<usize>),
+      Bytes(Bytes),
+  }
+*)
+Module CallInput.
+{{ macros.enum_body("revm_interpreter::interpreter_action::call_inputs::CallInput", [
+  ("SharedBuffer", [("range", "Range.t usize")]),
+  ("Bytes", [("bytes", "Bytes.t")]),
+]) }}
+End CallInput.
+Export (hints) CallInput.
+
+(*
+impl CallInput {
+    pub fn len(&self) -> usize
+*)
+Module Impl_CallInput.
+  Definition Self : Set :=
+    CallInput.t.
+
+  Instance run_len (self : '& Self) :
+    Run.Trait
+      interpreter_action.call_inputs.Impl_revm_interpreter_interpreter_action_call_inputs_CallInput.len
+      [] [] [φ self] usize.
+  Admitted.
+  Global Opaque run_len.
+End Impl_CallInput.
+Export (hints) Impl_CallInput.
 
 (*
   pub struct CallInputs {

@@ -4,6 +4,7 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.ops.links.range.
+Require Import revm.revm_interpreter.interpreter_action.call_inputs.
 Require Import ruint.links.lib.
 
 (*
@@ -293,6 +294,145 @@ Module CallScheme.
   End SubPointer.
 End CallScheme.
 Export (hints) CallScheme.
+
+(*
+  pub enum CallInput {
+      SharedBuffer(Range<usize>),
+      Bytes(Bytes),
+  }
+*)
+Module CallInput.
+  Inductive t : Set :=
+  | SharedBuffer (range : Range.t usize)
+  | Bytes (bytes : Bytes.t)
+  .
+
+  Instance IsLink : Link t := {
+    Φ := Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput";
+    φ x :=
+      match x with
+      | SharedBuffer range =>
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer" [] [] [φ range]
+      | Bytes bytes =>
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes" [] [] [φ bytes]
+      end
+  }.
+
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInput") :=
+  {
+    A := t;
+    eq := eq_refl;
+  }.
+
+  Instance IsOfValueWith_SharedBuffer
+      (range' : Value.t) {H_range : OfValueWith.C (Range.t usize) range'}
+      :
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer" [] [] [range']) :=
+  {
+    value := SharedBuffer
+      H_range.(OfValueWith.value)
+;
+    eq := ltac:(sauto lq: on);
+  }.
+
+  Instance IsOfValue_SharedBuffer
+      (range' : Value.t) {H_range : OfValueWith.C (Range.t usize) range'}
+      :
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer" [] [] [range']) :=
+  {
+    value := SharedBuffer
+      H_range.(OfValueWith.value)
+;
+    eq := ltac:(sauto lq: on);
+  }.
+
+  Instance IsOfValueWith_Bytes
+      (bytes' : Value.t) {H_bytes : OfValueWith.C (Bytes.t) bytes'}
+      :
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes" [] [] [bytes']) :=
+  {
+    value := Bytes
+      H_bytes.(OfValueWith.value)
+;
+    eq := ltac:(sauto lq: on);
+  }.
+
+  Instance IsOfValue_Bytes
+      (bytes' : Value.t) {H_bytes : OfValueWith.C (Bytes.t) bytes'}
+      :
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes" [] [] [bytes']) :=
+  {
+    value := Bytes
+      H_bytes.(OfValueWith.value)
+;
+    eq := ltac:(sauto lq: on);
+  }.
+
+  Module SubPointer.
+    Definition get_SharedBuffer_0 : SubPointer.Runner.t t
+      (Pointer.Index.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer" 0) :=
+    {|
+      SubPointer.Runner.projection x :=
+        match x with
+        | SharedBuffer range => Some range
+        | _ => None
+        end;
+      SubPointer.Runner.injection x y :=
+        match x with
+        | SharedBuffer _ => Some (SharedBuffer y)
+        | _ => None
+        end;
+    |}.
+
+    Lemma get_SharedBuffer_0_is_valid :
+      SubPointer.Runner.Valid.t get_SharedBuffer_0.
+    Proof.
+      constructor; intros; destruct a; try reflexivity; discriminate.
+    Qed.
+    Smpl Add apply get_SharedBuffer_0_is_valid : run_sub_pointer.
+
+    Definition get_Bytes_0 : SubPointer.Runner.t t
+      (Pointer.Index.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes" 0) :=
+    {|
+      SubPointer.Runner.projection x :=
+        match x with
+        | Bytes bytes => Some bytes
+        | _ => None
+        end;
+      SubPointer.Runner.injection x y :=
+        match x with
+        | Bytes _ => Some (Bytes y)
+        | _ => None
+        end;
+    |}.
+
+    Lemma get_Bytes_0_is_valid :
+      SubPointer.Runner.Valid.t get_Bytes_0.
+    Proof.
+      constructor; intros; destruct a; try reflexivity; discriminate.
+    Qed.
+    Smpl Add apply get_Bytes_0_is_valid : run_sub_pointer.
+
+  End SubPointer.
+End CallInput.
+Export (hints) CallInput.
+
+(*
+impl CallInput {
+    pub fn len(&self) -> usize
+*)
+Module Impl_CallInput.
+  Definition Self : Set :=
+    CallInput.t.
+
+  Instance run_len (self : '& Self) :
+    Run.Trait
+      interpreter_action.call_inputs.Impl_revm_interpreter_interpreter_action_call_inputs_CallInput.len
+      [] [] [φ self] usize.
+  Admitted.
+  Global Opaque run_len.
+End Impl_CallInput.
+Export (hints) Impl_CallInput.
 
 (*
   pub struct CallInputs {

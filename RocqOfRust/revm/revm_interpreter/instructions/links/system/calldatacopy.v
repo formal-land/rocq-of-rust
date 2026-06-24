@@ -22,7 +22,9 @@ Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.system.
 Require Import revm.revm_interpreter.instructions.links.system.memory_resize.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
+Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -35,14 +37,30 @@ Instance run_calldatacopy
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.system.calldatacopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.system.calldatacopy [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
+  destruct run_StackTrait_for_Stack.
+  destruct run_LoopControl_for_Control.
+  destruct run_MemoryTrait_for_Memory.
+  destruct run_InputsTrait_for_Input.
   destruct Impl_TryFrom_u64_for_usize.run.
+  destruct (Impl_Clone_for_Range.run usize).
   run_symbolic.
-Defined.
+  all: try match goal with
+  | |- Run.Trait
+      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_underflow _)
+      _ _ _ _ =>
+      eapply Impl_Interpreter.run_halt_underflow
+  | |- Run.Trait
+      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt _)
+      _ _ _ _ =>
+      eapply Impl_Interpreter.run_halt
+  end.
+  all: admit.
+Admitted.
 Global Opaque run_calldatacopy.

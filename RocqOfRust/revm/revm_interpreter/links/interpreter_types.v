@@ -10,6 +10,7 @@ Require Import core.links.option.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_action.
+Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
@@ -95,7 +96,7 @@ Export (hints) Immediates.
 pub trait InputsTr {
     fn target_address(&self) -> Address;
     fn caller_address(&self) -> Address;
-    fn input(&self) -> &[u8];
+    fn input(&self) -> &CallInput;
     fn call_value(&self) -> U256;
 }
 *)
@@ -123,7 +124,8 @@ Module InputsTrait.
   Class Method_input (Self : Set) `{Link Self} : Set := {
     input : PolymorphicFunction.t;
     input_is_method :: IsTraitMethod.C (trait Self) "input" input;
-    run_input (self : '& Self) :: Run.Trait input [] [] [ φ self ] ('& (list u8));
+    run_input (self : '& Self) :: Run.Trait input [] [] [ φ self ]
+      ('& revm.revm_interpreter.interpreter_action.links.call_inputs.CallInput.t);
   }.
 
   Class Method_call_value (Self : Set) `{Link Self} : Set := {
@@ -239,10 +241,18 @@ Export (hints) Jumps.
 (*
 pub trait MemoryTrait {
     fn set_data(&mut self, memory_offset: usize, data_offset: usize, len: usize, data: &[u8]);
+    fn set_data_from_global(
+        &mut self,
+        memory_offset: usize,
+        data_offset: usize,
+        len: usize,
+        data_range: Range<usize>,
+    );
     fn set(&mut self, memory_offset: usize, data: &[u8]);
     fn size(&self) -> usize;
     fn copy(&mut self, destination: usize, source: usize, len: usize);
     fn slice(&self, range: Range<usize>) -> impl Deref<Target = [u8]> + '_;
+    fn global_slice(&self, range: Range<usize>) -> impl Deref<Target = [u8]> + '_;
     fn slice_len(&self, offset: usize, len: usize) -> impl Deref<Target = [u8]> + '_;
     fn resize(&mut self, new_size: usize) -> bool;
 }
@@ -261,6 +271,16 @@ Module MemoryTrait.
     set_data_is_method :: IsTraitMethod.C (trait Self) "set_data" set_data;
     run_set_data (self : '&mut Self) (memory_offset data_offset len : usize) (data : '& (list u8)) ::
       Run.Trait set_data [] [] [ φ self; φ memory_offset; φ data_offset; φ len; φ data ] unit;
+  }.
+
+  Class Method_set_data_from_global (Self : Set) `{Link Self} : Set := {
+    set_data_from_global : PolymorphicFunction.t;
+    set_data_from_global_is_method ::
+      IsTraitMethod.C (trait Self) "set_data_from_global" set_data_from_global;
+    run_set_data_from_global
+      (self : '&mut Self) (memory_offset data_offset len : usize) (data_range : range.Range.t usize) ::
+      Run.Trait set_data_from_global [] []
+        [ φ self; φ memory_offset; φ data_offset; φ len; φ data_range ] unit;
   }.
 
   Class Method_set (Self : Set) `{Link Self} : Set := {
@@ -297,6 +317,13 @@ Module MemoryTrait.
       Run.Trait slice [] [] [ φ self; φ range ] Synthetic;
   }.
 
+  Class Method_global_slice (Self Synthetic : Set) `{Link Self} `{Link Synthetic} : Set := {
+    global_slice : PolymorphicFunction.t;
+    global_slice_is_method :: IsTraitMethod.C (trait Self) "global_slice" global_slice;
+    run_global_slice (self : '& Self) (range : range.Range.t usize) ::
+      Run.Trait global_slice [] [] [ φ self; φ range ] Synthetic;
+  }.
+
   Class Method_slice_len (Self Synthetic : Set) `{Link Self} `{Link Synthetic} : Set := {
     slice_len : PolymorphicFunction.t;
     slice_len_is_method :: IsTraitMethod.C (trait Self) "slice_len" slice_len;
@@ -315,6 +342,7 @@ Module MemoryTrait.
       `{Link Self} `{Link Synthetic} `{Link Synthetic1} :
       Set := {
     method_set_data :: Method_set_data Self;
+    method_set_data_from_global :: Method_set_data_from_global Self;
     method_set :: Method_set Self;
     method_size :: Method_size Self;
     method_local_memory_offset :: Method_local_memory_offset Self;
@@ -324,6 +352,7 @@ Module MemoryTrait.
       "{{anon_assoc}}" (Φ Synthetic);
     run_Deref_for_Synthetic :: deref.Deref.Run Synthetic (list u8);
     method_slice :: Method_slice Self Synthetic;
+    method_global_slice :: Method_global_slice Self Synthetic;
     Synthetic1_IsAssociated :
       IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTr" [] [] (Φ Self)
       "{{synthetic}}'1" (Φ Synthetic1);

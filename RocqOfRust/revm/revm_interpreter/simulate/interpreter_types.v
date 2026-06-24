@@ -10,6 +10,7 @@ Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 
@@ -471,8 +472,8 @@ Module InputTraits.
     target_address (self : Self) : Address.t;
     (* fn caller_address(&self) -> Address; *)
     caller_address (self : Self) : Address.t;
-    (* fn input(&self) -> &[u8]; *)
-    input : RefStub.t Self (list u8);
+    (* fn input(&self) -> &CallInput; *)
+    input : RefStub.t Self revm.revm_interpreter.interpreter_action.links.call_inputs.CallInput.t;
     (* fn call_value(&self) -> U256; *)
     call_value (self : Self) : aliases.U256.t;
   }.
@@ -1096,6 +1097,9 @@ Module MemoryTrait.
   Class C (Self Synthetic Synthetic1 : Set) `{Link Self} `{Link Synthetic} `{Link Synthetic1} : Set := {
     (* fn set_data(&mut self, memory_offset: usize, data_offset: usize, len: usize, data: &[u8]); *)
     set_data (self : Self) (memory_offset data_offset len : usize) (data : list u8) : Self;
+    (* fn set_data_from_global(&mut self, memory_offset: usize, data_offset: usize, len: usize, data_range: Range<usize>); *)
+    set_data_from_global
+      (self : Self) (memory_offset data_offset len : usize) (data_range : Range.t usize) : Self;
     (* fn set(&mut self, memory_offset: usize, data: &[u8]); *)
     set (self : Self) (memory_offset : usize) (data : list u8) : Self;
     (* fn size(&self) -> usize; *)
@@ -1106,6 +1110,8 @@ Module MemoryTrait.
     copy (self : Self) (destination source len : usize) : Self;
     (* fn slice(&self, range: Range<usize>) -> impl Deref<Target = [u8]> + '_; *)
     slice (self : Self) (range : Range.t usize) : Synthetic;
+    (* fn global_slice(&self, range: Range<usize>) -> impl Deref<Target = [u8]> + '_; *)
+    global_slice (self : Self) (range : Range.t usize) : Synthetic;
     Deref_for_Synthetic :: Deref.C Synthetic (list u8);
     (* fn slice_len(&self, offset: usize, len: usize) -> impl Deref<Target = [u8]> + '_; *)
     slice_len (self : Self) (offset len : usize) : Synthetic;
@@ -1148,6 +1154,30 @@ Module MemoryTrait.
         {{
           SimulateM.eval_f
             (links.interpreter_types.MemoryTrait.run_set_data ref_self memory_offset data_offset len ref_data)
+            (interpreter :: stack_rest)%stack 🌲
+          (
+            Output.Success tt,
+            (interpreter <| Interpreter.memory := memory' |> :: stack_rest)%stack
+          )
+        }};
+      set_data_from_global
+        (interpreter : Interpreter.t WIRE WIRE_types)
+        (stack_rest : Stack.t)
+        (memory_offset data_offset len : usize)
+        (data_range : Range.t usize) :
+        let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+        let ref_self := {| Ref.core :=
+          SubPointer.Runner.apply
+            ref_interpreter.(Ref.core)
+            Interpreter.SubPointer.get_memory
+        |} in
+        let memory' :=
+          I.(set_data_from_global)
+            interpreter.(Interpreter.memory) memory_offset data_offset len data_range in
+        {{
+          SimulateM.eval_f
+            (links.interpreter_types.MemoryTrait.run_set_data_from_global
+              ref_self memory_offset data_offset len data_range)
             (interpreter :: stack_rest)%stack 🌲
           (
             Output.Success tt,
@@ -1247,6 +1277,25 @@ Module MemoryTrait.
             (interpreter :: stack)%stack 🌲
           (
             Output.Success (I.(slice) interpreter.(Interpreter.memory) range),
+            (interpreter :: stack)%stack
+          )
+        }};
+      global_slice
+        (interpreter : Interpreter.t WIRE WIRE_types)
+        (stack : Stack.t)
+        (range : Range.t usize) :
+        let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+        let ref_self : '& _ := {| Ref.core :=
+          SubPointer.Runner.apply
+            ref_interpreter.(Ref.core)
+            Interpreter.SubPointer.get_memory
+        |} in
+        {{
+          SimulateM.eval_f
+            (links.interpreter_types.MemoryTrait.run_global_slice ref_self range)
+            (interpreter :: stack)%stack 🌲
+          (
+            Output.Success (I.(global_slice) interpreter.(Interpreter.memory) range),
             (interpreter :: stack)%stack
           )
         }};
