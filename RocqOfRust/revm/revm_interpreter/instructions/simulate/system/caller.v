@@ -6,6 +6,7 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.system.caller.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.instructions.simulate.utility.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
@@ -17,15 +18,13 @@ Definition caller
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.BASE id (fun interpreter =>
   let caller :=
     IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.caller_address)
       interpreter.(Interpreter.input) in
   let value := Impl_IntoU256_for_Address.into_u256 caller in
   push_macro interpreter value
     id
-    id
-  ).
+    id.
 
 Lemma caller_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -40,7 +39,10 @@ Lemma caller_eq
   let ref_host := make_ref (A := H) 1 in
   {{
     SimulateM.eval_f
-      (run_caller run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_caller run_InterpreterTypes_for_WIRE {|
+        instruction_context.InstructionContext.interpreter := ref_interpreter;
+        instruction_context.InstructionContext.host := ref_host;
+      |})
       [interpreter; host]%stack 🌲
     (
       Output.Success tt,
@@ -50,7 +52,6 @@ Lemma caller_eq
 Proof.
   intros.
   with_strategy transparent [run_caller] unfold caller, run_caller; cbn.
-  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }

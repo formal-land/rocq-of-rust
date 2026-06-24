@@ -17,15 +17,13 @@ Definition address
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.BASE id (fun interpreter =>
   let target :=
     IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address)
       interpreter.(Interpreter.input) in
   let value := Impl_IntoU256_for_Address.into_u256 target in
   push_macro interpreter value
     id
-    id
-  ).
+    id.
 
 Lemma address_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -40,7 +38,10 @@ Lemma address_eq
   let ref_host := make_ref (A := H) 1 in
     {{
       SimulateM.eval_f
-        (run_address run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+        (run_address run_InterpreterTypes_for_WIRE {|
+          instruction_context.InstructionContext.interpreter := ref_interpreter;
+          instruction_context.InstructionContext.host := ref_host;
+        |})
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
@@ -50,7 +51,6 @@ Lemma address_eq
 Proof.
   intros.
   with_strategy transparent [run_address] unfold address, run_address; cbn.
-  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }

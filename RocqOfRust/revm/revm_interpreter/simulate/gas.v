@@ -271,6 +271,27 @@ Module Impl_Gas.
     p.
   Qed.
 
+  Lemma remaining_interpreter_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_self : '& _ := {|
+      Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_gas
+    |} in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_remaining ref_self) (interpreter :: stack)%stack 🌲
+      (Output.Success (remaining interpreter.(Interpreter.gas)), interpreter :: stack)%stack
+    }}.
+  Proof.
+    with_strategy transparent [Impl_Gas.run_remaining] cbn.
+    p.
+  Qed.
+
   Definition remaining_63_of_64_parts (self : Self) : u64 :=
     self.(Gas.remaining) -i self.(Gas.remaining) /i 64.
 

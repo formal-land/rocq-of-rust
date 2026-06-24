@@ -92,7 +92,7 @@ End Immediates.
 Export (hints) Immediates.
 
 (*
-pub trait InputsTrait {
+pub trait InputsTr {
     fn target_address(&self) -> Address;
     fn caller_address(&self) -> Address;
     fn input(&self) -> &[u8];
@@ -102,7 +102,7 @@ pub trait InputsTrait {
 Module InputsTrait.
   Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
     {|
-      TraitHeader.trait_name := "revm_interpreter::interpreter_types::InputsTrait";
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::InputsTr";
       TraitHeader.trait_consts := [];
       TraitHeader.trait_tys := [];
       TraitHeader.self_ty := Φ Self;

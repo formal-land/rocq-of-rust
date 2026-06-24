@@ -256,12 +256,7 @@ Definition push_macro {WIRE K : Set} `{Link WIRE}
   let interpreter := interpreter <| Interpreter.stack := stack |> in
   if success then k interpreter
   else
-    let control :=
-      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.StackOverflow in
-    let interpreter := interpreter <| Interpreter.control := control |> in
-    k_exit interpreter.
+    k_exit (halt_overflow interpreter).
 
 Ltac push_macro_eq InterpreterTypesEq :=
   unfold push_macro;
@@ -269,7 +264,10 @@ Ltac push_macro_eq InterpreterTypesEq :=
     apply InterpreterTypesEq
   |];
   destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.push) as [[] ?]; [|
-    s; [apply InterpreterTypesEq|];
+    s; [
+      apply halt_overflow_eq;
+      apply InterpreterTypesEq
+    |];
     s
   ].
 

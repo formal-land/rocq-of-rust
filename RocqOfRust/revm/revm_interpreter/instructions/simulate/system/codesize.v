@@ -2,6 +2,7 @@ Require Import simulate.RocqOfRust.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.system.codesize.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
@@ -14,14 +15,12 @@ Definition codesize
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.BASE id (fun interpreter =>
   let size :=
     IInterpreterTypes.(InterpreterTypes.LegacyBytecode_for_Bytecode).(LegacyBytecode.bytecode_len)
       interpreter.(Interpreter.bytecode) in
   push_macro interpreter
     (Impl_Uint.from size)
-    id id
-  ).
+    id id.
 
 Lemma codesize_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -36,7 +35,10 @@ Lemma codesize_eq
   let ref_host := make_ref (A := H) 1 in
     {{
       SimulateM.eval_f
-        (run_codesize run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+        (run_codesize run_InterpreterTypes_for_WIRE {|
+          instruction_context.InstructionContext.interpreter := ref_interpreter;
+          instruction_context.InstructionContext.host := ref_host;
+        |})
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
@@ -45,7 +47,6 @@ Lemma codesize_eq
     }}.
 Proof.
   with_strategy transparent [run_codesize] unfold codesize, run_codesize; cbn.
-  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }
