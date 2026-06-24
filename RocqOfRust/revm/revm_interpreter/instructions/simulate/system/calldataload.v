@@ -52,12 +52,13 @@ Lemma calldataload_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
     {{
       SimulateM.eval_f
-        (run_calldataload run_InterpreterTypes_for_WIRE {|
-          instruction_context.InstructionContext.interpreter := ref_interpreter;
-          instruction_context.InstructionContext.host := ref_host;
-        |})
+        (run_calldataload run_InterpreterTypes_for_WIRE context)
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,

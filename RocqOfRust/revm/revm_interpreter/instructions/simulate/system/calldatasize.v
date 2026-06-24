@@ -36,12 +36,13 @@ Lemma calldatasize_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
     {{
       SimulateM.eval_f
-        (run_calldatasize run_InterpreterTypes_for_WIRE {|
-          instruction_context.InstructionContext.interpreter := ref_interpreter;
-          instruction_context.InstructionContext.host := ref_host;
-        |})
+        (run_calldatasize run_InterpreterTypes_for_WIRE context)
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
@@ -49,4 +50,36 @@ Lemma calldatasize_eq
       )
     }}.
 Proof.
-Admitted.
+  with_strategy transparent [run_calldatasize] unfold calldatasize, run_calldatasize; cbn.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply call_inputs.CallInput.len_eq with
+      (self :=
+        IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.input)
+          .(RefStub.projection) interpreter.(Interpreter.input)).
+    cbn.
+    refine (@CanRead.Mutable
+      _ _
+      Pointer.Kind.Ref
+      [interpreter; host]%stack
+      (IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.input)
+        .(RefStub.projection) interpreter.(Interpreter.input))
+      _
+      (@Stack.CanAccess.Mutable
+        _ _
+        [interpreter; host]%stack
+        0
+        (Interpreter.t WIRE WIRE_types)
+        (@Stack.Nth.ConsZero (Interpreter.t WIRE WIRE_types) interpreter [host]%stack)
+        _ _ _ _)
+      _).
+    reflexivity.
+  }
+  s. {
+    s_apply Impl_Uint.from_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.
