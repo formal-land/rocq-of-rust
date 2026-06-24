@@ -12,28 +12,6 @@ Definition cast_slice_to_u256 (slice : list u8) : aliases.U256.t :=
     Uint.value := List.fold_left (fun acc byte => (acc * 256) + i[byte])%Z slice 0;
   |}.
 
-Lemma cast_slice_to_address_like
-    (stack : Stack.t)
-    (slice : '& (list u8))
-    (dest : '&mut aliases.U256.t) :
-  SimulateM.eval_f
-    (run_cast_slice_to_u256 slice dest)
-    stack =
-  let*s slice := SimulateM.read stack slice.(Ref.core) in
-  match slice with
-  | Output.Success slice =>
-    let*s stack' := SimulateM.write stack dest.(Ref.core) (cast_slice_to_u256 slice) in
-    match stack' with
-    | Output.Success stack' =>
-      SimulateM.Pure (Output.Success tt, stack')
-    | Output.Exception exception =>
-      SimulateM.Pure (Output.Exception exception, stack)
-    end
-  | Output.Exception exception =>
-    SimulateM.Pure (Output.Exception exception, stack)
-  end.
-Admitted.
-
 Module IntoU256.
   Class C (Self : Set) : Set := {
     into_u256 (self : Self) : aliases.U256.t;

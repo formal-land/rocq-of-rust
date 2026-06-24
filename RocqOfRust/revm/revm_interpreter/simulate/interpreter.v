@@ -45,6 +45,13 @@ Definition halt_memory_oog {WIRE : Set} `{Link WIRE}
     Interpreter.t WIRE WIRE_types :=
   halt interpreter instruction_result.InstructionResult.MemoryOOG.
 
+Definition halt_overflow {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  halt interpreter instruction_result.InstructionResult.StackOverflow.
+
 Lemma stack_dealloc_cons_alloc_unit
     (A : Set)
     (value : A)
@@ -202,6 +209,57 @@ Proof.
     Impl_Interpreter.run_halt_underflow
     Impl_Interpreter.run_halt
   ] unfold Impl_Interpreter.run_halt_underflow, Impl_Interpreter.run_halt.
+  cbn.
+  repeat s.
+  - apply Impl_Bytes.new_eq.
+  - apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.LoopControl_for_Bytecode)
+      .(LoopControl.BytecodeEq.set_action).
+  - repeat rewrite Stack.dealloc_alloc_eq;
+    repeat rewrite stack_dealloc_cons_alloc_unit;
+    reflexivity.
+Qed.
+
+Lemma halt_overflow_eq {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (InterpreterTypesEq :
+      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (stack_rest : Stack.t) :
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let action :=
+    interpreter_action.InterpreterAction.Return {|
+      InterpreterResult.result := instruction_result.InstructionResult.StackOverflow;
+      InterpreterResult.output := Impl_Bytes.new;
+      InterpreterResult.gas := interpreter.(Interpreter.gas);
+    |} in
+  {{
+    SimulateM.eval_f
+      (Impl_Interpreter.run_halt_overflow WIRE ref_interpreter)
+      (interpreter :: stack_rest)%stack 🌲
+    (
+      Output.Success tt,
+      (
+        interpreter
+          <| Interpreter.bytecode :=
+            IInterpreterTypes
+              .(InterpreterTypes.LoopControl_for_Bytecode)
+              .(LoopControl.set_action)
+              interpreter.(Interpreter.bytecode)
+              action
+          |>
+        :: stack_rest
+      )%stack
+    )
+  }}.
+Proof.
+  intros.
+  with_strategy transparent [
+    Impl_Interpreter.run_halt_overflow
+    Impl_Interpreter.run_halt
+  ] unfold Impl_Interpreter.run_halt_overflow, Impl_Interpreter.run_halt.
   cbn.
   repeat s.
   - apply Impl_Bytes.new_eq.

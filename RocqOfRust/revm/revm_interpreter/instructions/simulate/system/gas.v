@@ -3,6 +3,7 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.system.gas.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
@@ -16,15 +17,10 @@ Definition gas
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.BASE id (fun interpreter =>
-  let gas :=
-    IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.gas)
-      .(RefStub.projection) interpreter.(Interpreter.control) in
   push_macro interpreter
-    (Impl_Uint.from gas.(Gas.remaining))
+    (Impl_Uint.from interpreter.(Interpreter.gas).(Gas.remaining))
     id
-    id
-  ).
+    id.
 
 Lemma gas_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -39,7 +35,10 @@ Lemma gas_eq
   let ref_host := make_ref (A := H) 1 in
   {{
     SimulateM.eval_f
-      (run_gas run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_gas run_InterpreterTypes_for_WIRE {|
+        instruction_context.InstructionContext.interpreter := ref_interpreter;
+        instruction_context.InstructionContext.host := ref_host;
+      |})
       ([interpreter; host]%stack) 🌲
     (
       Output.Success tt,
@@ -49,12 +48,8 @@ Lemma gas_eq
 Proof.
   intros.
   with_strategy transparent [run_gas] unfold gas, run_gas; cbn.
-  gas_macro_eq idtac.
   s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    apply Impl_Gas.remaining_eq.
+    apply Impl_Gas.remaining_interpreter_eq.
   }
   s. {
     s_apply Impl_Uint.from_eq.
