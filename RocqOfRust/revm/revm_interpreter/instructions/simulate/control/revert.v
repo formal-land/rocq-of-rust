@@ -6,10 +6,12 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.control.revert.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -39,9 +41,13 @@ Lemma revert_eq
     (_host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    InstructionContext.interpreter := ref_interpreter;
+    InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_revert run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_revert run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -51,13 +57,29 @@ Lemma revert_eq
 Proof.
   intros.
   with_strategy transparent [run_revert] unfold revert, run_revert; cbn.
-  check_macro_eq InterpreterTypesEq.
+  unfold check_macro; cbn.
   s. {
-    apply (return_inner_eq
-      run_InterpreterTypes_for_WIRE
-      IInterpreterTypes
-      InterpreterTypesEq
-    ).
+    apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.RuntimeFlag_for_RuntimeFlag)
+      .(RuntimeFlag.Eq.spec_id).
   }
-  s.
+  s. {
+    apply Impl_SpecId.is_enabled_in_eq.
+  }
+  s; destruct Impl_SpecId.is_enabled_in; cbn.
+  { s. {
+      apply (return_inner_eq
+        run_InterpreterTypes_for_WIRE
+        IInterpreterTypes
+        InterpreterTypesEq
+      ).
+    }
+    s.
+  }
+  { s. {
+      apply halt_not_activated_eq.
+      apply InterpreterTypesEq.
+    }
+    s.
+  }
 Qed.

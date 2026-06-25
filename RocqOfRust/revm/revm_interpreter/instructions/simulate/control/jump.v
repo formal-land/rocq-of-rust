@@ -25,11 +25,10 @@ Definition jump
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.MID id (fun interpreter =>
   popn_macro interpreter 1 id (fun arr interpreter =>
   let '⟬ target ⟭ := arr.(array.value) in
   jump_inner interpreter target
-  )).
+  ).
 
 Lemma jump_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -42,9 +41,13 @@ Lemma jump_eq
     (_host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_jump run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_jump run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -54,7 +57,6 @@ Lemma jump_eq
 Proof.
   intros.
   with_strategy transparent [run_jump] unfold jump, run_jump; cbn.
-  gas_macro_eq idtac.
   popn_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ =>

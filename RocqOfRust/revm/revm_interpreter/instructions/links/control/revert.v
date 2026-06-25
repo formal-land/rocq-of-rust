@@ -16,6 +16,7 @@ Require Import revm.revm_interpreter.instructions.control.
 Require Import revm.revm_interpreter.instructions.links.control.return_inner.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
@@ -26,19 +27,15 @@ Require Import ruint.links.from.
 Require Import ruint.links.lib.
 
 (*
-pub fn revert<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
-)
+pub fn revert<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>)
 *)
 Instance run_revert
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
+    (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.control.revert [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.control.revert [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
@@ -46,5 +43,15 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
+  all: match goal with
+  | |- Run.Trait
+      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_not_activated _)
+      _ _ _ _ =>
+      eapply Impl_Interpreter.run_halt_not_activated
+  | |- Run.Trait
+      instructions.control.return_inner
+      _ _ _ _ =>
+      eapply run_return_inner
+  end.
 Defined.
 Global Opaque run_revert.

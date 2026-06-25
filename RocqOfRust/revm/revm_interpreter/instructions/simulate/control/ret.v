@@ -6,6 +6,7 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.control.ret.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
@@ -38,9 +39,13 @@ Lemma ret_eq
     (_host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    InstructionContext.interpreter := ref_interpreter;
+    InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_ret run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_ret run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,

@@ -25,14 +25,13 @@ Definition jumpi
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.HIGH id (fun interpreter =>
   popn_macro interpreter 2 id (fun arr interpreter =>
   let '⟬ target; cond ⟭ := arr.(array.value) in
   if negb (Impl_Uint.is_zero cond) then
     jump_inner interpreter target
   else
     interpreter
-  )).
+  ).
 
 Lemma jumpi_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -45,9 +44,13 @@ Lemma jumpi_eq
     (_host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_jumpi run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_jumpi run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -57,7 +60,6 @@ Lemma jumpi_eq
 Proof.
   intros.
   with_strategy transparent [run_jumpi] unfold jumpi, run_jumpi; cbn.
-  gas_macro_eq idtac.
   popn_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ =>

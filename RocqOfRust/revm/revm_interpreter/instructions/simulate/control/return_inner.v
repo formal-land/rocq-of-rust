@@ -13,6 +13,7 @@ Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter_action.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -31,28 +32,20 @@ Definition return_inner
   popn_macro interpreter 2 id (fun _arr interpreter =>
   let '⟬ offset; len ⟭ := _arr.(array.value) in
   as_usize_or_fail_macro interpreter len None id (fun len interpreter =>
-  (* We factorize the end of the function in [next] *)
   let next output interpreter :=
-    let gas :=
-      IInterpreterTypes
-        .(InterpreterTypes.LoopControl_for_Control)
-        .(LoopControl.gas)
-        .(RefStub.projection)
-        interpreter.(Interpreter.control) in
     let action :=
       interpreter_action.InterpreterAction.Return {|
         InterpreterResult.result := instruction_result;
         InterpreterResult.output := output;
-        InterpreterResult.gas := gas;
+        InterpreterResult.gas := interpreter.(Interpreter.gas);
       |} in
-    let control :=
+    let bytecode :=
       IInterpreterTypes
-        .(InterpreterTypes.LoopControl_for_Control)
-        .(LoopControl.set_next_action)
-        interpreter.(Interpreter.control)
-        action
-        instruction_result in
-    interpreter <| Interpreter.control := control |> in
+        .(InterpreterTypes.LoopControl_for_Bytecode)
+        .(LoopControl.set_action)
+        interpreter.(Interpreter.bytecode)
+        action in
+    interpreter <| Interpreter.bytecode := bytecode |> in
   if negb (i[len] =? 0) then
     as_usize_or_fail_macro interpreter offset None id (fun offset interpreter =>
     resize_memory_macro interpreter offset len id (fun interpreter =>
@@ -111,30 +104,22 @@ Proof.
   s; destruct negb; cbn.
   { as_usize_or_fail_macro_eq InterpreterTypesEq.
     resize_memory_macro_eq InterpreterTypesEq.
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s. {
+    - apply InterpreterTypesEq.
+    - apply InterpreterTypesEq.
+    - {
       set (ref_self := Ref.cast_to _ _).
       apply (Impl_Slice.to_vec_eq _ ref_self); repeat unshelve econstructor.
     }
-    s. {
-      apply Impl_Into_for_From_T.Eq.I.
+    - s. {
+      apply Impl_From_Vec_u8_for_Bytes.from_eq.
     }
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s.
-    now destruct _.(MemoryTrait.resize).
+    - cbn.
+      constructor.
+      constructor.
+    - reflexivity.
   }
   { s. {
-      apply InterpreterTypesEq.
+      apply new_return_eq.
     }
     s. {
       apply InterpreterTypesEq.

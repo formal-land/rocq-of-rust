@@ -104,14 +104,7 @@ Definition popn_macro {WIRE K : Set} `{Link WIRE}
         <| Interpreter.stack := stack |> in
     match result with
     | Some arr => k arr interpreter
-    | None =>
-      let control :=
-        IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.StackUnderflow in
-      let interpreter := interpreter
-        <| Interpreter.control := control |> in
-      k_exit interpreter
+    | None => k_exit (halt_underflow interpreter)
     end.
 
 Ltac popn_macro_eq InterpreterTypesEq :=
@@ -121,7 +114,8 @@ Ltac popn_macro_eq InterpreterTypesEq :=
   |];
   destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn) as [[|] ?]; [|
     s; [
-      apply InterpreterTypesEq
+      eapply halt_underflow_eq;
+      try exact InterpreterTypesEq
     |];
     s
   ].
@@ -290,16 +284,7 @@ Definition check_macro {WIRE K : Set} `{Link WIRE}
   then
     k interpreter
   else
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.NotActivated in
-    let interpreter :=
-      interpreter
-        <| Interpreter.control := control |> in
-    k_exit interpreter.
+    k_exit (halt_not_activated interpreter).
 
 Ltac check_macro_eq InterpreterTypesEq :=
   unfold check_macro; cbn;
@@ -323,15 +308,8 @@ Ltac check_macro_eq InterpreterTypesEq :=
   |];
   cbn;
   destruct Impl_SpecId.is_enabled_in; cbn; [|
-    apply Run.LetUnfold;
-    cbn;
-    eapply Run.Call; [
-      apply InterpreterTypesEq
-        .(InterpreterTypes.Eq.LoopControl_for_Control)
-        .(LoopControl.Eq.set_instruction_result)
-    |];
-    cbn;
-    apply Run.Pure
+    apply halt_not_activated_eq;
+    apply InterpreterTypesEq
   ].
 
 Definition as_u64_saturated_macro (v : aliases.U256.t) : u64 :=
