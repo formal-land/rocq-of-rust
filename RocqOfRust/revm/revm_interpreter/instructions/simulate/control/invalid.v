@@ -6,10 +6,12 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.control.invalid.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -24,13 +26,7 @@ Definition invalid
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  let control :=
-    IInterpreterTypes
-      .(InterpreterTypes.LoopControl_for_Control)
-      .(LoopControl.set_instruction_result)
-      interpreter.(Interpreter.control)
-      instruction_result.InstructionResult.InvalidFEOpcode in
-  interpreter <| Interpreter.control := control |>.
+  halt interpreter instruction_result.InstructionResult.InvalidFEOpcode.
 
 Lemma invalid_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -43,9 +39,13 @@ Lemma invalid_eq
     (_host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_invalid run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_invalid run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -56,6 +56,7 @@ Proof.
   intros.
   with_strategy transparent [run_invalid] unfold invalid, run_invalid; cbn.
   s. {
+    apply halt_eq.
     apply InterpreterTypesEq.
   }
   s.

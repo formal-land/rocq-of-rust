@@ -10,6 +10,7 @@ Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -33,13 +34,7 @@ Definition jump_inner
       target in
   let interpreter := interpreter <| Interpreter.bytecode := bytecode |> in
   if negb is_valid then
-    let control :=
-      IInterpreterTypes
-        .(InterpreterTypes.LoopControl_for_Control)
-        .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.InvalidJump in
-    interpreter <| Interpreter.control := control |>
+    halt interpreter instruction_result.InstructionResult.InvalidJump
   else
     let bytecode :=
       IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode).(Jumps.absolute_jump)
@@ -84,6 +79,7 @@ Proof.
     s.
   }
   { s. {
+      apply halt_eq.
       apply InterpreterTypesEq.
     }
     s.

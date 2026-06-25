@@ -15,6 +15,7 @@ Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.control.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
@@ -24,25 +25,16 @@ Require Import ruint.links.cmp.
 Require Import ruint.links.from.
 Require Import ruint.links.lib.
 
-(*
-pub fn jumpdest_or_nop<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
-)
-*)
-Instance run_jumpdest_or_nop
+Instance run_jumpdest
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
+    (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.control.jumpdest_or_nop [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.control.jumpdest [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
-Global Opaque run_jumpdest_or_nop.
+Global Opaque run_jumpdest.

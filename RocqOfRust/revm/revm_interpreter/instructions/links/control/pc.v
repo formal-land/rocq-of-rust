@@ -15,6 +15,7 @@ Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.control.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
@@ -25,26 +26,22 @@ Require Import ruint.links.from.
 Require Import ruint.links.lib.
 
 (*
-pub fn pc<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
-)
+pub fn pc<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>)
 *)
 Instance run_pc
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
+    (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.control.pc [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.control.pc [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct run_Jumps_for_Bytecode.
   run_symbolic.
+  eapply Impl_Interpreter.run_halt_overflow.
 Defined.
 Global Opaque run_pc.
