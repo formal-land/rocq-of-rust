@@ -101,6 +101,32 @@ Module Impl_DerefMut_for_Bytes.
 End Impl_DerefMut_for_Bytes.
 Export (hints) Impl_DerefMut_for_Bytes.
 
+Module Impl_AsRef_slice_u8_for_Bytes.
+  Definition Self : Set :=
+    Bytes.t.
+
+  Instance run_as_ref (self : '& Self) :
+    Run.Trait
+      bytes_.Impl_core_convert_AsRef_slice_u8_for_alloy_primitives_bytes__Bytes.as_ref
+      [] [] [φ self] ('& (list u8)).
+  Admitted.
+  Global Opaque run_as_ref.
+
+  Instance method_as_ref : AsRef.Method_as_ref Self (list u8).
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply bytes_.Impl_core_convert_AsRef_slice_u8_for_alloy_primitives_bytes__Bytes.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run : AsRef.Run Self (list u8) := {}.
+End Impl_AsRef_slice_u8_for_Bytes.
+Export (hints) Impl_AsRef_slice_u8_for_Bytes.
+
 Module Impl_Bytes.
   Definition Self : Set :=
     Bytes.t.

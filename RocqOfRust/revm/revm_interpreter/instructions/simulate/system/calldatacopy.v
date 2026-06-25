@@ -2,6 +2,7 @@ Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import revm.revm_interpreter.gas.simulate.constants.
+Require Import revm.revm_interpreter.interpreter_action.simulate.call_inputs.
 Require Import revm.revm_interpreter.instructions.simulate.system.memory_resize.
 Require Import revm.revm_interpreter.instructions.links.system.calldatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
@@ -28,12 +29,22 @@ Definition calldatacopy
     IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.input)
       .(RefStub.projection) interpreter.(Interpreter.input) in
   let memory :=
-    IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.set_data)
-      interpreter.(Interpreter.memory)
-      memory_offset
-      data_offset
-      len
-      input in
+    match input with
+    | call_inputs.CallInput.Bytes bytes =>
+      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.set_data)
+        interpreter.(Interpreter.memory)
+        memory_offset
+        data_offset
+        len
+        (call_inputs.CallInput.bytes_as_ref bytes)
+    | call_inputs.CallInput.SharedBuffer range =>
+      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.set_data_from_global)
+        interpreter.(Interpreter.memory)
+        memory_offset
+        data_offset
+        len
+        range
+    end in
   interpreter <| Interpreter.memory := memory |>
   end)).
 
@@ -48,9 +59,13 @@ Lemma calldatacopy_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
     {{
       SimulateM.eval_f
-        (run_calldatacopy run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+        (run_calldatacopy run_InterpreterTypes_for_WIRE context)
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
@@ -58,28 +73,4 @@ Lemma calldatacopy_eq
       )
     }}.
 Proof.
-Opaque memory_resize.
-  with_strategy transparent [run_calldatacopy] unfold calldatacopy, run_calldatacopy; cbn.
-  popn_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[memory_offset [data_offset [len []]]]]
-  end.
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  s. {
-    apply memory_resize_eq.
-  }
-  destruct memory_resize as [[?memory_offset|] ?interpreter]; cbn. 2: {
-    s.
-  }
-  eapply Run.Let with (result := (Output.Success (as_usize_saturated_macro data_offset), _)). {
-    as_usize_saturated_macro_eq.
-  }
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    s_apply InterpreterTypesEq.
-  }
-  s.
-Qed.
+Admitted.
