@@ -67,6 +67,22 @@ Module Impl_Interpreter.
   Defined.
   Global Opaque run_halt.
 
+  (* pub fn halt_fatal(&mut self) *)
+  Instance run_halt_fatal
+      (IW : Set) `{Link IW}
+      {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
+      {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW)) :
+    Run.Trait
+      (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_fatal (Φ IW))
+      [] [] [φ self]
+      unit.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_halt_fatal.
+
   (* pub fn halt_oog(&mut self) *)
   Instance run_halt_oog
       (IW : Set) `{Link IW}

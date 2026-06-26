@@ -38,6 +38,13 @@ Definition halt_oog {WIRE : Set} `{Link WIRE}
     (interpreter <| Interpreter.gas := Impl_Gas.spend_all interpreter.(Interpreter.gas) |>)
     instruction_result.InstructionResult.OutOfGas.
 
+Definition halt_fatal {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  halt interpreter instruction_result.InstructionResult.FatalExternalError.
+
 Definition halt_memory_oog {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -134,6 +141,42 @@ Proof.
   with_strategy transparent [
     Impl_Interpreter.run_halt
   ] unfold Impl_Interpreter.run_halt.
+  cbn.
+  repeat s.
+  - apply Impl_Bytes.new_eq.
+  - apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.LoopControl_for_Bytecode)
+      .(LoopControl.BytecodeEq.set_action).
+  - repeat rewrite Stack.dealloc_alloc_eq;
+    repeat rewrite stack_dealloc_cons_alloc_unit;
+    reflexivity.
+Qed.
+
+Lemma halt_fatal_eq {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (InterpreterTypesEq :
+      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (stack_rest : Stack.t) :
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  {{
+    SimulateM.eval_f
+      (Impl_Interpreter.run_halt_fatal WIRE ref_interpreter)
+      (interpreter :: stack_rest)%stack 🌲
+    (
+      Output.Success tt,
+      (halt_fatal interpreter :: stack_rest)%stack
+    )
+  }}.
+Proof.
+  intros.
+  unfold halt_fatal, halt.
+  with_strategy transparent [
+    Impl_Interpreter.run_halt_fatal
+    Impl_Interpreter.run_halt
+  ] unfold Impl_Interpreter.run_halt_fatal, Impl_Interpreter.run_halt.
   cbn.
   repeat s.
   - apply Impl_Bytes.new_eq.

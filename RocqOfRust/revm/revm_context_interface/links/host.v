@@ -6,11 +6,64 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.links.mod.
 Require Import core.links.option.
+Require Import core.links.result.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.block.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.links.transaction.
 Require Import ruint.links.lib.
+
+Module LoadError.
+  Inductive t : Set :=
+  | DBError
+  | ColdLoadSkipped.
+
+  Instance IsLink : Link t := {
+    Φ := Ty.path "revm_context_interface::host::LoadError";
+    φ x :=
+      match x with
+      | DBError =>
+          Value.StructTuple "revm_context_interface::host::LoadError::DBError" [] [] []
+      | ColdLoadSkipped =>
+          Value.StructTuple "revm_context_interface::host::LoadError::ColdLoadSkipped" [] [] []
+      end
+  }.
+
+  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::host::LoadError") :=
+  {
+    A := t;
+    eq := eq_refl;
+  }.
+
+  Instance IsOfValueWith_DBError :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::host::LoadError::DBError" [] [] []) :=
+  {
+    value := DBError;
+    eq := eq_refl;
+  }.
+
+  Instance IsOfValue_DBError :
+    OfValue.C (Value.StructTuple "revm_context_interface::host::LoadError::DBError" [] [] []) :=
+  {
+    value := DBError;
+    eq := eq_refl;
+  }.
+
+  Instance IsOfValueWith_ColdLoadSkipped :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::host::LoadError::ColdLoadSkipped" [] [] []) :=
+  {
+    value := ColdLoadSkipped;
+    eq := eq_refl;
+  }.
+
+  Instance IsOfValue_ColdLoadSkipped :
+    OfValue.C (Value.StructTuple "revm_context_interface::host::LoadError::ColdLoadSkipped" [] [] []) :=
+  {
+    value := ColdLoadSkipped;
+    eq := eq_refl;
+  }.
+End LoadError.
+Export (hints) LoadError.
 
 (*
 pub struct SStoreResult {
@@ -141,16 +194,16 @@ Module SelfDestructResult.
   }.
 
   Instance IsLink : Link t := {
-    Φ := Ty.path "revm_context_interface::host::SelfDestructResult";
+    Φ := Ty.path "revm_context_interface::context::SelfDestructResult";
     φ x :=
-      Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
+      Value.StructRecord "revm_context_interface::context::SelfDestructResult" [] [] [
         ("had_value", φ x.(had_value));
         ("previously_destroyed", φ x.(previously_destroyed));
         ("target_exists", φ x.(target_exists))
       ];
   }.
 
-  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::host::SelfDestructResult") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::context::SelfDestructResult") :=
   {
     A := t;
     eq := eq_refl;
@@ -161,7 +214,7 @@ Module SelfDestructResult.
       (previously_destroyed' : Value.t) {H_previously_destroyed : OfValueWith.C (bool) previously_destroyed'}
       (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_context_interface::context::SelfDestructResult" [] [] [
       ("had_value", had_value');
       ("previously_destroyed", previously_destroyed');
       ("target_exists", target_exists')
@@ -180,7 +233,7 @@ Module SelfDestructResult.
       (previously_destroyed' : Value.t) {H_previously_destroyed : OfValueWith.C (bool) previously_destroyed'}
       (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
       :
-    OfValue.C (Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
+    OfValue.C (Value.StructRecord "revm_context_interface::context::SelfDestructResult" [] [] [
       ("had_value", had_value');
       ("previously_destroyed", previously_destroyed');
       ("target_exists", target_exists')
@@ -196,7 +249,7 @@ Module SelfDestructResult.
 
   Module SubPointer.
     Definition get_had_value : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_context_interface::host::SelfDestructResult" "had_value") :=
+      (Pointer.Index.StructRecord "revm_context_interface::context::SelfDestructResult" "had_value") :=
     {|
       SubPointer.Runner.projection x := Some x.(had_value);
       SubPointer.Runner.injection x y := Some (x <| had_value := y |>);
@@ -210,7 +263,7 @@ Module SelfDestructResult.
     Smpl Add apply get_had_value_is_valid : run_sub_pointer.
 
     Definition get_target_exists : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_context_interface::host::SelfDestructResult" "target_exists") :=
+      (Pointer.Index.StructRecord "revm_context_interface::context::SelfDestructResult" "target_exists") :=
     {|
       SubPointer.Runner.projection x := Some x.(target_exists);
       SubPointer.Runner.injection x y := Some (x <| target_exists := y |>);
@@ -224,7 +277,7 @@ Module SelfDestructResult.
     Smpl Add apply get_target_exists_is_valid : run_sub_pointer.
 
     Definition get_previously_destroyed : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_context_interface::host::SelfDestructResult" "previously_destroyed") :=
+      (Pointer.Index.StructRecord "revm_context_interface::context::SelfDestructResult" "previously_destroyed") :=
     {|
       SubPointer.Runner.projection x := Some x.(previously_destroyed);
       SubPointer.Runner.injection x y := Some (x <| previously_destroyed := y |>);
@@ -261,7 +314,8 @@ pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
         &mut self,
         address: Address,
         target: Address,
-    ) -> Option<StateLoad<SelfDestructResult>>;
+        skip_cold_load: bool,
+    ) -> Result<StateLoad<SelfDestructResult>, LoadError>;
 }
 *)
 Module Host.
@@ -408,13 +462,22 @@ Module Host.
     &mut self,
     address: Address,
     target: Address,
-  ) -> Option<StateLoad<SelfDestructResult>>;
+    skip_cold_load: bool,
+  ) -> Result<StateLoad<SelfDestructResult>, LoadError>;
   *)
   Class Method_selfdestruct (Self : Set) `{Link Self} : Set := {
     selfdestruct : PolymorphicFunction.t;
     selfdestruct_is_method :: IsTraitMethod.C (trait Self) "selfdestruct" selfdestruct;
-    run_selfdestruct (self : '&mut Self) (address : Address.t) (target : Address.t) ::
-      Run.Trait selfdestruct [] [] [ φ self; φ address; φ target ] (option (StateLoad.t SelfDestructResult.t));
+    run_selfdestruct
+      (self : '&mut Self)
+      (address : Address.t)
+      (target : Address.t)
+      (skip_cold_load : bool) ::
+      Run.Trait
+        selfdestruct
+        [] []
+        [ φ self; φ address; φ target; φ skip_cold_load ]
+        (Result.t (StateLoad.t SelfDestructResult.t) LoadError.t);
   }.
 
   Class Run
