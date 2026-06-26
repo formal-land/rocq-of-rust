@@ -201,6 +201,46 @@ Lemma frontier_sstore_cost_eq (stack : Stack.t)
   }}.
 Admitted.
 
+Definition static_selfdestruct_cost (spec_id : SpecId.t) : u64 :=
+  {| Integer.value := 0 |}.
+
+Lemma static_selfdestruct_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
+  {{
+    SimulateM.eval_f
+      (run_static_selfdestruct_cost spec_id)
+      stack 🌲
+    (Output.Success (static_selfdestruct_cost spec_id), stack)
+  }}.
+Admitted.
+
+Definition dyn_selfdestruct_cost
+    (spec_id : SpecId.t)
+    (res : '& (StateLoad.t SelfDestructResult.t)) :
+    u64 :=
+  {| Integer.value := 0 |}.
+
+Lemma dyn_selfdestruct_cost_eq (stack : Stack.t)
+    (spec_id : SpecId.t) (res : '& (StateLoad.t SelfDestructResult.t)) :
+  {{
+    SimulateM.eval_f
+      (run_dyn_selfdestruct_cost spec_id res)
+      stack 🌲
+    (Output.Success (dyn_selfdestruct_cost spec_id res), stack)
+  }}.
+Admitted.
+
+Definition selfdestruct_cold_beneficiary_cost (spec_id : SpecId.t) : u64 :=
+  {| Integer.value := 0 |}.
+
+Lemma selfdestruct_cold_beneficiary_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
+  {{
+    SimulateM.eval_f
+      (run_selfdestruct_cold_beneficiary_cost spec_id)
+      stack 🌲
+    (Output.Success (selfdestruct_cold_beneficiary_cost spec_id), stack)
+  }}.
+Admitted.
+
 Definition selfdestruct_cost
     (spec_id : SpecId.t)
     (res : StateLoad.t SelfDestructResult.t) :

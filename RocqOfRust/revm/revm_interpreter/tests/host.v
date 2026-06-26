@@ -4,6 +4,7 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.common.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.links.mod.
+Require Import core.links.result.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -101,9 +102,10 @@ Module TestHost.
   Definition selfdestruct
       (self : t)
       (_address : Address.t)
-      (_target : Address.t) :
-      option (StateLoad.t SelfDestructResult.t) * t :=
-    (None, Make).
+      (_target : Address.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t SelfDestructResult.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
 
   Definition transaction_types : Transaction.Types.t := {|
     Transaction.Types.TransactionError := t;
@@ -331,9 +333,10 @@ Module TestHostWithAccount.
   Definition selfdestruct
       (self : t)
       (_address : Address.t)
-      (_target : Address.t) :
-      option (StateLoad.t SelfDestructResult.t) * t :=
-    (None, Make).
+      (_target : Address.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t SelfDestructResult.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
 
   Definition transaction_types : Transaction.Types.t := {|
     Transaction.Types.TransactionError := t;

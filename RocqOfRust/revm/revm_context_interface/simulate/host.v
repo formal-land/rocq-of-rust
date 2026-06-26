@@ -3,6 +3,7 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.links.mod.
+Require Import core.links.result.
 Require Import revm.revm_context_interface.links.block.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.host.
@@ -97,13 +98,15 @@ Module Host.
         &mut self,
         address: Address,
         target: Address,
-    ) -> Option<StateLoad<SelfDestructResult>>;
+        skip_cold_load: bool,
+    ) -> Result<StateLoad<SelfDestructResult>, LoadError>;
     *)
     selfdestruct
       (self : Self)
       (address : Address.t)
-      (target : Address.t) :
-      option (StateLoad.t SelfDestructResult.t) * Self;
+      (target : Address.t)
+      (skip_cold_load : bool) :
+      Result.t (StateLoad.t SelfDestructResult.t) LoadError.t * Self;
   }.
 
   Module Eq.
@@ -297,13 +300,14 @@ Module Host.
           (self : Self)
           (address : Address.t)
           (target : Address.t)
+          (skip_cold_load : bool)
           (stack : Stack.t) :
         let ref_self : '&mut Self := make_ref 1 in
         {{
           SimulateM.eval_f
-            (Host.run_selfdestruct ref_self address target)
+            (Host.run_selfdestruct ref_self address target skip_cold_load)
             (interpreter :: self :: stack)%stack 🌲
-          let result_self := I.(selfdestruct) self address target in
+          let result_self := I.(selfdestruct) self address target skip_cold_load in
           (
             Output.Success (fst result_self),
             (interpreter :: snd result_self :: stack)%stack

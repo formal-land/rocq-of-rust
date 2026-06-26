@@ -22,6 +22,7 @@ Require Import revm.revm_interpreter.instructions.host.
 Require Import revm.revm_interpreter.instructions.links.utility.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -33,8 +34,7 @@ Require Import ruint.links.lib.
 
 (*
 pub fn selfdestruct<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
+    context: InstructionContext<'_, H, WIRE>,
 )
 *)
 Instance run_selfdestruct
@@ -43,14 +43,28 @@ Instance run_selfdestruct
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (host : '&mut H) :
+    (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.host.selfdestruct [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
+    instructions.host.selfdestruct [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
+  destruct run_StackTrait_for_Stack.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
+  destruct run_InputsTrait_for_Input.
+  destruct run_LoopControl_for_Bytecode.
+  destruct run_Host_for_H.
   destruct (Impl_Deref_for_StateLoad.run SelfDestructResult.t).
   run_symbolic.
+  all: try eapply Host.run_selfdestruct.
+  all: try eapply run_dyn_selfdestruct_cost.
+  all: try eapply Impl_Deref_for_StateLoad.run_deref.
+  all: try eapply Impl_Gas.run_record_refund.
+  all: try eapply run_SELFDESTRUCT_REFUND.
+  all: try eapply Impl_Interpreter.run_halt_oog.
+  all: try eapply Impl_Interpreter.run_halt_fatal.
+  all: try eapply Impl_Interpreter.run_halt.
+  all: try eapply Impl_Interpreter.run_halt_underflow.
 Defined.
 Global Opaque run_selfdestruct.

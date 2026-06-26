@@ -188,6 +188,41 @@ Proof.
 Admitted.
 Global Opaque run_frontier_sstore_cost.
 
+(* pub const fn static_selfdestruct_cost(spec_id: SpecId) -> u64 *)
+Instance run_static_selfdestruct_cost (spec_id : SpecId.t) :
+  Run.Trait
+    gas.calc.static_selfdestruct_cost [] [] [ φ spec_id ]
+    u64.
+Proof.
+  constructor.
+  run_symbolic.
+Admitted.
+Global Opaque run_static_selfdestruct_cost.
+
+(* pub const fn dyn_selfdestruct_cost(spec_id: SpecId, res: &StateLoad<SelfDestructResult>) -> u64 *)
+Instance run_dyn_selfdestruct_cost
+    (spec_id : SpecId.t)
+    (res : '& (StateLoad.t SelfDestructResult.t)) :
+  Run.Trait
+    gas.calc.dyn_selfdestruct_cost [] [] [ φ spec_id; φ res ]
+    u64.
+Proof.
+  constructor.
+  run_symbolic.
+Admitted.
+Global Opaque run_dyn_selfdestruct_cost.
+
+(* pub const fn selfdestruct_cold_beneficiary_cost(spec_id: SpecId) -> u64 *)
+Instance run_selfdestruct_cold_beneficiary_cost (spec_id : SpecId.t) :
+  Run.Trait
+    gas.calc.selfdestruct_cold_beneficiary_cost [] [] [ φ spec_id ]
+    u64.
+Proof.
+  constructor.
+  run_symbolic.
+Admitted.
+Global Opaque run_selfdestruct_cold_beneficiary_cost.
+
 (* pub const fn selfdestruct_cost(spec_id: SpecId, res: StateLoad<SelfDestructResult>) -> u64 *)
 Instance run_selfdestruct_cost
     (spec_id : SpecId.t)
