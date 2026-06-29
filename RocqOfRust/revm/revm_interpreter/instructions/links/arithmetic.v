@@ -1,10 +1,12 @@
 Require Import links.RocqOfRust.
 Require Import core.links.cmp.
+Require Import core.links.option.
 Require Import revm.revm_interpreter.instructions.arithmetic.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.gas.links.calc.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -22,8 +24,7 @@ Require Import ruint.links.pow.
 
 (*
 pub fn add<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
+    context: InstructionContext<'_, H, WIRE>,
 )
 *)
 Instance run_add
@@ -31,14 +32,18 @@ Instance run_add
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
+    (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.arithmetic.add [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.arithmetic.add [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
+  destruct run_StackTrait_for_Stack.
+  destruct run_LoopControl_for_Control.
   run_symbolic.
+  all: try eapply Impl_Interpreter.run_halt_underflow.
+  all: try eapply Impl_Option.run_unwrap_unchecked.
 Defined.
 Global Opaque run_add.
 
