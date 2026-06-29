@@ -589,6 +589,16 @@ Module StackTrait.
     dup (self : Self) (n : usize) : bool * Self;
   }.
 
+  Lemma popn_top_some_of_len
+      {Self : Set} `{Link Self}
+      (IStackTrait : C Self)
+      (stack : Self)
+      (N : usize) :
+    (i[IStackTrait.(len) stack] <? 1 + i[N]) = false ->
+    exists arr top stack',
+      IStackTrait.(popn_top) N stack = (Some (arr, top), stack').
+  Admitted.
+
   Module Eq.
     Class t
         (WIRE : Set) {WIRE_types : InterpreterTypes.Types.t}
