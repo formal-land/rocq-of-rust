@@ -49,26 +49,26 @@ Global Opaque run_add.
 
 (*
 pub fn mul<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
-) {
-    gas!(interpreter, gas::LOW);
-    popn_top!([op1], op2, interpreter);
-    *op2 = op1.wrapping_mul( *op2);
-}
+    context: InstructionContext<'_, H, WIRE>,
+)
 *)
 Instance run_mul
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
+    (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.arithmetic.mul [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.arithmetic.mul [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
+  destruct run_StackTrait_for_Stack.
+  destruct run_LoopControl_for_Control.
   run_symbolic.
+  all: try eapply Impl_Interpreter.run_halt_underflow.
+  all: try eapply Impl_Option.run_unwrap_unchecked.
 Defined.
 Global Opaque run_mul.
 
