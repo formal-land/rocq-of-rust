@@ -31,8 +31,7 @@ Instance run_mload
     unit.
 Proof.
   constructor.
-  pose proof run_InterpreterTypes_for_WIRE as run_InterpreterTypes_for_WIRE_copy.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   destruct method_popn_top.
@@ -40,15 +39,9 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   destruct run_Deref_for_Synthetic.
   destruct (Impl_AsRef_for_Slice.run u8).
-  pose proof
-    (@Impl_Interpreter.run_halt_memory_oog WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy)
-    as run_halt_memory_oog_for_WIRE.
-  pose proof
-    (@Impl_Interpreter.run_halt_underflow WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy)
-    as run_halt_underflow_for_WIRE.
-  pose proof
-    (@Impl_Interpreter.run_halt WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy)
-    as run_halt_for_WIRE.
   run_symbolic.
+  all: try eapply Impl_Interpreter.run_halt_memory_oog.
+  all: try eapply Impl_Interpreter.run_halt_underflow.
+  all: try eapply Impl_Interpreter.run_halt.
 Defined.
 Global Opaque run_mload.
