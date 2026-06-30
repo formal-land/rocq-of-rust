@@ -215,7 +215,8 @@ Ltac popn_top_macro_eq InterpreterTypesEq :=
       .(StackTrait.Eq.len)
   |];
   repeat s;
-  destruct (_ <? _) eqn:?; cbn;
+  let H_len := fresh "H_len" in
+  destruct (_ <? _) eqn:H_len; cbn;
   [
     s; [
       eapply halt_underflow_eq;
@@ -229,11 +230,21 @@ Ltac popn_top_macro_eq InterpreterTypesEq :=
       .(StackTrait.Eq.popn_top)
   |];
   cbn;
-  destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn_top) as [[[? ?]|] ?];
+  let H_popn_top := fresh "H_popn_top" in
+  destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn_top)
+    as [[[? ?] |] ?] eqn:H_popn_top;
   [
     idtac
   |
-    s
+    match type of H_popn_top with
+    | ?IStackTrait.(StackTrait.popn_top) ?N ?stack = (None, ?stack') =>
+      let H_some := fresh "H_some" in
+      pose proof (
+        StackTrait.popn_top_some_of_len IStackTrait stack N H_len
+      ) as (? & ? & ? & H_some);
+      rewrite H_popn_top in H_some;
+      discriminate
+    end
   ].
 
 Definition push_macro {WIRE K : Set} `{Link WIRE}
