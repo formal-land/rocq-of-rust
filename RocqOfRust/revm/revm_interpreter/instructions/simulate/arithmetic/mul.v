@@ -60,63 +60,19 @@ Lemma mul_eq
 Proof.
   intros.
   with_strategy transparent [run_mul] unfold mul, run_mul; cbn.
-  unfold popn_top_macro.
-  s; [
-    apply InterpreterTypesEq
-      .(InterpreterTypes.Eq.StackTrait_for_Stack)
-      .(StackTrait.Eq.len)
-  |].
-  repeat s.
-  destruct (_ <? _) eqn:H_len; cbn.
-  { s; [
-      eapply halt_underflow_eq;
-      try exact InterpreterTypesEq
-    |].
-    repeat s.
-  }
+  popn_top_macro_eq InterpreterTypesEq.
+  cbn.
   eapply Run.Call; [
-    apply InterpreterTypesEq
-      .(InterpreterTypes.Eq.StackTrait_for_Stack)
-      .(StackTrait.Eq.popn_top)
+    eapply Impl_Option.unwrap_unchecked_eq;
+    reflexivity
   |].
   cbn.
-  destruct
-    (IInterpreterTypes
-      .(InterpreterTypes.StackTrait_for_Stack)
-      .(StackTrait.popn_top) {| Integer.value := 1 |} interpreter.(Interpreter.stack))
-    as [[[arr top] |] stack] eqn:H_popn_top;
-    cbn.
-  { eapply Run.Call; [
-      eapply Impl_Option.unwrap_unchecked_eq;
-      reflexivity
-    |].
-    cbn.
-    match goal with
-    | array : array.t aliases.U256.t _ |- _ =>
-      destruct array as [[op1 []]]
-    end.
-    s; [
-      apply Impl_Uint.wrapping_mul_eq
-    |].
-    s.
-    change
-      (IInterpreterTypes
-        .(InterpreterTypes.StackTrait_for_Stack)
-        .(StackTrait.popn_top) 1 interpreter.(Interpreter.stack))
-      with
-      (IInterpreterTypes
-        .(InterpreterTypes.StackTrait_for_Stack)
-        .(StackTrait.popn_top) {| Integer.value := 1 |} interpreter.(Interpreter.stack)).
-    rewrite H_popn_top.
-    reflexivity.
-  }
-  pose proof (
-    StackTrait.popn_top_some_of_len
-      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack)
-      interpreter.(Interpreter.stack)
-      {| Integer.value := 1 |}
-      H_len
-  ) as (? & ? & ? & H_some).
-  rewrite H_popn_top in H_some.
-  discriminate.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s; [
+    apply Impl_Uint.wrapping_mul_eq
+  |].
+  s.
 Qed.
