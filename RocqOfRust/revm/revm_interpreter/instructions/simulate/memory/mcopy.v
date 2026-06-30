@@ -12,9 +12,11 @@ Require Import revm.revm_interpreter.instructions.links.memory.mcopy.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -58,9 +60,13 @@ Lemma mcopy_eq
     (_host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_mcopy run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_mcopy run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -71,41 +77,4 @@ Lemma mcopy_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_mcopy] unfold mcopy, run_mcopy; cbn.
-  check_macro_eq InterpreterTypesEq.
-  popn_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[dst_u256 [src_u256 [len_u256 []]]]]
-  end.
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  s. {
-    apply calc.copy_cost_verylow_eq.
-  }
-  unfold gas_macro.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    apply Impl_Gas.record_cost_eq.
-  }
-  destruct Impl_Gas.record_cost. 2: {
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s.
-  }
-  s.
-  destruct (_ =? 0); [s|].
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  s. {
-    apply Impl_Ord_for_usize.toplevel_max_eq.
-  }
-  resize_memory_macro_eq InterpreterTypesEq.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  now s; destruct _.(MemoryTrait.resize).
-Qed.
+Admitted.

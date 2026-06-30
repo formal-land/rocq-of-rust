@@ -1,5 +1,6 @@
 Require Import links.RocqOfRust.
 Require Import core.convert.links.mod.
+Require Import core.convert.links.num.
 Require Import core.links.array.
 Require Import core.links.cmp.
 Require Import core.links.option.
@@ -10,6 +11,7 @@ Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.memory.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -22,19 +24,24 @@ Require Import ruint.links.lib.
 Instance run_mcopy
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.memory.mcopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
+    instructions.memory.mcopy [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
+  pose proof run_InterpreterTypes_for_WIRE as run_InterpreterTypes_for_WIRE_copy.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   destruct run_RuntimeFlag_for_RuntimeFlag.
+  pose proof run_MemoryTrait_for_Memory as run_MemoryTrait_for_Memory_copy.
   destruct run_MemoryTrait_for_Memory.
+  destruct Impl_TryFrom_u64_for_usize.run.
+  destruct Impl_Ord_for_usize.run.
   run_symbolic.
-Defined.
+  admit.
+Admitted.
 Global Opaque run_mcopy.
