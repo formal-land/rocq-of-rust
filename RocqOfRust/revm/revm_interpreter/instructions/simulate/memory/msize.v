@@ -9,9 +9,11 @@ Require Import revm.revm_interpreter.instructions.links.memory.msize.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -25,12 +27,11 @@ Definition msize
     `{IInterpreterTypes : !InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.BASE id (fun interpreter =>
   let size :=
     IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.size)
       interpreter.(Interpreter.memory) in
   let value : aliases.U256.t := Impl_Uint.from size in
-  push_macro interpreter value id id).
+  push_macro interpreter value id id.
 
 Lemma msize_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -44,9 +45,13 @@ Lemma msize_eq
     (_host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_msize run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_msize run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -59,7 +64,6 @@ Lemma msize_eq
 Proof.
   intros.
   unfold msize.
-  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }
