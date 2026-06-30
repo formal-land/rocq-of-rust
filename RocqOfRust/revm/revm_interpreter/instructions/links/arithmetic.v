@@ -42,8 +42,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  all: try eapply Impl_Interpreter.run_halt_underflow.
-  all: try eapply Impl_Option.run_unwrap_unchecked.
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_add.
 
@@ -67,8 +66,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  all: try eapply Impl_Interpreter.run_halt_underflow.
-  all: try eapply Impl_Option.run_unwrap_unchecked.
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_mul.
 
@@ -92,8 +90,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  all: try eapply Impl_Interpreter.run_halt_underflow.
-  all: try eapply Impl_Option.run_unwrap_unchecked.
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_sub.
 
@@ -117,8 +114,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  all: try eapply Impl_Interpreter.run_halt_underflow.
-  all: try eapply Impl_Option.run_unwrap_unchecked.
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_div.
 
