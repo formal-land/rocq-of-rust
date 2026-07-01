@@ -32,16 +32,18 @@ Instance run_mcopy
     unit.
 Proof.
   constructor.
-  pose proof run_InterpreterTypes_for_WIRE as run_InterpreterTypes_for_WIRE_copy.
   destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   destruct run_RuntimeFlag_for_RuntimeFlag.
-  pose proof run_MemoryTrait_for_Memory as run_MemoryTrait_for_Memory_copy.
   destruct run_MemoryTrait_for_Memory.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct Impl_Ord_for_usize.run.
   run_symbolic.
-  admit.
-Admitted.
+  all: try eapply Impl_Interpreter.run_halt_not_activated.
+  all: try eapply Impl_Interpreter.run_halt_oog.
+  all: try eapply Impl_Interpreter.run_halt_memory_oog.
+  all: try eapply Impl_Interpreter.run_halt_underflow.
+  all: try eapply Impl_Interpreter.run_halt.
+Defined.
 Global Opaque run_mcopy.

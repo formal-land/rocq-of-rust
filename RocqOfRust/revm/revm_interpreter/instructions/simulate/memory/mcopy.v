@@ -23,6 +23,7 @@ Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.bytes.
 Require Import ruint.simulate.from.
+Require Import ruint.simulate.lib.
 
 Definition mcopy
     {WIRE : Set} `{Link WIRE}
@@ -77,4 +78,137 @@ Lemma mcopy_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_mcopy] unfold mcopy, run_mcopy; cbn.
+  unfold check_macro; cbn.
+  apply Run.LetUnfold.
+  eapply Run.Call; [
+    apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.RuntimeFlag_for_RuntimeFlag)
+      .(RuntimeFlag.Eq.spec_id)
+  |].
+  cbn.
+  eapply Run.Call; [
+    apply Impl_SpecId.is_enabled_in_eq
+  |].
+  cbn.
+  eapply Run.Call; [
+    apply Run.Pure
+  |].
+  cbn.
+  eapply Run.Call; [
+    apply Run.Pure
+  |].
+  cbn.
+  destruct Impl_SpecId.is_enabled_in; cbn. 2: {
+    s. {
+      eapply halt_not_activated_eq;
+        try exact InterpreterTypesEq.
+    }
+    repeat s.
+  }
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[dst [src [len []]]]]
+  end.
+  as_usize_or_fail_ret_macro_eq InterpreterTypesEq.
+  s. {
+    apply calc.copy_cost_verylow_eq.
+  }
+  unfold gas_or_fail_macro, calc.copy_cost_verylow.
+  gas_macro_eq idtac.
+  destruct (_ =? 0) eqn:?.
+  - repeat s.
+    try rewrite Heqb; cbn.
+    repeat s.
+  - repeat s.
+    try rewrite Heqb; cbn.
+    repeat s.
+    {
+      s_apply Impl_Uint.as_limbs_eq.
+    }
+    s. {
+      apply Impl_usize.max_eq.
+    }
+    s.
+    destruct (_ || _) eqn:?; cbn.
+    + s. {
+        eapply halt_eq;
+          try exact InterpreterTypesEq.
+      }
+      repeat s.
+    + repeat s.
+      {
+        s_apply Impl_Uint.as_limbs_eq.
+      }
+      s. {
+        apply Impl_usize.max_eq.
+      }
+      s.
+      destruct (_ || _) eqn:?; cbn.
+      * discriminate.
+      * change ((2 ^ 64 - 1) mod 2 ^ 64) with (2 ^ 64 - 1).
+        repeat match goal with
+        | H : ?e = false |- context[?e] => rewrite H
+        end; cbn.
+        destruct (
+          (src.(Uint.value) mod 2 ^ 64 >? 2 ^ 64 - 1)
+          || negb ((src.(Uint.value) / 2 ^ 64) mod 2 ^ 64 =? 0)
+          || negb ((src.(Uint.value) / 2 ^ 128) mod 2 ^ 64 =? 0)
+          || negb ((src.(Uint.value) / 2 ^ 192) mod 2 ^ 64 =? 0)
+        ) eqn:?; cbn.
+        { s. {
+            eapply halt_eq;
+              try exact InterpreterTypesEq.
+          }
+          repeat s.
+        }
+        { s. {
+            apply Impl_Ord_for_usize.toplevel_max_eq.
+          }
+          resize_memory_macro_eq InterpreterTypesEq.
+          - step; cbn.
+            + change
+                {| Integer.value :=
+                  Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                    ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                |}
+                with
+                (Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                  ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) : usize)
+                in Heqp.
+              rewrite Heqp in Heqb3.
+              cbn in Heqb3.
+              discriminate.
+            + change
+                {| Integer.value :=
+                  Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                    ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                |}
+                with
+                (Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                  ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) : usize)
+                in Heqp.
+              rewrite Heqp; cbn.
+              s. {
+                apply InterpreterTypesEq.
+              }
+              s.
+          - change
+              {| Integer.value :=
+                Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                  ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+              |}
+              with
+              (Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) : usize)
+              in Heqp.
+            rewrite Heqp; cbn.
+            s. {
+              eapply halt_memory_oog_eq;
+                try exact InterpreterTypesEq.
+            }
+            repeat s.
+        }
+Qed.
