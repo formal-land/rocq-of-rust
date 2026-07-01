@@ -5,10 +5,12 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.stack.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
 
@@ -19,7 +21,6 @@ Definition dup
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   let '(success, stack) :=
     IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.dup)
       interpreter.(Interpreter.stack) N in
@@ -27,12 +28,7 @@ Definition dup
   if success then
     interpreter
   else
-    let control :=
-      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.StackOverflow in
-    interpreter <| Interpreter.control := control |>
-  ).
+    halt interpreter instruction_result.InstructionResult.StackOverflow.
 
 Lemma dup_eq
     (N : usize)
@@ -47,9 +43,13 @@ Lemma dup_eq
     (_host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_dup N run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_dup N run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -62,13 +62,13 @@ Lemma dup_eq
 Proof.
   intros.
   with_strategy transparent [run_dup] unfold dup, run_dup; cbn.
-  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }
   destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.dup) as [[] ?]; [s|].
   s. {
-    apply InterpreterTypesEq.
+    eapply halt_eq;
+      try exact InterpreterTypesEq.
   }
   s.
 Qed.
