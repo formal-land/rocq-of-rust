@@ -80,33 +80,7 @@ Lemma mcopy_eq
 Proof.
   intros.
   with_strategy transparent [run_mcopy] unfold mcopy, run_mcopy; cbn.
-  unfold check_macro; cbn.
-  apply Run.LetUnfold.
-  eapply Run.Call; [
-    apply InterpreterTypesEq
-      .(InterpreterTypes.Eq.RuntimeFlag_for_RuntimeFlag)
-      .(RuntimeFlag.Eq.spec_id)
-  |].
-  cbn.
-  eapply Run.Call; [
-    apply Impl_SpecId.is_enabled_in_eq
-  |].
-  cbn.
-  eapply Run.Call; [
-    apply Run.Pure
-  |].
-  cbn.
-  eapply Run.Call; [
-    apply Run.Pure
-  |].
-  cbn.
-  destruct Impl_SpecId.is_enabled_in; cbn. 2: {
-    s. {
-      eapply halt_not_activated_eq;
-        try exact InterpreterTypesEq.
-    }
-    s.
-  }
+  check_macro_eq InterpreterTypesEq.
   popn_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ =>
@@ -118,12 +92,12 @@ Proof.
   }
   unfold gas_or_fail_macro, calc.copy_cost_verylow.
   gas_macro_eq idtac.
-  destruct (_ =? 0) eqn:?.
+  destruct (((len.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) =? 0) eqn:H_len_zero.
   - s.
-    try rewrite Heqb; cbn.
-    s.
+    rewrite H_len_zero; cbn.
+    apply Run.Pure.
   - s.
-    try rewrite Heqb; cbn.
+    rewrite H_len_zero; cbn.
     s.
     {
       s_apply Impl_Uint.as_limbs_eq.
@@ -178,8 +152,8 @@ Proof.
                 (Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
                   ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) : usize)
                 in Heqp.
-              rewrite Heqp in Heqb3.
-              cbn in Heqb3.
+              rewrite Heqp in Heqb2.
+              cbn in Heqb2.
               discriminate.
             + change
                 {| Integer.value :=

@@ -308,8 +308,15 @@ Ltac check_macro_eq InterpreterTypesEq :=
   |];
   cbn;
   destruct Impl_SpecId.is_enabled_in; cbn; [|
-    apply halt_not_activated_eq;
-    apply InterpreterTypesEq
+    first [
+      apply halt_not_activated_eq;
+      apply InterpreterTypesEq
+    | s; [
+        eapply halt_not_activated_eq;
+        try exact InterpreterTypesEq
+      |];
+      s
+    ]
   ].
 
 Definition as_u64_saturated_macro (v : aliases.U256.t) : u64 :=
