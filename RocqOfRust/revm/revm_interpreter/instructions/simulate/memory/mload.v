@@ -11,7 +11,9 @@ Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -25,7 +27,6 @@ Definition mload
     `{IInterpreterTypes : !InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   popn_top_macro interpreter 0 id (fun _ top_stub interpreter =>
   let top := top_stub.(RefStub.projection) interpreter.(Interpreter.stack) in
   as_usize_or_fail_macro interpreter top None id (fun offset interpreter =>
@@ -40,7 +41,7 @@ Definition mload
   let value := {| Uint.value := Impl_Uint.bytes_to_value bytes |} in
   let stack := top_stub.(RefStub.injection) interpreter.(Interpreter.stack) value in
   interpreter <| Interpreter.stack := stack |>
-  )))).
+  ))).
 
 Lemma good_size
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -67,9 +68,13 @@ Lemma mload_eq
     (_host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_mload run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_mload run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -82,28 +87,45 @@ Lemma mload_eq
 Proof.
   intros.
   unfold mload.
-  gas_macro_eq idtac.
   popn_top_macro_eq InterpreterTypesEq.
   as_usize_or_fail_macro_eq InterpreterTypesEq.
   resize_memory_macro_eq InterpreterTypesEq.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    s_apply Impl_Uint.try_from_be_slice_eq.
-  }
-  s. {
-    apply Impl_Option.unwrap_eq.
-    set (mem := snd _).
-    set (slice := _.(MemoryTrait.Deref_for_Synthetic).(Deref.deref).(RefStub.projection) _).
-    assert (H_size : List.length slice = 32%nat) by apply good_size.
-    unfold Impl_Uint.try_from_be_slice.
-    rewrite H_size; cbn.
-    reflexivity.
-  }
-  s.
-  now destruct _.(MemoryTrait.resize).
+  - step; cbn.
+    + change {| Integer.value := 32 |} with (32 : usize) in Heqb.
+      rewrite Heqp in Heqb.
+      cbn in Heqb.
+      discriminate.
+    + change {| Integer.value := 32 |} with (32 : usize).
+      rewrite Heqp; cbn.
+      s. {
+        apply InterpreterTypesEq.
+      }
+      s. {
+        apply InterpreterTypesEq.
+      }
+      s. {
+        s_apply Impl_Uint.try_from_be_slice_eq.
+      }
+      s. {
+        apply Impl_Option.unwrap_eq.
+        set (offset := cast_integer IntegerKind.Usize
+          ((t0.(RefStub.projection) s).(Uint.value) mod 2 ^ 64)).
+        set (slice :=
+          IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
+            .(MemoryTrait.Deref_for_Synthetic).(Deref.deref).(RefStub.projection)
+            (IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
+              .(MemoryTrait.slice_len) memory offset 32)).
+        assert (H_size : List.length slice = 32%nat) by apply good_size.
+        unfold Impl_Uint.try_from_be_slice.
+        rewrite H_size; cbn.
+        reflexivity.
+      }
+      s.
+  - change {| Integer.value := 32 |} with (32 : usize).
+    rewrite Heqp; cbn.
+    s. {
+      eapply halt_memory_oog_eq;
+        try exact InterpreterTypesEq.
+    }
+    s.
 Qed.
