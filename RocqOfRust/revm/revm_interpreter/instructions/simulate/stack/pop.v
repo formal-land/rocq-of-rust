@@ -6,9 +6,11 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.stack.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
 
@@ -18,10 +20,9 @@ Definition pop
     `{!InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.BASE id (fun interpreter =>
   popn_macro interpreter {| Integer.value := 1 |} id (fun _arr interpreter =>
   interpreter
-  )).
+  ).
 
 Lemma pop_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -35,9 +36,13 @@ Lemma pop_eq
     (_host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_pop run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_pop run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -50,7 +55,6 @@ Lemma pop_eq
 Proof.
   intros.
   with_strategy transparent [run_pop] unfold pop, run_pop; cbn.
-  gas_macro_eq idtac.
   popn_macro_eq InterpreterTypesEq.
   s.
 Qed.
