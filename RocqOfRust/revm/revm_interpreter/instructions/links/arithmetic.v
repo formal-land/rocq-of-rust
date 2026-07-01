@@ -240,22 +240,28 @@ Global Opaque run_mulmod.
 
 (*
 pub fn exp<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
-) 
+    context: InstructionContext<'_, H, WIRE>,
+)
 *)
 Instance run_exp
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (_host : '&mut H) :
+    (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.arithmetic.exp [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.arithmetic.exp [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
+  destruct run_StackTrait_for_Stack.
+  destruct run_LoopControl_for_Control.
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt_underflow. }
+  { eapply Impl_Interpreter.run_halt_oog. }
+  { eapply Impl_Interpreter.run_halt_oog. }
 Defined.
 Global Opaque run_exp.
 
