@@ -10,9 +10,11 @@ Require Import revm.revm_interpreter.instructions.links.memory.mstore8.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -27,7 +29,6 @@ Definition mstore8
     `{IInterpreterTypes : !InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   popn_macro interpreter {| Integer.value := 2 |} id (fun arr interpreter =>
   let '⟬ offset_u256; value ⟭ := arr.(array.value) in
   as_usize_or_fail_ret_macro interpreter offset_u256 None id (fun offset interpreter =>
@@ -38,7 +39,7 @@ Definition mstore8
       offset
       [Impl_Uint.byte value 0] in
   interpreter <| Interpreter.memory := memory |>
-  )))).
+  ))).
 
 Lemma mstore8_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -52,9 +53,13 @@ Lemma mstore8_eq
     (_host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_mstore8 run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_mstore8 run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -67,7 +72,6 @@ Lemma mstore8_eq
 Proof.
   intros.
   with_strategy transparent [run_mstore8] unfold mstore8, run_mstore8; cbn.
-  gas_macro_eq idtac.
   popn_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ =>
@@ -75,17 +79,30 @@ Proof.
   end.
   as_usize_or_fail_macro_eq InterpreterTypesEq.
   resize_memory_macro_eq InterpreterTypesEq.
-  s. {
-    s_apply Impl_Uint.byte_eq.
-  }
-  s. {
-    set (ref_array := Ref.cast_to _ _).
-    eapply (array.pointer_coercion_unsize_array_to_slice_eq ref_array _);
-      repeat unshelve econstructor.
-  }
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s.
-  now destruct IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.resize).
+  - step; cbn.
+    + change {| Integer.value := 1 |} with (1 : usize) in Heqb.
+      rewrite Heqp in Heqb.
+      cbn in Heqb.
+      discriminate.
+    + change {| Integer.value := 1 |} with (1 : usize).
+      rewrite Heqp; cbn.
+      s. {
+        s_apply Impl_Uint.byte_eq.
+      }
+      s. {
+        set (ref_array := Ref.cast_to _ _).
+        eapply (array.pointer_coercion_unsize_array_to_slice_eq ref_array _);
+          repeat unshelve econstructor.
+      }
+      s. {
+        apply InterpreterTypesEq.
+      }
+      s.
+  - change {| Integer.value := 1 |} with (1 : usize).
+    rewrite Heqp; cbn.
+    s. {
+      eapply halt_memory_oog_eq;
+        try exact InterpreterTypesEq.
+    }
+    s.
 Qed.
