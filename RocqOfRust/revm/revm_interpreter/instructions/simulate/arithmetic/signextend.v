@@ -2,13 +2,11 @@ Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
-Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
-Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.add.
@@ -23,7 +21,6 @@ Definition signextend
     `{!InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.LOW id (fun interpreter =>
   popn_top_macro interpreter 1 id (fun arr top interpreter =>
   let '⟬ ext ⟭ := arr.(array.value) in
   let x := top.(RefStub.projection) interpreter.(Interpreter.stack) in
@@ -47,7 +44,7 @@ Definition signextend
       <| Interpreter.stack := stack |>
   else
     interpreter
-  )).
+  ).
 
 Lemma signextend_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -61,9 +58,13 @@ Lemma signextend_eq
     (_host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_signextend run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_signextend run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -75,8 +76,7 @@ Lemma signextend_eq
   }}.
 Proof.
   intros.
-  unfold signextend.
-  gas_macro_eq idtac.
+  with_strategy transparent [run_signextend] unfold signextend, run_signextend; cbn.
   popn_top_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ =>
