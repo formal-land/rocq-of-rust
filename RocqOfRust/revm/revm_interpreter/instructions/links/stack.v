@@ -5,6 +5,7 @@ Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.links.utility.
 Require Import revm.revm_interpreter.instructions.stack.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -88,9 +89,8 @@ Defined.
 Global Opaque run_push.
 
 (*
-pub fn dup<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
+pub fn dup<const N: usize, WIRE: InterpreterTypes, H: ?Sized>(
+    context: InstructionContext<'_, H, WIRE>,
 )
 *)
 Instance run_dup
@@ -98,17 +98,17 @@ Instance run_dup
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.stack.dup [ φ N ] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.stack.dup [ φ N ] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt. }
 Defined.
 Global Opaque run_dup.
 
@@ -136,84 +136,3 @@ Proof.
   run_symbolic.
 Defined.
 Global Opaque run_swap.
-
-(*
-pub fn dupn<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
-)
-*)
-Instance run_dupn
-  {WIRE H : Set} `{Link WIRE} `{Link H}
-  {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
-  Run.Trait
-    instructions.stack.dupn [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
-    unit.
-Proof.
-  constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_Jumps_for_Bytecode.
-  destruct run_Immediates_for_Bytecode.
-  run_symbolic.
-Defined.
-Global Opaque run_dupn.
-
-(*
-pub fn swapn<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
-)
-*)
-Instance run_swapn
-  {WIRE H : Set} `{Link WIRE} `{Link H}
-  {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
-  Run.Trait
-    instructions.stack.swapn [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
-    unit.
-Proof.
-  constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_Jumps_for_Bytecode.
-  destruct run_Immediates_for_Bytecode.
-  run_symbolic.
-Defined.
-Global Opaque run_swapn.
-
-(*
-pub fn exchange<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
-)
-*)
-Instance run_exchange
-  {WIRE H : Set} `{Link WIRE} `{Link H}
-  {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
-  Run.Trait
-    instructions.stack.exchange [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
-    unit.
-Proof.
-  constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_Jumps_for_Bytecode.
-  destruct run_Immediates_for_Bytecode.
-  run_symbolic.
-Defined.
-Global Opaque run_exchange.
