@@ -12,15 +12,18 @@ Require Import revm.revm_interpreter.instructions.links.memory.mcopy.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.bytes.
 Require Import ruint.simulate.from.
+Require Import ruint.simulate.lib.
 
 Definition mcopy
     {WIRE : Set} `{Link WIRE}
@@ -58,9 +61,13 @@ Lemma mcopy_eq
     (_host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_mcopy run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_mcopy run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -77,35 +84,105 @@ Proof.
   popn_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[dst_u256 [src_u256 [len_u256 []]]]]
+    destruct array as [[dst [src [len []]]]]
   end.
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  as_usize_or_fail_ret_macro_eq InterpreterTypesEq.
   s. {
     apply calc.copy_cost_verylow_eq.
   }
-  unfold gas_macro.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s. {
-    apply Impl_Gas.record_cost_eq.
-  }
-  destruct Impl_Gas.record_cost. 2: {
+  unfold gas_or_fail_macro, calc.copy_cost_verylow.
+  gas_macro_eq idtac.
+  destruct (((len.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) =? 0) eqn:H_len_zero.
+  - s.
+    rewrite H_len_zero; cbn.
+    apply Run.Pure.
+  - s.
+    rewrite H_len_zero; cbn.
+    s.
+    {
+      s_apply Impl_Uint.as_limbs_eq.
+    }
     s. {
-      apply InterpreterTypesEq.
+      apply Impl_usize.max_eq.
     }
     s.
-  }
-  s.
-  destruct (_ =? 0); [s|].
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  s. {
-    apply Impl_Ord_for_usize.toplevel_max_eq.
-  }
-  resize_memory_macro_eq InterpreterTypesEq.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  now s; destruct _.(MemoryTrait.resize).
+    destruct (_ || _) eqn:?; cbn.
+    + s. {
+        eapply halt_eq;
+          try exact InterpreterTypesEq.
+      }
+      s.
+    + s.
+      {
+        s_apply Impl_Uint.as_limbs_eq.
+      }
+      s. {
+        apply Impl_usize.max_eq.
+      }
+      s.
+      destruct (_ || _) eqn:?; cbn.
+      * discriminate.
+      * change ((2 ^ 64 - 1) mod 2 ^ 64) with (2 ^ 64 - 1).
+        repeat match goal with
+        | H : ?e = false |- context[?e] => rewrite H
+        end; cbn.
+        destruct (
+          (src.(Uint.value) mod 2 ^ 64 >? 2 ^ 64 - 1)
+          || negb ((src.(Uint.value) / 2 ^ 64) mod 2 ^ 64 =? 0)
+          || negb ((src.(Uint.value) / 2 ^ 128) mod 2 ^ 64 =? 0)
+          || negb ((src.(Uint.value) / 2 ^ 192) mod 2 ^ 64 =? 0)
+        ) eqn:?; cbn.
+        { s. {
+            eapply halt_eq;
+              try exact InterpreterTypesEq.
+          }
+          s.
+        }
+        { s. {
+            apply Impl_Ord_for_usize.toplevel_max_eq.
+          }
+          resize_memory_macro_eq InterpreterTypesEq.
+          - step; cbn.
+            + change
+                {| Integer.value :=
+                  Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                    ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                |}
+                with
+                (Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                  ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) : usize)
+                in Heqp.
+              rewrite Heqp in Heqb2.
+              cbn in Heqb2.
+              discriminate.
+            + change
+                {| Integer.value :=
+                  Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                    ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                |}
+                with
+                (Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                  ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) : usize)
+                in Heqp.
+              rewrite Heqp; cbn.
+              s. {
+                apply InterpreterTypesEq.
+              }
+              s.
+          - change
+              {| Integer.value :=
+                Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                  ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+              |}
+              with
+              (Z.max ((dst.(Uint.value) mod 2 ^ 64) mod 2 ^ 64)
+                ((src.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) : usize)
+              in Heqp.
+            rewrite Heqp; cbn.
+            s. {
+              eapply halt_memory_oog_eq;
+                try exact InterpreterTypesEq.
+            }
+            s.
+        }
 Qed.
