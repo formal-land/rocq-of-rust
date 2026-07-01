@@ -37,8 +37,8 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
-  all: eapply Impl_Interpreter.run_halt_memory_oog ||
-       eapply Impl_Interpreter.run_halt_underflow ||
-       eapply Impl_Interpreter.run_halt.
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt_memory_oog. }
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_mstore.
