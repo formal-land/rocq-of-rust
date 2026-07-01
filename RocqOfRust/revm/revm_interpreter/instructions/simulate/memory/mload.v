@@ -127,5 +127,5 @@ Proof.
       eapply halt_memory_oog_eq;
         try exact InterpreterTypesEq.
     }
-    repeat s.
+    s.
 Qed.

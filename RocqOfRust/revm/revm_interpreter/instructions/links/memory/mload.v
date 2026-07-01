@@ -40,8 +40,8 @@ Proof.
   destruct run_Deref_for_Synthetic.
   destruct (Impl_AsRef_for_Slice.run u8).
   run_symbolic.
-  all: try eapply Impl_Interpreter.run_halt_memory_oog.
-  all: try eapply Impl_Interpreter.run_halt_underflow.
-  all: try eapply Impl_Interpreter.run_halt.
+  { eapply Impl_Interpreter.run_halt_underflow. }
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt_memory_oog. }
 Defined.
 Global Opaque run_mload.
