@@ -105,7 +105,7 @@ Proof.
       eapply halt_not_activated_eq;
         try exact InterpreterTypesEq.
     }
-    repeat s.
+    s.
   }
   popn_macro_eq InterpreterTypesEq.
   match goal with
@@ -119,12 +119,12 @@ Proof.
   unfold gas_or_fail_macro, calc.copy_cost_verylow.
   gas_macro_eq idtac.
   destruct (_ =? 0) eqn:?.
-  - repeat s.
+  - s.
     try rewrite Heqb; cbn.
-    repeat s.
-  - repeat s.
+    s.
+  - s.
     try rewrite Heqb; cbn.
-    repeat s.
+    s.
     {
       s_apply Impl_Uint.as_limbs_eq.
     }
@@ -137,8 +137,8 @@ Proof.
         eapply halt_eq;
           try exact InterpreterTypesEq.
       }
-      repeat s.
-    + repeat s.
+      s.
+    + s.
       {
         s_apply Impl_Uint.as_limbs_eq.
       }
@@ -162,7 +162,7 @@ Proof.
             eapply halt_eq;
               try exact InterpreterTypesEq.
           }
-          repeat s.
+          s.
         }
         { s. {
             apply Impl_Ord_for_usize.toplevel_max_eq.
@@ -209,6 +209,6 @@ Proof.
               eapply halt_memory_oog_eq;
                 try exact InterpreterTypesEq.
             }
-            repeat s.
+            s.
         }
 Qed.
