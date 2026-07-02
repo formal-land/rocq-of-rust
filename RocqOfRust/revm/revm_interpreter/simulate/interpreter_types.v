@@ -570,6 +570,8 @@ Module StackTrait.
     is_empty (self : Self) : bool;
     (* fn push(&mut self, value: U256) -> bool; *)
     push (self : Self) (value : aliases.U256.t) : bool * Self;
+    (* fn push_slice(&mut self, slice: &[u8]) -> bool; *)
+    push_slice (self : Self) (slice : list u8) : bool * Self;
     (* fn push_b256(&mut self, value: B256) -> bool; *)
     push_b256 (self : Self) (value : aliases.B256.t) : bool * Self;
     (* fn popn<const N: usize>(&mut self) -> Option<[U256; N]>; *)
@@ -656,6 +658,27 @@ Module StackTrait.
         {{
           SimulateM.eval_f
             (links.interpreter_types.StackTrait.run_push ref_self value)
+            (interpreter :: stack_rest)%stack 🌲
+          (
+            Output.Success (fst result_self),
+            (interpreter <| Interpreter.stack := snd result_self |> :: stack_rest)%stack
+          )
+        }};
+      push_slice
+        (interpreter : Interpreter.t WIRE WIRE_types)
+        (stack_rest : Stack.t)
+        (ref_slice : '& (list u8))
+        (slice : list u8) :
+        let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+        let ref_self := {| Ref.core :=
+          SubPointer.Runner.apply
+            ref_interpreter.(Ref.core)
+            Interpreter.SubPointer.get_stack
+        |} in
+        let result_self := I.(push_slice) interpreter.(Interpreter.stack) slice in
+        {{
+          SimulateM.eval_f
+            (links.interpreter_types.StackTrait.run_push_slice ref_self ref_slice)
             (interpreter :: stack_rest)%stack 🌲
           (
             Output.Success (fst result_self),

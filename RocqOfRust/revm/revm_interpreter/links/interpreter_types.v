@@ -501,6 +501,13 @@ Module StackTrait.
       Run.Trait push [] [] [ φ self; φ value ] bool;
   }.
 
+  Class Method_push_slice (Self : Set) `{Link Self} : Set := {
+    push_slice : PolymorphicFunction.t;
+    push_slice_is_method :: IsTraitMethod.C (trait Self) "push_slice" push_slice;
+    run_push_slice (self : '&mut Self) (slice : '& (list u8)) ::
+      Run.Trait push_slice [] [] [ φ self; φ slice ] bool;
+  }.
+
   Class Method_push_b256 (Self : Set) `{Link Self} : Set := {
     push_b256 : PolymorphicFunction.t;
     push_b256_is_method :: IsTraitMethod.C (trait Self) "push_b256" push_b256;
@@ -562,6 +569,7 @@ Module StackTrait.
     method_len :: Method_len Self;
     method_is_empty :: Method_is_empty Self;
     method_push :: Method_push Self;
+    method_push_slice :: Method_push_slice Self;
     method_push_b256 :: Method_push_b256 Self;
     method_popn :: Method_popn Self;
     method_popn_top :: Method_popn_top Self;
