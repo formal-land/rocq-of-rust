@@ -7,12 +7,12 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.block_info.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
-Require Import ruint.simulate.from.
 
 Definition block_number
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -23,16 +23,12 @@ Definition block_number
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
-  gas_macro interpreter constants.BASE (fun interpreter => (interpreter, host)) (fun interpreter =>
-  let block :=
-    IHost.(Host.BlockGetter_for_Self).(BlockGetter.block).(RefStub.projection) host in
-  let number :=
-    IHost.(Host.BlockGetter_for_Self).(BlockGetter.Block_for_Block).(Block.number) block in
+  let '(number, host) := IHost.(Host.block_number) host in
   push_macro interpreter
-    {| Uint.value := i[number] |}
+    number
     (fun interpreter => (interpreter, host)) (fun interpreter =>
   (interpreter, host)
-  )).
+  ).
 
 Lemma block_number_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -49,9 +45,13 @@ Lemma block_number_eq
     (host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_block_number run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+      (run_block_number run_InterpreterTypes_for_WIRE run_Host_for_H context)
       ([interpreter; host]%stack) 🌲
     (
       Output.Success tt,
@@ -62,16 +62,16 @@ Lemma block_number_eq
 Proof.
   intros.
   with_strategy transparent [run_block_number] unfold block_number, run_block_number; cbn.
-  gas_macro_eq idtac.
-  s. {
-    apply HostEq.
+  destruct (IHost.(Host.block_number) host) as [number host'] eqn:?; cbn.
+  apply Run.LetUnfold.
+  eapply Run.Call.
+  {
+    s. {
+      eapply (Host.Eq.block_number (t := HostEq)).
+    }
+    s.
   }
-  s. {
-    s_apply HostEq.
-  }
-  s. {
-    s_apply Impl_Uint.from_eq.
-  }
+  rewrite Heqp; cbn.
   push_macro_eq InterpreterTypesEq.
-  s.
+  { s. }
 Qed.

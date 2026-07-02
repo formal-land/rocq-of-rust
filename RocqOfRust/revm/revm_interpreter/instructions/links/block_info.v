@@ -8,6 +8,7 @@ Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.block.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -108,11 +109,10 @@ Global Opaque run_timestamp.
 
 (*
 pub fn block_number<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
+    context: InstructionContext<'_, H, WIRE>,
 ) {
-    gas!(interpreter, gas::BASE);
-    push!(interpreter, U256::from(host.block().number()));
+    //gas!(context.interpreter, gas::BASE);
+    push!(context.interpreter, context.host.block_number());
 }
 *)
 Instance run_block_number
@@ -121,20 +121,23 @@ Instance run_block_number
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.block_info.block_number [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.block_info.block_number [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   destruct run_Host_for_H.
-  destruct run_BlockGetter_for_Self.
-  destruct run_Block_for_Block.
   run_symbolic.
+  { eapply (@Host.run_block_number
+      ('&mut H)
+      _
+      (@Impl_Host_for_RefMut.method_block_number H _ method_block_number)
+      (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
+  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_block_number.
 
