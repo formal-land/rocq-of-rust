@@ -64,6 +64,10 @@ Module TestHost.
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
 
+  Definition host_chain_id (self : t) :
+      aliases.U256.t * t :=
+    ({| Uint.value := 1 |}, Make).
+
   Definition balance (self : t) (_address : Address.t) :
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
@@ -228,6 +232,7 @@ Module TestHost.
     Host.load_account_delegated := load_account_delegated;
     Host.block_hash := block_hash;
     Host.block_number := block_number;
+    Host.chain_id := host_chain_id;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;
@@ -300,6 +305,10 @@ Module TestHostWithAccount.
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
 
+  Definition host_chain_id (self : t) :
+      aliases.U256.t * t :=
+    ({| Uint.value := 1 |}, Make).
+
   Definition balance (self : t) (_address : Address.t) :
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
@@ -464,6 +473,7 @@ Module TestHostWithAccount.
     Host.load_account_delegated := load_account_delegated;
     Host.block_hash := block_hash;
     Host.block_number := block_number;
+    Host.chain_id := host_chain_id;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;

@@ -7,6 +7,7 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.block_info.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
@@ -14,7 +15,6 @@ Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.links.lib.
-Require Import ruint.simulate.from.
 
 Definition chainid
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -26,14 +26,12 @@ Definition chainid
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
   check_macro interpreter SpecId.ISTANBUL (fun interpreter => (interpreter, host)) (fun interpreter =>
-  gas_macro interpreter constants.BASE (fun interpreter => (interpreter, host)) (fun interpreter =>
-  let cfg := IHost.(Host.CfgGetter_for_Self).(CfgGetter.cfg).(RefStub.projection) host in
-  let chain_id := IHost.(Host.CfgGetter_for_Self).(CfgGetter.Cfg_for_Cfg).(Cfg.chain_id) cfg in
+  let '(chain_id, host) := IHost.(Host.chain_id) host in
   push_macro interpreter
-    {| Uint.value := i[chain_id] |}
+    chain_id
     (fun interpreter => (interpreter, host)) (fun interpreter =>
   (interpreter, host)
-  ))).
+  )).
 
 Lemma chainid_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -50,9 +48,13 @@ Lemma chainid_eq
     (host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_chainid run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+      (run_chainid run_InterpreterTypes_for_WIRE run_Host_for_H context)
       ([interpreter; host]%stack) 🌲
     (
       Output.Success tt,
@@ -64,16 +66,16 @@ Proof.
   intros.
   with_strategy transparent [run_chainid] unfold chainid, run_chainid; cbn.
   check_macro_eq InterpreterTypesEq.
-  gas_macro_eq idtac.
-  s. {
-    apply HostEq.
+  destruct (IHost.(Host.chain_id) host) as [chain_id host'] eqn:?; cbn.
+  apply Run.LetUnfold.
+  eapply Run.Call.
+  {
+    s. {
+      eapply (Host.Eq.chain_id (t := HostEq)).
+    }
+    s.
   }
-  s. {
-    s_apply HostEq.
-  }
-  s. {
-    s_apply Impl_Uint.from_eq.
-  }
+  rewrite Heqp; cbn.
   push_macro_eq InterpreterTypesEq.
-  s.
+  { s. }
 Qed.
