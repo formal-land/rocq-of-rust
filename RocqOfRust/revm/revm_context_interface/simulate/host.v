@@ -44,6 +44,10 @@ Module Host.
     block_number
       (self : Self) :
       aliases.U256.t * Self;
+    (* fn chain_id(&self) -> U256; *)
+    chain_id
+      (self : Self) :
+      aliases.U256.t * Self;
     (* fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>; *)
     balance
       (self : Self)
@@ -169,6 +173,22 @@ Module Host.
             (Host.run_block_number ref_self)
             (interpreter :: self :: stack)%stack 🌲
           let result_self := I.(block_number) self in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
+      chain_id
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (stack : Stack.t) :
+        let ref_self : '& Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_chain_id ref_self)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self := I.(chain_id) self in
           (
             Output.Success (fst result_self),
             (interpreter :: snd result_self :: stack)%stack

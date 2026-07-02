@@ -299,6 +299,7 @@ pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
     fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>;
     fn block_hash(&mut self, number: u64) -> Option<B256>;
     fn block_number(&self) -> U256;
+    fn chain_id(&self) -> U256;
     fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>;
     fn code(&mut self, address: Address) -> Option<Eip7702CodeLoad<Bytes>>;
     fn code_hash(&mut self, address: Address) -> Option<Eip7702CodeLoad<B256>>;
@@ -394,6 +395,14 @@ Module Host.
     block_number_is_method :: IsTraitMethod.C (trait Self) "block_number" block_number;
     run_block_number (self : '& Self) ::
       Run.Trait block_number [] [] [ φ self ] aliases.U256.t;
+  }.
+
+  (* fn chain_id(&self) -> U256; *)
+  Class Method_chain_id (Self : Set) `{Link Self} : Set := {
+    chain_id : PolymorphicFunction.t;
+    chain_id_is_method :: IsTraitMethod.C (trait Self) "chain_id" chain_id;
+    run_chain_id (self : '& Self) ::
+      Run.Trait chain_id [] [] [ φ self ] aliases.U256.t;
   }.
 
   (* fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>; *)
@@ -501,6 +510,7 @@ Module Host.
     method_load_account_delegated :: Method_load_account_delegated Self;
     method_block_hash :: Method_block_hash Self;
     method_block_number :: Method_block_number Self;
+    method_chain_id :: Method_chain_id Self;
     method_balance :: Method_balance Self;
     method_code :: Method_code Self;
     method_code_hash :: Method_code_hash Self;
@@ -515,6 +525,23 @@ End Host.
 Export (hints) Host.
 
 Module Impl_Host_for_RefMut.
+  Instance method_chain_id
+      (Self : Set) `{Link Self}
+      (method_chain_id : Host.Method_chain_id Self) :
+    Host.Method_chain_id ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.chain_id (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_chain_id.
+      run_symbolic.
+  Defined.
+
   Instance method_block_number
       (Self : Set) `{Link Self}
       (method_block_number : Host.Method_block_number Self) :

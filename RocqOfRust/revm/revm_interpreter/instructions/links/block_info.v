@@ -20,30 +20,38 @@ Require Import ruint.links.from.
 
 (*
 pub fn chainid<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
+    context: InstructionContext<'_, H, WIRE>,
 ) {
-    check!(interpreter, ISTANBUL);
-    gas!(interpreter, gas::BASE);
-    push!(interpreter, U256::from(host.cfg().chain_id()));
-  }
+    check!(context.interpreter, ISTANBUL);
+    //gas!(context.interpreter, gas::BASE);
+    push!(context.interpreter, context.host.chain_id());
+}
 *)
 Instance run_chainid
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.block_info.chainid [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.block_info.chainid [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
+  destruct run_LoopControl_for_Control.
+  destruct run_StackTrait_for_Stack.
+  destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_Host_for_H.
-  destruct run_CfgGetter_for_Self.
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt_not_activated. }
+  { eapply (@Host.run_chain_id
+      ('&mut H)
+      _
+      (@Impl_Host_for_RefMut.method_chain_id H _ method_chain_id)
+      (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
+  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_chainid.
 
