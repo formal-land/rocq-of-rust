@@ -10,6 +10,7 @@ Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
@@ -348,10 +349,14 @@ Module StackTrait.
     else
       (false, self).
 
+  Definition push_slice (self : Self) (slice : list u8) : bool * Self :=
+    push self (cast_slice_to_u256 slice).
+
   Instance I : StackTrait.C WIRE_types.(InterpreterTypes.Types.Stack) := {
     StackTrait.len := len;
     StackTrait.is_empty := is_empty;
     StackTrait.push := push;
+    StackTrait.push_slice := push_slice;
     StackTrait.push_b256 := push_b256;
     StackTrait.popn := popn;
     StackTrait.popn_top := popn_top;
