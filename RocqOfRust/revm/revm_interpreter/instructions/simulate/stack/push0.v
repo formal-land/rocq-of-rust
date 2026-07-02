@@ -5,6 +5,7 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.stack.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
@@ -21,10 +22,9 @@ Definition push0
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   check_macro interpreter SpecId.SHANGHAI id (fun interpreter =>
-  gas_macro interpreter constants.BASE id (fun interpreter =>
   push_macro interpreter Impl_Uint.ZERO id (fun interpreter =>
   interpreter
-  ))).
+  )).
 
 Lemma push0_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -38,9 +38,13 @@ Lemma push0_eq
     (_host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_push0 run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_push0 run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -54,7 +58,6 @@ Proof.
   intros.
   with_strategy transparent [run_push0] unfold push0, run_push0; cbn.
   check_macro_eq InterpreterTypesEq.
-  gas_macro_eq idtac.
   s. {
     apply Impl_Uint.ZERO_eq.
   }

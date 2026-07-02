@@ -34,27 +34,25 @@ Defined.
 Global Opaque run_pop.
 
 (*
-pub fn push0<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    _host: &mut H,
-)
+pub fn push0<WIRE: InterpreterTypes, H: ?Sized>(context: InstructionContext<'_, H, WIRE>)
 *)
 Instance run_push0
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.stack.push0 [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.stack.push0 [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt_not_activated. }
+  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_push0.
 
