@@ -5,10 +5,12 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.stack.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.lib.
@@ -20,7 +22,6 @@ Definition swap
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   let '(success, stack) :=
     IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.exchange)
       interpreter.(Interpreter.stack) {| Integer.value := 0 |} N in
@@ -28,12 +29,7 @@ Definition swap
   if success then
     interpreter
   else
-    let control :=
-      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.StackOverflow in
-    interpreter <| Interpreter.control := control |>
-  ).
+    halt interpreter instruction_result.InstructionResult.StackOverflow.
 
 Lemma swap_eq
     (N : usize)
@@ -49,9 +45,13 @@ Lemma swap_eq
   i[N] <> 0 ->
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_swap N run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_swap N run_InterpreterTypes_for_WIRE context)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -64,7 +64,6 @@ Lemma swap_eq
 Proof.
   intros.
   with_strategy transparent [run_swap] unfold swap, run_swap; cbn.
-  gas_macro_eq idtac.
   s.
   destruct N as [N].
   destruct (_ =? _) eqn:? in |- *; [cbn in *; lia |].
@@ -74,7 +73,8 @@ Proof.
   s.
   destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.exchange) as [[] ?]; [s|].
   s. {
-    apply InterpreterTypesEq.
+    eapply halt_eq;
+      try exact InterpreterTypesEq.
   }
   s.
 Qed.
