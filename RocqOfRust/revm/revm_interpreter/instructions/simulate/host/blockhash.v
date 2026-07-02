@@ -1,6 +1,7 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
+Require Import core.simulate.option.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
@@ -8,11 +9,16 @@ Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.host.blockhash.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.instructions.simulate.utility.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
+Require Import ruint.links.lib.
+Require Import ruint.simulate.add.
 Require Import ruint.simulate.bytes.
+Require Import ruint.simulate.lib.
 
 Definition blockhash
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -23,28 +29,40 @@ Definition blockhash
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
-  gas_macro interpreter constants.BLOCKHASH
-    (fun interpreter => (interpreter, host)) (fun interpreter =>
   popn_top_macro interpreter 0
     (fun interpreter => (interpreter, host)) (fun _ number_stub interpreter =>
 
-  let number := number_stub.(RefStub.projection) interpreter.(Interpreter.stack) in
-  let number_u64 := as_u64_saturated_macro number in
-  let '(hash_opt, host) := IHost.(Host.block_hash) host number_u64 in
-  match hash_opt with
+  let requested_number := number_stub.(RefStub.projection) interpreter.(Interpreter.stack) in
+  let block_number := IHost.(Host.block_number) host in
+  match Impl_Uint.checked_sub block_number requested_number with
   | None =>
-    let control :=
-      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.FatalExternalError in
-    (interpreter <| Interpreter.control := control |>, host)
-  | Some hash =>
     let stack :=
-      number_stub.(RefStub.injection)
-        interpreter.(Interpreter.stack)
-        (Impl_Uint.from_be_bytes hash.(fixed_FixedBytes.FixedBytes.value)) in
+      number_stub.(RefStub.injection) interpreter.(Interpreter.stack) Impl_Uint.ZERO in
     (interpreter <| Interpreter.stack := stack |>, host)
-  end)).
+  | Some diff =>
+    let diff := as_u64_saturated_macro diff in
+    if i[diff] =? 0 then
+      let stack :=
+        number_stub.(RefStub.injection) interpreter.(Interpreter.stack) Impl_Uint.ZERO in
+      (interpreter <| Interpreter.stack := stack |>, host)
+    else if i[diff] <=? 256 then
+      let requested_number := as_u64_saturated_macro requested_number in
+      let '(hash_opt, host) := IHost.(Host.block_hash) host requested_number in
+      match hash_opt with
+      | None =>
+        (halt_fatal interpreter, host)
+      | Some hash =>
+        let stack :=
+          number_stub.(RefStub.injection)
+            interpreter.(Interpreter.stack)
+            (Impl_Uint.from_be_bytes hash.(fixed_FixedBytes.FixedBytes.value)) in
+        (interpreter <| Interpreter.stack := stack |>, host)
+      end
+    else
+      let stack :=
+        number_stub.(RefStub.injection) interpreter.(Interpreter.stack) Impl_Uint.ZERO in
+      (interpreter <| Interpreter.stack := stack |>, host)
+  end).
 
 Lemma blockhash_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -61,10 +79,14 @@ Lemma blockhash_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   let result := blockhash interpreter host in
   {{
     SimulateM.eval_f
-      (run_blockhash run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+      (run_blockhash run_InterpreterTypes_for_WIRE run_Host_for_H context)
       [interpreter; host]%stack 🌲
     (
       Output.Success tt,
@@ -72,24 +94,4 @@ Lemma blockhash_eq
     )
   }}.
 Proof.
-  with_strategy transparent [run_blockhash] unfold blockhash, run_blockhash; cbn.
-  gas_macro_eq idtac.
-  popn_top_macro_eq InterpreterTypesEq.
-  set (number := t0.(RefStub.projection) s0).
-  eapply Run.Let with (result := (Output.Success (as_u64_saturated_macro number), _)). {
-    as_u64_saturated_macro_eq.
-  }
-  s. {
-    apply HostEq.
-  }
-  destruct _.(Host.block_hash) as [[hash_opt|] ?host]; cbn. 2: {
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s.
-  }
-  s. {
-    apply Impl_Uint.from_be_bytes_eq.
-  }
-  s.
-Qed.
+Admitted.

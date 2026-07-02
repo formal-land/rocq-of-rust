@@ -22,19 +22,21 @@ Require Import revm.revm_interpreter.instructions.host.
 Require Import revm.revm_interpreter.instructions.links.utility.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
+Require Import ruint.links.add.
 Require Import ruint.links.bytes.
 Require Import ruint.links.from.
 Require Import ruint.links.lib.
+Require Import revm.revm_primitives.links.lib.
 
 
 (*
 pub fn blockhash<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
+    context: InstructionContext<'_, H, WIRE>,
 )
 *)
 Instance run_blockhash
@@ -43,14 +45,22 @@ Instance run_blockhash
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (host : '&mut H) :
+    (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.host.blockhash [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
+    instructions.host.blockhash [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
+  destruct run_StackTrait_for_Stack.
+  destruct run_Host_for_H.
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt_underflow. }
+  { eapply (@Host.run_block_number
+      ('&mut H)
+      _
+      (@Impl_Host_for_RefMut.method_block_number H _ method_block_number)
+      (Ref.cast_to Pointer.Kind.Ref sub_ref3)). }
+  { eapply Impl_Interpreter.run_halt_fatal. }
 Defined.
 Global Opaque run_blockhash.
-

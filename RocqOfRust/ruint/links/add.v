@@ -1,4 +1,5 @@
 Require Import links.RocqOfRust.
+Require Import core.links.option.
 Require Import core.ops.links.arith.
 Require Import ruint.links.lib.
 Require Import ruint.add.
@@ -37,6 +38,16 @@ Module Impl_Uint.
     (Self BITS LIMBS).
   Admitted.
   Global Opaque run_wrapping_sub.
+
+  (* pub const fn checked_sub(self, rhs: Self) -> Option<Self> *)
+  Instance run_checked_sub
+    (BITS LIMBS : usize)
+    (x1 x2 : Self BITS LIMBS) :
+  Run.Trait
+    (add.Impl_ruint_Uint_BITS_LIMBS.checked_sub (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
+    (option (Self BITS LIMBS)).
+  Admitted.
+  Global Opaque run_checked_sub.
 End Impl_Uint.
 Export (hints) Impl_Uint.
 
