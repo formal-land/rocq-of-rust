@@ -297,6 +297,12 @@ Export (hints) SelfDestructResult.
 pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
     fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>;
     fn block_hash(&mut self, number: u64) -> Option<B256>;
+    fn load_account_info_skip_cold_load(
+        &mut self,
+        address: Address,
+        load_code: bool,
+        skip_cold_load: bool,
+    ) -> Result<AccountInfoLoad<'_>, LoadError>;
     fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>;
     fn code(&mut self, address: Address) -> Option<Eip7702CodeLoad<Bytes>>;
     fn code_hash(&mut self, address: Address) -> Option<Eip7702CodeLoad<B256>>;
@@ -384,6 +390,29 @@ Module Host.
     block_hash_is_method :: IsTraitMethod.C (trait Self) "block_hash" block_hash;
     run_block_hash (self : '&mut Self) (number : u64) ::
       Run.Trait block_hash [] [] [ φ self; φ number ] (option aliases.B256.t);
+  }.
+
+  (*
+  fn load_account_info_skip_cold_load(
+      &mut self,
+      address: Address,
+      load_code: bool,
+      skip_cold_load: bool,
+  ) -> Result<AccountInfoLoad<'_>, LoadError>;
+  *)
+  Class Method_load_account_info_skip_cold_load (Self : Set) `{Link Self} : Set := {
+    load_account_info_skip_cold_load : PolymorphicFunction.t;
+    load_account_info_skip_cold_load_is_method ::
+      IsTraitMethod.C (trait Self) "load_account_info_skip_cold_load" load_account_info_skip_cold_load;
+    run_load_account_info_skip_cold_load
+        (self : '&mut Self)
+        (address : Address.t)
+        (load_code skip_cold_load : bool) ::
+      Run.Trait
+        load_account_info_skip_cold_load
+        [] []
+        [ φ self; φ address; φ load_code; φ skip_cold_load ]
+        (Result.t AccountInfoLoad.t LoadError.t);
   }.
 
   (* fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>; *)
@@ -490,6 +519,7 @@ Module Host.
     run_CfgGetter_for_Self :: CfgGetter.Run Self (Types.to_CfgGetter_types types);
     method_load_account_delegated :: Method_load_account_delegated Self;
     method_block_hash :: Method_block_hash Self;
+    method_load_account_info_skip_cold_load :: Method_load_account_info_skip_cold_load Self;
     method_balance :: Method_balance Self;
     method_code :: Method_code Self;
     method_code_hash :: Method_code_hash Self;

@@ -60,6 +60,13 @@ Module TestHost.
       option aliases.B256.t * t :=
     (None, Make).
 
+  Definition load_account_info_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_load_code _skip_cold_load : bool) :
+      Result.t AccountInfoLoad.t LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
+
   Definition balance (self : t) (_address : Address.t) :
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
@@ -223,6 +230,7 @@ Module TestHost.
     Host.CfgGetter_for_Self := CfgGetter_for_t;
     Host.load_account_delegated := load_account_delegated;
     Host.block_hash := block_hash;
+    Host.load_account_info_skip_cold_load := load_account_info_skip_cold_load;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;
@@ -291,6 +299,13 @@ Module TestHostWithAccount.
       option aliases.B256.t * t :=
     (None, Make).
 
+  Definition load_account_info_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_load_code _skip_cold_load : bool) :
+      Result.t AccountInfoLoad.t LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
+
   Definition balance (self : t) (_address : Address.t) :
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
@@ -454,6 +469,7 @@ Module TestHostWithAccount.
     Host.CfgGetter_for_Self := CfgGetter_for_t;
     Host.load_account_delegated := load_account_delegated;
     Host.block_hash := block_hash;
+    Host.load_account_info_skip_cold_load := load_account_info_skip_cold_load;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;

@@ -1,7 +1,9 @@
 Require Import links.RocqOfRust.
+Require Import alloc.links.borrow.
 Require Import core.links.option.
 Require Import core.ops.links.deref.
 Require Import revm.revm_context_interface.journaled_state.
+Require Import revm.revm_state.links.account_info.
 
 (*
 pub struct StateLoad<T> {
@@ -95,6 +97,7 @@ Module Impl_Deref_for_StateLoad.
       [] [] [ φ self ] ('& T).
   Proof.
     constructor.
+    destruct (Impl_Deref_for_Cow.run AccountInfo.t).
     run_symbolic.
   Defined.
   Global Opaque run_deref.
@@ -130,6 +133,81 @@ Module Impl_StateLoad.
   Global Opaque run_new.
 End Impl_StateLoad.
 Export (hints) Impl_StateLoad.
+
+Module AccountInfoLoad.
+  Record t : Set := {
+    account : Cow.t AccountInfo.t;
+    is_cold : bool;
+    is_empty : bool;
+  }.
+
+  Global Instance IsLink : Link t := {
+    Φ := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
+    φ x :=
+      Value.StructRecord "revm_context_interface::journaled_state::AccountInfoLoad" [] [] [
+        ("account", φ x.(account));
+        ("is_cold", φ x.(is_cold));
+        ("is_empty", φ x.(is_empty))
+      ];
+  }.
+
+  Definition of_ty : OfTy.t (Ty.path "revm_context_interface::journaled_state::AccountInfoLoad").
+  Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
+  Smpl Add apply of_ty : of_ty.
+
+  Module SubPointer.
+    Definition get_account : SubPointer.Runner.t t
+      (Pointer.Index.StructRecord "revm_context_interface::journaled_state::AccountInfoLoad" "account") :=
+    {|
+      SubPointer.Runner.projection x := Some x.(account);
+      SubPointer.Runner.injection x y := Some (x <| account := y |>);
+    |}.
+
+    Lemma get_account_is_valid :
+      SubPointer.Runner.Valid.t get_account.
+    Proof. now constructor. Qed.
+    Smpl Add apply get_account_is_valid : run_sub_pointer.
+
+    Definition get_is_cold : SubPointer.Runner.t t
+      (Pointer.Index.StructRecord "revm_context_interface::journaled_state::AccountInfoLoad" "is_cold") :=
+    {|
+      SubPointer.Runner.projection x := Some x.(is_cold);
+      SubPointer.Runner.injection x y := Some (x <| is_cold := y |>);
+    |}.
+
+    Lemma get_is_cold_is_valid :
+      SubPointer.Runner.Valid.t get_is_cold.
+    Proof. now constructor. Qed.
+    Smpl Add apply get_is_cold_is_valid : run_sub_pointer.
+  End SubPointer.
+End AccountInfoLoad.
+Export (hints) AccountInfoLoad.
+
+Module Impl_Deref_for_AccountInfoLoad.
+  Definition Self : Set := AccountInfoLoad.t.
+  Definition Target : Set := AccountInfo.t.
+
+  Instance run_deref (self : '& Self) :
+    Run.Trait
+      journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_AccountInfoLoad.deref
+      [] [] [ φ self ] ('& Target).
+  Admitted.
+  Global Opaque run_deref.
+
+  Instance method_deref : Deref.Method_deref Self Target.
+  Proof.
+    econstructor.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_AccountInfoLoad.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run : Deref.Run Self Target := {}.
+End Impl_Deref_for_AccountInfoLoad.
+Export (hints) Impl_Deref_for_AccountInfoLoad.
 
 (*
 pub struct Eip7702CodeLoad<T> {

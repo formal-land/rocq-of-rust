@@ -35,6 +35,11 @@ Module Host.
       (self : Self)
       (address : Address.t) :
       option AccountLoad.t * Self;
+    load_account_info_skip_cold_load
+      (self : Self)
+      (address : Address.t)
+      (load_code skip_cold_load : bool) :
+      Result.t AccountInfoLoad.t LoadError.t * Self;
     (* fn block_hash(&mut self, number: u64) -> Option<B256>; *)
     block_hash
       (self : Self)
@@ -132,6 +137,26 @@ Module Host.
             (Host.run_load_account_delegated ref_self address)
             (interpreter :: self :: stack)%stack 🌲
           let result_self := I.(load_account_delegated) self address in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
+      load_account_info_skip_cold_load
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (address : Address.t)
+          (load_code skip_cold_load : bool)
+          (stack : Stack.t) :
+        let ref_self : '&mut Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_load_account_info_skip_cold_load
+              ref_self address load_code skip_cold_load)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self :=
+            I.(load_account_info_skip_cold_load) self address load_code skip_cold_load in
           (
             Output.Success (fst result_self),
             (interpreter :: snd result_self :: stack)%stack
