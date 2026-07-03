@@ -1,18 +1,14 @@
 Require Import simulate.RocqOfRust.
-Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.links.aliases.
 Require Import core.simulate.option.
 Require Import revm.revm_context_interface.links.host.
-Require Import revm.revm_context_interface.simulate.block.
 Require Import revm.revm_context_interface.simulate.host.
-Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.block_info.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
-Require Import revm.revm_interpreter.instructions.simulate.utility.
-Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -28,32 +24,32 @@ Definition difficulty
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
-  gas_macro interpreter constants.BASE (fun interpreter => (interpreter, host)) (fun interpreter =>
   let spec_id :=
     IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.spec_id)
       interpreter.(Interpreter.runtime_flag) in
-  let block :=
-    IHost.(Host.BlockGetter_for_Self).(BlockGetter.block).(RefStub.projection) host in
   let is_merge := Impl_SpecId.is_enabled_in spec_id SpecId.MERGE in
-  let value :=
-    if is_merge then
-      match IHost.(Host.BlockGetter_for_Self).(BlockGetter.Block_for_Block).(Block.prevrandao) block with
-      | Some prevrandao => Impl_IntoU256_for_B256.into_u256 prevrandao
+  if is_merge then
+    let '(prevrandao, host) := IHost.(Host.prevrandao) host in
+    let value :=
+      match prevrandao with
+      | Some value => value
       | None => Impl_Uint.ZERO
-      end
-    else
-      IHost.(Host.BlockGetter_for_Self).(BlockGetter.Block_for_Block).(Block.difficulty) block
-  in
-  push_macro interpreter value (fun interpreter => (interpreter, host)) (fun interpreter =>
-  (interpreter, host)
-  )).
+      end in
+    push_macro interpreter value (fun interpreter => (interpreter, host)) (fun interpreter =>
+    (interpreter, host)
+    )
+  else
+    let '(difficulty, host) := IHost.(Host.difficulty) host in
+    push_macro interpreter difficulty (fun interpreter => (interpreter, host)) (fun interpreter =>
+    (interpreter, host)
+    ).
 
 Lemma difficulty_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-    (run_Host_for_H : Host.Run H H_types)
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (run_Host_for_H : Host.Run H H_types)
     (IInterpreterTypes : InterpreterTypes.C WIRE_types)
     (InterpreterTypesEq :
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
@@ -61,17 +57,20 @@ Lemma difficulty_eq
     (HostEq : Host.Eq.t IHost)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H)
-    (prevrandao : FixedBytes.t 32)
+    (prevrandao : aliases.U256.t)
     (H_prevrandao :
-      IHost.(Host.BlockGetter_for_Self).(BlockGetter.Block_for_Block).(Block.prevrandao)
-        (IHost.(Host.BlockGetter_for_Self).(BlockGetter.block).(RefStub.projection) host) =
+      fst (IHost.(Host.prevrandao) host) =
       Some prevrandao
     ) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_difficulty run_Host_for_H run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_difficulty run_InterpreterTypes_for_WIRE run_Host_for_H context)
       ([interpreter; host]%stack) 🌲
     (
       Output.Success tt,
@@ -82,7 +81,6 @@ Lemma difficulty_eq
 Proof.
   intros.
   with_strategy transparent [run_difficulty] unfold difficulty, run_difficulty; cbn.
-  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }
@@ -90,30 +88,57 @@ Proof.
     apply Impl_SpecId.is_enabled_in_eq.
   }
   destruct Impl_SpecId.is_enabled_in; cbn.
-  { s. {
-      apply HostEq.
+  { eapply Run.Call.
+    { apply Run.Pure. }
+    cbn.
+    destruct (IHost.(Host.prevrandao) host) as [prevrandao_opt host'] eqn:?; cbn.
+    apply Run.LetUnfold.
+    eapply Run.Call.
+    {
+      s. {
+        eapply (Host.Eq.prevrandao (t := HostEq)).
+      }
+      s.
     }
-    s. {
-      s_apply HostEq.
-    }
-    s. {
+    rewrite Heqp; cbn.
+    eapply Run.Call.
+    {
       apply Impl_Option.unwrap_eq.
       exact H_prevrandao.
     }
+    cbn.
+    cbn in H_prevrandao.
+    rewrite H_prevrandao; cbn.
+    unfold push_macro.
     s. {
-      apply Impl_IntoU256_for_B256.into_u256_eq.
+      apply InterpreterTypesEq.
     }
-    rewrite H_prevrandao.
-    push_macro_eq InterpreterTypesEq.
-    s.
+    destruct (
+      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.push)
+        interpreter.(Interpreter.stack) prevrandao
+    ) as [[] stack'] eqn:H_push; cbn.
+    { s. }
+    { s. {
+        apply halt_overflow_eq.
+        apply InterpreterTypesEq.
+      }
+      s.
+    }
   }
-  { s. {
-      apply HostEq.
+  { eapply Run.Call.
+    { apply Run.Pure. }
+    cbn.
+    destruct (IHost.(Host.difficulty) host) as [difficulty host'] eqn:?; cbn.
+    apply Run.LetUnfold.
+    eapply Run.Call.
+    {
+      s. {
+        eapply (Host.Eq.difficulty (t := HostEq)).
+      }
+      s.
     }
-    s. {
-      s_apply HostEq.
-    }
+    rewrite Heqp; cbn.
     push_macro_eq InterpreterTypesEq.
-    s.
+    { s. }
   }
 Qed.

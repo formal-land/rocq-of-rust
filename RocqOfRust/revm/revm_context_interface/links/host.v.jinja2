@@ -106,6 +106,8 @@ pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
     fn chain_id(&self) -> U256;
     fn basefee(&self) -> U256;
     fn blob_gasprice(&self) -> U256;
+    fn difficulty(&self) -> U256;
+    fn prevrandao(&self) -> Option<U256>;
     fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>;
     fn code(&mut self, address: Address) -> Option<Eip7702CodeLoad<Bytes>>;
     fn code_hash(&mut self, address: Address) -> Option<Eip7702CodeLoad<B256>>;
@@ -227,6 +229,22 @@ Module Host.
       Run.Trait blob_gasprice [] [] [ φ self ] aliases.U256.t;
   }.
 
+  (* fn difficulty(&self) -> U256; *)
+  Class Method_difficulty (Self : Set) `{Link Self} : Set := {
+    difficulty : PolymorphicFunction.t;
+    difficulty_is_method :: IsTraitMethod.C (trait Self) "difficulty" difficulty;
+    run_difficulty (self : '& Self) ::
+      Run.Trait difficulty [] [] [ φ self ] aliases.U256.t;
+  }.
+
+  (* fn prevrandao(&self) -> Option<U256>; *)
+  Class Method_prevrandao (Self : Set) `{Link Self} : Set := {
+    prevrandao : PolymorphicFunction.t;
+    prevrandao_is_method :: IsTraitMethod.C (trait Self) "prevrandao" prevrandao;
+    run_prevrandao (self : '& Self) ::
+      Run.Trait prevrandao [] [] [ φ self ] (option aliases.U256.t);
+  }.
+
   (* fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>; *)
   Class Method_balance (Self : Set) `{Link Self} : Set := {
     balance : PolymorphicFunction.t;
@@ -335,6 +353,8 @@ Module Host.
     method_chain_id :: Method_chain_id Self;
     method_basefee :: Method_basefee Self;
     method_blob_gasprice :: Method_blob_gasprice Self;
+    method_difficulty :: Method_difficulty Self;
+    method_prevrandao :: Method_prevrandao Self;
     method_balance :: Method_balance Self;
     method_code :: Method_code Self;
     method_code_hash :: Method_code_hash Self;
@@ -349,6 +369,40 @@ End Host.
 Export (hints) Host.
 
 Module Impl_Host_for_RefMut.
+  Instance method_prevrandao
+      (Self : Set) `{Link Self}
+      (method_prevrandao : Host.Method_prevrandao Self) :
+    Host.Method_prevrandao ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.prevrandao (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_prevrandao.
+      run_symbolic.
+  Defined.
+
+  Instance method_difficulty
+      (Self : Set) `{Link Self}
+      (method_difficulty : Host.Method_difficulty Self) :
+    Host.Method_difficulty ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.difficulty (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_difficulty.
+      run_symbolic.
+  Defined.
+
   Instance method_blob_gasprice
       (Self : Set) `{Link Self}
       (method_blob_gasprice : Host.Method_blob_gasprice Self) :

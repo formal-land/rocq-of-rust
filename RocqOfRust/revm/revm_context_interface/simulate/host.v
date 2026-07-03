@@ -56,6 +56,14 @@ Module Host.
     blob_gasprice
       (self : Self) :
       aliases.U256.t * Self;
+    (* fn difficulty(&self) -> U256; *)
+    difficulty
+      (self : Self) :
+      aliases.U256.t * Self;
+    (* fn prevrandao(&self) -> Option<U256>; *)
+    prevrandao
+      (self : Self) :
+      option aliases.U256.t * Self;
     (* fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>; *)
     balance
       (self : Self)
@@ -229,6 +237,38 @@ Module Host.
             (Host.run_blob_gasprice ref_self)
             (interpreter :: self :: stack)%stack 🌲
           let result_self := I.(blob_gasprice) self in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
+      difficulty
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (stack : Stack.t) :
+        let ref_self : '& Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_difficulty ref_self)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self := I.(difficulty) self in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
+      prevrandao
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (stack : Stack.t) :
+        let ref_self : '& Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_prevrandao ref_self)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self := I.(prevrandao) self in
           (
             Output.Success (fst result_self),
             (interpreter :: snd result_self :: stack)%stack
