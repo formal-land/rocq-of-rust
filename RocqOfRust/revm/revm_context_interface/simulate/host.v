@@ -11,6 +11,8 @@ Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.block.
 Require Import revm.revm_context_interface.simulate.cfg.
 Require Import revm.revm_context_interface.simulate.transaction.
+Require Import ruint.links.lib.
+Require Import ruint.simulate.lib.
 
 Module Host.
   Class C
@@ -438,3 +440,81 @@ Module Host.
   Export (hints) Eq.
 End Host.
 Export (hints) Host.
+
+Lemma read_of_can_read
+    {R A : Set} `{Link A}
+    {kind : Pointer.Kind.t}
+    (stack : Stack.t)
+    (value : A)
+    (ref_value : Ref.t kind A) :
+  CanRead.t stack value ref_value ->
+  {{
+    SimulateM.read (R := R) stack ref_value.(Ref.core) 🌲
+    Output.Success (R := R) value
+  }}.
+Proof.
+  intros H_read.
+  destruct H_read as [| ref_core H_access H_read]; cbn.
+  { apply Run.Pure. }
+  destruct H_access; cbn in H_read |- *.
+  unshelve eapply Run.GetCanAccess.
+  { econstructor; eassumption. }
+  cbn.
+  rewrite H_read.
+  apply Run.Pure.
+Qed.
+
+Lemma as_u64_saturated_macro_eq_at_stack
+    (stack : Stack.t)
+    (v : aliases.U256.t) :
+  {{
+    SimulateM.eval_f
+      (Impl_Uint.run_as_limbs 256 4 (Ref.immediate Pointer.Kind.Ref v))
+      stack 🌲
+    (
+      Output.Success (Ref.immediate _ (Impl_Uint.as_limbs v)),
+      stack
+    )
+  }}.
+Proof.
+  eapply Impl_Uint.as_limbs_eq.
+  constructor.
+Qed.
+
+Lemma block_hash_eval_eq
+    {Self Interpreter : Set} `{Link Self}
+    {types : Host.Types.t} `{Host.Types.AreLinks types}
+    `{run_Host_for_Self : !Host.Run Self types}
+    `{IHost : !Host.C Self types}
+    `{HostEq : !Host.Eq.t IHost}
+    (interpreter : Interpreter)
+    (self : Self)
+    (ref_self : '&mut Self)
+    (number : u64)
+    (stack : Stack.t) :
+  ref_self = make_ref 1 ->
+  {{
+    SimulateM.eval
+      (links.M.evaluate
+        (Host.run_block_hash
+          (Ref.cast_to Pointer.Kind.MutRef ref_self)
+          number).(Run.run_f))
+      (interpreter :: self :: stack)%stack 🌲
+    (
+      Output.Success
+        (fst (IHost.(Host.block_hash) self number)),
+      (interpreter ::
+        snd (IHost.(Host.block_hash) self number) ::
+        stack)%stack
+    )
+  }}.
+Proof.
+  intros H_ref_self.
+  subst ref_self.
+  change (Ref.cast_to Pointer.Kind.MutRef (make_ref 1 : '&mut Self))
+    with (make_ref 1 : '&mut Self).
+  pose proof
+    (HostEq.(Host.Eq.block_hash) interpreter self number stack) as H_block_hash.
+  cbn [SimulateM.eval_f] in H_block_hash.
+  exact H_block_hash.
+Qed.

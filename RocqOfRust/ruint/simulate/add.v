@@ -52,6 +52,26 @@ Module Impl_Uint.
         Output.Success (wrapping_sub x1 x2),
         stack
       )
+  }}.
+  Admitted.
+
+  Definition checked_sub {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
+      option (lib.Uint.t BITS LIMBS) :=
+    if x2.(lib.Uint.value) <=? x1.(lib.Uint.value) then
+      Some {| lib.Uint.value := x1.(lib.Uint.value) - x2.(lib.Uint.value) |}
+    else
+      None.
+
+  Lemma checked_sub_eq (stack : Stack.t)
+      (BITS LIMBS : usize) (x1 x2 : lib.Uint.t BITS LIMBS) :
+    {{
+      SimulateM.eval_f
+        (Impl_Uint.run_checked_sub BITS LIMBS x1 x2)
+        stack 🌲
+      (
+        Output.Success (checked_sub x1 x2),
+        stack
+      )
     }}.
   Admitted.
 End Impl_Uint.
