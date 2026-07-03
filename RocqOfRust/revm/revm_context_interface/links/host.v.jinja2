@@ -105,6 +105,7 @@ pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
     fn block_number(&self) -> U256;
     fn chain_id(&self) -> U256;
     fn basefee(&self) -> U256;
+    fn blob_gasprice(&self) -> U256;
     fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>;
     fn code(&mut self, address: Address) -> Option<Eip7702CodeLoad<Bytes>>;
     fn code_hash(&mut self, address: Address) -> Option<Eip7702CodeLoad<B256>>;
@@ -218,6 +219,14 @@ Module Host.
       Run.Trait basefee [] [] [ φ self ] aliases.U256.t;
   }.
 
+  (* fn blob_gasprice(&self) -> U256; *)
+  Class Method_blob_gasprice (Self : Set) `{Link Self} : Set := {
+    blob_gasprice : PolymorphicFunction.t;
+    blob_gasprice_is_method :: IsTraitMethod.C (trait Self) "blob_gasprice" blob_gasprice;
+    run_blob_gasprice (self : '& Self) ::
+      Run.Trait blob_gasprice [] [] [ φ self ] aliases.U256.t;
+  }.
+
   (* fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>; *)
   Class Method_balance (Self : Set) `{Link Self} : Set := {
     balance : PolymorphicFunction.t;
@@ -325,6 +334,7 @@ Module Host.
     method_block_number :: Method_block_number Self;
     method_chain_id :: Method_chain_id Self;
     method_basefee :: Method_basefee Self;
+    method_blob_gasprice :: Method_blob_gasprice Self;
     method_balance :: Method_balance Self;
     method_code :: Method_code Self;
     method_code_hash :: Method_code_hash Self;
@@ -339,6 +349,23 @@ End Host.
 Export (hints) Host.
 
 Module Impl_Host_for_RefMut.
+  Instance method_blob_gasprice
+      (Self : Set) `{Link Self}
+      (method_blob_gasprice : Host.Method_blob_gasprice Self) :
+    Host.Method_blob_gasprice ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.blob_gasprice (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_blob_gasprice.
+      run_symbolic.
+  Defined.
+
   Instance method_basefee
       (Self : Set) `{Link Self}
       (method_basefee : Host.Method_basefee Self) :
