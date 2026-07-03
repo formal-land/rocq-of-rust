@@ -1,6 +1,7 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
+Require Import core.num.simulate.mod.
 Require Import core.simulate.option.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -94,4 +95,226 @@ Lemma blockhash_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  subst result.
+  with_strategy transparent [run_blockhash] unfold blockhash, run_blockhash; cbn.
+  popn_top_macro_eq InterpreterTypesEq.
+  eapply Run.Call; [
+    eapply Impl_Option.unwrap_unchecked_eq;
+    reflexivity
+  |].
+  cbn.
+  s.
+  - eapply Run.Call.
+    + eapply (HostEq.(Host.Eq.block_number)
+        host
+        [interpreter<| Interpreter.stack := s |>; host; tt; t0.(RefStub.projection) s]%stack
+        (Ref.cast_to Pointer.Kind.Ref ref_host)).
+      eapply (@CanRead.Mutable H H1 Pointer.Kind.Ref
+        [interpreter<| Interpreter.stack := s |>; host; tt; t0.(RefStub.projection) s]%stack
+        host
+        (Ref.cast_to Pointer.Kind.Ref ref_host).(Ref.core)
+        (@Stack.CanAccess.Mutable H H1
+          [interpreter<| Interpreter.stack := s |>; host; tt; t0.(RefStub.projection) s]%stack
+          1%nat
+          H
+          (Stack.Nth.ConsSucc H
+            (interpreter<| Interpreter.stack := s |>)
+            [host; tt; t0.(RefStub.projection) s]%stack
+            0%nat
+            (Stack.Nth.ConsZero H host [tt; t0.(RefStub.projection) s]%stack))
+          []
+          φ
+          Some
+          (fun _ new_value => Some new_value))).
+      * reflexivity.
+    + cbn.
+      apply Run.Pure.
+  - s. {
+      apply Impl_Uint.checked_sub_eq.
+    }
+    destruct
+      (Impl_Uint.checked_sub
+        (IHost.(Host.block_number) host)
+        (t0.(RefStub.projection) s)) as [diff|] eqn:H_diff;
+      cbn.
+    + unfold as_u64_saturated_macro.
+      s; [
+        eapply as_u64_saturated_macro_eq_at_stack
+      |].
+      s.
+      destruct
+        ((((diff.(Uint.value) / 2 ^ 64) mod 2 ^ 64 =? 0) &&
+          ((diff.(Uint.value) / 2 ^ 128) mod 2 ^ 64 =? 0)) &&
+          ((diff.(Uint.value) / 2 ^ 192) mod 2 ^ 64 =? 0))
+        eqn:H_diff_fits.
+      * destruct (diff.(Uint.value) mod 2 ^ 64 =? 0) eqn:H_diff_zero;
+          cbn.
+        { apply Run.LetUnfold.
+          cbn.
+          rewrite H_diff_zero.
+          cbn.
+          s. {
+            rewrite H_diff_zero.
+            cbn.
+            apply Run.LetUnfold.
+            cbn.
+            s. {
+              apply Impl_Uint.ZERO_eq.
+            }
+            s.
+          }
+        }
+        destruct (diff.(Uint.value) mod 2 ^ 64 <=? 256) eqn:H_diff_history;
+          cbn.
+        { replace (Bool.eqb (diff.(Uint.value) mod 2 ^ 64 =? 0) true) with false
+            by (rewrite H_diff_zero; reflexivity).
+          cbn.
+          repeat (apply Run.LetUnfold; cbn; try rewrite H_diff_zero; cbn).
+          s.
+          replace (Bool.eqb (diff.(Uint.value) mod 2 ^ 64 =? 0) true) with false
+            by (rewrite H_diff_zero; reflexivity).
+          cbn.
+          s.
+          replace (Bool.eqb (diff.(Uint.value) mod 2 ^ 64 <=? 256) true) with true
+            by (rewrite H_diff_history; reflexivity).
+          cbn.
+          s; [
+            s_apply Impl_Uint.as_limbs_eq
+          |].
+          s.
+          destruct
+            ((((t0.(RefStub.projection) s).(Uint.value) / 2 ^ 64) mod 2 ^ 64 =? 0) &&
+              (((t0.(RefStub.projection) s).(Uint.value) / 2 ^ 128) mod 2 ^ 64 =? 0) &&
+              (((t0.(RefStub.projection) s).(Uint.value) / 2 ^ 192) mod 2 ^ 64 =? 0))
+            eqn:H_requested_number_fits;
+            cbn.
+          - eapply Run.Call
+              with
+                (output_inter :=
+                  fst
+                    (IHost.(Host.block_hash) host
+                      ((t0.(RefStub.projection) s).(Uint.value) mod 2 ^ 64)))
+                (stack_inter :=
+                  [interpreter<| Interpreter.stack := s |>;
+                   snd
+                     (IHost.(Host.block_hash) host
+                       ((t0.(RefStub.projection) s).(Uint.value) mod 2 ^ 64));
+                   tt; t0.(RefStub.projection) s;
+                   IHost.(Host.block_number) host;
+                   (diff.(Uint.value) mod 2 ^ 64 : u64); tt]%stack).
+            + change (Ref.cast_to Pointer.Kind.MutRef ref_host)
+                with
+                  (@Ref.cast_to H H1 Pointer.Kind.MutRef
+                    Pointer.Kind.MutRef (make_ref (A := H) 1)).
+              unfold aliases.B256.t in *.
+              eapply (@block_hash_eval_eq
+                H
+                (Interpreter.t WIRE WIRE_types)
+                H1
+                H_types
+                H3
+                run_Host_for_H
+                IHost
+                HostEq
+                (interpreter<| Interpreter.stack := s |>)
+                host
+                (make_ref (A := H) 1)
+                ((t0.(RefStub.projection) s).(Uint.value) mod 2 ^ 64)
+                [tt; t0.(RefStub.projection) s;
+                 IHost.(Host.block_number) host;
+                 (diff.(Uint.value) mod 2 ^ 64 : u64); tt]%stack).
+              reflexivity.
+            + cbn.
+              destruct
+                (IHost.(Host.block_hash) host
+                  ((t0.(RefStub.projection) s).(Uint.value) mod 2 ^ 64))
+                as [[hash|] host_after] eqn:H_block_hash;
+                cbn.
+              * s. {
+                  apply Impl_Uint.from_be_bytes_eq.
+                }
+                s.
+              * s. {
+                  eapply halt_fatal_eq;
+                  exact InterpreterTypesEq.
+                }
+                s.
+          - s. {
+              apply Impl_u64.max_eq.
+            }
+            eapply Run.Call
+              with
+                (output_inter := fst (IHost.(Host.block_hash) host Impl_u64.MAX))
+                (stack_inter :=
+                  [interpreter<| Interpreter.stack := s |>;
+                   snd (IHost.(Host.block_hash) host Impl_u64.MAX);
+                   tt; t0.(RefStub.projection) s;
+                   IHost.(Host.block_number) host;
+                   (diff.(Uint.value) mod 2 ^ 64 : u64); tt]%stack).
+            + change (Ref.cast_to Pointer.Kind.MutRef ref_host)
+                with
+                  (@Ref.cast_to H H1 Pointer.Kind.MutRef
+                    Pointer.Kind.MutRef (make_ref (A := H) 1)).
+              unfold aliases.B256.t in *.
+              eapply (@block_hash_eval_eq
+                H
+                (Interpreter.t WIRE WIRE_types)
+                H1
+                H_types
+                H3
+                run_Host_for_H
+                IHost
+                HostEq
+                (interpreter<| Interpreter.stack := s |>)
+                host
+                (make_ref (A := H) 1)
+                Impl_u64.MAX
+                [tt; t0.(RefStub.projection) s;
+                 IHost.(Host.block_number) host;
+                 (diff.(Uint.value) mod 2 ^ 64 : u64); tt]%stack).
+              reflexivity.
+            + cbn.
+              destruct (IHost.(Host.block_hash) host Impl_u64.MAX)
+                as [[hash|] host_after] eqn:H_block_hash;
+                cbn.
+              * s. {
+                  apply Impl_Uint.from_be_bytes_eq.
+                }
+                s.
+              * s. {
+                  eapply halt_fatal_eq;
+                  exact InterpreterTypesEq.
+                }
+                s.
+        }
+        { replace (Bool.eqb (diff.(Uint.value) mod 2 ^ 64 =? 0) true) with false
+            by (rewrite H_diff_zero; reflexivity).
+          cbn.
+          s.
+          replace (Bool.eqb (diff.(Uint.value) mod 2 ^ 64 =? 0) true) with false
+            by (rewrite H_diff_zero; reflexivity).
+          cbn.
+          s.
+          replace (Bool.eqb (diff.(Uint.value) mod 2 ^ 64 <=? 256) true) with false
+            by (rewrite H_diff_history; reflexivity).
+          cbn.
+          s; [
+            apply Impl_Uint.ZERO_eq
+          | s].
+          all: rewrite H_diff_zero; reflexivity.
+        }
+      * replace (Bool.eqb false true) with false by reflexivity.
+        cbn.
+        s. {
+          apply Impl_u64.max_eq.
+        }
+        s; [
+          apply Impl_Uint.ZERO_eq
+        | s].
+        all: cbn; reflexivity.
+    + s. {
+        apply Impl_Uint.ZERO_eq.
+      }
+      s.
+Qed.
