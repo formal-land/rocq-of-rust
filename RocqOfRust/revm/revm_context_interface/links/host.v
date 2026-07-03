@@ -410,6 +410,14 @@ Module Host.
       Run.Trait block_number [] [] [ φ self ] aliases.U256.t;
   }.
 
+  (* fn timestamp(&self) -> U256; *)
+  Class Method_timestamp (Self : Set) `{Link Self} : Set := {
+    timestamp : PolymorphicFunction.t;
+    timestamp_is_method :: IsTraitMethod.C (trait Self) "timestamp" timestamp;
+    run_timestamp (self : '& Self) ::
+      Run.Trait timestamp [] [] [ φ self ] aliases.U256.t;
+  }.
+
   (* fn chain_id(&self) -> U256; *)
   Class Method_chain_id (Self : Set) `{Link Self} : Set := {
     chain_id : PolymorphicFunction.t;
@@ -556,6 +564,7 @@ Module Host.
     method_block_hash :: Method_block_hash Self;
     method_beneficiary :: Method_beneficiary Self;
     method_block_number :: Method_block_number Self;
+    method_timestamp :: Method_timestamp Self;
     method_chain_id :: Method_chain_id Self;
     method_basefee :: Method_basefee Self;
     method_blob_gasprice :: Method_blob_gasprice Self;
@@ -691,6 +700,23 @@ Module Impl_Host_for_RefMut.
     - intros self.
       constructor.
       destruct method_block_number.
+      run_symbolic.
+  Defined.
+
+  Instance method_timestamp
+      (Self : Set) `{Link Self}
+      (method_timestamp : Host.Method_timestamp Self) :
+    Host.Method_timestamp ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.timestamp (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_timestamp.
       run_symbolic.
   Defined.
 End Impl_Host_for_RefMut.

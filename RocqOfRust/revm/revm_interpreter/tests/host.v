@@ -68,6 +68,10 @@ Module TestHost.
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
 
+  Definition host_timestamp (self : t) :
+      aliases.U256.t * t :=
+    (Impl_Uint.ZERO, Make).
+
   Definition host_chain_id (self : t) :
       aliases.U256.t * t :=
     ({| Uint.value := 1 |}, Make).
@@ -253,6 +257,7 @@ Module TestHost.
     Host.block_hash := block_hash;
     Host.beneficiary := host_beneficiary;
     Host.block_number := block_number;
+    Host.timestamp := host_timestamp;
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;
@@ -334,6 +339,10 @@ Module TestHostWithAccount.
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
 
+  Definition host_timestamp (self : t) :
+      aliases.U256.t * t :=
+    (Impl_Uint.ZERO, Make).
+
   Definition host_chain_id (self : t) :
       aliases.U256.t * t :=
     ({| Uint.value := 1 |}, Make).
@@ -519,6 +528,7 @@ Module TestHostWithAccount.
     Host.block_hash := block_hash;
     Host.beneficiary := host_beneficiary;
     Host.block_number := block_number;
+    Host.timestamp := host_timestamp;
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;

@@ -1,18 +1,14 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_context_interface.links.host.
-Require Import revm.revm_context_interface.simulate.block.
 Require Import revm.revm_context_interface.simulate.host.
-Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.block_info.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
-Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
-Require Import ruint.simulate.from.
 
 Definition timestamp
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -23,16 +19,12 @@ Definition timestamp
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
-  gas_macro interpreter constants.BASE (fun interpreter => (interpreter, host)) (fun interpreter =>
-  let block :=
-    IHost.(Host.BlockGetter_for_Self).(BlockGetter.block).(RefStub.projection) host in
-  let timestamp :=
-    IHost.(Host.BlockGetter_for_Self).(BlockGetter.Block_for_Block).(Block.timestamp) block in
+  let '(timestamp, host) := IHost.(Host.timestamp) host in
   push_macro interpreter
-    {| Uint.value := i[timestamp] |}
+    timestamp
     (fun interpreter => (interpreter, host)) (fun interpreter =>
   (interpreter, host)
-  )).
+  ).
 
 Lemma timestamp_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -49,9 +41,13 @@ Lemma timestamp_eq
     (host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_timestamp run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+      (run_timestamp run_InterpreterTypes_for_WIRE run_Host_for_H context)
       ([interpreter; host]%stack) 🌲
     (
       Output.Success tt,
@@ -61,18 +57,17 @@ Lemma timestamp_eq
   }}.
 Proof.
   intros.
-  with_strategy transparent [run_timestamp]
-    unfold timestamp, run_timestamp; cbn.
-  gas_macro_eq idtac.
-  s. {
-    apply HostEq.
+  with_strategy transparent [run_timestamp] unfold timestamp, run_timestamp; cbn.
+  destruct (IHost.(Host.timestamp) host) as [timestamp host'] eqn:?; cbn.
+  apply Run.LetUnfold.
+  eapply Run.Call.
+  {
+    s. {
+      eapply (Host.Eq.timestamp (t := HostEq)).
+    }
+    s.
   }
-  s. {
-    apply HostEq; repeat unshelve econstructor.
-  }
-  s. {
-    apply Impl_Uint.from_eq; [typeclasses eauto | easy].
-  }
+  rewrite Heqp; cbn.
   push_macro_eq InterpreterTypesEq.
-  s.
+  { s. }
 Qed.
