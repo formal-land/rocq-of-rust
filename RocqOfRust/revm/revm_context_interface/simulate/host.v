@@ -54,6 +54,10 @@ Module Host.
     timestamp
       (self : Self) :
       aliases.U256.t * Self;
+    (* fn gas_limit(&self) -> U256; *)
+    gas_limit
+      (self : Self) :
+      aliases.U256.t * Self;
     (* fn chain_id(&self) -> U256; *)
     chain_id
       (self : Self) :
@@ -231,6 +235,22 @@ Module Host.
             (Host.run_timestamp ref_self)
             (interpreter :: self :: stack)%stack 🌲
           let result_self := I.(timestamp) self in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
+      gas_limit
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (stack : Stack.t) :
+        let ref_self : '& Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_gas_limit ref_self)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self := I.(gas_limit) self in
           (
             Output.Success (fst result_self),
             (interpreter :: snd result_self :: stack)%stack
