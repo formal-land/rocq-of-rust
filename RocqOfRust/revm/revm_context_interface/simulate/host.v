@@ -42,6 +42,10 @@ Module Host.
       (self : Self)
       (number : u64) :
       option aliases.B256.t * Self;
+    (* fn beneficiary(&self) -> Address; *)
+    beneficiary
+      (self : Self) :
+      Address.t * Self;
     (* fn block_number(&self) -> U256; *)
     block_number
       (self : Self) :
@@ -175,6 +179,22 @@ Module Host.
             (Host.run_block_hash ref_self number)
             (interpreter :: self :: stack)%stack 🌲
           let result_self := I.(block_hash) self number in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
+      beneficiary
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (stack : Stack.t) :
+        let ref_self : '& Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_beneficiary ref_self)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self := I.(beneficiary) self in
           (
             Output.Success (fst result_self),
             (interpreter :: snd result_self :: stack)%stack
