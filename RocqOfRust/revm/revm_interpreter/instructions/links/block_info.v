@@ -151,33 +151,52 @@ Global Opaque run_block_number.
 
 (*
 pub fn difficulty<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
-)
+    context: InstructionContext<'_, H, WIRE>,
+) {
+    //gas!(context.interpreter, gas::BASE);
+    if context
+        .interpreter
+        .runtime_flag
+        .spec_id()
+        .is_enabled_in(MERGE)
+    {
+        // Unwrap is safe as this fields is checked in validation handler.
+        push!(context.interpreter, context.host.prevrandao().unwrap());
+    } else {
+        push!(context.interpreter, context.host.difficulty());
+    }
+}
 *)
 Instance run_difficulty
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.block_info.difficulty [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.block_info.difficulty [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_Host_for_H.
-  destruct run_BlockGetter_for_Self.
-  destruct run_Block_for_Block.
-  (* NOTE: used for finding correct instance for `utility::IntoU256::into_u256` *)
-  destruct Impl_IntoU256_for_B256.run.
   run_symbolic.
+  { eapply (@Host.run_prevrandao
+      ('&mut H)
+      _
+      (@Impl_Host_for_RefMut.method_prevrandao H _ method_prevrandao)
+      (Ref.cast_to Pointer.Kind.Ref sub_ref3)). }
+  { eapply Impl_Interpreter.run_halt_overflow. }
+  { eapply (@Host.run_difficulty
+      ('&mut H)
+      _
+      (@Impl_Host_for_RefMut.method_difficulty H _ method_difficulty)
+      (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
+  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_difficulty.
 

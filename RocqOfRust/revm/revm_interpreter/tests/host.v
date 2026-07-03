@@ -76,6 +76,14 @@ Module TestHost.
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
 
+  Definition host_difficulty (self : t) :
+      aliases.U256.t * t :=
+    (Impl_Uint.ZERO, Make).
+
+  Definition host_prevrandao (self : t) :
+      option aliases.U256.t * t :=
+    (None, Make).
+
   Definition balance (self : t) (_address : Address.t) :
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
@@ -243,6 +251,8 @@ Module TestHost.
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;
+    Host.difficulty := host_difficulty;
+    Host.prevrandao := host_prevrandao;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;
@@ -327,6 +337,14 @@ Module TestHostWithAccount.
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
 
+  Definition host_difficulty (self : t) :
+      aliases.U256.t * t :=
+    (Impl_Uint.ZERO, Make).
+
+  Definition host_prevrandao (self : t) :
+      option aliases.U256.t * t :=
+    (None, Make).
+
   Definition balance (self : t) (_address : Address.t) :
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
@@ -494,6 +512,8 @@ Module TestHostWithAccount.
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;
+    Host.difficulty := host_difficulty;
+    Host.prevrandao := host_prevrandao;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;
