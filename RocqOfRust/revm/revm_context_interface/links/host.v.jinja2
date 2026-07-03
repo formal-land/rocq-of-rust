@@ -102,6 +102,7 @@ Export (hints) SelfDestructResult.
 pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
     fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>;
     fn block_hash(&mut self, number: u64) -> Option<B256>;
+    fn beneficiary(&self) -> Address;
     fn block_number(&self) -> U256;
     fn chain_id(&self) -> U256;
     fn basefee(&self) -> U256;
@@ -195,6 +196,14 @@ Module Host.
     block_hash_is_method :: IsTraitMethod.C (trait Self) "block_hash" block_hash;
     run_block_hash (self : '&mut Self) (number : u64) ::
       Run.Trait block_hash [] [] [ φ self; φ number ] (option aliases.B256.t);
+  }.
+
+  (* fn beneficiary(&self) -> Address; *)
+  Class Method_beneficiary (Self : Set) `{Link Self} : Set := {
+    beneficiary : PolymorphicFunction.t;
+    beneficiary_is_method :: IsTraitMethod.C (trait Self) "beneficiary" beneficiary;
+    run_beneficiary (self : '& Self) ::
+      Run.Trait beneficiary [] [] [ φ self ] Address.t;
   }.
 
   (* fn block_number(&self) -> U256; *)
@@ -349,6 +358,7 @@ Module Host.
     run_CfgGetter_for_Self :: CfgGetter.Run Self (Types.to_CfgGetter_types types);
     method_load_account_delegated :: Method_load_account_delegated Self;
     method_block_hash :: Method_block_hash Self;
+    method_beneficiary :: Method_beneficiary Self;
     method_block_number :: Method_block_number Self;
     method_chain_id :: Method_chain_id Self;
     method_basefee :: Method_basefee Self;
@@ -369,6 +379,23 @@ End Host.
 Export (hints) Host.
 
 Module Impl_Host_for_RefMut.
+  Instance method_beneficiary
+      (Self : Set) `{Link Self}
+      (method_beneficiary : Host.Method_beneficiary Self) :
+    Host.Method_beneficiary ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.beneficiary (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_beneficiary.
+      run_symbolic.
+  Defined.
+
   Instance method_prevrandao
       (Self : Set) `{Link Self}
       (method_prevrandao : Host.Method_prevrandao Self) :

@@ -5,15 +5,12 @@ Require Import alloy_primitives.bits.simulate.address.
 Require Import alloy_primitives.bits.simulate.fixed.
 Require Import core.convert.simulate.mod.
 Require Import revm.revm_context_interface.links.host.
-Require Import revm.revm_context_interface.simulate.block.
 Require Import revm.revm_context_interface.simulate.host.
-Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.block_info.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
-Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
 
@@ -26,17 +23,13 @@ Definition coinbase
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
-  gas_macro interpreter constants.BASE (fun interpreter => (interpreter, host)) (fun interpreter =>
-  let block :=
-    IHost.(Host.BlockGetter_for_Self).(BlockGetter.block).(RefStub.projection) host in
-  let beneficiary :=
-    IHost.(Host.BlockGetter_for_Self).(BlockGetter.Block_for_Block).(Block.beneficiary) block in
+  let '(beneficiary, host) := IHost.(Host.beneficiary) host in
   let beneficiary := Impl_From_FixedBytes_32_for_U256.from (Impl_Address.into_word beneficiary) in
   push_macro interpreter
     beneficiary
     (fun interpreter => (interpreter, host)) (fun interpreter =>
   (interpreter, host)
-  )).
+  ).
 
 Lemma coinbase_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -53,9 +46,13 @@ Lemma coinbase_eq
     (host : H) :
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f
-      (run_coinbase run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+      (run_coinbase run_InterpreterTypes_for_WIRE run_Host_for_H context)
       ([interpreter; host]%stack) 🌲
     (
       Output.Success tt,
@@ -66,13 +63,16 @@ Lemma coinbase_eq
 Proof.
   intros.
   with_strategy transparent [run_coinbase] unfold coinbase, run_coinbase; cbn.
-  gas_macro_eq idtac.
-  s. {
-    apply HostEq.
+  destruct (IHost.(Host.beneficiary) host) as [beneficiary host'] eqn:?; cbn.
+  apply Run.LetUnfold.
+  eapply Run.Call.
+  {
+    s. {
+      eapply (Host.Eq.beneficiary (t := HostEq)).
+    }
+    s.
   }
-  s. {
-    apply HostEq; repeat unshelve econstructor.
-  }
+  rewrite Heqp; cbn.
   s. {
     apply Impl_Address.into_word_eq; repeat unshelve econstructor.
   }
@@ -80,5 +80,5 @@ Proof.
     apply Impl_Into_for_From_T.Eq.I.
   }
   push_macro_eq InterpreterTypesEq.
-  s.
+  { s. }
 Qed.

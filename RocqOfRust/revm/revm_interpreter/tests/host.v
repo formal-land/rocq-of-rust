@@ -60,6 +60,10 @@ Module TestHost.
       option aliases.B256.t * t :=
     (None, Make).
 
+  Definition host_beneficiary (self : t) :
+      Address.t * t :=
+    ({| Address.value := 0 |}, Make).
+
   Definition block_number (self : t) :
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
@@ -247,6 +251,7 @@ Module TestHost.
     Host.CfgGetter_for_Self := CfgGetter_for_t;
     Host.load_account_delegated := load_account_delegated;
     Host.block_hash := block_hash;
+    Host.beneficiary := host_beneficiary;
     Host.block_number := block_number;
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
@@ -321,6 +326,10 @@ Module TestHostWithAccount.
       option aliases.B256.t * t :=
     (None, Make).
 
+  Definition host_beneficiary (self : t) :
+      Address.t * t :=
+    ({| Address.value := 0 |}, Make).
+
   Definition block_number (self : t) :
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
@@ -508,6 +517,7 @@ Module TestHostWithAccount.
     Host.CfgGetter_for_Self := CfgGetter_for_t;
     Host.load_account_delegated := load_account_delegated;
     Host.block_hash := block_hash;
+    Host.beneficiary := host_beneficiary;
     Host.block_number := block_number;
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
