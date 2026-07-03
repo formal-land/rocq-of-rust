@@ -540,34 +540,17 @@ Lemma block_hash_eval_eq
     (stack : Stack.t) :
   ref_self = make_ref 1 ->
   {{
-    @SimulateM.eval
-      (option (fixed_FixedBytes.FixedBytes.t {| Integer.value := 32 |}))
-      (option (fixed_FixedBytes.FixedBytes.t {| Integer.value := 32 |}))
-      (@links.M.evaluate
-        (option (fixed_FixedBytes.FixedBytes.t {| Integer.value := 32 |}))
-        (option (fixed_FixedBytes.FixedBytes.t {| Integer.value := 32 |}))
-        (@option.Option.IsLink
-          (fixed_FixedBytes.FixedBytes.t {| Integer.value := 32 |})
-          (fixed_FixedBytes.FixedBytes.IsLink {| Integer.value := 32 |}))
-        (@option.Option.IsLink
-          (fixed_FixedBytes.FixedBytes.t {| Integer.value := 32 |})
-          (fixed_FixedBytes.FixedBytes.IsLink {| Integer.value := 32 |}))
-        _
+    SimulateM.eval
+      (links.M.evaluate
         (Host.run_block_hash
           (Ref.cast_to Pointer.Kind.MutRef ref_self)
           number).(Run.run_f))
       (interpreter :: self :: stack)%stack 🌲
     (
       Output.Success
-        (@fst
-          (option (fixed_FixedBytes.FixedBytes.t {| Integer.value := 32 |}))
-          Self
-          (IHost.(Host.block_hash) self number)),
+        (fst (IHost.(Host.block_hash) self number)),
       (interpreter ::
-        @snd
-          (option (fixed_FixedBytes.FixedBytes.t {| Integer.value := 32 |}))
-          Self
-          (IHost.(Host.block_hash) self number) ::
+        snd (IHost.(Host.block_hash) self number) ::
         stack)%stack
     )
   }}.
