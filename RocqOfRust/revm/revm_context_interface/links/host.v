@@ -418,6 +418,14 @@ Module Host.
       Run.Trait timestamp [] [] [ φ self ] aliases.U256.t;
   }.
 
+  (* fn gas_limit(&self) -> U256; *)
+  Class Method_gas_limit (Self : Set) `{Link Self} : Set := {
+    gas_limit : PolymorphicFunction.t;
+    gas_limit_is_method :: IsTraitMethod.C (trait Self) "gas_limit" gas_limit;
+    run_gas_limit (self : '& Self) ::
+      Run.Trait gas_limit [] [] [ φ self ] aliases.U256.t;
+  }.
+
   (* fn chain_id(&self) -> U256; *)
   Class Method_chain_id (Self : Set) `{Link Self} : Set := {
     chain_id : PolymorphicFunction.t;
@@ -565,6 +573,7 @@ Module Host.
     method_beneficiary :: Method_beneficiary Self;
     method_block_number :: Method_block_number Self;
     method_timestamp :: Method_timestamp Self;
+    method_gas_limit :: Method_gas_limit Self;
     method_chain_id :: Method_chain_id Self;
     method_basefee :: Method_basefee Self;
     method_blob_gasprice :: Method_blob_gasprice Self;
@@ -717,6 +726,23 @@ Module Impl_Host_for_RefMut.
     - intros self.
       constructor.
       destruct method_timestamp.
+      run_symbolic.
+  Defined.
+
+  Instance method_gas_limit
+      (Self : Set) `{Link Self}
+      (method_gas_limit : Host.Method_gas_limit Self) :
+    Host.Method_gas_limit ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.gas_limit (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_gas_limit.
       run_symbolic.
   Defined.
 End Impl_Host_for_RefMut.

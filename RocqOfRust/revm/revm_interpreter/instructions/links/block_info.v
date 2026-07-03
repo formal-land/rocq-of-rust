@@ -215,30 +215,35 @@ Global Opaque run_difficulty.
 
 (*
 pub fn gaslimit<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
-)
+    context: InstructionContext<'_, H, WIRE>,
+) {
+    //gas!(context.interpreter, gas::BASE);
+    push!(context.interpreter, context.host.gas_limit());
+}
 *)
 Instance run_gaslimit
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.block_info.gaslimit [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.block_info.gaslimit [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   destruct run_Host_for_H.
-  destruct run_BlockGetter_for_Self.
-  destruct run_Block_for_Block.
   run_symbolic.
+  { eapply (@Host.run_gas_limit
+      ('&mut H)
+      _
+      (@Impl_Host_for_RefMut.method_gas_limit H _ method_gas_limit)
+      (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
+  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_gaslimit.
 
