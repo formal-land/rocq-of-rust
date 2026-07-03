@@ -34,7 +34,7 @@ Definition blockhash
     (fun interpreter => (interpreter, host)) (fun _ number_stub interpreter =>
 
   let requested_number := number_stub.(RefStub.projection) interpreter.(Interpreter.stack) in
-  let block_number := IHost.(Host.block_number) host in
+  let '(block_number, host) := IHost.(Host.block_number) host in
   match Impl_Uint.checked_sub block_number requested_number with
   | None =>
     let stack :=
@@ -104,38 +104,20 @@ Proof.
     reflexivity
   |].
   cbn.
+  destruct (IHost.(Host.block_number) host) as [block_number host_after] eqn:H_block_number; cbn.
   s.
   - eapply Run.Call.
-    + eapply (HostEq.(Host.Eq.block_number)
-        host
-        [interpreter<| Interpreter.stack := s |>; host; tt; t0.(RefStub.projection) s]%stack
-        (Ref.cast_to Pointer.Kind.Ref ref_host)).
-      eapply (@CanRead.Mutable H H1 Pointer.Kind.Ref
-        [interpreter<| Interpreter.stack := s |>; host; tt; t0.(RefStub.projection) s]%stack
-        host
-        (Ref.cast_to Pointer.Kind.Ref ref_host).(Ref.core)
-        (@Stack.CanAccess.Mutable H H1
-          [interpreter<| Interpreter.stack := s |>; host; tt; t0.(RefStub.projection) s]%stack
-          1%nat
-          H
-          (Stack.Nth.ConsSucc H
-            (interpreter<| Interpreter.stack := s |>)
-            [host; tt; t0.(RefStub.projection) s]%stack
-            0%nat
-            (Stack.Nth.ConsZero H host [tt; t0.(RefStub.projection) s]%stack))
-          []
-          φ
-          Some
-          (fun _ new_value => Some new_value))).
-      * reflexivity.
+    + eapply (Host.Eq.block_number (t := HostEq)).
     + cbn.
+      rewrite H_block_number.
+      cbn.
       apply Run.Pure.
   - s. {
       apply Impl_Uint.checked_sub_eq.
     }
     destruct
       (Impl_Uint.checked_sub
-        (IHost.(Host.block_number) host)
+        block_number
         (t0.(RefStub.projection) s)) as [diff|] eqn:H_diff;
       cbn.
     + unfold as_u64_saturated_macro.
@@ -193,15 +175,15 @@ Proof.
               with
                 (output_inter :=
                   fst
-                    (IHost.(Host.block_hash) host
+                    (IHost.(Host.block_hash) host_after
                       ((t0.(RefStub.projection) s).(Uint.value) mod 2 ^ 64)))
                 (stack_inter :=
                   [interpreter<| Interpreter.stack := s |>;
                    snd
-                     (IHost.(Host.block_hash) host
+                     (IHost.(Host.block_hash) host_after
                        ((t0.(RefStub.projection) s).(Uint.value) mod 2 ^ 64));
                    tt; t0.(RefStub.projection) s;
-                   IHost.(Host.block_number) host;
+                   block_number;
                    (diff.(Uint.value) mod 2 ^ 64 : u64); tt]%stack).
             + change (Ref.cast_to Pointer.Kind.MutRef ref_host)
                 with
@@ -218,18 +200,18 @@ Proof.
                 IHost
                 HostEq
                 (interpreter<| Interpreter.stack := s |>)
-                host
+                host_after
                 (make_ref (A := H) 1)
                 ((t0.(RefStub.projection) s).(Uint.value) mod 2 ^ 64)
                 [tt; t0.(RefStub.projection) s;
-                 IHost.(Host.block_number) host;
+                 block_number;
                  (diff.(Uint.value) mod 2 ^ 64 : u64); tt]%stack).
               reflexivity.
             + cbn.
               destruct
-                (IHost.(Host.block_hash) host
+                (IHost.(Host.block_hash) host_after
                   ((t0.(RefStub.projection) s).(Uint.value) mod 2 ^ 64))
-                as [[hash|] host_after] eqn:H_block_hash;
+                as [[hash|] host_after_hash] eqn:H_block_hash;
                 cbn.
               * s. {
                   apply Impl_Uint.from_be_bytes_eq.
@@ -245,12 +227,12 @@ Proof.
             }
             eapply Run.Call
               with
-                (output_inter := fst (IHost.(Host.block_hash) host Impl_u64.MAX))
+                (output_inter := fst (IHost.(Host.block_hash) host_after Impl_u64.MAX))
                 (stack_inter :=
                   [interpreter<| Interpreter.stack := s |>;
-                   snd (IHost.(Host.block_hash) host Impl_u64.MAX);
+                   snd (IHost.(Host.block_hash) host_after Impl_u64.MAX);
                    tt; t0.(RefStub.projection) s;
-                   IHost.(Host.block_number) host;
+                   block_number;
                    (diff.(Uint.value) mod 2 ^ 64 : u64); tt]%stack).
             + change (Ref.cast_to Pointer.Kind.MutRef ref_host)
                 with
@@ -267,16 +249,16 @@ Proof.
                 IHost
                 HostEq
                 (interpreter<| Interpreter.stack := s |>)
-                host
+                host_after
                 (make_ref (A := H) 1)
                 Impl_u64.MAX
                 [tt; t0.(RefStub.projection) s;
-                 IHost.(Host.block_number) host;
+                 block_number;
                  (diff.(Uint.value) mod 2 ^ 64 : u64); tt]%stack).
               reflexivity.
             + cbn.
-              destruct (IHost.(Host.block_hash) host Impl_u64.MAX)
-                as [[hash|] host_after] eqn:H_block_hash;
+              destruct (IHost.(Host.block_hash) host_after Impl_u64.MAX)
+                as [[hash|] host_after_hash] eqn:H_block_hash;
                 cbn.
               * s. {
                   apply Impl_Uint.from_be_bytes_eq.

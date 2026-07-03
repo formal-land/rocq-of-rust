@@ -464,52 +464,6 @@ Proof.
   apply Run.Pure.
 Qed.
 
-Lemma block_number_for_ref_mut_eq
-    {Self : Set} `{Link Self}
-    {types : Host.Types.t} `{Host.Types.AreLinks types}
-    `{run_Host_for_Self : !Host.Run Self types}
-    `{IHost : !Host.C Self types}
-    `{HostEq : !Host.Eq.t IHost}
-    (stack : Stack.t)
-    (self : Self)
-    (ref_mut_self : '&mut Self)
-    (ref_ref_self : '& ('&mut Self)) :
-  CanRead.t stack ref_mut_self ref_ref_self ->
-  CanRead.t stack self (Ref.cast_to Pointer.Kind.Ref ref_mut_self) ->
-  {{
-    SimulateM.eval_f
-      ((Impl_Host_for_ref_mut_T.method_block_number Self)
-        .(Host.run_block_number) ref_ref_self)
-      stack 🌲
-    (
-      Output.Success (IHost.(Host.block_number) self),
-      stack
-    )
-  }}.
-Proof.
-  intros H_ref_ref H_ref.
-  with_strategy transparent [Impl_Host_for_ref_mut_T.method_block_number] cbn.
-  destruct H_ref_ref as [| ref_core H_access H_read]; cbn.
-  { eapply Run.Call.
-    { eapply HostEq.(Host.Eq.block_number).
-      exact H_ref.
-    }
-    cbn.
-    apply Run.Pure.
-  }
-  destruct H_access; cbn in H_read |- *.
-  unshelve eapply Run.GetCanAccess.
-  { econstructor; eassumption. }
-  cbn.
-  rewrite H_read.
-  eapply Run.Call.
-  { eapply HostEq.(Host.Eq.block_number).
-    exact H_ref.
-  }
-  cbn.
-  apply Run.Pure.
-Qed.
-
 Lemma as_u64_saturated_macro_eq_at_stack
     (stack : Stack.t)
     (v : aliases.U256.t) :
