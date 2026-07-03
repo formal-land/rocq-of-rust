@@ -40,6 +40,7 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_Jumps_for_Bytecode.
   run_symbolic.
-  all: eapply (@Impl_Interpreter.run_halt WIRE H WIRE_types H0 run_InterpreterTypes_for_WIRE).
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt. }
 Defined.
 Global Opaque run_jump_inner.
