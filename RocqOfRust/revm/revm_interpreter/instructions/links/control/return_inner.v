@@ -50,31 +50,9 @@ Proof.
   destruct Impl_Default_for_Bytes.run.
   destruct (Impl_Into_for_From_T.run Impl_From_Vec_u8_for_Bytes.run).
   run_symbolic.
-  all: match goal with
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_underflow _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt_underflow
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_overflow _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt_overflow
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_memory_oog _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt_memory_oog
-  | |- Run.Trait
-      shared_memory.interpreter.shared_memory.resize_memory
-      _ _ _ _ =>
-      eapply (@shared_memory.run_resize_memory _ _ _ _ _ _ run_MemoryTrait_for_Memory_copy)
-  | |- Run.Trait
-      interpreter_action.interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.new_return
-      _ _ _ _ =>
-      typeclasses eauto
-  end.
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt_memory_oog. }
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_return_inner.
