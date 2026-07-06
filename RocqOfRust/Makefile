@@ -32,8 +32,10 @@ links-explicit: plugin/link_expand $(LINK_EXPAND_SOURCES)
 	./plugin/link_expand $(EXPANDED_LINK_ROOT) $(LINK_EXPAND_SOURCES)
 
 links-expanded-check: links-explicit
-	cd $(EXPANDED_LINK_ROOT) && coqc -R . "" -R ../../RocqOfRust RocqOfRust -impredicative-set links/RocqOfRust.v
+	@echo "COQC expanded links/RocqOfRust.v"
+	@cd $(EXPANDED_LINK_ROOT) && coqc -R . "" -R ../../RocqOfRust RocqOfRust -impredicative-set links/RocqOfRust.v
 	@for file in $(LINK_PLUGIN_SOURCES); do \
+		echo "COQC expanded $$file"; \
 		cd $(EXPANDED_LINK_ROOT) && coqc -R . "" -R ../../RocqOfRust RocqOfRust -impredicative-set $$file; \
 	done
 
