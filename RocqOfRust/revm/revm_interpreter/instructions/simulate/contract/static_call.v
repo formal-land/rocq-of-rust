@@ -12,6 +12,7 @@ Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.instructions.contract.simulate.call_helpers.
 Require Import revm.revm_interpreter.instructions.links.contract.static_call.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
@@ -97,10 +98,14 @@ Lemma static_call_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   {{
     SimulateM.eval_f (
       run_static_call
-        run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host
+        run_InterpreterTypes_for_WIRE run_Host_for_H context
       )
       [interpreter; host]%stack 🌲
     (
