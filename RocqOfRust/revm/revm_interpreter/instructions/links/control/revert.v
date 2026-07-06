@@ -43,15 +43,6 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
-  all: match goal with
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_not_activated _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt_not_activated
-  | |- Run.Trait
-      instructions.control.return_inner
-      _ _ _ _ =>
-      eapply run_return_inner
-  end.
+  { eapply Impl_Interpreter.run_halt_not_activated. }
 Defined.
 Global Opaque run_revert.
