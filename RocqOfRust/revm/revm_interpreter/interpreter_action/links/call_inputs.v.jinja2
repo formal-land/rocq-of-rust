@@ -1,11 +1,18 @@
 {# Template for call_inputs links file #}
 Require Import links.RocqOfRust.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
+Require Import core.links.option.
 Require Import core.ops.links.range.
+Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_interpreter.interpreter_action.call_inputs.
 Require Import ruint.links.lib.
+
+#[export] Existing Instance Option.IsLink.
+#[export] Existing Instance Pair.IsLink.
+#[export] Existing Instance FixedBytes.IsLink.
 
 (*
   /// Call value.
@@ -92,16 +99,16 @@ Export (hints) Impl_CallInput.
 
 (*
   pub struct CallInputs {
-      pub input: Bytes,
+      pub input: CallInput,
       pub return_memory_offset: Range<usize>,
       pub gas_limit: u64,
       pub bytecode_address: Address,
+      pub known_bytecode: Option<(B256, Bytecode)>,
       pub target_address: Address,
       pub caller: Address,
       pub value: CallValue,
       pub scheme: CallScheme,
       pub is_static: bool,
-      pub is_eof: bool,
   }
 *)
 Module CallInputs.
@@ -109,9 +116,9 @@ Module CallInputs.
   ("bytecode_address", "Address.t"),
   ("caller", "Address.t"),
   ("gas_limit", "u64"),
-  ("input", "Bytes.t"),
-  ("is_eof", "bool"),
+  ("input", "CallInput.t"),
   ("is_static", "bool"),
+  ("known_bytecode", "option (aliases.B256.t * Bytecode.t)"),
   ("return_memory_offset", "Range.t usize"),
   ("scheme", "CallScheme.t"),
   ("target_address", "Address.t"),

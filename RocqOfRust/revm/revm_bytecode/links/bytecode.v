@@ -1,5 +1,20 @@
 Require Import links.RocqOfRust.
 
+Module Bytecode.
+  Parameter t : Set.
+
+  Parameter to_value : t -> Value.t.
+
+  Global Instance IsLink : Link t := {
+    Φ := Ty.path "revm_bytecode::bytecode::Bytecode";
+    φ := to_value;
+  }.
+
+  Definition of_ty : OfTy.t (Ty.path "revm_bytecode::bytecode::Bytecode").
+  Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
+  Smpl Add apply of_ty : of_ty.
+End Bytecode.
+
 (* Module Bytecode.
   Inductive t : Set :=
   | LegacyAnalyzed
