@@ -6,7 +6,10 @@ Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 
 Definition make_interpreter (stack : Stack.t) : Interpreter.t WIRE WIRE_types := {|
-  Interpreter.bytecode := {| Integer.value := 0 |};
+  Interpreter.bytecode := {|
+    Bytecode.pc := {| Integer.value := 0 |};
+    Bytecode.action := None;
+  |};
   Interpreter.gas := {|
     Gas.limit := 1000000;
     Gas.memory := {|
@@ -34,6 +37,6 @@ Definition make_interpreter (stack : Stack.t) : Interpreter.t WIRE WIRE_types :=
     Control.instruction_result := None;
     Control.next_action := None;
   |};
-  Interpreter.runtime_flag := SpecId.LATEST;
+  Interpreter.runtime_flag := SpecId.PRAGUE;
   Interpreter.extend := tt;
 |}.

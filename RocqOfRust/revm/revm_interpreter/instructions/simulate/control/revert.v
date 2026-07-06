@@ -71,14 +71,14 @@ Proof.
       apply (return_inner_eq
         run_InterpreterTypes_for_WIRE
         IInterpreterTypes
-        InterpreterTypesEq
       ).
+      exact InterpreterTypesEq.
     }
     s.
   }
   { s. {
       apply halt_not_activated_eq.
-      apply InterpreterTypesEq.
+      exact InterpreterTypesEq.
     }
     s.
   }

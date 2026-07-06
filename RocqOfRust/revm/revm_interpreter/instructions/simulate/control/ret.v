@@ -59,8 +59,8 @@ Proof.
     apply (return_inner_eq
       run_InterpreterTypes_for_WIRE
       IInterpreterTypes
-      InterpreterTypesEq
     ).
+    exact InterpreterTypesEq.
   }
   s.
 Qed.
