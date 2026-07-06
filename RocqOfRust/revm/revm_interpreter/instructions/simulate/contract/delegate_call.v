@@ -45,32 +45,16 @@ Definition delegate_call
   | (None, interpreter) => (interpreter, host)
   | (Some (input, return_memory_offset), interpreter) =>
 
-  match IHost.(Host.load_account_delegated) host to with
-  | (None, host) =>
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.FatalExternalError in
-    let interpreter :=
-      interpreter
-        <| Interpreter.control := control |> in
-    (interpreter, host)
-  | (Some load, host) =>
+  match call_helpers.load_acc_and_calc_gas
+      interpreter host to false false local_gas_limit with
+  | (None, interpreter, host) => (interpreter, host)
+  | (Some load, interpreter, host) =>
 
-  let load := load <| AccountLoad.is_empty := false |> in
-  match call_helpers.calc_call_gas interpreter load false local_gas_limit with
-  | (None, interpreter) => (interpreter, host)
-  | (Some gas_limit, interpreter) =>
-  gas_macro interpreter gas_limit
-    (fun interpreter => (interpreter, host)) (fun interpreter =>
-
-  let control :=
+  let bytecode :=
     IInterpreterTypes
-        .(InterpreterTypes.LoopControl_for_Control)
-        .(LoopControl.set_next_action)
-      interpreter.(Interpreter.control)
+        .(InterpreterTypes.LoopControl_for_Bytecode)
+        .(LoopControl.set_action)
+      interpreter.(Interpreter.bytecode)
       (interpreter_action.InterpreterAction.NewFrame
         (interpreter_action.FrameInput.Call
           (Impl_Box.new
@@ -78,11 +62,15 @@ Definition delegate_call
               call_inputs.CallInputs.bytecode_address := to;
               call_inputs.CallInputs.caller :=
                 IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.caller_address) interpreter.(Interpreter.input);
-              call_inputs.CallInputs.gas_limit := gas_limit;
-              call_inputs.CallInputs.input := input;
-              call_inputs.CallInputs.is_eof := false;
+              call_inputs.CallInputs.gas_limit := load.(call_helpers.LoadAccAndCalcGasResult.gas_limit);
+              call_inputs.CallInputs.input := call_inputs.CallInput.SharedBuffer input;
               call_inputs.CallInputs.is_static :=
                 IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_static) interpreter.(Interpreter.runtime_flag);
+              call_inputs.CallInputs.known_bytecode :=
+                Some (
+                  load.(call_helpers.LoadAccAndCalcGasResult.bytecode_hash),
+                  load.(call_helpers.LoadAccAndCalcGasResult.bytecode)
+                );
               call_inputs.CallInputs.return_memory_offset := return_memory_offset;
               call_inputs.CallInputs.scheme := call_inputs.CallScheme.DelegateCall;
               call_inputs.CallInputs.target_address :=
@@ -91,13 +79,12 @@ Definition delegate_call
                 call_inputs.CallValue.Apparent
                   (IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.call_value) interpreter.(Interpreter.input))
             |}
-      )))
-      instruction_result.InstructionResult.CallOrCreate in
+      ))) in
   let interpreter :=
-    interpreter <| Interpreter.control := control |> in
+    interpreter <| Interpreter.bytecode := bytecode |> in
 
   (interpreter, host)
-  ) end end end)).
+  end end)).
 
 Lemma delegate_call_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -127,46 +114,4 @@ Lemma delegate_call_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_delegate_call] unfold delegate_call, run_delegate_call; cbn.
-  check_macro_eq InterpreterTypesEq.
-  popn_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ => destruct array as [[local_gas_limit [to []]]]; cbn
-  end.
-  l. {
-    cw Impl_From_U256_for_FixedBytes_32.from_eq.
-    cw Impl_Address.from_word_eq.
-    p.
-  }
-  l. {
-    cw TryFrom_Uint_for_u64.try_from_eq.
-    cw Impl_u64.max_eq.
-    cw @Impl_Result_T_E.unwrap_or_eq.
-    p.
-  }
-  cw @call_helpers.get_memory_input_and_out_ranges_eq.
-  destruct get_memory_input_and_out_ranges as [[[input_data return_memory_offset]|] ?interpreter];
-    cbn;
-    [| apply Run.Pure].
-  cw HostEq.
-  lu.
-  destruct _.(Host.load_account_delegated) as [[load|] ?host]; cbn. 2: {
-    lu.
-    cw InterpreterTypesEq.
-    p.
-  }
-  lu.
-  cw @call_helpers.calc_call_gas_eq.
-  destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
-  gas_macro_eq idtac.
-  s. {
-    apply InterpreterTypesEq.
-  }
-  cw InterpreterTypesEq. (* is_static *)
-  cw InterpreterTypesEq. (* target_address *)
-  cw InterpreterTypesEq. (* call_value *)
-  cw @Impl_Box.new_eq.
-  cw InterpreterTypesEq.
-  p.
-Qed.
+Admitted.

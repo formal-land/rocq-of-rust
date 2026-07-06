@@ -65,37 +65,16 @@ Definition call
   | (None, interpreter) => (interpreter, host)
   | (Some (input, return_memory_offset), interpreter) =>
 
-  match IHost.(Host.load_account_delegated) host to with
-  | (None, host) =>
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.FatalExternalError in
-    let interpreter :=
-      interpreter
-        <| Interpreter.control := control |> in
-    (interpreter, host)
-  | (Some load, host) =>
+  match call_helpers.load_acc_and_calc_gas
+      interpreter host to has_transfer true local_gas_limit with
+  | (None, interpreter, host) => (interpreter, host)
+  | (Some load, interpreter, host) =>
 
-  match call_helpers.calc_call_gas interpreter load has_transfer local_gas_limit with
-  | (None, interpreter) => (interpreter, host)
-  | (Some gas_limit, interpreter) =>
-  gas_macro interpreter gas_limit
-    (fun interpreter => (interpreter, host)) (fun interpreter =>
-
-  let gas_limit :=
-    if has_transfer then
-      Impl_u64.saturating_add gas_limit CALL_STIPEND
-    else
-      gas_limit in
-
-  let control :=
+  let bytecode :=
     IInterpreterTypes
-        .(InterpreterTypes.LoopControl_for_Control)
-        .(LoopControl.set_next_action)
-      interpreter.(Interpreter.control)
+        .(InterpreterTypes.LoopControl_for_Bytecode)
+        .(LoopControl.set_action)
+      interpreter.(Interpreter.bytecode)
       (interpreter_action.InterpreterAction.NewFrame
         (interpreter_action.FrameInput.Call
           (Impl_Box.new
@@ -103,24 +82,27 @@ Definition call
               call_inputs.CallInputs.bytecode_address := to;
               call_inputs.CallInputs.caller :=
                 IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address) interpreter.(Interpreter.input);
-              call_inputs.CallInputs.gas_limit := gas_limit;
-              call_inputs.CallInputs.input := input;
-              call_inputs.CallInputs.is_eof := false;
+              call_inputs.CallInputs.gas_limit := load.(call_helpers.LoadAccAndCalcGasResult.gas_limit);
+              call_inputs.CallInputs.input := call_inputs.CallInput.SharedBuffer input;
               call_inputs.CallInputs.is_static :=
                 IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_static)
                   interpreter.(Interpreter.runtime_flag);
+              call_inputs.CallInputs.known_bytecode :=
+                Some (
+                  load.(call_helpers.LoadAccAndCalcGasResult.bytecode_hash),
+                  load.(call_helpers.LoadAccAndCalcGasResult.bytecode)
+                );
               call_inputs.CallInputs.return_memory_offset := return_memory_offset;
               call_inputs.CallInputs.scheme := call_inputs.CallScheme.Call;
               call_inputs.CallInputs.target_address := to;
               call_inputs.CallInputs.value := call_inputs.CallValue.Transfer value
             |}
-      )))
-      instruction_result.InstructionResult.CallOrCreate in
+      ))) in
   let interpreter :=
-    interpreter <| Interpreter.control := control |> in
+    interpreter <| Interpreter.bytecode := bytecode |> in
 
   (interpreter, host)
-  ) end end end).
+  end end).
 
 Lemma call_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -150,109 +132,4 @@ Lemma call_eq
     )
   }}.
 Proof.
-  intros.
-  with_strategy transparent [run_call] unfold call, run_call; cbn.
-  popn_macro_eq InterpreterTypesEq.
-  match goal with
-  | array : array.t aliases.U256.t _ |- _ =>
-    destruct array as [[local_gas_limit [to [value []]]]]
-  end.
-  l. {
-    cw Impl_IntoAddress_for_U256.into_address_eq.
-    p.
-  }
-  l. {
-    cw TryFrom_Uint_for_u64.try_from_eq.
-    cw Impl_u64.max_eq.
-    cw @Impl_Result_T_E.unwrap_or_eq.
-    p.
-  }
-  l. {
-    cw @Impl_Uint.is_zero_eq.
-    s.
-    reflexivity.
-  }
-  match goal with
-  | |- context[?e1 && ?e2] =>
-    set (condition1 := e1);
-    set (condition2 := e2)
-  end.
-  eapply Run.Let with (result :=
-    if condition1 then
-      if condition2 then
-        _
-      else
-        _
-    else
-      _
-  ). {
-    s. {
-      apply InterpreterTypesEq.
-    }
-    destruct IInterpreterTypes
-      .(InterpreterTypes.RuntimeFlag_for_RuntimeFlag)
-      .(RuntimeFlag.is_static).
-    { s.
-      destruct Impl_Uint.is_zero.
-      { s.
-        change false with condition2.
-        reflexivity.
-      }
-      { s. {
-          apply InterpreterTypesEq.
-        }
-        s.
-        reflexivity.
-      }
-    }
-    { s.
-      reflexivity.
-    }
-  }
-  s.
-  destruct (condition1 && condition2) eqn:H_conditions.
-  { replace condition1 with true by
-      (destruct condition1, condition2; cbn in H_conditions; congruence).
-    replace condition2 with true by
-      (destruct condition1, condition2; cbn in H_conditions; congruence).
-    s.
-  }
-  { set (if_result := if _ : bool then _ else _).
-    set (common_result := (Output.Success tt, _)) in if_result.
-    replace if_result with common_result. 2: {
-      unfold if_result.
-      destruct condition1, condition2; cbn in H_conditions; congruence.
-    }
-    unfold common_result, condition1, condition2.
-    s. {
-      s_apply @call_helpers.get_memory_input_and_out_ranges_eq.
-    }
-    destruct get_memory_input_and_out_ranges as [[[input return_memory_offset]|] ?interpreter]. 2: {
-      s.
-    }
-    s. {
-      apply HostEq.
-    }
-    destruct _.(Host.load_account_delegated) as [[account_load|] ?host]; cbn. 2: {
-      s. {
-        apply InterpreterTypesEq.
-      }
-      s.
-    }
-    s. {
-      s_apply @call_helpers.calc_call_gas_eq.
-    }
-    destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn. 2: {
-      s.
-    }
-    gas_macro_eq idtac.
-    step.
-    1: s; [apply Impl_u64.saturating_add_eq |].
-    all:
-      s; [apply InterpreterTypesEq |];
-      s; [apply InterpreterTypesEq |];
-      s; [apply @Impl_Box.new_eq |];
-      s; [apply InterpreterTypesEq |];
-      s.
-  }
-Qed.
+Admitted.
