@@ -7,7 +7,7 @@ as a standalone executable. The second part of the tutorial describes
 how to install dependencies and build the Rocq implementation of Rust
 shallow embedding and facilities to verify Rust programs. After you
 successfully built `rocq-of-rust` you can take a look at our [user
-guide](./GUIDE.md)
+guide](./guide.md)
 
 ## Table of Contents
 
@@ -37,7 +37,7 @@ translation of the crate using this command:
 cargo rocq-of-rust
 ```
 
-See the `rocq-of-rust` [user guide](./GUIDE.md) for more details about
+See the `rocq-of-rust` [user guide](./guide.md) for more details about
 using `rocq-of-rust`.
 
 ### Standalone executable

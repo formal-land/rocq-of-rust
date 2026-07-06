@@ -6,7 +6,7 @@ description. The first part of the tutorial describes the cargo plugin
 version of `rocq-of-rust`, while the second part describes the
 standalone executable version. Note that this two versions of
 `rocq-of-rust` support different sets of command line options. See our
-[build tutorial](./BUILD.md) for instructions on how to build either
+[build tutorial](./builds.md) for instructions on how to build either
 of those versions of `rocq-of-rust`.
 
 ## Table of Contents
