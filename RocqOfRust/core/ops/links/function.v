@@ -33,6 +33,36 @@ Module FnOnce.
 End FnOnce.
 Export (hints) FnOnce.
 
+Module Impl_FnOnce_for_Function1.
+  Instance method_call_once (A Output : Set) `{Link A} `{Link Output} :
+    FnOnce.Method_call_once
+      (Function1.t A Output)
+      (OneElementTuple.t A)
+      Output.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply FunctionTraitAutomaticImpl.FunctionImplementsFnOnce. }
+      { reflexivity. }
+    }
+    { constructor.
+      destruct args as [a].
+      with_strategy transparent [φ] cbn.
+      run_symbolic_closure_auto.
+      run_symbolic.
+    }
+  Defined.
+
+  Instance run (A Output : Set) `{Link A} `{Link Output} :
+    FnOnce.Run
+      (Function1.t A Output)
+      (OneElementTuple.t A)
+      Output :=
+  {}.
+End Impl_FnOnce_for_Function1.
+Export (hints) Impl_FnOnce_for_Function1.
+
 Module Impl_FnOnce_for_Function2.
   Instance method_call_once (A1 A2 Output: Set) `{Link A1} `{Link A2} `{Link Output} :
     FnOnce.Method_call_once (Function2.t A1 A2 Output) (A1 * A2) Output.

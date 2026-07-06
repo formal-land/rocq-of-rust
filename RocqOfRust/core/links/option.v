@@ -114,6 +114,15 @@ Global Opaque run_expect_failed.
 Module Impl_Option.
   Definition Self (T : Set) `{Link T} : Set := option T.
 
+  (* pub const fn as_ref(&self) -> Option<&T> *)
+  Instance run_as_ref {T : Set} `{Link T}
+      (self : '& (Self T)) :
+    Run.Trait
+      (option.Impl_core_option_Option_T.as_ref (Φ T)) [] [] [ φ self ]
+      (option ('& T)).
+  Admitted.
+  Global Opaque run_as_ref.
+
   (*
     pub fn map<U, F>(self, f: F) -> Option<U>
     where

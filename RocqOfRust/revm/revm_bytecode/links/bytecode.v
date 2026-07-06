@@ -1,4 +1,38 @@
 Require Import links.RocqOfRust.
+Require Import alloy_primitives.bytes.links.mod.
+Require Import revm.revm_bytecode.bytecode.
+
+Module Bytecode.
+  Parameter t : Set.
+
+  Parameter to_value : t -> Value.t.
+
+  Instance IsLink : Link t := {
+    Φ := Ty.path "revm_bytecode::bytecode::Bytecode";
+    φ := to_value;
+  }.
+
+  Definition of_ty : OfTy.t (Ty.path "revm_bytecode::bytecode::Bytecode").
+  Proof.
+    eapply OfTy.Make with (A := t); reflexivity.
+  Defined.
+  Smpl Add apply of_ty : of_ty.
+End Bytecode.
+Export (hints) Bytecode.
+
+Module Impl_Bytecode.
+  Definition Self : Set :=
+    Bytecode.t.
+
+  Instance run_original_bytes (self : '& Self) :
+    Run.Trait
+      bytecode.Impl_revm_bytecode_bytecode_Bytecode.original_bytes
+      [] [] [ φ self ]
+      alloy_primitives.bytes.links.mod.Bytes.t.
+  Admitted.
+  Global Opaque run_original_bytes.
+End Impl_Bytecode.
+Export (hints) Impl_Bytecode.
 
 (* Module Bytecode.
   Inductive t : Set :=

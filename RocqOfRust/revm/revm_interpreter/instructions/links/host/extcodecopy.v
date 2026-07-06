@@ -16,12 +16,14 @@ Require Import core.links.result.
 Require Import core.num.links.mod.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
+Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_interpreter.gas.links.calc.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.host.
 Require Import revm.revm_interpreter.instructions.links.utility.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -33,8 +35,7 @@ Require Import ruint.links.lib.
 
 (*
 pub fn extcodecopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
+    context: InstructionContext<'_, H, WIRE>,
 )
 *)
 Instance run_extcodecopy
@@ -43,18 +44,37 @@ Instance run_extcodecopy
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.host.extcodecopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
+    instructions.host.extcodecopy [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
+  destruct run_StackTrait_for_Stack.
+  destruct run_Host_for_H.
   destruct Impl_IntoAddress_for_U256.run.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct bytes.Impl_Deref_for_Bytes.run.
   destruct links.mod.Impl_Deref_for_Bytes.run.
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt_oog. }
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt_memory_oog. }
+  { eapply Impl_Interpreter.run_halt_oog. }
+  all: try eapply Host.run_load_account_info_skip_cold_load.
+  all: try eapply Impl_Deref_for_AccountInfoLoad.run_deref.
+  all: try eapply Impl_Interpreter.run_halt_oog.
+  all: try eapply Host.run_load_account_code.
+  all: try eapply Impl_Interpreter.run_halt_underflow.
+  all: try eapply Impl_Interpreter.run_halt_fatal.
+  eapply Run.CallPrimitiveGetTraitMethod.
+  { exact Impl_Deref_for_AccountInfoLoad.method_deref.(deref.Deref.deref_is_method).(IsTraitMethod.Make). }
+  eapply (Run.CallClosure _ _ _ _ _ _ (Ref.of_ty_ref _ AccountInfo.of_ty)).
+  { exact (Impl_Deref_for_AccountInfoLoad.method_deref.(deref.Deref.run_deref)
+      (Ref.cast_to Pointer.Kind.Ref output6)).(Run.run_f). }
+  intros.
+  run_symbolic.
 Defined.
 Global Opaque run_extcodecopy.
-
