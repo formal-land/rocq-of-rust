@@ -530,7 +530,13 @@ Module Impl_AccountInfoLoad.
       journaled_state.Impl_revm_context_interface_journaled_state_AccountInfoLoad.into_state_load
       [] [ Φ F; Φ O ] [ φ self; φ f ]
       (StateLoad.t O).
-  Admitted.
+  Proof.
+    constructor.
+    run_symbolic.
+    eapply Run.CallPrimitiveGetTraitMethod.
+    { exact Run_FnOnce_for_F.(function.FnOnce.method_call_once).(function.FnOnce.call_once_is_method).(IsTraitMethod.Make). }
+    run_symbolic.
+  Defined.
   Global Opaque run_into_state_load.
 End Impl_AccountInfoLoad.
 Export (hints) Impl_AccountInfoLoad.
@@ -543,7 +549,13 @@ Module Impl_Deref_for_AccountInfoLoad.
     Run.Trait
       journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_AccountInfoLoad.deref
       [] [] [ φ self ] ('& AccountInfo.t).
-  Admitted.
+  Proof.
+    constructor.
+    run_symbolic.
+    eapply Run.CallPrimitiveGetTraitMethod.
+    { exact (Impl_Deref_for_Cow.method_deref AccountInfo.t).(deref.Deref.deref_is_method).(IsTraitMethod.Make). }
+    run_symbolic.
+  Defined.
   Global Opaque run_deref.
 
   Instance method_deref : Deref.Method_deref Self AccountInfo.t.

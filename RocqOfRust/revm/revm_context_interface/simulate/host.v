@@ -32,11 +32,30 @@ Module Host.
       CfgGetter.C
         Self
         (Host.Types.to_CfgGetter_types types);
+    (*
+    fn load_account_info_skip_cold_load(
+      &mut self,
+      address: Address,
+      load_code: bool,
+      skip_cold_load: bool,
+    ) -> Result<AccountInfoLoad, LoadError>;
+    *)
+    load_account_info_skip_cold_load
+      (self : Self)
+      (address : Address.t)
+      (load_code : bool)
+      (skip_cold_load : bool) :
+      Result.t AccountInfoLoad.t LoadError.t * Self;
     (* fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>; *)
     load_account_delegated
       (self : Self)
       (address : Address.t) :
       option AccountLoad.t * Self;
+    (* fn load_account_code(&mut self, address: Address) -> Option<StateLoad<Bytes>>; *)
+    load_account_code
+      (self : Self)
+      (address : Address.t) :
+      option (StateLoad.t Bytes.t) * Self;
     (* fn block_hash(&mut self, number: u64) -> Option<B256>; *)
     block_hash
       (self : Self)
@@ -146,6 +165,25 @@ Module Host.
         TransactionGetter.Eq.t I.(TransactionGetter_for_Self);
       BlockGetter_for_Self :: BlockGetter.Eq.t I.(BlockGetter_for_Self);
       CfgGetter_for_Self :: CfgGetter.Eq.t I.(CfgGetter_for_Self);
+      load_account_info_skip_cold_load
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (address : Address.t)
+          (load_code : bool)
+          (skip_cold_load : bool)
+          (stack : Stack.t) :
+        let ref_self : '&mut Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_load_account_info_skip_cold_load ref_self address load_code skip_cold_load)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self := I.(load_account_info_skip_cold_load) self address load_code skip_cold_load in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
       load_account_delegated
           {Interpreter : Set}
           (interpreter : Interpreter)
@@ -158,6 +196,23 @@ Module Host.
             (Host.run_load_account_delegated ref_self address)
             (interpreter :: self :: stack)%stack 🌲
           let result_self := I.(load_account_delegated) self address in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
+      load_account_code
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (address : Address.t)
+          (stack : Stack.t) :
+        let ref_self : '&mut Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_load_account_code ref_self address)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self := I.(load_account_code) self address in
           (
             Output.Success (fst result_self),
             (interpreter :: snd result_self :: stack)%stack
