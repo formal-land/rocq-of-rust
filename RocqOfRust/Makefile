@@ -1,19 +1,15 @@
-.PHONY: all clean clean-util distclean default watch generate jinja plugin links-explicit links-expanded-check
+.PHONY: all clean clean-util distclean default watch generate jinja plugin plugin-inline-print-check
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 JINJA_TEMPLATES := $(shell find -L . -name "*.v.jinja2" | sort)
 JINJA_GENERATED := $(JINJA_TEMPLATES:.v.jinja2=.v)
-EXPANDED_LINK_ROOT := ../expanded-links/RocqOfRust
-LINK_PLUGIN_SUPPORT_SOURCES := \
-	links/RocqOfRust.v
-LINK_PLUGIN_SOURCES := \
-	core/links/cmpOrdering.v
-LINK_EXPAND_SOURCES := $(LINK_PLUGIN_SUPPORT_SOURCES) $(LINK_PLUGIN_SOURCES)
+PLUGIN_INLINE_PRINT_TEST := plugin/test_inline_print.v
+PLUGIN_INLINE_PRINT_EXPECTED := plugin/test_inline_print.expected
+PLUGIN_INLINE_PRINT_OUTPUT := /tmp/rocqofrust-plugin-inline-print.out
 
 PLUGIN_PACKAGES := \
 	rocq-runtime.clib,rocq-runtime.config,rocq-runtime.engine,rocq-runtime.interp,rocq-runtime.kernel,rocq-runtime.lib,rocq-runtime.library,rocq-runtime.parsing,rocq-runtime.pretyping,rocq-runtime.printing,rocq-runtime.proofs,rocq-runtime.tactics,rocq-runtime.vernac
 PLUGIN_ML := plugin/link_model.ml plugin/link_render.ml plugin/rocqofrust_link_plugin.ml
-EXPANDER_ML := plugin/link_model.ml plugin/link_render.ml plugin/link_expand_main.ml
 
 default: all
 
@@ -25,19 +21,18 @@ plugin/rocqofrust_link_plugin/rocqofrust_link_plugin.cmxs: $(PLUGIN_ML) plugin/r
 	mkdir -p plugin/rocqofrust_link_plugin
 	ocamlfind ocamlopt -I plugin -package $(PLUGIN_PACKAGES) -linkall -shared $(PLUGIN_ML) -o $@
 
-plugin/link_expand: $(EXPANDER_ML)
-	ocamlfind ocamlopt -I plugin $(EXPANDER_ML) -o $@
-
-links-explicit: plugin/link_expand $(LINK_EXPAND_SOURCES)
-	./plugin/link_expand $(EXPANDED_LINK_ROOT) $(LINK_EXPAND_SOURCES)
-
-links-expanded-check: links-explicit
-	@echo "COQC expanded links/RocqOfRust.v"
-	@cd $(EXPANDED_LINK_ROOT) && coqc -R . "" -R ../../RocqOfRust RocqOfRust -impredicative-set links/RocqOfRust.v
-	@for file in $(LINK_PLUGIN_SOURCES); do \
-		echo "COQC expanded $$file"; \
-		cd $(EXPANDED_LINK_ROOT) && coqc -R . "" -R ../../RocqOfRust RocqOfRust -impredicative-set $$file; \
-	done
+plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PRINT_EXPECTED)
+	@echo "COQC plugin inline print $(PLUGIN_INLINE_PRINT_TEST)"
+	@coqc -R . RocqOfRust -I plugin -impredicative-set $(PLUGIN_INLINE_PRINT_TEST) > $(PLUGIN_INLINE_PRINT_OUTPUT)
+	@while IFS= read -r expected; do \
+		test -z "$$expected" && continue; \
+		grep -F -- "$$expected" $(PLUGIN_INLINE_PRINT_OUTPUT) >/dev/null || { \
+			echo "Missing expected plugin output:"; \
+			echo "$$expected"; \
+			echo "Full output: $(PLUGIN_INLINE_PRINT_OUTPUT)"; \
+			exit 1; \
+		}; \
+	done < $(PLUGIN_INLINE_PRINT_EXPECTED)
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.

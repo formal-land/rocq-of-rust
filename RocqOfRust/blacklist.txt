@@ -23,3 +23,5 @@ move_sui/proofs
 move_sui/simulations
 # Legacy folder
 ./legacy/
+# Plugin tests that intentionally print generated definitions
+plugin/test_inline_print.v

@@ -322,5 +322,3 @@ let render (command : command) : string list =
   match command with
   | RecordDecl { path; fields } -> render_record path fields
   | EnumDecl { path; variants } -> render_enum path variants
-
-let render_text (command : command) : string = join_lines (render command) ^ "\n"
