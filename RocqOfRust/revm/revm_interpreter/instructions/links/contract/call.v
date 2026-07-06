@@ -25,6 +25,7 @@ Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
@@ -40,8 +41,7 @@ Require Import ruint.links.lib.
 
 (*
 pub fn call<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
+    mut context: InstructionContext<'_, H, WIRE>,
 )
 *)
 Instance run_call
@@ -50,21 +50,29 @@ Instance run_call
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.contract.call [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
+    instructions.contract.call [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_Host_for_H.
-  destruct (TryFrom_Uint_for_u64.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
-  destruct Impl_IntoAddress_for_U256.run.
+  destruct (TryFrom_Uint_for_u64.method_try_from (BITS := {| Integer.value := 256 |}) (LIMBS := {| Integer.value := 4 |})).
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt. }
+  {
+    eapply (@Impl_Box.run_new CallInputs.t CallInputs.IsLink {|
+      CallInputs.bytecode_address := value17;
+      CallInputs.caller := value_inter2;
+      CallInputs.gas_limit := value14;
+      CallInputs.input := CallInput.SharedBuffer value13;
+      CallInputs.is_static := value_inter3;
+      CallInputs.known_bytecode := Some (value18, value19);
+      CallInputs.return_memory_offset := value22;
+      CallInputs.scheme := CallScheme.Call;
+      CallInputs.target_address := value15;
+      CallInputs.value := CallValue.Transfer value20;
+    |}).
+  }
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_call.
