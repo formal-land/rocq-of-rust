@@ -1,16 +1,35 @@
-.PHONY: all clean clean-util distclean default watch generate jinja
+.PHONY: all clean clean-util distclean default watch generate jinja plugin links-explicit
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 JINJA_TEMPLATES := $(shell find -L . -name "*.v.jinja2" | sort)
 JINJA_GENERATED := $(JINJA_TEMPLATES:.v.jinja2=.v)
+LINK_PLUGIN_SOURCES := \
+	core/links/cmpOrdering.v
+
+PLUGIN_PACKAGES := \
+	rocq-runtime.clib,rocq-runtime.config,rocq-runtime.engine,rocq-runtime.interp,rocq-runtime.kernel,rocq-runtime.lib,rocq-runtime.library,rocq-runtime.parsing,rocq-runtime.pretyping,rocq-runtime.printing,rocq-runtime.proofs,rocq-runtime.tactics,rocq-runtime.vernac
+PLUGIN_ML := plugin/link_model.ml plugin/link_render.ml plugin/rocqofrust_link_plugin.ml
+EXPANDER_ML := plugin/link_model.ml plugin/link_render.ml plugin/link_expand_main.ml
 
 default: all
 
 jinja: $(JINJA_GENERATED)
 
+plugin: plugin/rocqofrust_link_plugin/rocqofrust_link_plugin.cmxs
+
+plugin/rocqofrust_link_plugin/rocqofrust_link_plugin.cmxs: $(PLUGIN_ML) plugin/rocqofrust_link_plugin/META
+	mkdir -p plugin/rocqofrust_link_plugin
+	ocamlfind ocamlopt -I plugin -package $(PLUGIN_PACKAGES) -linkall -shared $(PLUGIN_ML) -o $@
+
+plugin/link_expand: $(EXPANDER_ML)
+	ocamlfind ocamlopt -I plugin $(EXPANDER_ML) -o $@
+
+links-explicit: plugin/link_expand $(LINK_PLUGIN_SOURCES)
+	./plugin/link_expand ../expanded-links/RocqOfRust $(LINK_PLUGIN_SOURCES)
+
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.
-RocqMakefile: $(VFILES) blacklist.txt
+RocqMakefile: plugin $(VFILES) blacklist.txt
 	@coq_makefile -f _RocqProject -o $@ $(VFILES)
 
 MAKEROCQ := +$(MAKE) -f RocqMakefile
@@ -18,10 +37,10 @@ MAKEROCQ := +$(MAKE) -f RocqMakefile
 %.v: %.v.jinja2 scripts/macros.jinja2 scripts/jinja_preprocess.py
 	python scripts/jinja_preprocess.py $<
 
-%.vo: RocqMakefile %.v
+%.vo: plugin RocqMakefile %.v
 	$(MAKEROCQ) $@
 
-all: RocqMakefile
+all: plugin RocqMakefile
 	$(MAKEROCQ) all
 
 clean-rocq: RocqMakefile

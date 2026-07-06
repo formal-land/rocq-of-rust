@@ -1,0 +1,299 @@
+let _ = Mltop.add_known_module "rocqofrust_link_plugin"
+
+open Procq
+open Stdarg
+open Pp
+
+let plugin_name = "rocqofrust_link_plugin"
+
+let string_of_id id = Names.Id.to_string id
+
+let string_of_constr_expr expr =
+  let env = Global.env () in
+  let sigma = Evd.from_env env in
+  Pp.string_of_ppcmds (Ppconstr.pr_constr_expr env sigma expr)
+
+let user_err message = CErrors.user_err (Pp.str message)
+
+let convert_error f x =
+  try f x with
+  | Link_model.Error message -> user_err message
+
+let token s = Symbol.token (terminal s)
+
+let semi =
+  Symbol.rules
+    [ Rules.make
+        (Rule.next_norec Rule.stop (token ";"))
+        (fun _ _loc -> ())
+    ]
+
+let comma =
+  Symbol.rules
+    [ Rules.make
+        (Rule.next_norec Rule.stop (token ","))
+        (fun _ _loc -> ())
+    ]
+
+let pr_field field =
+  Pp.str field.Link_model.field_name ++ Pp.str " : " ++ Pp.str field.field_ty
+
+let pr_field_list fields =
+  Pp.str "{"
+  ++ Pp.prlist_with_sep Pp.pr_semicolon pr_field fields
+  ++ Pp.str "}"
+
+let (wit_link_field, link_field) =
+  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_field"
+    {
+      Vernacextend.arg_parsing =
+        Vernacextend.Arg_rules
+          [
+            Production.make
+              (Rule.next
+                 (Rule.next
+                    (Rule.next Rule.stop (Symbol.nterm Prim.ident))
+                    (token ":"))
+                 (Symbol.nterm Constr.constr))
+              (fun ty _ name _loc ->
+                { Link_model.field_name = string_of_id name;
+                  field_ty = string_of_constr_expr ty;
+                });
+          ];
+      arg_printer = (fun _env _sigma -> pr_field);
+    }
+
+let (wit_link_fields, link_fields) =
+  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_fields"
+    {
+      Vernacextend.arg_parsing =
+        Vernacextend.Arg_rules
+          [
+            Production.make
+              (Rule.next_norec Rule.stop
+                 (Symbol.list1sep (Symbol.nterm link_field) semi true))
+              (fun fields _loc -> fields);
+          ];
+      arg_printer =
+        (fun _env _sigma fields ->
+          Pp.prlist_with_sep Pp.pr_semicolon pr_field fields);
+    }
+
+let fields_between open_token close_token =
+  Production.make
+    (Rule.next
+       (Rule.next
+          (Rule.next Rule.stop (token open_token))
+          (Symbol.nterm link_fields))
+       (token close_token))
+    (fun _ fields _ _loc -> fields)
+
+let (wit_link_record_fields, link_record_fields) =
+  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_record_fields"
+    {
+      Vernacextend.arg_parsing =
+        Vernacextend.Arg_rules [ fields_between "{" "}" ];
+      arg_printer = (fun _env _sigma -> pr_field_list);
+    }
+
+let (wit_link_tuple_fields, link_tuple_fields) =
+  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_tuple_fields"
+    {
+      Vernacextend.arg_parsing =
+        Vernacextend.Arg_rules
+          [
+            Production.make
+              (Rule.next
+                 (Rule.next
+                    (Rule.next Rule.stop (token "("))
+                    (Symbol.list1sep (Symbol.nterm link_field) semi true))
+                 (token ")"))
+              (fun _ fields _ _loc -> fields);
+            Production.make
+              (Rule.next
+                 (Rule.next
+                    (Rule.next Rule.stop (token "("))
+                    (Symbol.list1sep (Symbol.nterm link_field) comma true))
+                 (token ")"))
+              (fun _ fields _ _loc -> fields);
+          ];
+      arg_printer = (fun _env _sigma fields ->
+        Pp.str "("
+        ++ Pp.prlist_with_sep Pp.pr_semicolon pr_field fields
+        ++ Pp.str ")");
+    }
+
+let variant name rust_name payload =
+  { Link_model.name = string_of_id name;
+    rust_name;
+    payload;
+  }
+
+let variant_default name payload =
+  variant name (string_of_id name) payload
+
+let (wit_link_variant, link_variant) =
+  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_variant"
+    {
+      Vernacextend.arg_parsing =
+        Vernacextend.Arg_rules
+          [
+            Production.make
+              (Rule.next
+                 (Rule.next
+                    (Rule.next
+                       (Rule.next
+                          (Rule.next Rule.stop (token "|"))
+                          (Symbol.nterm Prim.ident))
+                       (token "as"))
+                    (Symbol.nterm Prim.string))
+                 (Symbol.nterm link_record_fields))
+              (fun fields rust_name _ name _ _loc ->
+                variant name rust_name (Link_model.RecordPayload fields));
+            Production.make
+              (Rule.next
+                 (Rule.next
+                    (Rule.next
+                       (Rule.next
+                          (Rule.next Rule.stop (token "|"))
+                          (Symbol.nterm Prim.ident))
+                       (token "as"))
+                    (Symbol.nterm Prim.string))
+                 (Symbol.nterm link_tuple_fields))
+              (fun fields rust_name _ name _ _loc ->
+                variant name rust_name (Link_model.TuplePayload fields));
+            Production.make
+              (Rule.next
+                 (Rule.next
+                    (Rule.next Rule.stop (token "|"))
+                    (Symbol.nterm Prim.ident))
+                 (Symbol.nterm link_record_fields))
+              (fun fields name _ _loc ->
+                variant_default name (Link_model.RecordPayload fields));
+            Production.make
+              (Rule.next
+                 (Rule.next
+                    (Rule.next Rule.stop (token "|"))
+                    (Symbol.nterm Prim.ident))
+                 (Symbol.nterm link_tuple_fields))
+              (fun fields name _ _loc ->
+                variant_default name (Link_model.TuplePayload fields));
+            Production.make
+              (Rule.next
+                 (Rule.next
+                    (Rule.next
+                       (Rule.next Rule.stop (token "|"))
+                       (Symbol.nterm Prim.ident))
+                    (token "as"))
+                 (Symbol.nterm Prim.string))
+              (fun rust_name _ name _ _loc ->
+                variant name rust_name (Link_model.TuplePayload []));
+            Production.make
+              (Rule.next
+                 (Rule.next Rule.stop (token "|"))
+                 (Symbol.nterm Prim.ident))
+              (fun name _ _loc ->
+                variant_default name (Link_model.TuplePayload []));
+          ];
+      arg_printer = (fun _env _sigma variant ->
+        Pp.str variant.Link_model.name);
+    }
+
+let parse_vernac sentence =
+  match Procq.parse_string (Pvernac.main_entry None) sentence with
+  | Some command -> command
+  | None -> user_err ("empty generated Rocq sentence: " ^ sentence)
+
+let line_ends_sentence line =
+  let line = String.trim line in
+  let len = String.length line in
+  len > 0 && line.[len - 1] = '.'
+
+let generated_sentences lines =
+  let rec loop sentences pending = function
+    | [] -> (
+        match pending with
+        | [] -> List.rev sentences
+        | _ ->
+            user_err
+              ("generated Rocq sentence is missing a final dot: "
+              ^ String.concat "\n" (List.rev pending)))
+    | line :: rest ->
+        if pending = [] && String.trim line = "" then
+          loop sentences [] rest
+        else
+          let pending = line :: pending in
+          if line_ends_sentence line then
+            loop (String.concat "\n" (List.rev pending) :: sentences) [] rest
+          else
+            loop sentences pending rest
+  in
+  loop [] [] lines
+
+let interp_vernac sentence =
+  try
+    let command = parse_vernac sentence in
+    let st = Vernacstate.freeze_full_state () in
+    let st = Vernacinterp.interp ~intern:Vernacinterp.fs_intern ~verbosely:false ~st command in
+    Vernacstate.unfreeze_full_state st
+  with exn ->
+    user_err
+      ("error while interpreting generated Rocq sentence:\n"
+      ^ sentence ^ "\n\n" ^ Printexc.to_string exn)
+
+let run_generated command =
+  convert_error Link_render.render command
+  |> generated_sentences
+  |> List.iter interp_vernac
+
+let command_typed_vernac command =
+  Vernactypes.vtdefault (fun () -> run_generated command)
+
+let () =
+  Vernacextend.static_vernac_extend
+    ~plugin:(Some plugin_name)
+    ~command:"RocqOfRustLinkRecord"
+    ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
+    [
+      Vernacextend.TyML
+        ( false,
+          Vernacextend.TyTerminal
+            ( "RocqOfRustLinkRecord",
+              Vernacextend.TyNonTerminal
+                ( Extend.TUentry (Genarg.get_arg_tag wit_string),
+                  Vernacextend.TyTerminal
+                    ( ":=",
+                      Vernacextend.TyTerminal
+                        ( "{",
+                          Vernacextend.TyNonTerminal
+                            ( Extend.TUentry (Genarg.get_arg_tag wit_link_fields),
+                              Vernacextend.TyTerminal ("}", Vernacextend.TyNil) ) ) ) ) ),
+          (fun path fields ?loc:_ ~atts () ->
+            Attributes.unsupported_attributes atts;
+            command_typed_vernac (Link_model.RecordDecl { path; fields })),
+          None );
+    ]
+
+let () =
+  Vernacextend.static_vernac_extend
+    ~plugin:(Some plugin_name)
+    ~command:"RocqOfRustLinkEnum"
+    ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
+    [
+      Vernacextend.TyML
+        ( false,
+          Vernacextend.TyTerminal
+            ( "RocqOfRustLinkEnum",
+              Vernacextend.TyNonTerminal
+                ( Extend.TUentry (Genarg.get_arg_tag wit_string),
+                  Vernacextend.TyTerminal
+                    ( ":=",
+                      Vernacextend.TyNonTerminal
+                        ( Extend.TUlist1
+                            (Extend.TUentry (Genarg.get_arg_tag wit_link_variant)),
+                          Vernacextend.TyNil ) ) ) ),
+          (fun path variants ?loc:_ ~atts () ->
+            Attributes.unsupported_attributes atts;
+            command_typed_vernac (Link_model.EnumDecl { path; variants })),
+          None );
+    ]

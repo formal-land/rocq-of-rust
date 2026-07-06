@@ -1,0 +1,4 @@
+version = "dev"
+description = "rocq-of-rust link generation plugin"
+requires = "rocq-runtime.clib rocq-runtime.config rocq-runtime.engine rocq-runtime.interp rocq-runtime.kernel rocq-runtime.lib rocq-runtime.library rocq-runtime.parsing rocq-runtime.pretyping rocq-runtime.printing rocq-runtime.proofs rocq-runtime.tactics rocq-runtime.vernac"
+plugin(native) = "rocqofrust_link_plugin.cmxs"
