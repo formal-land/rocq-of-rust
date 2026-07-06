@@ -3,12 +3,14 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
+Require Import core.links.option.
 Require Import core.links.array.
 Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_action.
+Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
@@ -123,6 +125,23 @@ Module MemorySlice.
 End MemorySlice.
 Export (hints) MemorySlice.
 
+Module Bytecode.
+  Record t : Set := {
+    pc : usize;
+    action : option InterpreterAction.t;
+  }.
+
+  Instance IsLink : Link t := {|
+    Φ := Ty.path "revm_interpreter::tests::Bytecode";
+    φ x :=
+      Value.StructRecord "revm_interpreter::tests::Bytecode" [] [] [
+        ("pc", φ x.(pc));
+        ("action", φ x.(action))
+      ];
+  |}.
+End Bytecode.
+Export (hints) Bytecode.
+
 Module Control.
   Record t : Set := {
     gas : Gas.t;
@@ -140,7 +159,7 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Memory := Memory.t;
   InterpreterTypes.Types.Memory_Synthetic := MemorySlice.t;
   InterpreterTypes.Types.Memory_Synthetic1 := MemorySlice.t;
-  InterpreterTypes.Types.Bytecode := usize;
+  InterpreterTypes.Types.Bytecode := Bytecode.t;
   InterpreterTypes.Types.ReturnData := unit;
   InterpreterTypes.Types.Input := unit;
   InterpreterTypes.Types.SubRoutineStack := unit;
@@ -152,7 +171,7 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
 Instance AreLinks_WIRE_types : InterpreterTypes.Types.AreLinks WIRE_types := {}.
 
 Module Immediates.
-  Definition Self : Set := usize.
+  Definition Self : Set := Bytecode.t.
 
   Definition read_i16 (self : Self) : i16 := 0.
   Definition read_u16 (self : Self) : u16 := 0.
@@ -185,13 +204,14 @@ End LegacyBytecode.
 Export (hints) LegacyBytecode.
 
 Module Jumps.
-  Definition Self : Set := usize.
+  Definition Self : Set := Bytecode.t.
 
   Definition relative_jump (self : Self) (offset : isize) : Self :=
-    {| Integer.value := i[self] + i[offset] |}.
-  Definition absolute_jump (_self : Self) (offset : usize) : Self := offset.
+    self <| Bytecode.pc := {| Integer.value := i[self.(Bytecode.pc)] + i[offset] |} |>.
+  Definition absolute_jump (self : Self) (offset : usize) : Self :=
+    self <| Bytecode.pc := offset |>.
   Definition is_valid_legacy_jump (self : Self) (_offset : usize) : bool * Self := (true, self).
-  Definition pc (self : Self) : usize := self.
+  Definition pc (self : Self) : usize := self.(Bytecode.pc).
   Definition opcode (self : Self) : u8 := 0.
 
   Instance I : Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
@@ -410,11 +430,11 @@ Module LoopControl.
   |}.
 
   Definition BytecodeSelf : Set :=
-    usize.
+    Bytecode.t.
 
-  Definition set_action_bytecode (self : BytecodeSelf) (_action : InterpreterAction.t) :
+  Definition set_action_bytecode (self : BytecodeSelf) (action : InterpreterAction.t) :
       BytecodeSelf :=
-    self.
+    self <| Bytecode.action := Some action |>.
 
   Definition set_instruction_result_bytecode
       (self : BytecodeSelf)
@@ -448,11 +468,20 @@ Module LoopControl.
   |}.
 
   Definition instruction_result_bytecode (_self : BytecodeSelf) : InstructionResult.t :=
-    InstructionResult.Continue.
+    match _self.(Bytecode.action) with
+    | Some (InterpreterAction.Return result) =>
+      result.(InterpreterResult.result)
+    | _ => InstructionResult.Continue
+    end.
 
   Definition take_next_action_bytecode (self : BytecodeSelf) :
       InterpreterAction.t * BytecodeSelf :=
-    (InterpreterAction.NewFrame FrameInput.Empty, self).
+    match self.(Bytecode.action) with
+    | Some action =>
+      (action, self <| Bytecode.action := None |>)
+    | None =>
+      (InterpreterAction.NewFrame FrameInput.Empty, self)
+    end.
 
   Instance Bytecode_I : LoopControl.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
     simulate.interpreter_types.LoopControl.set_action := set_action_bytecode;
@@ -490,6 +519,12 @@ Module MemoryTrait.
   Definition set_data (self : Self) (memory_offset data_offset len : usize) (data : list u8) : Self :=
     Memory.set_data self memory_offset data_offset len data.
 
+  Definition set_data_from_global
+      (self : Self) (memory_offset _data_offset len : usize)
+      (data_range : Range.t usize) : Self :=
+    let data := Memory.slice self data_range.(Range.start) len in
+    Memory.set self memory_offset data.
+
   Definition set (self : Self) (memory_offset : usize) (data : list u8) : Self :=
     Memory.set self memory_offset data.
 
@@ -503,6 +538,9 @@ Module MemoryTrait.
     Memory.copy self dst src len.
 
   Definition slice (self : Self) (range : Range.t usize) : Synthetic :=
+    Memory.slice self range.(Range.start) (range.(Range.end_) -i range.(Range.start)).
+
+  Definition global_slice (self : Self) (range : Range.t usize) : Synthetic :=
     Memory.slice self range.(Range.start) (range.(Range.end_) -i range.(Range.start)).
 
   Definition slice_len (self : Self) (offset len : usize) : Synthetic :=
@@ -522,11 +560,13 @@ Module MemoryTrait.
 
   Instance I : MemoryTrait.C Self Synthetic Synthetic1 := {|
     simulate.interpreter_types.MemoryTrait.set_data := set_data;
+    simulate.interpreter_types.MemoryTrait.set_data_from_global := set_data_from_global;
     simulate.interpreter_types.MemoryTrait.set := set;
     simulate.interpreter_types.MemoryTrait.size := size;
     simulate.interpreter_types.MemoryTrait.local_memory_offset := local_memory_offset;
     simulate.interpreter_types.MemoryTrait.copy := copy;
     simulate.interpreter_types.MemoryTrait.slice := slice;
+    simulate.interpreter_types.MemoryTrait.global_slice := global_slice;
     simulate.interpreter_types.MemoryTrait.Deref_for_Synthetic := MemorySlice.Deref_I;
     simulate.interpreter_types.MemoryTrait.slice_len := slice_len;
     simulate.interpreter_types.MemoryTrait.slice_len_length := slice_len_length;

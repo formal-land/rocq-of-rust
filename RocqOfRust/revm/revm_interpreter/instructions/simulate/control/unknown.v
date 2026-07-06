@@ -57,7 +57,7 @@ Proof.
   with_strategy transparent [run_unknown] unfold unknown, run_unknown; cbn.
   s. {
     apply halt_eq.
-    apply InterpreterTypesEq.
+    exact InterpreterTypesEq.
   }
   s.
 Qed.

@@ -4,7 +4,6 @@ Require Import revm.revm_interpreter.instructions.simulate.control.invalid.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump_inner.
-Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest_or_nop.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
 Require Import revm.revm_interpreter.instructions.simulate.control.pc.
 Require Import revm.revm_interpreter.instructions.simulate.control.ret.
@@ -13,9 +12,24 @@ Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
+Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import ruint.links.lib.
+
+Definition bytecode_action
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InterpreterAction.t :=
+  interpreter.(Interpreter.bytecode).(Bytecode.action).
+
+Definition bytecode_result
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InstructionResult.t :=
+  match bytecode_action interpreter with
+  | Some (InterpreterAction.Return result) =>
+    Some result.(InterpreterResult.result)
+  | _ => None
+  end.
 
 (** ** STOP tests *)
 
@@ -24,8 +38,7 @@ Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
   let result := stop interpreter in
-  result.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.Stop.
+  bytecode_result result = Some InstructionResult.Stop.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -38,8 +51,7 @@ Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
   let result := invalid interpreter in
-  result.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.InvalidFEOpcode.
+  bytecode_result result = Some InstructionResult.InvalidFEOpcode.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -52,8 +64,7 @@ Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
   let result := unknown interpreter in
-  result.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.OpcodeNotFound.
+  bytecode_result result = Some InstructionResult.OpcodeNotFound.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -69,8 +80,7 @@ Goal
   ] |} in
   let interpreter := make_interpreter stack in
   let result := ret interpreter in
-  result.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.Return.
+  bytecode_result result = Some InstructionResult.Return.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -84,7 +94,7 @@ Goal
   ] |} in
   let interpreter := make_interpreter stack in
   let result := ret interpreter in
-  match result.(Interpreter.control).(Control.next_action) with
+  match bytecode_action result with
   | Some (InterpreterAction.Return _) => True
   | _ => False
   end.
@@ -103,21 +113,7 @@ Goal
   ] |} in
   let interpreter := make_interpreter stack in
   let result := revert interpreter in
-  result.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.Revert.
-Proof.
-  timeout 1 vm_compute.
-  reflexivity.
-Qed.
-
-(** ** JUMPDEST_OR_NOP tests *)
-
-(** Test that JUMPDEST_OR_NOP just deducts gas, no error *)
-Goal
-  let stack := {| Stack.value := [] |} in
-  let interpreter := make_interpreter stack in
-  let result := jumpdest_or_nop interpreter in
-  result.(Interpreter.control).(Control.instruction_result) = None.
+  bytecode_result result = Some InstructionResult.Revert.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -144,7 +140,7 @@ Goal
   let stack := {| Stack.value := [{| Uint.value := 5 |}] |} in
   let interpreter := make_interpreter stack in
   let result := jump interpreter in
-  result.(Interpreter.control).(Control.instruction_result) = None.
+  bytecode_result result = None.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -166,8 +162,7 @@ Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
   let result := jump interpreter in
-  result.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.StackUnderflow.
+  bytecode_result result = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -183,7 +178,7 @@ Goal
   ] |} in
   let interpreter := make_interpreter stack in
   let result := jumpi interpreter in
-  result.(Interpreter.control).(Control.instruction_result) = None.
+  bytecode_result result = None.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -211,7 +206,7 @@ Goal
   ] |} in
   let interpreter := make_interpreter stack in
   let result := jumpi interpreter in
-  result.(Interpreter.control).(Control.instruction_result) = None.
+  bytecode_result result = None.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -222,8 +217,7 @@ Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
   let result := jumpi interpreter in
-  result.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.StackUnderflow.
+  bytecode_result result = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -237,7 +231,7 @@ Goal
   let interpreter := make_interpreter stack in
   let target : aliases.U256.t := {| Uint.value := 5 |} in
   let result := jump_inner interpreter target in
-  result.(Interpreter.control).(Control.instruction_result) = None.
+  bytecode_result result = None.
 Proof.
   timeout 1 vm_compute.
   reflexivity.

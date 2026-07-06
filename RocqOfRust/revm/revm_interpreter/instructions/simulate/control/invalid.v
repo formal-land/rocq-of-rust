@@ -57,7 +57,7 @@ Proof.
   with_strategy transparent [run_invalid] unfold invalid, run_invalid; cbn.
   s. {
     apply halt_eq.
-    apply InterpreterTypesEq.
+    exact InterpreterTypesEq.
   }
   s.
 Qed.

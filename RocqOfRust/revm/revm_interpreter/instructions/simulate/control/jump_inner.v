@@ -80,7 +80,7 @@ Proof.
   }
   { s. {
       apply halt_eq.
-      apply InterpreterTypesEq.
+      exact InterpreterTypesEq.
     }
     s.
   }
