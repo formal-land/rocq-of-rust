@@ -12,12 +12,35 @@ Require Import revm.revm_interpreter.instructions.simulate.contract.delegate_cal
 Require Import revm.revm_interpreter.instructions.simulate.contract.static_call.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.instruction_result.
+Require Import revm.revm_interpreter.links.interpreter_action.
+Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.tests.host.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.lib.
+
+Definition bytecode_action
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InterpreterAction.t :=
+  interpreter.(Interpreter.bytecode).(Bytecode.action).
+
+Definition bytecode_result
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InstructionResult.t :=
+  match bytecode_action interpreter with
+  | Some (InterpreterAction.Return result) =>
+    Some result.(InterpreterResult.result)
+  | _ => None
+  end.
+
+Definition is_call_frame
+    (interpreter : Interpreter.t WIRE WIRE_types) : Prop :=
+  match bytecode_action interpreter with
+  | Some (InterpreterAction.NewFrame (FrameInput.Call _)) => True
+  | _ => False
+  end.
 
 (** ** StackUnderflow Tests *)
 
@@ -27,8 +50,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := static_call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.StackUnderflow.
+  bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -42,8 +64,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.StackUnderflow.
+  bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -58,8 +79,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.StackUnderflow.
+  bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -85,7 +105,7 @@ Goal
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
-  destruct (RuntimeFlag.is_static SpecId.LATEST); auto.
+  destruct (RuntimeFlag.is_static SpecId.PRAGUE); auto.
 Qed.
 
 Goal
@@ -103,11 +123,10 @@ Goal
   let '(result_interpreter, _) := call interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.CallNotAllowedInsideStatic \/
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.CallOrCreate.
+  is_call_frame result_interpreter.
 Proof.
   timeout 1 vm_compute.
-  destruct (RuntimeFlag.is_static SpecId.LATEST); auto.
+  destruct (RuntimeFlag.is_static SpecId.PRAGUE); auto.
 Qed.
 
 (** ** CALLCODE tests *)
@@ -117,8 +136,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := call_code interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.StackUnderflow.
+  bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -157,8 +175,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHostWithAccount.t := TestHostWithAccount.Make in
   let '(result_interpreter, _) := call_code interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.CallOrCreate.
+  is_call_frame result_interpreter.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -173,8 +190,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := delegate_call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.StackUnderflow.
+  bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -211,8 +227,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHostWithAccount.t := TestHostWithAccount.Make in
   let '(result_interpreter, _) := delegate_call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.CallOrCreate.
+  is_call_frame result_interpreter.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -227,8 +242,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := static_call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.StackUnderflow.
+  bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -247,14 +261,13 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := static_call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.StackUnderflow.
+  bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
 Qed.
 
-(** ** Tests requiring full path (FatalExternalError, CallOrCreate)
+(** ** Tests requiring full path (FatalExternalError, call frame)
     These tests go through get_memory_input_and_out_ranges which involves
     complex computation. *)
 
@@ -278,7 +291,7 @@ Proof.
   reflexivity.
 Qed.
 
-(** Test that static_call with valid account returns CallOrCreate *)
+(** Test that static_call with valid account creates a call frame *)
 Goal
   let stack := {| Stack.value := [
     {| Uint.value := 0 |};     (* out_len *)
@@ -291,8 +304,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHostWithAccount.t := TestHostWithAccount.Make in
   let '(result_interpreter, _) := static_call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
-    Some InstructionResult.CallOrCreate.
+  is_call_frame result_interpreter.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
