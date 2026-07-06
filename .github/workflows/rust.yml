@@ -300,3 +300,8 @@ jobs:
             make -j3
             cd ..
           endGroup
+          startGroup "Compile plugin-expanded Rocq links"
+            cd RocqOfRust
+            make links-expanded-check
+            cd ..
+          endGroup

@@ -2,15 +2,15 @@ open Link_model
 
 exception Parse_error of string
 
-let error message = raise (Parse_error message)
+let error (message : string) : 'a = raise (Parse_error message)
 
-let trim = String.trim
+let trim : string -> string = String.trim
 
-let starts_with ~prefix s =
+let starts_with ~(prefix : string) (s : string) : bool =
   let n = String.length prefix in
   String.length s >= n && String.sub s 0 n = prefix
 
-let split_once ch s =
+let split_once (ch : char) (s : string) : (string * string) option =
   match String.index_opt s ch with
   | None -> None
   | Some i ->
@@ -18,20 +18,20 @@ let split_once ch s =
         ( String.sub s 0 i,
           String.sub s (i + 1) (String.length s - i - 1) )
 
-let parse_field text =
+let parse_field (text : string) : field =
   match split_once ':' text with
   | None -> error ("expected field `name : type`, got `" ^ text ^ "`")
   | Some (name, ty) ->
       { field_name = trim name; field_ty = trim ty }
 
-let split_fields text =
+let split_fields (text : string) : field list =
   text
   |> String.split_on_char ';'
   |> List.map trim
   |> List.filter (fun s -> s <> "")
   |> List.map parse_field
 
-let strip_wrapped open_ch close_ch text =
+let strip_wrapped (open_ch : char) (close_ch : char) (text : string) : string option =
   let text = trim text in
   let len = String.length text in
   if len < 2 || text.[0] <> open_ch || text.[len - 1] <> close_ch then
@@ -39,7 +39,7 @@ let strip_wrapped open_ch close_ch text =
   else
     Some (String.sub text 1 (len - 2))
 
-let parse_header line kind =
+let parse_header (line : string) (kind : string) : string * string =
   let line = trim line in
   let prefix = "RocqOfRustLink" ^ kind ^ " " in
   if not (starts_with ~prefix line) then
@@ -60,7 +60,7 @@ let parse_header line kind =
           path, after)
   | _ -> error "expected quoted Rust path"
 
-let parse_variant line =
+let parse_variant (line : string) : variant =
   let line = trim line in
   if not (starts_with ~prefix:"|" line) then
     error ("expected enum variant line, got `" ^ line ^ "`");
@@ -97,11 +97,11 @@ let parse_variant line =
   in
   { name; rust_name; payload }
 
-let command_start line =
+let command_start (line : string) : bool =
   starts_with ~prefix:"RocqOfRustLinkEnum " line
   || starts_with ~prefix:"RocqOfRustLinkRecord " line
 
-let parse_command lines =
+let parse_command (lines : string list) : command =
   match lines with
   | [] -> error "empty command"
   | first :: rest when starts_with ~prefix:"RocqOfRustLinkRecord " (trim first) ->
@@ -137,7 +137,15 @@ let parse_command lines =
       EnumDecl { path; variants }
   | first :: _ -> error ("unknown command start `" ^ first ^ "`")
 
-let expand_file output_root file =
+let is_plugin_require (line : string) : bool =
+  let stripped = trim line in
+  starts_with ~prefix:"Require Import links.Plugin." stripped
+  || starts_with ~prefix:"Require Export links.Plugin." stripped
+  || starts_with ~prefix:"Require Import RocqOfRust.links.Plugin." stripped
+  || starts_with ~prefix:"Require Export RocqOfRust.links.Plugin." stripped
+  || stripped = "Declare ML Module \"rocqofrust_link_plugin\"."
+
+let expand_file (output_root : string) (file : string) : unit =
   let lines = In_channel.with_open_text file In_channel.input_lines in
   let rec loop acc pending = function
     | [] ->
@@ -156,7 +164,7 @@ let expand_file output_root file =
             loop (List.rev (Link_render.render command) @ acc) [] rest
           else
             loop acc (line :: pending) rest
-        else if starts_with ~prefix:"Require Import links.Plugin." stripped then
+        else if is_plugin_require stripped then
           loop acc [] rest
         else if command_start stripped then
           if String.length stripped > 0 && stripped.[String.length stripped - 1] = '.' then
@@ -174,7 +182,7 @@ let expand_file output_root file =
   Out_channel.with_open_text output (fun ch ->
       List.iter (fun line -> output_string ch line; output_char ch '\n') rendered)
 
-let () =
+let () : unit =
   match Array.to_list Sys.argv with
   | _ :: output_root :: files ->
       List.iter

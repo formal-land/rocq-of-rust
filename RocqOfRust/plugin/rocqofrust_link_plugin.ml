@@ -1,49 +1,51 @@
-let _ = Mltop.add_known_module "rocqofrust_link_plugin"
+let () : unit = Mltop.add_known_module "rocqofrust_link_plugin"
 
 open Procq
 open Stdarg
 open Pp
 
-let plugin_name = "rocqofrust_link_plugin"
+let plugin_name : string = "rocqofrust_link_plugin"
 
-let string_of_id id = Names.Id.to_string id
+let string_of_id (id : Names.Id.t) : string = Names.Id.to_string id
 
-let string_of_constr_expr expr =
+let string_of_constr_expr (expr : Constrexpr.constr_expr) : string =
   let env = Global.env () in
   let sigma = Evd.from_env env in
   Pp.string_of_ppcmds (Ppconstr.pr_constr_expr env sigma expr)
 
-let user_err message = CErrors.user_err (Pp.str message)
+let user_err (message : string) : 'a = CErrors.user_err (Pp.str message)
 
-let convert_error f x =
+let convert_error (f : 'a -> 'b) (x : 'a) : 'b =
   try f x with
   | Link_model.Error message -> user_err message
 
-let token s = Symbol.token (terminal s)
+let token (s : string) : ('a, Gramlib.Grammar.norec, string) Procq.Symbol.t =
+  Symbol.token (terminal s)
 
-let semi =
+let semi : (Link_model.field list, Gramlib.Grammar.norec, unit) Procq.Symbol.t =
   Symbol.rules
     [ Rules.make
         (Rule.next_norec Rule.stop (token ";"))
         (fun _ _loc -> ())
     ]
 
-let comma =
+let comma : (Link_model.field list, Gramlib.Grammar.norec, unit) Procq.Symbol.t =
   Symbol.rules
     [ Rules.make
         (Rule.next_norec Rule.stop (token ","))
         (fun _ _loc -> ())
     ]
 
-let pr_field field =
+let pr_field (field : Link_model.field) : Pp.t =
   Pp.str field.Link_model.field_name ++ Pp.str " : " ++ Pp.str field.field_ty
 
-let pr_field_list fields =
+let pr_field_list (fields : Link_model.field list) : Pp.t =
   Pp.str "{"
   ++ Pp.prlist_with_sep Pp.pr_semicolon pr_field fields
   ++ Pp.str "}"
 
-let (wit_link_field, link_field) =
+let (wit_link_field, link_field) :
+    Link_model.field Genarg.vernac_genarg_type * Link_model.field Procq.Entry.t =
   Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_field"
     {
       Vernacextend.arg_parsing =
@@ -63,7 +65,8 @@ let (wit_link_field, link_field) =
       arg_printer = (fun _env _sigma -> pr_field);
     }
 
-let (wit_link_fields, link_fields) =
+let (wit_link_fields, link_fields) :
+    Link_model.field list Genarg.vernac_genarg_type * Link_model.field list Procq.Entry.t =
   Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_fields"
     {
       Vernacextend.arg_parsing =
@@ -79,7 +82,8 @@ let (wit_link_fields, link_fields) =
           Pp.prlist_with_sep Pp.pr_semicolon pr_field fields);
     }
 
-let fields_between open_token close_token =
+let fields_between
+    (open_token : string) (close_token : string) : Link_model.field list Procq.Production.t =
   Production.make
     (Rule.next
        (Rule.next
@@ -88,7 +92,8 @@ let fields_between open_token close_token =
        (token close_token))
     (fun _ fields _ _loc -> fields)
 
-let (wit_link_record_fields, link_record_fields) =
+let (wit_link_record_fields, link_record_fields) :
+    Link_model.field list Genarg.vernac_genarg_type * Link_model.field list Procq.Entry.t =
   Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_record_fields"
     {
       Vernacextend.arg_parsing =
@@ -96,7 +101,8 @@ let (wit_link_record_fields, link_record_fields) =
       arg_printer = (fun _env _sigma -> pr_field_list);
     }
 
-let (wit_link_tuple_fields, link_tuple_fields) =
+let (wit_link_tuple_fields, link_tuple_fields) :
+    Link_model.field list Genarg.vernac_genarg_type * Link_model.field list Procq.Entry.t =
   Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_tuple_fields"
     {
       Vernacextend.arg_parsing =
@@ -123,16 +129,20 @@ let (wit_link_tuple_fields, link_tuple_fields) =
         ++ Pp.str ")");
     }
 
-let variant name rust_name payload =
+let variant
+    (name : Names.Id.t) (rust_name : string) (payload : Link_model.variant_payload) :
+    Link_model.variant =
   { Link_model.name = string_of_id name;
     rust_name;
     payload;
   }
 
-let variant_default name payload =
+let variant_default
+    (name : Names.Id.t) (payload : Link_model.variant_payload) : Link_model.variant =
   variant name (string_of_id name) payload
 
-let (wit_link_variant, link_variant) =
+let (wit_link_variant, link_variant) :
+    Link_model.variant Genarg.vernac_genarg_type * Link_model.variant Procq.Entry.t =
   Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_variant"
     {
       Vernacextend.arg_parsing =
@@ -199,17 +209,17 @@ let (wit_link_variant, link_variant) =
         Pp.str variant.Link_model.name);
     }
 
-let parse_vernac sentence =
+let parse_vernac (sentence : string) : Vernacexpr.vernac_control =
   match Procq.parse_string (Pvernac.main_entry None) sentence with
   | Some command -> command
   | None -> user_err ("empty generated Rocq sentence: " ^ sentence)
 
-let line_ends_sentence line =
+let line_ends_sentence (line : string) : bool =
   let line = String.trim line in
   let len = String.length line in
   len > 0 && line.[len - 1] = '.'
 
-let generated_sentences lines =
+let generated_sentences (lines : string list) : string list =
   let rec loop sentences pending = function
     | [] -> (
         match pending with
@@ -230,7 +240,7 @@ let generated_sentences lines =
   in
   loop [] [] lines
 
-let interp_vernac sentence =
+let interp_vernac (sentence : string) : unit =
   try
     let command = parse_vernac sentence in
     let st = Vernacstate.freeze_full_state () in
@@ -241,15 +251,15 @@ let interp_vernac sentence =
       ("error while interpreting generated Rocq sentence:\n"
       ^ sentence ^ "\n\n" ^ Printexc.to_string exn)
 
-let run_generated command =
+let run_generated (command : Link_model.command) : unit =
   convert_error Link_render.render command
   |> generated_sentences
   |> List.iter interp_vernac
 
-let command_typed_vernac command =
+let command_typed_vernac (command : Link_model.command) : Vernactypes.typed_vernac =
   Vernactypes.vtdefault (fun () -> run_generated command)
 
-let () =
+let () : unit =
   Vernacextend.static_vernac_extend
     ~plugin:(Some plugin_name)
     ~command:"RocqOfRustLinkRecord"
@@ -274,7 +284,7 @@ let () =
           None );
     ]
 
-let () =
+let () : unit =
   Vernacextend.static_vernac_extend
     ~plugin:(Some plugin_name)
     ~command:"RocqOfRustLinkEnum"

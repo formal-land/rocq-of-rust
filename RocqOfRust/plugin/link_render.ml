@@ -1,13 +1,13 @@
 open Link_model
 
-let quote s = Printf.sprintf "%S" s
+let quote (s : string) : string = Printf.sprintf "%S" s
 
-let indent prefix lines =
+let indent (prefix : string) (lines : string list) : string list =
   List.map (fun line -> if line = "" then line else prefix ^ line) lines
 
-let join_lines lines = String.concat "\n" lines
+let join_lines (lines : string list) : string = String.concat "\n" lines
 
-let semicolon_list render values =
+let semicolon_list (render : 'a -> string) (values : 'a list) : string list =
   let rec aux = function
     | [] -> []
     | [ value ] -> [ render value ]
@@ -15,16 +15,17 @@ let semicolon_list render values =
   in
   aux values
 
-let path_ty path = "Ty.path " ^ quote path
+let path_ty (path : string) : string = "Ty.path " ^ quote path
 
-let variant_path path variant = path ^ "::" ^ variant.rust_name
+let variant_path (path : string) (variant : variant) : string =
+  path ^ "::" ^ variant.rust_name
 
-let constructor_pattern variant =
+let constructor_pattern (variant : variant) : string =
   match variant.payload with
   | TuplePayload fields | RecordPayload fields ->
       String.concat " " (variant.name :: List.map (fun (field : field) -> field.field_name) fields)
 
-let constructor_value variant fields =
+let constructor_value (variant : variant) (fields : field list) : string =
   match fields with
   | [] -> variant.name
   | _ ->
@@ -34,7 +35,7 @@ let constructor_value variant fields =
               (fun field -> "      H_" ^ field.field_name ^ ".(OfValueWith.value)")
               fields)
 
-let render_inductive variants =
+let render_inductive (variants : variant list) : string list =
   [ "Inductive t : Set :=" ]
   @ List.map
       (fun variant ->
@@ -50,12 +51,13 @@ let render_inductive variants =
       variants
   @ [ "." ]
 
-let render_record_decl fields =
+let render_record_decl (fields : field list) : string list =
   [ "Record t : Set := {" ]
   @ List.map (fun field -> "  " ^ field.field_name ^ " : " ^ field.field_ty ^ ";") fields
   @ [ "}." ]
 
-let render_record_value path fields value_of =
+let render_record_value
+    (path : string) (fields : field list) (value_of : field -> string) : string list =
   [ "Value.StructRecord " ^ quote path ^ " [] [] [" ]
   @ indent "  "
       (semicolon_list
@@ -63,7 +65,7 @@ let render_record_value path fields value_of =
          fields)
   @ [ "]" ]
 
-let render_variant_value path variant =
+let render_variant_value (path : string) (variant : variant) : string =
   let vpath = variant_path path variant in
   match variant.payload with
   | TuplePayload fields ->
@@ -75,7 +77,7 @@ let render_variant_value path variant =
         (render_record_value vpath (sorted_fields fields)
            (fun field -> "φ " ^ field.field_name))
 
-let render_enum_link path variants =
+let render_enum_link (path : string) (variants : variant list) : string list =
   [ "Instance IsLink : Link t := {";
     "  Φ := " ^ path_ty path ^ ";";
     "  φ x :=";
@@ -90,7 +92,7 @@ let render_enum_link path variants =
   @ [ "    end";
       "}." ]
 
-let render_record_link path fields =
+let render_record_link (path : string) (fields : field list) : string list =
   [ "Instance IsLink : Link t := {";
     "  Φ := " ^ path_ty path ^ ";";
     "  φ x :=" ]
@@ -99,23 +101,24 @@ let render_record_link path fields =
          (fun field -> "φ x.(" ^ field.field_name ^ ")"))
   @ [ "}." ]
 
-let render_of_ty path =
+let render_of_ty (path : string) : string list =
   [ "Instance IsOfTy : OfTy.C (" ^ path_ty path ^ ") := {";
     "  A := t;";
     "  eq := eq_refl;";
     "}." ]
 
-let render_instance_params fields =
+let render_instance_params (fields : field list) : string list =
   List.map
     (fun field ->
       "    (" ^ field.field_name ^ "' : Value.t) {H_" ^ field.field_name
       ^ " : OfValueWith.C (" ^ field.field_ty ^ ") " ^ field.field_name ^ "'}")
     fields
 
-let render_value_fields path fields =
+let render_value_fields (path : string) (fields : field list) : string list =
   render_record_value path fields (fun (field : field) -> field.field_name ^ "'")
 
-let render_record_of_value kind path fields =
+let render_record_of_value
+    (kind : [ `Plain | `With ]) (path : string) (fields : field list) : string list =
   let sorted = sorted_fields fields in
   let head =
     match kind with
@@ -141,7 +144,8 @@ let render_record_of_value kind path fields =
       "  eq := ltac:(sauto lq: on);";
       "}." ]
 
-let render_enum_of_value kind path variant =
+let render_enum_of_value
+    (kind : [ `Plain | `With ]) (path : string) (variant : variant) : string list =
   let fields =
     match variant.payload with
     | TuplePayload fields -> fields
@@ -188,7 +192,7 @@ let render_enum_of_value kind path variant =
         "  eq := ltac:(sauto lq: on);";
         "}." ]
 
-let render_record_subpointer path field =
+let render_record_subpointer (path : string) (field : field) : string list =
   let get = "get_" ^ field.field_name in
   [ "Definition " ^ get ^ " : SubPointer.Runner.t t";
     "  (Pointer.Index.StructRecord " ^ quote path ^ " " ^ quote field.field_name ^ ") :=";
@@ -202,7 +206,8 @@ let render_record_subpointer path field =
     "  ltac:(now constructor).";
     "Smpl Add apply " ^ get ^ "_is_valid : run_sub_pointer." ]
 
-let render_enum_subpointer path variant index field =
+let render_enum_subpointer
+    (path : string) (variant : variant) (index : int) (field : field) : string list =
   let vpath = variant_path path variant in
   let is_record =
     match variant.payload with
@@ -260,10 +265,10 @@ let render_enum_subpointer path variant index field =
     "  ltac:(constructor; intros; destruct a; try reflexivity; discriminate).";
     "Smpl Add apply " ^ get ^ "_is_valid : run_sub_pointer." ]
 
-let render_subpointer_module body =
+let render_subpointer_module (body : string list) : string list =
   [ "Module SubPointer." ] @ indent "  " body @ [ "End SubPointer." ]
 
-let render_record path fields =
+let render_record (path : string) (fields : field list) : string list =
   validate (RecordDecl { path; fields });
   render_record_decl fields
   @ [ "" ]
@@ -283,7 +288,7 @@ let render_record path fields =
               if i = List.length fields - 1 then lines else lines @ [ "" ])
             fields))
 
-let render_enum path variants =
+let render_enum (path : string) (variants : variant list) : string list =
   validate (EnumDecl { path; variants });
   render_inductive variants
   @ [ "" ]
@@ -313,8 +318,9 @@ let render_enum path variants =
                    fields))
             variants))
 
-let render = function
+let render (command : command) : string list =
+  match command with
   | RecordDecl { path; fields } -> render_record path fields
   | EnumDecl { path; variants } -> render_enum path variants
 
-let render_text command = join_lines (render command) ^ "\n"
+let render_text (command : command) : string = join_lines (render command) ^ "\n"

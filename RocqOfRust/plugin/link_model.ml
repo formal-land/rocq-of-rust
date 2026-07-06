@@ -25,13 +25,15 @@ type command =
 
 exception Error of string
 
-let user_error message = raise (Error message)
+let user_error (message : string) : 'a = raise (Error message)
 
-let compare_field (a : field) (b : field) = String.compare a.field_name b.field_name
+let compare_field (a : field) (b : field) : int =
+  String.compare a.field_name b.field_name
 
-let sorted_fields (fields : field list) = List.sort compare_field fields
+let sorted_fields (fields : field list) : field list =
+  List.sort compare_field fields
 
-let validate_unique what names =
+let validate_unique (what : string) (names : string list) : unit =
   let seen = Hashtbl.create 17 in
   List.iter
     (fun name ->
@@ -40,14 +42,15 @@ let validate_unique what names =
       Hashtbl.add seen name ())
     names
 
-let validate_fields (fields : field list) =
+let validate_fields (fields : field list) : unit =
   validate_unique "field" (List.map (fun (field : field) -> field.field_name) fields)
 
-let validate_variant (variant : variant) =
+let validate_variant (variant : variant) : unit =
   match variant.payload with
   | TuplePayload fields | RecordPayload fields -> validate_fields fields
 
-let validate = function
+let validate (command : command) : unit =
+  match command with
   | RecordDecl { fields; _ } -> validate_fields fields
   | EnumDecl { variants; _ } ->
       validate_unique "variant" (List.map (fun variant -> variant.name) variants);

@@ -1,10 +1,14 @@
-.PHONY: all clean clean-util distclean default watch generate jinja plugin links-explicit
+.PHONY: all clean clean-util distclean default watch generate jinja plugin links-explicit links-expanded-check
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 JINJA_TEMPLATES := $(shell find -L . -name "*.v.jinja2" | sort)
 JINJA_GENERATED := $(JINJA_TEMPLATES:.v.jinja2=.v)
+EXPANDED_LINK_ROOT := ../expanded-links/RocqOfRust
+LINK_PLUGIN_SUPPORT_SOURCES := \
+	links/RocqOfRust.v
 LINK_PLUGIN_SOURCES := \
 	core/links/cmpOrdering.v
+LINK_EXPAND_SOURCES := $(LINK_PLUGIN_SUPPORT_SOURCES) $(LINK_PLUGIN_SOURCES)
 
 PLUGIN_PACKAGES := \
 	rocq-runtime.clib,rocq-runtime.config,rocq-runtime.engine,rocq-runtime.interp,rocq-runtime.kernel,rocq-runtime.lib,rocq-runtime.library,rocq-runtime.parsing,rocq-runtime.pretyping,rocq-runtime.printing,rocq-runtime.proofs,rocq-runtime.tactics,rocq-runtime.vernac
@@ -24,8 +28,14 @@ plugin/rocqofrust_link_plugin/rocqofrust_link_plugin.cmxs: $(PLUGIN_ML) plugin/r
 plugin/link_expand: $(EXPANDER_ML)
 	ocamlfind ocamlopt -I plugin $(EXPANDER_ML) -o $@
 
-links-explicit: plugin/link_expand $(LINK_PLUGIN_SOURCES)
-	./plugin/link_expand ../expanded-links/RocqOfRust $(LINK_PLUGIN_SOURCES)
+links-explicit: plugin/link_expand $(LINK_EXPAND_SOURCES)
+	./plugin/link_expand $(EXPANDED_LINK_ROOT) $(LINK_EXPAND_SOURCES)
+
+links-expanded-check: links-explicit
+	cd $(EXPANDED_LINK_ROOT) && coqc -R . "" -R ../../RocqOfRust RocqOfRust -impredicative-set links/RocqOfRust.v
+	@for file in $(LINK_PLUGIN_SOURCES); do \
+		cd $(EXPANDED_LINK_ROOT) && coqc -R . "" -R ../../RocqOfRust RocqOfRust -impredicative-set $$file; \
+	done
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.

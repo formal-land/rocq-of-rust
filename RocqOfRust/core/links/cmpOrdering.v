@@ -1,5 +1,4 @@
 Require Import links.RocqOfRust.
-Require Import links.Plugin.
 Require Import core.cmp.
 
 (*
