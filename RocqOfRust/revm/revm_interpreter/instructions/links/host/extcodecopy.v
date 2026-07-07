@@ -63,18 +63,20 @@ Proof.
   { eapply Impl_Interpreter.run_halt. }
   { eapply Impl_Interpreter.run_halt_memory_oog. }
   { eapply Impl_Interpreter.run_halt_oog. }
-  all: try eapply Host.run_load_account_info_skip_cold_load.
-  all: try eapply Impl_Deref_for_AccountInfoLoad.run_deref.
-  all: try eapply Impl_Interpreter.run_halt_oog.
-  all: try eapply Host.run_load_account_code.
-  all: try eapply Impl_Interpreter.run_halt_underflow.
-  all: try eapply Impl_Interpreter.run_halt_fatal.
-  eapply Run.CallPrimitiveGetTraitMethod.
-  { exact Impl_Deref_for_AccountInfoLoad.method_deref.(deref.Deref.deref_is_method).(IsTraitMethod.Make). }
-  eapply (Run.CallClosure _ _ _ _ _ _ (Ref.of_ty_ref _ AccountInfo.of_ty)).
-  { exact (Impl_Deref_for_AccountInfoLoad.method_deref.(deref.Deref.run_deref)
-      (Ref.cast_to Pointer.Kind.Ref output6)).(Run.run_f). }
-  intros.
-  run_symbolic.
+  { eapply Impl_Interpreter.run_halt_oog. }
+  { eapply Impl_Interpreter.run_halt_oog. }
+  { eapply Impl_Interpreter.run_halt_fatal. }
+  {
+    eapply Run.CallPrimitiveGetTraitMethod.
+    { exact Impl_Deref_for_AccountInfoLoad.method_deref.(deref.Deref.deref_is_method).(IsTraitMethod.Make). }
+    eapply (Run.CallClosure _ _ _ _ _ _ (Ref.of_ty_ref _ AccountInfo.of_ty)).
+    { exact (Impl_Deref_for_AccountInfoLoad.method_deref.(deref.Deref.run_deref)
+        (Ref.cast_to Pointer.Kind.Ref output6)).(Run.run_f). }
+    intros.
+    run_symbolic.
+  }
+  { eapply Impl_Interpreter.run_halt_oog. }
+  { eapply Impl_Interpreter.run_halt_fatal. }
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_extcodecopy.
