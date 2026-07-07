@@ -44,6 +44,12 @@ The generated definitions include:
 - `IsOfValue...`
 - `SubPointer` definitions for fields
 
+You can inspect the generated definitions with:
+
+```coq
+Print Module Ordering.
+```
+
 Enum variants can carry tuple-style or record-style fields:
 
 ```coq
@@ -65,31 +71,6 @@ Module Keyword.
   | Type_ as "Type"
   .
 End Keyword.
-```
-
-## Debugging Generated Definitions
-
-The plugin runs inline: it interprets the generated Rocq definitions immediately
-at the command location. To inspect what was actually introduced, use standard
-Rocq printing commands:
-
-```coq
-Print Ordering.t.
-Print Ordering.IsLink.
-Print Ordering.IsOfTy.
-Print Ordering.IsOfValueWith_Less.
-Print Ordering.IsOfValue_Less.
-Print Ordering.SubPointer.
-
-Eval cbn in (φ Ordering.Less).
-```
-
-For detailed elaborated terms, enable full printing around a specific command:
-
-```coq
-Set Printing All.
-Print Ordering.IsLink.
-Unset Printing All.
 ```
 
 ## Regression Test

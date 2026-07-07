@@ -4,10 +4,19 @@ open Procq
 open Stdarg
 open Pp
 
+(* Register two vernacular commands:
+   - RocqOfRustLinkRecord
+   - RocqOfRustLinkEnum
+   They parse a compact declaration, render ordinary Rocq sentences, then
+   interpret those sentences at the command location. *)
+
 let plugin_name : string = "rocqofrust_link_plugin"
 
 let string_of_id (id : Names.Id.t) : string = Names.Id.to_string id
 
+(* The command grammar accepts normal Rocq constr syntax for field types.  We
+   keep the pretty-printed source form so the renderer can emit definitions
+   through the regular vernacular parser. *)
 let string_of_constr_expr (expr : Constrexpr.constr_expr) : string =
   let env = Global.env () in
   let sigma = Evd.from_env env in
@@ -22,6 +31,8 @@ let convert_error (f : 'a -> 'b) (x : 'a) : 'b =
 let token (s : string) : ('a, Gramlib.Grammar.norec, string) Procq.Symbol.t =
   Symbol.token (terminal s)
 
+(* Separators are generic grammar symbols.  Their phantom result type is fixed
+   by the list parser that consumes them. *)
 let semi : (Link_model.field list, Gramlib.Grammar.norec, unit) Procq.Symbol.t =
   Symbol.rules
     [ Rules.make
@@ -44,6 +55,7 @@ let pr_field_list (fields : Link_model.field list) : Pp.t =
   ++ Pp.prlist_with_sep Pp.pr_semicolon pr_field fields
   ++ Pp.str "}"
 
+(* Field grammar: [name : type]. *)
 let (wit_link_field, link_field) :
     Link_model.field Genarg.vernac_genarg_type * Link_model.field Procq.Entry.t =
   Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_field"
@@ -65,6 +77,7 @@ let (wit_link_field, link_field) :
       arg_printer = (fun _env _sigma -> pr_field);
     }
 
+(* Shared grammar for semicolon-separated field lists without delimiters. *)
 let (wit_link_fields, link_fields) :
     Link_model.field list Genarg.vernac_genarg_type * Link_model.field list Procq.Entry.t =
   Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_fields"
@@ -82,6 +95,8 @@ let (wit_link_fields, link_fields) :
           Pp.prlist_with_sep Pp.pr_semicolon pr_field fields);
     }
 
+(* Delimited field lists are reused for record declarations and record-like
+   enum variants. *)
 let fields_between
     (open_token : string) (close_token : string) : Link_model.field list Procq.Production.t =
   Production.make
@@ -101,6 +116,8 @@ let (wit_link_record_fields, link_record_fields) :
       arg_printer = (fun _env _sigma -> pr_field_list);
     }
 
+(* Tuple payloads accept either semicolon or comma separators to make compact
+   declarations convenient in both record-like and tuple-like styles. *)
 let (wit_link_tuple_fields, link_tuple_fields) :
     Link_model.field list Genarg.vernac_genarg_type * Link_model.field list Procq.Entry.t =
   Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_tuple_fields"
@@ -141,6 +158,8 @@ let variant_default
     (name : Names.Id.t) (payload : Link_model.variant_payload) : Link_model.variant =
   variant name (string_of_id name) payload
 
+(* Variant grammar always starts with [|].  The optional [as "RustName"] keeps
+   the Rocq constructor name independent from the Rust path component. *)
 let (wit_link_variant, link_variant) :
     Link_model.variant Genarg.vernac_genarg_type * Link_model.variant Procq.Entry.t =
   Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_variant"
@@ -209,6 +228,8 @@ let (wit_link_variant, link_variant) :
         Pp.str variant.Link_model.name);
     }
 
+(* The renderer returns lines, not sentences.  Grouping by final dots keeps
+   multiline definitions intact before calling Rocq's vernacular parser. *)
 let parse_vernac (sentence : string) : Vernacexpr.vernac_control =
   match Procq.parse_string (Pvernac.main_entry None) sentence with
   | Some command -> command
@@ -240,6 +261,8 @@ let generated_sentences (lines : string list) : string list =
   in
   loop [] [] lines
 
+(* Interpret generated sentences in the current vernacular state so the compact
+   command behaves as if the expanded definitions had been written inline. *)
 let interp_vernac (sentence : string) : unit =
   try
     let command = parse_vernac sentence in
@@ -259,6 +282,9 @@ let run_generated (command : Link_model.command) : unit =
 let command_typed_vernac (command : Link_model.command) : Vernactypes.typed_vernac =
   Vernactypes.vtdefault (fun () -> run_generated command)
 
+(* Top-level record command.  Braces live in the command grammar rather than in
+   a custom nonterminal so the vernacular parser recognizes the command head
+   reliably after [:=]. *)
 let () : unit =
   Vernacextend.static_vernac_extend
     ~plugin:(Some plugin_name)
@@ -284,6 +310,8 @@ let () : unit =
           None );
     ]
 
+(* Top-level enum command.  The body is a nonempty list of variant entries,
+   each beginning with [|], just like an Inductive declaration. *)
 let () : unit =
   Vernacextend.static_vernac_extend
     ~plugin:(Some plugin_name)

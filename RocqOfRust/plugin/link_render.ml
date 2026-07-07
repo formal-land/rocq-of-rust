@@ -1,5 +1,9 @@
 open Link_model
 
+(* Render compact link declarations into ordinary Rocq sentences.  The plugin
+   interprets these sentences immediately, while tests inspect the resulting
+   definitions with Print. *)
+
 let quote (s : string) : string = Printf.sprintf "%S" s
 
 let indent (prefix : string) (lines : string list) : string list =
@@ -20,6 +24,8 @@ let path_ty (path : string) : string = "Ty.path " ^ quote path
 let variant_path (path : string) (variant : variant) : string =
   path ^ "::" ^ variant.rust_name
 
+(* Constructor patterns and values use the user-written field order, matching
+   the generated Rocq constructor arguments. *)
 let constructor_pattern (variant : variant) : string =
   match variant.payload with
   | TuplePayload fields | RecordPayload fields ->
@@ -65,6 +71,8 @@ let render_record_value
          fields)
   @ [ "]" ]
 
+(* StructRecord values are rendered in sorted field-name order, matching the
+   existing Jinja convention and keeping output stable. *)
 let render_variant_value (path : string) (variant : variant) : string =
   let vpath = variant_path path variant in
   match variant.payload with
@@ -117,6 +125,8 @@ let render_instance_params (fields : field list) : string list =
 let render_value_fields (path : string) (fields : field list) : string list =
   render_record_value path fields (fun (field : field) -> field.field_name ^ "'")
 
+(* Record constructors still receive fields in declaration order; only the
+   StructRecord value used for matching is sorted. *)
 let render_record_of_value
     (kind : [ `Plain | `With ]) (path : string) (fields : field list) : string list =
   let sorted = sorted_fields fields in
@@ -192,6 +202,9 @@ let render_enum_of_value
         "  eq := ltac:(sauto lq: on);";
         "}." ]
 
+(* SubPointer proofs are emitted as proof terms with ltac:(...), because the
+   plugin interprets complete vernacular sentences rather than entering proof
+   mode for generated tactic commands. *)
 let render_record_subpointer (path : string) (field : field) : string list =
   let get = "get_" ^ field.field_name in
   [ "Definition " ^ get ^ " : SubPointer.Runner.t t";
@@ -268,6 +281,8 @@ let render_enum_subpointer
 let render_subpointer_module (body : string list) : string list =
   [ "Module SubPointer." ] @ indent "  " body @ [ "End SubPointer." ]
 
+(* Top-level renderers validate first so all downstream functions can assume a
+   well-formed declaration. *)
 let render_record (path : string) (fields : field list) : string list =
   validate (RecordDecl { path; fields });
   render_record_decl fields

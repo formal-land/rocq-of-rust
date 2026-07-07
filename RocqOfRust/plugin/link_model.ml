@@ -1,3 +1,7 @@
+(* Small AST shared by the vernac command parser and the renderer.  It is
+   intentionally textual: types are kept as Rocq source fragments because the
+   plugin generates vernacular definitions, not kernel terms directly. *)
+
 type field = {
   field_name : string;
   field_ty : string;
@@ -33,6 +37,8 @@ let compare_field (a : field) (b : field) : int =
 let sorted_fields (fields : field list) : field list =
   List.sort compare_field fields
 
+(* Catch duplicate names before rendering, so failures point to the compact
+   command rather than to a generated definition later in the file. *)
 let validate_unique (what : string) (names : string list) : unit =
   let seen = Hashtbl.create 17 in
   List.iter
