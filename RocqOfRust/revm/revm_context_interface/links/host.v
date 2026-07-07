@@ -394,6 +394,14 @@ Module Host.
       Run.Trait block_hash [] [] [ φ self; φ number ] (option aliases.B256.t);
   }.
 
+  (* fn max_initcode_size(&self) -> usize; *)
+  Class Method_max_initcode_size (Self : Set) `{Link Self} : Set := {
+    max_initcode_size : PolymorphicFunction.t;
+    max_initcode_size_is_method :: IsTraitMethod.C (trait Self) "max_initcode_size" max_initcode_size;
+    run_max_initcode_size (self : '& Self) ::
+      Run.Trait max_initcode_size [] [] [ φ self ] usize;
+  }.
+
   (* fn beneficiary(&self) -> Address; *)
   Class Method_beneficiary (Self : Set) `{Link Self} : Set := {
     beneficiary : PolymorphicFunction.t;
@@ -570,6 +578,7 @@ Module Host.
     run_CfgGetter_for_Self :: CfgGetter.Run Self (Types.to_CfgGetter_types types);
     method_load_account_delegated :: Method_load_account_delegated Self;
     method_block_hash :: Method_block_hash Self;
+    method_max_initcode_size :: Method_max_initcode_size Self;
     method_beneficiary :: Method_beneficiary Self;
     method_block_number :: Method_block_number Self;
     method_timestamp :: Method_timestamp Self;
@@ -593,6 +602,23 @@ End Host.
 Export (hints) Host.
 
 Module Impl_Host_for_RefMut.
+  Instance method_max_initcode_size
+      (Self : Set) `{Link Self}
+      (method_max_initcode_size : Host.Method_max_initcode_size Self) :
+    Host.Method_max_initcode_size ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.max_initcode_size (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_max_initcode_size.
+      run_symbolic.
+  Defined.
+
   Instance method_beneficiary
       (Self : Set) `{Link Self}
       (method_beneficiary : Host.Method_beneficiary Self) :
