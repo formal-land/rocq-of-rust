@@ -52,13 +52,29 @@ Module TestHost.
   Definition prevrandao (_self : t) : option aliases.B256.t := None.
   Definition blob_gasprice (_self : t) : option u128 := None.
 
+  Definition load_account_info_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_load_code : bool)
+      (_skip_cold_load : bool) :
+      Result.t AccountInfoLoad.t LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
+
   Definition load_account_delegated (self : t) (_address : Address.t) :
       option AccountLoad.t * t :=
+    (None, Make).
+
+  Definition load_account_code (self : t) (_address : Address.t) :
+      option (StateLoad.t Bytes.t) * t :=
     (None, Make).
 
   Definition block_hash (self : t) (_number : u64) :
       option aliases.B256.t * t :=
     (None, Make).
+
+  Definition max_initcode_size (self : t) :
+      usize * t :=
+    ({| Integer.value := 49152 |}, Make).
 
   Definition host_beneficiary (self : t) :
       Address.t * t :=
@@ -257,8 +273,11 @@ Module TestHost.
     Host.TransactionGetter_for_Self := TransactionGetter_for_t;
     Host.BlockGetter_for_Self := BlockGetter_for_t;
     Host.CfgGetter_for_Self := CfgGetter_for_t;
+    Host.load_account_info_skip_cold_load := load_account_info_skip_cold_load;
     Host.load_account_delegated := load_account_delegated;
+    Host.load_account_code := load_account_code;
     Host.block_hash := block_hash;
+    Host.max_initcode_size := max_initcode_size;
     Host.beneficiary := host_beneficiary;
     Host.block_number := block_number;
     Host.timestamp := host_timestamp;
@@ -328,13 +347,29 @@ Module TestHostWithAccount.
     AccountLoad.is_empty := true;
   |}.
 
+  Definition load_account_info_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_load_code : bool)
+      (_skip_cold_load : bool) :
+      Result.t AccountInfoLoad.t LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
+
   Definition load_account_delegated (self : t) (_address : Address.t) :
       option AccountLoad.t * t :=
     (Some test_account_load, Make).
 
+  Definition load_account_code (self : t) (_address : Address.t) :
+      option (StateLoad.t Bytes.t) * t :=
+    (None, Make).
+
   Definition block_hash (self : t) (_number : u64) :
       option aliases.B256.t * t :=
     (None, Make).
+
+  Definition max_initcode_size (self : t) :
+      usize * t :=
+    ({| Integer.value := 49152 |}, Make).
 
   Definition host_beneficiary (self : t) :
       Address.t * t :=
@@ -533,8 +568,11 @@ Module TestHostWithAccount.
     Host.TransactionGetter_for_Self := TransactionGetter_for_t;
     Host.BlockGetter_for_Self := BlockGetter_for_t;
     Host.CfgGetter_for_Self := CfgGetter_for_t;
+    Host.load_account_info_skip_cold_load := load_account_info_skip_cold_load;
     Host.load_account_delegated := load_account_delegated;
+    Host.load_account_code := load_account_code;
     Host.block_hash := block_hash;
+    Host.max_initcode_size := max_initcode_size;
     Host.beneficiary := host_beneficiary;
     Host.block_number := block_number;
     Host.timestamp := host_timestamp;

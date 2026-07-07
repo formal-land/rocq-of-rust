@@ -8,6 +8,7 @@ Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.instructions.simulate.contract.call.
 Require Import revm.revm_interpreter.instructions.simulate.contract.call_code.
+Require Import revm.revm_interpreter.instructions.simulate.contract.create.
 Require Import revm.revm_interpreter.instructions.simulate.contract.delegate_call.
 Require Import revm.revm_interpreter.instructions.simulate.contract.static_call.
 Require Import revm.revm_interpreter.links.interpreter.
@@ -39,6 +40,13 @@ Definition is_call_frame
     (interpreter : Interpreter.t WIRE WIRE_types) : Prop :=
   match bytecode_action interpreter with
   | Some (InterpreterAction.NewFrame (FrameInput.Call _)) => True
+  | _ => False
+  end.
+
+Definition is_create_frame
+    (interpreter : Interpreter.t WIRE WIRE_types) : Prop :=
+  match bytecode_action interpreter with
+  | Some (InterpreterAction.NewFrame (FrameInput.Create _)) => True
   | _ => False
   end.
 
@@ -124,6 +132,38 @@ Goal
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.CallNotAllowedInsideStatic \/
   is_call_frame result_interpreter.
+Proof.
+  timeout 1 vm_compute.
+  destruct (RuntimeFlag.is_static SpecId.PRAGUE); auto.
+Qed.
+
+(** ** CREATE tests *)
+
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHost.t := TestHost.Make in
+  let '(result_interpreter, _) := create false interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StateChangeDuringStaticCall \/
+  bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  destruct (RuntimeFlag.is_static SpecId.PRAGUE); auto.
+Qed.
+
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 0 |};     (* value *)
+    {| Uint.value := 0 |};     (* code_offset *)
+    {| Uint.value := 0 |}      (* len *)
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHost.t := TestHost.Make in
+  let '(result_interpreter, _) := create false interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StateChangeDuringStaticCall \/
+  is_create_frame result_interpreter.
 Proof.
   timeout 1 vm_compute.
   destruct (RuntimeFlag.is_static SpecId.PRAGUE); auto.
