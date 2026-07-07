@@ -1,11 +1,14 @@
 Require Import links.RocqOfRust.
 Require Import alloc.borrow.
+Require Import alloy_primitives.bits.links.fixed.
+Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import core.links.option.
 Require Import core.ops.links.function.
 Require Import core.ops.links.deref.
 Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_context_interface.journaled_state.
+Require Import ruint.links.lib.
 
 (*
 pub struct StateLoad<T> {
@@ -356,6 +359,9 @@ Export (hints) Cow.
 
 Module AccountInfo.
   Record t : Set := {
+    balance : aliases.U256.t;
+    nonce : u64;
+    code_hash : aliases.B256.t;
     code : option Bytecode.t;
   }.
 
@@ -363,6 +369,9 @@ Module AccountInfo.
     Φ := Ty.path "revm_state::account_info::AccountInfo";
     φ x :=
       Value.StructRecord "revm_state::account_info::AccountInfo" [] [] [
+        ("balance", φ x.(balance));
+        ("nonce", φ x.(nonce));
+        ("code_hash", φ x.(code_hash));
         ("code", φ x.(code))
       ];
   }.
@@ -373,17 +382,69 @@ Module AccountInfo.
   Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with code code' :
+  Lemma of_value_with
+      balance balance'
+      nonce nonce'
+      code_hash code_hash'
+      code code' :
+    balance' = φ balance ->
+    nonce' = φ nonce ->
+    code_hash' = φ code_hash ->
     code' = φ code ->
     Value.StructRecord "revm_state::account_info::AccountInfo" [] [] [
+      ("balance", balance');
+      ("nonce", nonce');
+      ("code_hash", code_hash');
       ("code", code')
-    ] = φ (Build_t code).
+    ] = φ (Build_t balance nonce code_hash code).
   Proof.
     now intros; subst.
   Qed.
   Smpl Add apply of_value_with : of_value.
 
   Module SubPointer.
+    Definition get_balance : SubPointer.Runner.t t
+      (Pointer.Index.StructRecord "revm_state::account_info::AccountInfo" "balance") :=
+    {|
+      SubPointer.Runner.projection x := Some x.(balance);
+      SubPointer.Runner.injection x y := Some (x <| balance := y |>);
+    |}.
+
+    Lemma get_balance_is_valid :
+      SubPointer.Runner.Valid.t get_balance.
+    Proof.
+      now constructor.
+    Qed.
+    Smpl Add apply get_balance_is_valid : run_sub_pointer.
+
+    Definition get_nonce : SubPointer.Runner.t t
+      (Pointer.Index.StructRecord "revm_state::account_info::AccountInfo" "nonce") :=
+    {|
+      SubPointer.Runner.projection x := Some x.(nonce);
+      SubPointer.Runner.injection x y := Some (x <| nonce := y |>);
+    |}.
+
+    Lemma get_nonce_is_valid :
+      SubPointer.Runner.Valid.t get_nonce.
+    Proof.
+      now constructor.
+    Qed.
+    Smpl Add apply get_nonce_is_valid : run_sub_pointer.
+
+    Definition get_code_hash : SubPointer.Runner.t t
+      (Pointer.Index.StructRecord "revm_state::account_info::AccountInfo" "code_hash") :=
+    {|
+      SubPointer.Runner.projection x := Some x.(code_hash);
+      SubPointer.Runner.injection x y := Some (x <| code_hash := y |>);
+    |}.
+
+    Lemma get_code_hash_is_valid :
+      SubPointer.Runner.Valid.t get_code_hash.
+    Proof.
+      now constructor.
+    Qed.
+    Smpl Add apply get_code_hash_is_valid : run_sub_pointer.
+
     Definition get_code : SubPointer.Runner.t t
       (Pointer.Index.StructRecord "revm_state::account_info::AccountInfo" "code") :=
     {|
