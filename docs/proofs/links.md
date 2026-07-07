@@ -199,3 +199,6 @@ The proofs for the link files and the simulation equivalence become more complex
 as we translate more complex Rust programs. In subsequent files, we discuss proof
 strategies for writing links and simulation equivalence proofs for Rust programs
 that use more complex language constructs.
+
+For repetitive record and enum link definitions, see the
+[Rocq link plugin](./link-plugin.md).

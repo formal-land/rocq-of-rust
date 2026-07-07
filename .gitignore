@@ -27,5 +27,12 @@
 .lia.cache
 .nia.cache
 
+# Rocq plugin build files
+RocqOfRust/plugin/*.cmi
+RocqOfRust/plugin/*.cmx
+RocqOfRust/plugin/*.cmxs
+RocqOfRust/plugin/*.o
+RocqOfRust/plugin/rocqofrust_link_plugin/*.cmxs
+
 # Generated files for the smart contracts
 contracts/generated

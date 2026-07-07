@@ -1,2 +1,3 @@
 -R . RocqOfRust
+-I plugin
 -arg -impredicative-set

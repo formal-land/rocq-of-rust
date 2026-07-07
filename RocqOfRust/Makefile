@@ -1,16 +1,34 @@
-.PHONY: all clean clean-util distclean default watch generate jinja
+.PHONY: all clean clean-util distclean default watch generate jinja plugin plugin-inline-print-check
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 JINJA_TEMPLATES := $(shell find -L . -name "*.v.jinja2" | sort)
 JINJA_GENERATED := $(JINJA_TEMPLATES:.v.jinja2=.v)
+PLUGIN_INLINE_PRINT_TEST := plugin/test_inline_print.v
+PLUGIN_INLINE_PRINT_EXPECTED := plugin/test_inline_print.expected
+PLUGIN_INLINE_PRINT_OUTPUT := /tmp/rocqofrust-plugin-inline-print.out
+
+PLUGIN_PACKAGES := \
+	rocq-runtime.clib,rocq-runtime.config,rocq-runtime.engine,rocq-runtime.interp,rocq-runtime.kernel,rocq-runtime.lib,rocq-runtime.library,rocq-runtime.parsing,rocq-runtime.pretyping,rocq-runtime.printing,rocq-runtime.proofs,rocq-runtime.tactics,rocq-runtime.vernac
+PLUGIN_ML := plugin/link_model.ml plugin/link_render.ml plugin/rocqofrust_link_plugin.ml
 
 default: all
 
 jinja: $(JINJA_GENERATED)
 
+plugin: plugin/rocqofrust_link_plugin/rocqofrust_link_plugin.cmxs
+
+plugin/rocqofrust_link_plugin/rocqofrust_link_plugin.cmxs: $(PLUGIN_ML) plugin/rocqofrust_link_plugin/META
+	mkdir -p plugin/rocqofrust_link_plugin
+	ocamlfind ocamlopt -I plugin -package $(PLUGIN_PACKAGES) -linkall -shared $(PLUGIN_ML) -o $@
+
+plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PRINT_EXPECTED)
+	@echo "COQC plugin inline print $(PLUGIN_INLINE_PRINT_TEST)"
+	@coqc -R . RocqOfRust -I plugin -impredicative-set $(PLUGIN_INLINE_PRINT_TEST) > $(PLUGIN_INLINE_PRINT_OUTPUT)
+	@diff -u $(PLUGIN_INLINE_PRINT_EXPECTED) $(PLUGIN_INLINE_PRINT_OUTPUT)
+
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.
-RocqMakefile: $(VFILES) blacklist.txt
+RocqMakefile: plugin $(VFILES) blacklist.txt
 	@coq_makefile -f _RocqProject -o $@ $(VFILES)
 
 MAKEROCQ := +$(MAKE) -f RocqMakefile
@@ -18,10 +36,10 @@ MAKEROCQ := +$(MAKE) -f RocqMakefile
 %.v: %.v.jinja2 scripts/macros.jinja2 scripts/jinja_preprocess.py
 	python scripts/jinja_preprocess.py $<
 
-%.vo: RocqMakefile %.v
+%.vo: plugin RocqMakefile %.v
 	$(MAKEROCQ) $@
 
-all: RocqMakefile
+all: plugin RocqMakefile
 	$(MAKEROCQ) all
 
 clean-rocq: RocqMakefile

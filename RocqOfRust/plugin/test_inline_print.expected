@@ -1,0 +1,39 @@
+Inductive t : Set :=
+    Less : DebugOrdering.t
+  | Equal : DebugOrdering.t
+  | Greater : DebugOrdering.t.
+DebugOrdering.IsLink =
+{|
+  Φ := Ty.path "core::cmp::Ordering";
+  φ :=
+    fun x : DebugOrdering.t =>
+    match x with
+    | DebugOrdering.Less =>
+        Value.StructTuple "core::cmp::Ordering::Less" [] [] []
+    | DebugOrdering.Equal =>
+        Value.StructTuple "core::cmp::Ordering::Equal" [] [] []
+    | DebugOrdering.Greater =>
+        Value.StructTuple "core::cmp::Ordering::Greater" [] [] []
+    end
+|}
+     : Link DebugOrdering.t
+DebugOrdering.IsOfTy =
+{|
+  OfTy.A := DebugOrdering.t;
+  OfTy.H := DebugOrdering.IsLink;
+  OfTy.eq := eq_refl
+|}
+     : OfTy.C (Ty.path "core::cmp::Ordering")
+DebugOrdering.IsOfValueWith_Less =
+{| OfValueWith.value := DebugOrdering.Less; OfValueWith.eq := eq_refl |}
+     : OfValueWith.C DebugOrdering.t
+         (Value.StructTuple "core::cmp::Ordering::Less" [] [] [])
+DebugOrdering.IsOfValue_Less =
+{|
+  OfValue.A := DebugOrdering.t;
+  OfValue.H := DebugOrdering.IsLink;
+  OfValue.value := DebugOrdering.Less;
+  OfValue.eq := eq_refl
+|}
+     : OfValue.C (Value.StructTuple "core::cmp::Ordering::Less" [] [] [])
+Module DebugOrdering.SubPointer := Struct  End
