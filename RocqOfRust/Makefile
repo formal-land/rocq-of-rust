@@ -24,15 +24,7 @@ plugin/rocqofrust_link_plugin/rocqofrust_link_plugin.cmxs: $(PLUGIN_ML) plugin/r
 plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PRINT_EXPECTED)
 	@echo "COQC plugin inline print $(PLUGIN_INLINE_PRINT_TEST)"
 	@coqc -R . RocqOfRust -I plugin -impredicative-set $(PLUGIN_INLINE_PRINT_TEST) > $(PLUGIN_INLINE_PRINT_OUTPUT)
-	@while IFS= read -r expected; do \
-		test -z "$$expected" && continue; \
-		grep -F -- "$$expected" $(PLUGIN_INLINE_PRINT_OUTPUT) >/dev/null || { \
-			echo "Missing expected plugin output:"; \
-			echo "$$expected"; \
-			echo "Full output: $(PLUGIN_INLINE_PRINT_OUTPUT)"; \
-			exit 1; \
-		}; \
-	done < $(PLUGIN_INLINE_PRINT_EXPECTED)
+	@diff -u $(PLUGIN_INLINE_PRINT_EXPECTED) $(PLUGIN_INLINE_PRINT_OUTPUT)
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.
