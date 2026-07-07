@@ -123,6 +123,20 @@ Module Host.
       (index : aliases.U256.t) :
       option (StateLoad.t aliases.U256.t) * Self;
     (*
+    fn sload_skip_cold_load(
+      &mut self,
+      address: Address,
+      key: U256,
+      skip_cold_load: bool,
+    ) -> Result<StateLoad<U256>, LoadError>;
+    *)
+    sload_skip_cold_load
+      (self : Self)
+      (address : Address.t)
+      (key : aliases.U256.t)
+      (skip_cold_load : bool) :
+      Result.t (StateLoad.t aliases.U256.t) LoadError.t * Self;
+    (*
     fn sstore(
         &mut self,
         address: Address,
@@ -475,6 +489,25 @@ Module Host.
             (Host.run_sload ref_self address index)
             (interpreter :: self :: stack)%stack 🌲
           let result_self := I.(sload) self address index in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
+      sload_skip_cold_load
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (address : Address.t)
+          (key : aliases.U256.t)
+          (skip_cold_load : bool)
+          (stack : Stack.t) :
+        let ref_self : '&mut Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_sload_skip_cold_load ref_self address key skip_cold_load)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self := I.(sload_skip_cold_load) self address key skip_cold_load in
           (
             Output.Success (fst result_self),
             (interpreter :: snd result_self :: stack)%stack
