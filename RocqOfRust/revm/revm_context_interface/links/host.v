@@ -378,12 +378,37 @@ Module Host.
       TraitHeader.self_ty := Φ Self;
     |}.
 
+  (* fn load_account_info_skip_cold_load(&mut self, address: Address, load_code: bool, skip_cold_load: bool) -> Result<AccountInfoLoad, LoadError>; *)
+  Class Method_load_account_info_skip_cold_load (Self : Set) `{Link Self} : Set := {
+    load_account_info_skip_cold_load : PolymorphicFunction.t;
+    load_account_info_skip_cold_load_is_method ::
+      IsTraitMethod.C (trait Self) "load_account_info_skip_cold_load" load_account_info_skip_cold_load;
+    run_load_account_info_skip_cold_load
+      (self : '&mut Self)
+      (address : Address.t)
+      (load_code : bool)
+      (skip_cold_load : bool) ::
+      Run.Trait
+        load_account_info_skip_cold_load
+        [] []
+        [ φ self; φ address; φ load_code; φ skip_cold_load ]
+        (Result.t AccountInfoLoad.t LoadError.t);
+  }.
+
   (* fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>; *)
   Class Method_load_account_delegated (Self : Set) `{Link Self} : Set := {
     load_account_delegated : PolymorphicFunction.t;
     load_account_delegated_is_method :: IsTraitMethod.C (trait Self) "load_account_delegated" load_account_delegated;
     run_load_account_delegated (self : '&mut Self) (address : Address.t) ::
       Run.Trait load_account_delegated [] [] [ φ self; φ address ] (option AccountLoad.t);
+  }.
+
+  (* fn load_account_code(&mut self, address: Address) -> Option<StateLoad<Bytes>>; *)
+  Class Method_load_account_code (Self : Set) `{Link Self} : Set := {
+    load_account_code : PolymorphicFunction.t;
+    load_account_code_is_method :: IsTraitMethod.C (trait Self) "load_account_code" load_account_code;
+    run_load_account_code (self : '&mut Self) (address : Address.t) ::
+      Run.Trait load_account_code [] [] [ φ self; φ address ] (option (StateLoad.t Bytes.t));
   }.
 
   (* fn block_hash(&mut self, number: u64) -> Option<B256>; *)
@@ -568,7 +593,9 @@ Module Host.
       TransactionGetter.Run Self types.(Types.Transaction) types.(Types.TransactionTypes);
     run_BlockGetter_for_Self :: BlockGetter.Run Self (Types.to_BlockGetter_types types);
     run_CfgGetter_for_Self :: CfgGetter.Run Self (Types.to_CfgGetter_types types);
+    method_load_account_info_skip_cold_load :: Method_load_account_info_skip_cold_load Self;
     method_load_account_delegated :: Method_load_account_delegated Self;
+    method_load_account_code :: Method_load_account_code Self;
     method_block_hash :: Method_block_hash Self;
     method_beneficiary :: Method_beneficiary Self;
     method_block_number :: Method_block_number Self;
