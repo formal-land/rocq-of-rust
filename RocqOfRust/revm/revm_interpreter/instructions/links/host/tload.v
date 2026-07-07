@@ -22,6 +22,7 @@ Require Import revm.revm_interpreter.instructions.host.
 Require Import revm.revm_interpreter.instructions.links.utility.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -32,10 +33,7 @@ Require Import ruint.links.lib.
 
 
 (*
-pub fn tload<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
-)
+pub fn tload<WIRE: InterpreterTypes, H: Host + ?Sized>(context: InstructionContext<'_, H, WIRE>)
 *)
 Instance run_tload
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -43,14 +41,17 @@ Instance run_tload
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-    (host : '&mut H) :
+    (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.host.tload [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
+    instructions.host.tload [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
+  destruct run_StackTrait_for_Stack.
+  destruct run_Host_for_H.
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt_not_activated. }
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_tload.
-

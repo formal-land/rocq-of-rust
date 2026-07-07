@@ -4,9 +4,9 @@ Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
-Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.host.tload.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
@@ -23,8 +23,6 @@ Definition tload
     Interpreter.t WIRE WIRE_types * H :=
   check_macro interpreter SpecId.CANCUN
     (fun interpreter => (interpreter, host)) (fun interpreter =>
-  gas_macro interpreter constants.WARM_STORAGE_READ_COST
-    (fun interpreter => (interpreter, host)) (fun interpreter =>
   popn_top_macro interpreter 0 (fun interpreter => (interpreter, host)) (fun _ top interpreter =>
   let target :=
     IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address)
@@ -33,7 +31,7 @@ Definition tload
   let '(value, host) := IHost.(Host.tload) host target index in
   let stack := top.(RefStub.injection) interpreter.(Interpreter.stack) value in
   (interpreter <| Interpreter.stack := stack |>, host)
-  ))).
+  )).
 
 Lemma tload_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -50,10 +48,14 @@ Lemma tload_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   let result := tload interpreter host in
   {{
     SimulateM.eval_f
-      (run_tload run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+      (run_tload run_InterpreterTypes_for_WIRE run_Host_for_H context)
       [interpreter; host]%stack 🌲
     (
       Output.Success tt,
@@ -61,9 +63,10 @@ Lemma tload_eq
     )
   }}.
 Proof.
+  intros.
+  subst result.
   with_strategy transparent [run_tload] unfold tload, run_tload; cbn.
   check_macro_eq InterpreterTypesEq.
-  gas_macro_eq idtac.
   popn_top_macro_eq InterpreterTypesEq.
   s. {
     apply InterpreterTypesEq.
