@@ -31,14 +31,7 @@ Definition require_non_staticcall_macro {WIRE K : Set} `{Link WIRE}
       .(RuntimeFlag.is_static)
       interpreter.(Interpreter.runtime_flag) in
   if is_static then
-    let control :=
-      IInterpreterTypes
-        .(InterpreterTypes.LoopControl_for_Control)
-        .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.StateChangeDuringStaticCall in
-    let interpreter := interpreter <| Interpreter.control := control |> in
-    k_exit interpreter
+    k_exit (halt interpreter instruction_result.InstructionResult.StateChangeDuringStaticCall)
   else
     k interpreter.
 
@@ -51,9 +44,7 @@ Ltac require_non_staticcall_macro_eq InterpreterTypesEq :=
   |];
   destruct _.(RuntimeFlag.is_static); cbn; [
     s; [
-      apply InterpreterTypesEq
-        .(InterpreterTypes.Eq.LoopControl_for_Control)
-        .(LoopControl.Eq.set_instruction_result)
+      apply (halt_eq _ InterpreterTypesEq)
     |];
     s
   |].
