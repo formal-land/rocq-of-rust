@@ -165,6 +165,31 @@ Module Impl_Uint.
     }}.
   Admitted.
 
+  Definition leading_zeros {BITS LIMBS : usize} (self : Self BITS LIMBS) : usize :=
+    let value := self.(Uint.value) mod (2 ^ BITS.(Integer.value)) in
+    {|
+      Integer.value :=
+        if value =? 0 then
+          BITS.(Integer.value)
+        else
+          BITS.(Integer.value) - 1 - Z.log2 value
+    |}.
+
+  Lemma leading_zeros_eq (stack : Stack.t)
+      {BITS LIMBS : usize} (ref_self : '& (Self BITS LIMBS))
+      (self : Self BITS LIMBS) :
+    CanRead.t stack self ref_self ->
+    {{
+      SimulateM.eval_f
+        (ruint.links.bits.Impl_Uint.run_leading_zeros BITS LIMBS ref_self)
+        stack 🌲
+      (
+        Output.Success (leading_zeros self),
+        stack
+      )
+    }}.
+  Admitted.
+
   (* Arithmetic (sign-extending) right shift *)
   Definition arithmetic_shr {BITS LIMBS : usize} (x : Self BITS LIMBS) (n : usize) : Self BITS LIMBS :=
     let sign_bit := 2 ^ (BITS.(Integer.value) - 1) in

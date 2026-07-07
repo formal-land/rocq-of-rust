@@ -2,6 +2,7 @@ Require Import simulate.RocqOfRust.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.lt.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.gt.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.clz.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.eq.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.sgt.
@@ -17,7 +18,23 @@ Require Import revm.revm_interpreter.instructions.simulate.bitwise.sar.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
+
+Definition make_interpreter_osaka (stack : Stack.t) : Interpreter.t WIRE WIRE_types :=
+  let interpreter := make_interpreter stack in
+  {|
+    Interpreter.bytecode := interpreter.(Interpreter.bytecode);
+    Interpreter.gas := interpreter.(Interpreter.gas);
+    Interpreter.stack := interpreter.(Interpreter.stack);
+    Interpreter.return_data := interpreter.(Interpreter.return_data);
+    Interpreter.memory := interpreter.(Interpreter.memory);
+    Interpreter.input := interpreter.(Interpreter.input);
+    Interpreter.sub_routine := interpreter.(Interpreter.sub_routine);
+    Interpreter.control := interpreter.(Interpreter.control);
+    Interpreter.runtime_flag := SpecId.OSAKA;
+    Interpreter.extend := interpreter.(Interpreter.extend);
+  |}.
 
 (** Test that LT correctly computes 25 < 23 = false, resulting in 0 on stack *)
 Goal
@@ -100,6 +117,34 @@ Goal
   let interpreter := make_interpreter stack in
   let result := op_gt interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** CLZ tests *)
+
+(** Test that CLZ returns 256 for zero *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 0 |}
+  ] |} in
+  let interpreter := make_interpreter_osaka stack in
+  let result := op_clz interpreter in
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 256 |}].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that CLZ returns 255 for one *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1 |}
+  ] |} in
+  let interpreter := make_interpreter_osaka stack in
+  let result := op_clz interpreter in
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 255 |}].
 Proof.
   timeout 1 vm_compute.
   reflexivity.
