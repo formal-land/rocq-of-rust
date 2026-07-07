@@ -4,13 +4,12 @@ Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
-Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.host.tstore.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 
@@ -27,8 +26,6 @@ Definition tstore
     (fun interpreter => (interpreter, host)) (fun interpreter =>
   require_non_staticcall_macro interpreter
     (fun interpreter => (interpreter, host)) (fun interpreter =>
-  gas_macro interpreter constants.WARM_STORAGE_READ_COST
-    (fun interpreter => (interpreter, host)) (fun interpreter =>
   popn_macro interpreter 2 (fun interpreter => (interpreter, host)) (fun arr interpreter =>
   let '⟬ index; value ⟭ := arr.(array.value) in
   let target :=
@@ -36,7 +33,7 @@ Definition tstore
       interpreter.(Interpreter.input) in
   let host := IHost.(Host.tstore) host target index value in
   (interpreter, host)
-  )))).
+  ))).
 
 Lemma tstore_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -53,10 +50,14 @@ Lemma tstore_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
   let result := tstore interpreter host in
   {{
     SimulateM.eval_f
-      (run_tstore run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+      (run_tstore run_InterpreterTypes_for_WIRE run_Host_for_H context)
       [interpreter; host]%stack 🌲
     (
       Output.Success tt,
@@ -64,10 +65,11 @@ Lemma tstore_eq
     )
   }}.
 Proof.
+  intros.
+  subst result.
   with_strategy transparent [run_tstore] unfold tstore, run_tstore; cbn.
   check_macro_eq InterpreterTypesEq.
   require_non_staticcall_macro_eq InterpreterTypesEq.
-  gas_macro_eq idtac.
   popn_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ =>
