@@ -223,23 +223,6 @@ Proof.
       apply Run.Pure.
 Qed.
 
-Definition dyn_sstore_cost
-    (spec_id : SpecId.t)
-    (vals : '& SStoreResult.t)
-    (is_cold : bool) :
-    u64 :=
-  {| Integer.value := 0 |}.
-
-Lemma dyn_sstore_cost_eq (stack : Stack.t)
-    (spec_id : SpecId.t) (vals : '& SStoreResult.t) (is_cold : bool) :
-  {{
-    SimulateM.eval_f
-      (run_dyn_sstore_cost spec_id vals is_cold)
-      stack 🌲
-    (Output.Success (dyn_sstore_cost spec_id vals is_cold), stack)
-  }}.
-Admitted.
-
 Definition sstore_cost
     (spec_id : SpecId.t)
     (vals : '& SStoreResult.t)
@@ -256,6 +239,43 @@ Lemma sstore_cost_eq (stack : Stack.t)
     (Output.Success (sstore_cost spec_id vals is_cold), stack)
   }}.
 Admitted.
+
+Definition dyn_sstore_cost
+    (spec_id : SpecId.t)
+    (vals : '& SStoreResult.t)
+    (is_cold : bool) :
+    u64 :=
+  BinOp.Wrap.sub
+    (sstore_cost spec_id vals is_cold)
+    (static_sstore_cost spec_id).
+
+Lemma dyn_sstore_cost_eq (stack : Stack.t)
+    (spec_id : SpecId.t) (vals : '& SStoreResult.t) (is_cold : bool) :
+  {{
+    SimulateM.eval_f
+      (run_dyn_sstore_cost spec_id vals is_cold)
+      stack 🌲
+    (Output.Success (dyn_sstore_cost spec_id vals is_cold), stack)
+  }}.
+Proof.
+  with_strategy transparent [run_dyn_sstore_cost] unfold run_dyn_sstore_cost.
+  cbn.
+  eapply Run.Call. {
+    apply sstore_cost_eq.
+  }
+  cbn.
+  eapply Run.Call. {
+    apply static_sstore_cost_eq.
+  }
+  cbn.
+  eapply Run.Call. {
+    apply Run.Pure.
+  }
+  cbn.
+  unfold dyn_sstore_cost.
+  cbn.
+  apply Run.Pure.
+Qed.
 
 Definition istanbul_sstore_cost (vals : '& SStoreResult.t) : u64 :=
   {| Integer.value := 0 |}.
