@@ -2,6 +2,7 @@ Require Import simulate.RocqOfRust.
 Require Import core.ops.links.deref.
 Require Import core.ops.simulate.deref.
 Require Import alloy_primitives.bytes.links.mod.
+Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_context_interface.links.journaled_state.
 
 Module Impl_Deref_for_StateLoad.
@@ -70,3 +71,6 @@ Export (hints) Impl_Eip7702CodeLoad.
 
 Parameter account_info_load_original_bytes :
   AccountInfoLoad.t -> Bytes.t.
+
+Parameter account_info_load_code_hash :
+  AccountInfoLoad.t -> aliases.B256.t.
