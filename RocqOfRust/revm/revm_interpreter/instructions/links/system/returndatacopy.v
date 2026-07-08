@@ -1,8 +1,10 @@
 Require Import links.RocqOfRust.
+Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.utils.links.mod.
+Require Import bytes.links.bytes.
 Require Import core.array.links.mod.
 Require Import core.convert.links.mod.
 Require Import core.convert.links.num.
@@ -23,6 +25,7 @@ Require Import revm.revm_interpreter.instructions.system.
 Require Import revm.revm_interpreter.instructions.links.system.memory_resize.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -35,10 +38,9 @@ Instance run_returndatacopy
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.system.returndatacopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.system.returndatacopy [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
@@ -49,6 +51,12 @@ Proof.
   destruct run_ReturnData_for_ReturnData.
   destruct run_MemoryTrait_for_Memory.
   destruct Impl_TryFrom_u64_for_usize.run.
+  destruct alloy_primitives.bytes.links.mod.Impl_Deref_for_Bytes.run.
+  destruct bytes.Impl_Deref_for_Bytes.run.
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt_not_activated. }
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_returndatacopy.

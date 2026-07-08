@@ -627,7 +627,7 @@ Export (hints) EofData.
 
 (*
 pub trait ReturnData {
-    fn buffer(&self) -> &[u8];
+    fn buffer(&self) -> &Bytes;
     fn buffer_mut(&mut self) -> &mut Bytes;
 }
 *)
@@ -643,7 +643,7 @@ Module ReturnData.
   Class Method_buffer (Self : Set) `{Link Self} : Set := {
     buffer : PolymorphicFunction.t;
     buffer_is_method :: IsTraitMethod.C (trait Self) "buffer" buffer;
-    run_buffer (self : '& Self) :: Run.Trait buffer [] [] [ φ self ] ('& (list u8));
+    run_buffer (self : '& Self) :: Run.Trait buffer [] [] [ φ self ] ('& Bytes.t);
   }.
 
   Class Method_buffer_mut (Self : Set) `{Link Self} : Set := {
