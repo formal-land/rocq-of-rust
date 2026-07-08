@@ -1,5 +1,8 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.bytes.links.mod.
+Require Import alloy_primitives.bytes.simulate.mod.
 Require Import alloy_primitives.links.aliases.
+Require Import bytes.simulate.bytes.
 Require Import core.links.array.
 Require Import core.slice.simulate.mod.
 Require Import core.num.simulate.mod.
@@ -8,8 +11,10 @@ Require Import revm.revm_interpreter.instructions.links.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_interpreter.links.instruction_result.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 
 Definition returndatacopy
@@ -30,16 +35,10 @@ Definition returndatacopy
   let return_data :=
     IInterpreterTypes.(InterpreterTypes.ReturnData_for_ReturnData).(ReturnData.buffer)
       .(RefStub.projection) interpreter.(Interpreter.return_data) in
-  let return_data_len := Impl_Slice.len return_data in
-  let is_eof :=
-    IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_eof)
-      interpreter.(Interpreter.runtime_flag) in
-  if (i[data_end] >? i[return_data_len]) && negb is_eof then
-    let control :=
-      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.OutOfOffset in
-    interpreter <| Interpreter.control := control |>
+  let return_data := return_data.(Bytes.value) in
+  let return_data_len := Impl_Bytes.len return_data in
+  if i[data_end] >? i[return_data_len] then
+    halt interpreter instruction_result.InstructionResult.OutOfOffset
   else
     let '(memory_offset_opt, interpreter) := memory_resize interpreter memory_offset len in
     match memory_offset_opt with
@@ -48,6 +47,7 @@ Definition returndatacopy
       let return_data :=
         IInterpreterTypes.(InterpreterTypes.ReturnData_for_ReturnData).(ReturnData.buffer)
           .(RefStub.projection) interpreter.(Interpreter.return_data) in
+      let return_data := return_data.(Bytes.value).(bytes.Bytes.value) in
       let memory :=
         IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.set_data)
           interpreter.(Interpreter.memory)
@@ -70,9 +70,13 @@ Lemma returndatacopy_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
     {{
       SimulateM.eval_f
-        (run_returndatacopy run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+        (run_returndatacopy run_InterpreterTypes_for_WIRE context)
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
@@ -100,34 +104,36 @@ Opaque memory_resize.
     apply InterpreterTypesEq.
   }
   s. {
-    pose proof (Impl_Slice.len_eq (T := u8)) as H_apply.
+    apply alloy_primitives.bytes.simulate.mod.Impl_Deref_for_Bytes.Eq.I.
+  }
+  s. {
+    pose proof bytes.simulate.bytes.Impl_Bytes.len_eq as H_apply.
     s_apply H_apply.
   }
   s.
   destruct (_ >? _) eqn:H_lt_eq; cbn.
   { s. {
-      apply InterpreterTypesEq.
+      eapply halt_eq;
+        try exact InterpreterTypesEq.
     }
     s.
-    destruct negb; cbn.
-    Ltac common_end InterpreterTypesEq :=
-      s; [
-        apply memory_resize_eq
-      |];
-      destruct memory_resize as [[?memory_offset|] ?interpreter]; cbn; [|s];
-      s; [
-        apply InterpreterTypesEq
-      |];
-      s; [
-        s_apply InterpreterTypesEq
-      |];
-      s.
-    { s. {
-        apply InterpreterTypesEq.
-      }
-      s.
-    }
-    { common_end InterpreterTypesEq. }
   }
-  { common_end InterpreterTypesEq. }
+  { s. {
+      apply memory_resize_eq.
+    }
+    destruct memory_resize as [[?memory_offset|] ?interpreter]; cbn; [|s].
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      apply alloy_primitives.bytes.simulate.mod.Impl_Deref_for_Bytes.Eq.I.
+    }
+    s. {
+      apply bytes.simulate.bytes.Impl_Deref_for_Bytes.Eq.I.
+    }
+    s. {
+      s_apply InterpreterTypesEq.
+    }
+    s.
+  }
 Qed.

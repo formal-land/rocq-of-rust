@@ -1,8 +1,11 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.bytes.links.mod.
+Require Import alloy_primitives.bytes.simulate.mod.
+Require Import bytes.simulate.bytes.
 Require Import core.slice.simulate.mod.
 Require Import revm.revm_interpreter.instructions.links.system.returndatasize.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
-Require Import revm.revm_interpreter.gas.simulate.constants.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
@@ -17,15 +20,14 @@ Definition returndatasize
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   check_macro interpreter SpecId.BYZANTIUM id (fun interpreter =>
-  gas_macro interpreter constants.BASE id (fun interpreter =>
   let return_data :=
     IInterpreterTypes.(InterpreterTypes.ReturnData_for_ReturnData).(ReturnData.buffer)
       .(RefStub.projection) interpreter.(Interpreter.return_data) in
-  let length : usize := Impl_Slice.len return_data in
+  let length : usize := Impl_Bytes.len return_data.(Bytes.value) in
   push_macro interpreter
     (Impl_Uint.from length)
     id id
-  )).
+  ).
 
 Lemma returndatasize_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -38,9 +40,13 @@ Lemma returndatasize_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
     {{
       SimulateM.eval_f
-        (run_returndatasize run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+        (run_returndatasize run_InterpreterTypes_for_WIRE context)
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
@@ -50,12 +56,14 @@ Lemma returndatasize_eq
 Proof.
   with_strategy transparent [run_returndatasize] unfold returndatasize, run_returndatasize; cbn.
   check_macro_eq InterpreterTypesEq.
-  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }
   s. {
-    pose proof (Impl_Slice.len_eq (T := u8)) as H_apply.
+    apply alloy_primitives.bytes.simulate.mod.Impl_Deref_for_Bytes.Eq.I.
+  }
+  s. {
+    pose proof bytes.simulate.bytes.Impl_Bytes.len_eq as H_apply.
     s_apply H_apply.
   }
   s. {

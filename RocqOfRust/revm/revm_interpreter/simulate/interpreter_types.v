@@ -1522,8 +1522,8 @@ Export (hints) SubRoutineStack.
 
 Module ReturnData.
   Class C (Self : Set) `{Link Self} : Set := {
-    (* fn buffer(&self) -> &[u8]; *)
-    buffer : RefStub.t Self (list u8);
+    (* fn buffer(&self) -> &Bytes; *)
+    buffer : RefStub.t Self Bytes.t;
     (* fn buffer_mut(&mut self) -> &mut Bytes; *)
     buffer_mut : RefStub.t Self Bytes.t;
   }.
