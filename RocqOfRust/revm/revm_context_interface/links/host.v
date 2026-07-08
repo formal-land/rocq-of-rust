@@ -298,6 +298,7 @@ Export (hints) SelfDestructResult.
 pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
     fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>;
     fn block_hash(&mut self, number: u64) -> Option<B256>;
+    fn max_initcode_size(&self) -> usize;
     fn beneficiary(&self) -> Address;
     fn block_number(&self) -> U256;
     fn chain_id(&self) -> U256;

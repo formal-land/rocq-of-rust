@@ -51,7 +51,7 @@ Definition sload
     (fun interpreter => (interpreter, host)) (fun interpreter =>
   if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
     let skip_cold :=
-      interpreter.(Interpreter.gas).(Gas.remaining).(Integer.value) <?
+      i[Impl_Gas.remaining interpreter.(Interpreter.gas)] <?
       COLD_SLOAD_COST_ADDITIONAL.(Integer.value) in
     let '(value_result, host) :=
       IHost.(Host.sload_skip_cold_load) host target_address index skip_cold in
@@ -119,4 +119,273 @@ Lemma sload_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  subst result.
+  with_strategy transparent [run_sload] unfold sload, run_sload; cbn.
+  popn_top_macro_eq InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply Impl_SpecId.is_enabled_in_eq.
+  }
+  destruct Impl_SpecId.is_enabled_in eqn:H_berlin; cbn.
+  - gas_macro_eq idtac.
+    s. {
+      apply Impl_SpecId.is_enabled_in_eq.
+    }
+    rewrite H_berlin; cbn.
+    s. {
+      apply Impl_Gas.remaining_interpreter_eq.
+    }
+    s. {
+      apply COLD_SLOAD_COST_ADDITIONAL_eq.
+    }
+    s. {
+      apply HostEq.
+    }
+    destruct
+      (IHost.(Host.sload_skip_cold_load) host
+        (IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input)
+          .(InputTraits.target_address) interpreter.(Interpreter.input))
+        (t0.(RefStub.projection) s)
+        (i[ Impl_Gas.remaining s0] <? (2100 - 100) mod 2 ^ 64))
+      as [[value|load_error] host_after] eqn:H_sload_result; cbn.
+    + destruct value as [value_data value_is_cold]; cbn in *.
+      destruct value_is_cold; cbn.
+      * get_can_access.
+        setoid_rewrite H_sload_result.
+        cbn.
+        s. {
+          apply COLD_SLOAD_COST_ADDITIONAL_eq.
+        }
+        cbn.
+        unfold gas_macro.
+        s. {
+          apply Impl_Gas.record_cost_interpreter_eq.
+        }
+        destruct Impl_Gas.record_cost; cbn.
+        -- eapply Run.Call. {
+             apply Run.Pure.
+           }
+           cbn.
+           s.
+           exact (f_equal snd H_sload_result).
+        -- eapply Run.Call. {
+             apply Run.Pure.
+           }
+           cbn.
+           s. {
+             eapply halt_oog_eq;
+             exact InterpreterTypesEq.
+           }
+           cbn.
+           setoid_rewrite H_sload_result.
+           cbn.
+           apply Run.Pure.
+      * get_can_access.
+        setoid_rewrite H_sload_result.
+        cbn.
+        s.
+        exact (f_equal snd H_sload_result).
+    + destruct load_error; cbn.
+      * get_can_access.
+        setoid_rewrite H_sload_result.
+        cbn.
+        get_can_access.
+        setoid_rewrite H_sload_result.
+        cbn.
+        setoid_rewrite H_sload_result.
+        cbn.
+        s. {
+          eapply halt_fatal_eq;
+          exact InterpreterTypesEq.
+        }
+        cbn.
+        apply Run.Pure.
+      * get_can_access.
+        setoid_rewrite H_sload_result.
+        cbn.
+        get_can_access.
+        setoid_rewrite H_sload_result.
+        cbn.
+        s. {
+          eapply halt_oog_eq;
+          exact InterpreterTypesEq.
+        }
+        cbn.
+        apply Run.PureEq.
+        cbn.
+        repeat f_equal.
+        exact (f_equal snd H_sload_result).
+  - s. {
+      apply Impl_SpecId.is_enabled_in_eq.
+    }
+    s.
+    destruct
+      (Impl_SpecId.is_enabled_in
+        (IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag)
+          .(RuntimeFlag.spec_id) interpreter.(Interpreter.runtime_flag))
+        SpecId.ISTANBUL) eqn:H_istanbul; cbn.
+    + setoid_rewrite H_istanbul.
+      cbn.
+      eapply Run.Call. {
+        apply ISTANBUL_SLOAD_GAS_eq.
+      }
+      cbn.
+      unfold gas_macro.
+      apply Run.LetUnfold.
+      cbn.
+      get_can_access.
+      cbn.
+      s. {
+        apply Impl_Gas.record_cost_interpreter_eq.
+      }
+      destruct Impl_Gas.record_cost; cbn.
+      * eapply Run.Call. {
+          apply Run.Pure.
+        }
+        cbn.
+        eapply Run.Call. {
+          apply Run.Pure.
+        }
+        cbn.
+        s. {
+          apply Impl_SpecId.is_enabled_in_eq.
+        }
+        rewrite H_berlin; cbn.
+        s. {
+          apply HostEq.
+        }
+        destruct
+          (IHost.(Host.sload) host
+            (IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input)
+              .(InputTraits.target_address) interpreter.(Interpreter.input))
+            (t0.(RefStub.projection) s))
+          as [[value|] host_after] eqn:H_sload_result; cbn.
+        -- destruct value as [value_data value_is_cold]; cbn in *.
+           setoid_rewrite H_sload_result.
+           cbn.
+           apply Run.LetUnfold.
+           cbn.
+           unshelve eapply Run.GetCanAccess.
+           { cbn; repeat constructor. }
+           cbn.
+           apply Run.PureEq.
+           cbn.
+           repeat f_equal.
+           exact (f_equal snd H_sload_result).
+        -- setoid_rewrite H_sload_result.
+           cbn.
+           s. {
+             eapply halt_fatal_eq;
+             exact InterpreterTypesEq.
+           }
+           cbn.
+           apply Run.PureEq.
+           cbn.
+           repeat f_equal.
+           exact (f_equal snd H_sload_result).
+      * eapply Run.Call. {
+          apply Run.Pure.
+        }
+        cbn.
+        s. {
+          eapply halt_oog_eq;
+          exact InterpreterTypesEq.
+        }
+        cbn.
+        apply Run.Pure.
+    + setoid_rewrite H_istanbul.
+      cbn.
+      s. {
+        apply Impl_SpecId.is_enabled_in_eq.
+      }
+      s.
+      destruct
+        (Impl_SpecId.is_enabled_in
+          (IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag)
+            .(RuntimeFlag.spec_id) interpreter.(Interpreter.runtime_flag))
+          SpecId.TANGERINE) eqn:H_tangerine; cbn.
+      * setoid_rewrite H_tangerine.
+        cbn.
+        gas_macro_eq idtac.
+        s. {
+          apply Impl_SpecId.is_enabled_in_eq.
+        }
+        rewrite H_berlin; cbn.
+        s. {
+          apply HostEq.
+        }
+        destruct
+          (IHost.(Host.sload) host
+            (IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input)
+              .(InputTraits.target_address) interpreter.(Interpreter.input))
+            (t0.(RefStub.projection) s))
+          as [[value|] host_after] eqn:H_sload_result; cbn.
+        -- destruct value as [value_data value_is_cold]; cbn in *.
+           setoid_rewrite H_sload_result.
+           cbn.
+           apply Run.LetUnfold.
+           cbn.
+           unshelve eapply Run.GetCanAccess.
+           { cbn; repeat constructor. }
+           cbn.
+           apply Run.PureEq.
+           cbn.
+           repeat f_equal.
+           exact (f_equal snd H_sload_result).
+        -- setoid_rewrite H_sload_result.
+           cbn.
+           s. {
+             eapply halt_fatal_eq;
+             exact InterpreterTypesEq.
+           }
+           cbn.
+           apply Run.PureEq.
+           cbn.
+           repeat f_equal.
+           exact (f_equal snd H_sload_result).
+      * setoid_rewrite H_tangerine.
+        cbn.
+        gas_macro_eq idtac.
+        s. {
+          apply Impl_SpecId.is_enabled_in_eq.
+        }
+        rewrite H_berlin; cbn.
+        s. {
+          apply HostEq.
+        }
+        destruct
+          (IHost.(Host.sload) host
+            (IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input)
+              .(InputTraits.target_address) interpreter.(Interpreter.input))
+            (t0.(RefStub.projection) s))
+          as [[value|] host_after] eqn:H_sload_result; cbn.
+        -- destruct value as [value_data value_is_cold]; cbn in *.
+           setoid_rewrite H_sload_result.
+           cbn.
+           apply Run.LetUnfold.
+           cbn.
+           unshelve eapply Run.GetCanAccess.
+           { cbn; repeat constructor. }
+           cbn.
+           apply Run.PureEq.
+           cbn.
+           repeat f_equal.
+           exact (f_equal snd H_sload_result).
+        -- setoid_rewrite H_sload_result.
+           cbn.
+           s. {
+             eapply halt_fatal_eq;
+             exact InterpreterTypesEq.
+           }
+           cbn.
+           apply Run.PureEq.
+           cbn.
+           repeat f_equal.
+           exact (f_equal snd H_sload_result).
+Qed.
