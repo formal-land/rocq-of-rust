@@ -158,7 +158,7 @@ Instance run_static_sstore_cost (spec_id : SpecId.t) :
 Proof.
   constructor.
   run_symbolic.
-Admitted.
+Defined.
 Global Opaque run_static_sstore_cost.
 
 (* pub const fn dyn_sstore_cost(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 *)

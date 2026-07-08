@@ -5,6 +5,7 @@ Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_interpreter.gas.links.calc.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_primitives.links.hardfork.
+Require Import revm.revm_primitives.simulate.hardfork.
 
 Definition sstore_refund (spec_id : SpecId.t) (vals : '& SStoreResult.t) : i64 :=
   {| Integer.value := 0 |}.
@@ -159,7 +160,12 @@ Lemma sload_cost_eq (stack : Stack.t)
 Admitted.
 
 Definition static_sstore_cost (spec_id : SpecId.t) : u64 :=
-  {| Integer.value := 0 |}.
+  if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
+    WARM_STORAGE_READ_COST
+  else if Impl_SpecId.is_enabled_in spec_id SpecId.ISTANBUL then
+    ISTANBUL_SLOAD_GAS
+  else
+    SSTORE_RESET.
 
 Lemma static_sstore_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
   {{
@@ -168,7 +174,54 @@ Lemma static_sstore_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
       stack 🌲
     (Output.Success (static_sstore_cost spec_id), stack)
   }}.
-Admitted.
+Proof.
+  with_strategy transparent [run_static_sstore_cost] unfold run_static_sstore_cost.
+  cbn.
+  s. {
+    apply Impl_SpecId.is_enabled_in_eq.
+  }
+  destruct (Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN) eqn:H_berlin; cbn.
+  - eapply Run.Call. {
+      apply Run.Pure.
+    }
+    cbn.
+    eapply Run.Call. {
+      apply WARM_STORAGE_READ_COST_eq.
+    }
+    cbn.
+    unfold static_sstore_cost.
+    rewrite H_berlin.
+    cbn.
+    apply Run.Pure.
+  - s. {
+      apply Impl_SpecId.is_enabled_in_eq.
+    }
+    destruct (Impl_SpecId.is_enabled_in spec_id SpecId.ISTANBUL) eqn:H_istanbul; cbn.
+    + eapply Run.Call. {
+        apply Run.Pure.
+      }
+      cbn.
+      eapply Run.Call. {
+        apply ISTANBUL_SLOAD_GAS_eq.
+      }
+      cbn.
+      unfold static_sstore_cost.
+      rewrite H_berlin, H_istanbul.
+      cbn.
+      apply Run.Pure.
+    + eapply Run.Call. {
+        apply Run.Pure.
+      }
+      cbn.
+      eapply Run.Call. {
+        apply SSTORE_RESET_eq.
+      }
+      cbn.
+      unfold static_sstore_cost.
+      rewrite H_berlin, H_istanbul.
+      cbn.
+      apply Run.Pure.
+Qed.
 
 Definition dyn_sstore_cost
     (spec_id : SpecId.t)
