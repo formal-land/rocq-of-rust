@@ -158,6 +158,35 @@ Lemma sload_cost_eq (stack : Stack.t)
   }}.
 Admitted.
 
+Definition static_sstore_cost (spec_id : SpecId.t) : u64 :=
+  {| Integer.value := 0 |}.
+
+Lemma static_sstore_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
+  {{
+    SimulateM.eval_f
+      (run_static_sstore_cost spec_id)
+      stack 🌲
+    (Output.Success (static_sstore_cost spec_id), stack)
+  }}.
+Admitted.
+
+Definition dyn_sstore_cost
+    (spec_id : SpecId.t)
+    (vals : '& SStoreResult.t)
+    (is_cold : bool) :
+    u64 :=
+  {| Integer.value := 0 |}.
+
+Lemma dyn_sstore_cost_eq (stack : Stack.t)
+    (spec_id : SpecId.t) (vals : '& SStoreResult.t) (is_cold : bool) :
+  {{
+    SimulateM.eval_f
+      (run_dyn_sstore_cost spec_id vals is_cold)
+      stack 🌲
+    (Output.Success (dyn_sstore_cost spec_id vals is_cold), stack)
+  }}.
+Admitted.
+
 Definition sstore_cost
     (spec_id : SpecId.t)
     (vals : '& SStoreResult.t)

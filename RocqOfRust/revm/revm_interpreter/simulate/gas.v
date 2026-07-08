@@ -450,6 +450,34 @@ Module Impl_Gas.
     s.
   Qed.
 
+  Lemma record_refund_interpreter_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (refund : i64)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_self : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_gas
+    |} in
+    let result := record_refund interpreter.(Interpreter.gas) refund in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_record_refund ref_self refund) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success tt,
+        (
+          (interpreter <| Interpreter.gas := result |>) :: stack
+        )%stack
+      )
+    }}.
+  Proof.
+    apply Run.remove_extra_stack1.
+    with_strategy transparent [Impl_Gas.run_record_refund] cbn.
+    s.
+  Qed.
+
   Definition set_final_refund (self : Self) (is_london : bool) : Self :=
     let max_refund_quotient := if is_london then 5 else 2 in
     self <| Gas.refunded := Z.min i[refunded self] i[spent self /i max_refund_quotient] |>.

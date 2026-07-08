@@ -150,6 +150,31 @@ Proof.
 Admitted.
 Global Opaque run_sload_cost.
 
+(* pub const fn static_sstore_cost(spec_id: SpecId) -> u64 *)
+Instance run_static_sstore_cost (spec_id : SpecId.t) :
+  Run.Trait
+    gas.calc.static_sstore_cost [] [] [ φ spec_id ]
+    u64.
+Proof.
+  constructor.
+  run_symbolic.
+Admitted.
+Global Opaque run_static_sstore_cost.
+
+(* pub const fn dyn_sstore_cost(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 *)
+Instance run_dyn_sstore_cost
+    (spec_id : SpecId.t)
+    (vals : '& SStoreResult.t)
+    (is_cold : bool) :
+  Run.Trait
+    gas.calc.dyn_sstore_cost [] [] [ φ spec_id; φ vals; φ is_cold ]
+    u64.
+Proof.
+  constructor.
+  run_symbolic.
+Admitted.
+Global Opaque run_dyn_sstore_cost.
+
 (* pub fn sstore_cost(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 *)
 Instance run_sstore_cost
     (spec_id : SpecId.t)

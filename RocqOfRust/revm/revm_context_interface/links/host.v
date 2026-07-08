@@ -81,16 +81,16 @@ Module SStoreResult.
   }.
 
   Instance IsLink : Link t := {
-    Φ := Ty.path "revm_context_interface::host::SStoreResult";
+    Φ := Ty.path "revm_context_interface::context::SStoreResult";
     φ x :=
-      Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
+      Value.StructRecord "revm_context_interface::context::SStoreResult" [] [] [
         ("new_value", φ x.(new_value));
         ("original_value", φ x.(original_value));
         ("present_value", φ x.(present_value))
       ];
   }.
 
-  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::host::SStoreResult") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::context::SStoreResult") :=
   {
     A := t;
     eq := eq_refl;
@@ -101,7 +101,7 @@ Module SStoreResult.
       (original_value' : Value.t) {H_original_value : OfValueWith.C (aliases.U256.t) original_value'}
       (present_value' : Value.t) {H_present_value : OfValueWith.C (aliases.U256.t) present_value'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_context_interface::context::SStoreResult" [] [] [
       ("new_value", new_value');
       ("original_value", original_value');
       ("present_value", present_value')
@@ -120,7 +120,7 @@ Module SStoreResult.
       (original_value' : Value.t) {H_original_value : OfValueWith.C (aliases.U256.t) original_value'}
       (present_value' : Value.t) {H_present_value : OfValueWith.C (aliases.U256.t) present_value'}
       :
-    OfValue.C (Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
+    OfValue.C (Value.StructRecord "revm_context_interface::context::SStoreResult" [] [] [
       ("new_value", new_value');
       ("original_value", original_value');
       ("present_value", present_value')
@@ -136,7 +136,7 @@ Module SStoreResult.
 
   Module SubPointer.
     Definition get_original_value : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_context_interface::host::SStoreResult" "original_value") :=
+      (Pointer.Index.StructRecord "revm_context_interface::context::SStoreResult" "original_value") :=
     {|
       SubPointer.Runner.projection x := Some x.(original_value);
       SubPointer.Runner.injection x y := Some (x <| original_value := y |>);
@@ -150,7 +150,7 @@ Module SStoreResult.
     Smpl Add apply get_original_value_is_valid : run_sub_pointer.
 
     Definition get_present_value : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_context_interface::host::SStoreResult" "present_value") :=
+      (Pointer.Index.StructRecord "revm_context_interface::context::SStoreResult" "present_value") :=
     {|
       SubPointer.Runner.projection x := Some x.(present_value);
       SubPointer.Runner.injection x y := Some (x <| present_value := y |>);
@@ -164,7 +164,7 @@ Module SStoreResult.
     Smpl Add apply get_present_value_is_valid : run_sub_pointer.
 
     Definition get_new_value : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_context_interface::host::SStoreResult" "new_value") :=
+      (Pointer.Index.StructRecord "revm_context_interface::context::SStoreResult" "new_value") :=
     {|
       SubPointer.Runner.projection x := Some x.(new_value);
       SubPointer.Runner.injection x y := Some (x <| new_value := y |>);
@@ -571,6 +571,32 @@ Module Host.
       Run.Trait sstore [] [] [ φ self; φ address; φ index; φ value ] (option (StateLoad.t SStoreResult.t));
   }.
 
+  (*
+  fn sstore_skip_cold_load(
+    &mut self,
+    address: Address,
+    key: U256,
+    value: U256,
+    skip_cold_load: bool,
+  ) -> Result<StateLoad<SStoreResult>, LoadError>;
+  *)
+  Class Method_sstore_skip_cold_load (Self : Set) `{Link Self} : Set := {
+    sstore_skip_cold_load : PolymorphicFunction.t;
+    sstore_skip_cold_load_is_method ::
+      IsTraitMethod.C (trait Self) "sstore_skip_cold_load" sstore_skip_cold_load;
+    run_sstore_skip_cold_load
+      (self : '&mut Self)
+      (address : Address.t)
+      (key : aliases.U256.t)
+      (value : aliases.U256.t)
+      (skip_cold_load : bool) ::
+      Run.Trait
+        sstore_skip_cold_load
+        [] []
+        [ φ self; φ address; φ key; φ value; φ skip_cold_load ]
+        (Result.t (StateLoad.t SStoreResult.t) LoadError.t);
+  }.
+
   (* fn tload(&mut self, address: Address, index: U256) -> U256; *)
   Class Method_tload (Self : Set) `{Link Self} : Set := {
     tload : PolymorphicFunction.t;
@@ -646,6 +672,7 @@ Module Host.
     method_sload :: Method_sload Self;
     method_sload_skip_cold_load :: Method_sload_skip_cold_load Self;
     method_sstore :: Method_sstore Self;
+    method_sstore_skip_cold_load :: Method_sstore_skip_cold_load Self;
     method_tload :: Method_tload Self;
     method_tstore :: Method_tstore Self;
     method_log :: Method_log Self;
