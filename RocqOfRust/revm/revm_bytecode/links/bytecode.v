@@ -31,6 +31,14 @@ Module Impl_Bytecode.
       alloy_primitives.bytes.links.mod.Bytes.t.
   Admitted.
   Global Opaque run_original_bytes.
+
+  Instance run_len (self : '& Self) :
+    Run.Trait
+      bytecode.Impl_revm_bytecode_bytecode_Bytecode.len
+      [] [] [ φ self ]
+      usize.
+  Admitted.
+  Global Opaque run_len.
 End Impl_Bytecode.
 Export (hints) Impl_Bytecode.
 
