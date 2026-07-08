@@ -74,3 +74,6 @@ Parameter account_info_load_original_bytes :
 
 Parameter account_info_load_code_hash :
   AccountInfoLoad.t -> aliases.B256.t.
+
+Parameter account_info_load_balance :
+  AccountInfoLoad.t -> aliases.U256.t.
