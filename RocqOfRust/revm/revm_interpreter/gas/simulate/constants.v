@@ -44,6 +44,8 @@ Definition COLD_ACCOUNT_ACCESS_COST : u64 := 2600.
 Definition WARM_STORAGE_READ_COST : u64 := 100.
 Definition COLD_ACCOUNT_ACCESS_COST_ADDITIONAL : u64 :=
   BinOp.Wrap.sub COLD_ACCOUNT_ACCESS_COST WARM_STORAGE_READ_COST.
+Definition COLD_SLOAD_COST_ADDITIONAL : u64 :=
+  BinOp.Wrap.sub COLD_SLOAD_COST WARM_STORAGE_READ_COST.
 Definition WARM_SSTORE_RESET : u64 := 2900. (* SSTORE_RESET - COLD_SLOAD_COST = 5000 - 2100 *)
 Definition INITCODE_WORD_COST : u64 := 2.
 Definition CALL_STIPEND : u64 := 2300.
@@ -257,6 +259,11 @@ Proof. p. Qed.
 Lemma COLD_ACCOUNT_ACCESS_COST_ADDITIONAL_eq (stack : Stack.t) :
   {{ SimulateM.eval_f run_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL stack 🌲
      (Output.Success (Ref.immediate Pointer.Kind.Raw COLD_ACCOUNT_ACCESS_COST_ADDITIONAL), stack) }}.
+Proof. s. Qed.
+
+Lemma COLD_SLOAD_COST_ADDITIONAL_eq (stack : Stack.t) :
+  {{ SimulateM.eval_f run_COLD_SLOAD_COST_ADDITIONAL stack 🌲
+     (Output.Success (Ref.immediate Pointer.Kind.Raw COLD_SLOAD_COST_ADDITIONAL), stack) }}.
 Proof. s. Qed.
 
 Lemma WARM_SSTORE_RESET_eq (stack : Stack.t) :

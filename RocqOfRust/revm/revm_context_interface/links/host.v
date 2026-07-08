@@ -298,6 +298,7 @@ Export (hints) SelfDestructResult.
 pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
     fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>;
     fn block_hash(&mut self, number: u64) -> Option<B256>;
+    fn max_initcode_size(&self) -> usize;
     fn beneficiary(&self) -> Address;
     fn block_number(&self) -> U256;
     fn chain_id(&self) -> U256;
@@ -532,6 +533,30 @@ Module Host.
   }.
 
   (*
+  fn sload_skip_cold_load(
+    &mut self,
+    address: Address,
+    key: U256,
+    skip_cold_load: bool,
+  ) -> Result<StateLoad<U256>, LoadError>;
+  *)
+  Class Method_sload_skip_cold_load (Self : Set) `{Link Self} : Set := {
+    sload_skip_cold_load : PolymorphicFunction.t;
+    sload_skip_cold_load_is_method ::
+      IsTraitMethod.C (trait Self) "sload_skip_cold_load" sload_skip_cold_load;
+    run_sload_skip_cold_load
+      (self : '&mut Self)
+      (address : Address.t)
+      (key : aliases.U256.t)
+      (skip_cold_load : bool) ::
+      Run.Trait
+        sload_skip_cold_load
+        [] []
+        [ φ self; φ address; φ key; φ skip_cold_load ]
+        (Result.t (StateLoad.t aliases.U256.t) LoadError.t);
+  }.
+
+  (*
   fn sstore(
       &mut self,
       address: Address,
@@ -619,6 +644,7 @@ Module Host.
     method_code :: Method_code Self;
     method_code_hash :: Method_code_hash Self;
     method_sload :: Method_sload Self;
+    method_sload_skip_cold_load :: Method_sload_skip_cold_load Self;
     method_sstore :: Method_sstore Self;
     method_tload :: Method_tload Self;
     method_tstore :: Method_tstore Self;
