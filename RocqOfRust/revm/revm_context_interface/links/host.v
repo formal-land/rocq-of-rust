@@ -29,7 +29,7 @@ pub struct SStoreResult {
 }
 *)
 Module SStoreResult.
-  RocqOfRustLinkRecord "revm_context_interface::host::SStoreResult" := {
+  RocqOfRustLinkRecord "revm_context_interface::context::SStoreResult" := {
     original_value : aliases.U256.t;
     present_value : aliases.U256.t;
     new_value : aliases.U256.t

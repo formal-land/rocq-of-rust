@@ -190,7 +190,7 @@ Proof.
   all: try eapply run_sstore_cost.
   all: try eapply run_static_sstore_cost.
   all: try typeclasses eauto.
-Admitted.
+Defined.
 Global Opaque run_dyn_sstore_cost.
 
 (* pub const fn istanbul_sstore_cost<const SLOAD_GAS: u64, const SSTORE_RESET_GAS: u64>(
