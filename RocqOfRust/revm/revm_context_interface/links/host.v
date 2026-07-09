@@ -330,6 +330,32 @@ Module Host.
       Run.Trait sstore [] [] [ φ self; φ address; φ index; φ value ] (option (StateLoad.t SStoreResult.t));
   }.
 
+  (*
+  fn sstore_skip_cold_load(
+    &mut self,
+    address: Address,
+    key: U256,
+    value: U256,
+    skip_cold_load: bool,
+  ) -> Result<StateLoad<SStoreResult>, LoadError>;
+  *)
+  Class Method_sstore_skip_cold_load (Self : Set) `{Link Self} : Set := {
+    sstore_skip_cold_load : PolymorphicFunction.t;
+    sstore_skip_cold_load_is_method ::
+      IsTraitMethod.C (trait Self) "sstore_skip_cold_load" sstore_skip_cold_load;
+    run_sstore_skip_cold_load
+      (self : '&mut Self)
+      (address : Address.t)
+      (key : aliases.U256.t)
+      (value : aliases.U256.t)
+      (skip_cold_load : bool) ::
+      Run.Trait
+        sstore_skip_cold_load
+        [] []
+        [ φ self; φ address; φ key; φ value; φ skip_cold_load ]
+        (Result.t (StateLoad.t SStoreResult.t) LoadError.t);
+  }.
+
   (* fn tload(&mut self, address: Address, index: U256) -> U256; *)
   Class Method_tload (Self : Set) `{Link Self} : Set := {
     tload : PolymorphicFunction.t;
@@ -405,6 +431,7 @@ Module Host.
     method_sload :: Method_sload Self;
     method_sload_skip_cold_load :: Method_sload_skip_cold_load Self;
     method_sstore :: Method_sstore Self;
+    method_sstore_skip_cold_load :: Method_sstore_skip_cold_load Self;
     method_tload :: Method_tload Self;
     method_tstore :: Method_tstore Self;
     method_log :: Method_log Self;
