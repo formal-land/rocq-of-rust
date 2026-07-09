@@ -9,6 +9,7 @@ Require Import core.ops.simulate.deref.
 Require Import revm.revm_interpreter.gas.simulate.calc.
 Require Import revm.revm_interpreter.instructions.links.system.keccak256.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
@@ -64,9 +65,13 @@ Lemma keccak256_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
     {{
       SimulateM.eval_f
-        (run_keccak256 run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+        (run_keccak256 run_InterpreterTypes_for_WIRE context)
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
@@ -97,20 +102,18 @@ Proof.
   }
   { as_usize_or_fail_macro_eq InterpreterTypesEq.
     resize_memory_macro_eq InterpreterTypesEq.
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s. {
-      pose proof (simulate.mod.keccak256_eq (T := '& (list u8))) as H_apply.
+    - apply InterpreterTypesEq.
+    - apply InterpreterTypesEq.
+    - pose proof (simulate.mod.keccak256_eq (T := '& (list u8))) as H_apply.
       apply H_apply.
-    }
-    s. {
-      apply Impl_Into_for_From_T.Eq.I.
-    }
-    s.
-    now destruct _.(MemoryTrait.resize).
+    - do 5 (eapply Stack.Nth.ConsSucc).
+      apply Stack.Nth.ConsZero.
+    - s. {
+        apply Impl_From_FixedBytes_32_for_U256.from_eq.
+      }
+    - s.
+      unfold RefStub.apply, RefStub.apply_core, Ref.immediate, Ref.cast_to.
+      cbn.
+      reflexivity.
   }
 Qed.
