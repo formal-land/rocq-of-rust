@@ -4,6 +4,7 @@ Require Import core.links.array.
 Require Import revm.revm_interpreter.instructions.links.system.codecopy.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.instructions.simulate.system.memory_resize.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
@@ -46,9 +47,13 @@ Lemma codecopy_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let context := {|
+    instruction_context.InstructionContext.interpreter := ref_interpreter;
+    instruction_context.InstructionContext.host := ref_host;
+  |} in
     {{
       SimulateM.eval_f
-        (run_codecopy run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+        (run_codecopy run_InterpreterTypes_for_WIRE context)
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
