@@ -93,6 +93,10 @@ Module Host.
     blob_gasprice
       (self : Self) :
       aliases.U256.t * Self;
+    (* fn effective_gas_price(&self) -> U256; *)
+    effective_gas_price
+      (self : Self) :
+      aliases.U256.t * Self;
     (* fn difficulty(&self) -> U256; *)
     difficulty
       (self : Self) :
@@ -404,6 +408,22 @@ Module Host.
             (Host.run_blob_gasprice ref_self)
             (interpreter :: self :: stack)%stack 🌲
           let result_self := I.(blob_gasprice) self in
+          (
+            Output.Success (fst result_self),
+            (interpreter :: snd result_self :: stack)%stack
+          )
+        }};
+      effective_gas_price
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self : Self)
+          (stack : Stack.t) :
+        let ref_self : '& Self := make_ref 1 in
+        {{
+          SimulateM.eval_f
+            (Host.run_effective_gas_price ref_self)
+            (interpreter :: self :: stack)%stack 🌲
+          let result_self := I.(effective_gas_price) self in
           (
             Output.Success (fst result_self),
             (interpreter :: snd result_self :: stack)%stack

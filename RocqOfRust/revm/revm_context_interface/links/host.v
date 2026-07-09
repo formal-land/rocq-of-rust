@@ -29,7 +29,7 @@ pub struct SStoreResult {
 }
 *)
 Module SStoreResult.
-  RocqOfRustLinkRecord "revm_context_interface::host::SStoreResult" := {
+  RocqOfRustLinkRecord "revm_context_interface::context::SStoreResult" := {
     original_value : aliases.U256.t;
     present_value : aliases.U256.t;
     new_value : aliases.U256.t
@@ -63,6 +63,7 @@ pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
     fn chain_id(&self) -> U256;
     fn basefee(&self) -> U256;
     fn blob_gasprice(&self) -> U256;
+    fn effective_gas_price(&self) -> U256;
     fn difficulty(&self) -> U256;
     fn prevrandao(&self) -> Option<U256>;
     fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>;
@@ -241,6 +242,14 @@ Module Host.
     blob_gasprice_is_method :: IsTraitMethod.C (trait Self) "blob_gasprice" blob_gasprice;
     run_blob_gasprice (self : '& Self) ::
       Run.Trait blob_gasprice [] [] [ φ self ] aliases.U256.t;
+  }.
+
+  (* fn effective_gas_price(&self) -> U256; *)
+  Class Method_effective_gas_price (Self : Set) `{Link Self} : Set := {
+    effective_gas_price : PolymorphicFunction.t;
+    effective_gas_price_is_method :: IsTraitMethod.C (trait Self) "effective_gas_price" effective_gas_price;
+    run_effective_gas_price (self : '& Self) ::
+      Run.Trait effective_gas_price [] [] [ φ self ] aliases.U256.t;
   }.
 
   (* fn difficulty(&self) -> U256; *)
@@ -423,6 +432,7 @@ Module Host.
     method_chain_id :: Method_chain_id Self;
     method_basefee :: Method_basefee Self;
     method_blob_gasprice :: Method_blob_gasprice Self;
+    method_effective_gas_price :: Method_effective_gas_price Self;
     method_difficulty :: Method_difficulty Self;
     method_prevrandao :: Method_prevrandao Self;
     method_balance :: Method_balance Self;
@@ -523,6 +533,23 @@ Module Impl_Host_for_RefMut.
     - intros self.
       constructor.
       destruct method_blob_gasprice.
+      run_symbolic.
+  Defined.
+
+  Instance method_effective_gas_price
+      (Self : Set) `{Link Self}
+      (method_effective_gas_price : Host.Method_effective_gas_price Self) :
+    Host.Method_effective_gas_price ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.effective_gas_price (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_effective_gas_price.
       run_symbolic.
   Defined.
 
