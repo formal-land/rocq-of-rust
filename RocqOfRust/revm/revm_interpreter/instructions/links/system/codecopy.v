@@ -23,6 +23,7 @@ Require Import revm.revm_interpreter.instructions.system.
 Require Import revm.revm_interpreter.instructions.links.system.memory_resize.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -35,10 +36,9 @@ Instance run_codecopy
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.system.codecopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    instructions.system.codecopy [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
@@ -49,5 +49,7 @@ Proof.
   destruct run_LegacyBytecode_for_Bytecode.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
+  { eapply Impl_Interpreter.run_halt. }
+  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_codecopy.
