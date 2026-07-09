@@ -11,9 +11,8 @@ Require Import core.slice.links.mod.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.transaction.
 Require Import revm.revm_context_interface.transaction.links.transaction_type.
-Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.tx_info.
-Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -22,8 +21,7 @@ Require Import ruint.links.from.
 
 (*
 pub fn gasprice<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    interpreter: &mut Interpreter<WIRE>,
-    host: &mut H,
+    context: InstructionContext<'_, H, WIRE>,
 )
 *)
 Instance run_gasprice
@@ -32,14 +30,13 @@ Instance run_gasprice
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (host : '&mut H) :
+  (context : InstructionContext.t H WIRE WIRE_types) :
   Run.Trait
-    instructions.tx_info.gasprice [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
+    instructions.tx_info.gasprice [] [ Φ WIRE; Φ H ] [ φ context ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
+  destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   destruct run_Host_for_H.
@@ -48,6 +45,14 @@ Proof.
   destruct run_TransactionGetter_for_Self.
   destruct run_Transaction_for_Transaction.
   run_symbolic.
+  { eapply (@Host.run_effective_gas_price
+      ('&mut H)
+      _
+      (@Impl_Host_for_RefMut.method_effective_gas_price H _ method_effective_gas_price)
+      (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
+  { eapply Impl_Interpreter.run_halt_overflow. }
+  Unshelve.
+  all: try typeclasses eauto.
 Defined.
 Global Opaque run_gasprice.
 
