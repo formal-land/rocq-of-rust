@@ -37,3 +37,78 @@ DebugOrdering.IsOfValue_Less =
 |}
      : OfValue.C (Value.StructTuple "core::cmp::Ordering::Less" [] [] [])
 Module DebugOrdering.SubPointer := Struct  End
+Inductive t (T : Set) : Set :=
+    WithValue : T -> DebugGeneric.t T | Empty : DebugGeneric.t T.
+
+Arguments DebugGeneric.t T%type_scope
+Arguments DebugGeneric.WithValue {T}%type_scope value
+Arguments DebugGeneric.Empty {T}%type_scope
+DebugGeneric.IsLink =
+fun (T : Set) (H_T : Link T) =>
+{|
+  Φ := Ty.apply (Ty.path "debug::Generic") [] [H_T.(Φ _)];
+  φ :=
+    fun x : DebugGeneric.t T =>
+    match x with
+    | DebugGeneric.WithValue value =>
+        Value.StructTuple "debug::Generic::WithValue" [] [
+          H_T.(Φ _)] [H_T.(φ) value]
+    | DebugGeneric.Empty =>
+        Value.StructTuple "debug::Generic::Empty" [] [H_T.(Φ _)] []
+    end
+|}
+     : forall T : Set, Link T -> Link (DebugGeneric.t T)
+
+Arguments DebugGeneric.IsLink T%type_scope {H_T}
+DebugGeneric.IsOfTy =
+fun (T' : Ty.t) (H_T : OfTy.C T') =>
+{|
+  OfTy.A := DebugGeneric.t H_T.(OfTy.A);
+  OfTy.H := DebugGeneric.IsLink H_T.(OfTy.A);
+  OfTy.eq :=
+    ((fun (A : Set) (H : Link A) (eq0 : T' = H.(Φ _)) =>
+      EqdepFacts.internal_eq_rew_r_dep
+        (fun (T'0 : Ty.t) (eq1 : T'0 = H.(Φ _)) =>
+         Ty.apply (Ty.path "debug::Generic") [] [T'0] =
+         (DebugGeneric.IsLink
+            {| OfTy.A := A; OfTy.H := H; OfTy.eq := eq1 |}.(OfTy.A))
+         .(Φ _))
+        ((eq_refl
+          :
+          Ty.apply (Ty.path "debug::Generic") [] [H.(Φ _)] =
+          (DebugGeneric.IsLink
+             {| OfTy.A := A; OfTy.H := H; OfTy.eq := eq_refl |}.(OfTy.A))
+          .(Φ _))
+         :
+         Ty.apply (Ty.path "debug::Generic") [] [H.(Φ _)] =
+         (DebugGeneric.IsLink
+            {| OfTy.A := A; OfTy.H := H; OfTy.eq := eq_refl |}.(OfTy.A))
+         .(Φ _))
+        eq0)
+       H_T.(OfTy.A) H_T.(OfTy.H) H_T.(OfTy.eq)
+     :
+     Ty.apply (Ty.path "debug::Generic") [] [T'] =
+     (DebugGeneric.IsLink H_T.(OfTy.A)).(Φ _))
+    :
+    Ty.apply (Ty.path "debug::Generic") [] [T'] =
+    (DebugGeneric.IsLink H_T.(OfTy.A)).(Φ _)
+|}
+     : forall T' : Ty.t,
+       OfTy.C T' -> OfTy.C (Ty.apply (Ty.path "debug::Generic") [] [T'])
+
+Arguments DebugGeneric.IsOfTy T' {H_T}
+DebugGeneric.IsOfValueWith_WithValue
+     : forall (T : Set) (H_T : Link T) (value' : Value.t),
+       OfValueWith.C T value' ->
+       OfValueWith.C (DebugGeneric.t T)
+         (Value.StructTuple "debug::Generic::WithValue" [] [
+            H_T.(Φ _)] [value'])
+DebugGeneric.IsOfValue_WithValue
+     : forall (T' : Ty.t) (H_T : OfTy.C T') (value' : Value.t),
+       OfValueWith.C H_T.(OfTy.A) value' ->
+       OfValue.C
+         (Value.StructTuple "debug::Generic::WithValue" [] [T'] [value'])
+DebugGeneric.SubPointer.get_WithValue_0
+     : forall (T : Set) (H_T : Link T),
+       SubPointer.Runner.t (DebugGeneric.t T)
+         (Pointer.Index.StructTuple "debug::Generic::WithValue" 0)
