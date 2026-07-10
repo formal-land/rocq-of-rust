@@ -31,6 +31,15 @@ let path_ty_with_args (path : string) (args : string list) : string =
   | [] -> path_ty path
   | _ -> "Ty.apply (" ^ path_ty path ^ ") [] " ^ ty_args args
 
+let tuple_ty (fields : field list) : string =
+  "Ty.tuple " ^ ty_args (List.map (fun field -> "Φ (" ^ field.field_ty ^ ")") fields)
+
+let layout_ty (layout : record_layout) (type_params : string list) (fields : field list) : string =
+  match layout with
+  | StructRecord path | StructTuple path ->
+      path_ty_with_args path (List.map (fun param -> "Φ " ^ param) type_params)
+  | Tuple -> tuple_ty fields
+
 let type_param_binders (type_params : string list) : string =
   String.concat " " (List.map (fun param -> "(" ^ param ^ " : Set)") type_params)
 
@@ -189,6 +198,32 @@ let render_record_value
          fields)
   @ [ "]" ]
 
+let render_struct_tuple_value
+    ?(type_args = "[]") (path : string) (fields : field list) (value_of : field -> string) : string list =
+  [ "Value.StructTuple " ^ quote path ^ " [] " ^ type_args ^ " [" ]
+  @ indent "  "
+      (semicolon_list value_of fields)
+  @ [ "]" ]
+
+let render_tuple_value (fields : field list) (value_of : field -> string) : string list =
+  [ "Value.Tuple [" ]
+  @ indent "  "
+      (semicolon_list value_of fields)
+  @ [ "]" ]
+
+let render_link_value
+    ?(type_args = "[]")
+    (layout : record_layout)
+    (fields : field list)
+    (value_of : field -> string) : string list =
+  match layout with
+  | StructRecord path ->
+      render_record_value ~type_args path (sorted_fields fields) value_of
+  | StructTuple path ->
+      render_struct_tuple_value ~type_args path fields value_of
+  | Tuple ->
+      render_tuple_value fields value_of
+
 (* StructRecord values are rendered in sorted field-name order to keep the
    generated value shape stable across plugin migrations. *)
 let render_variant_value (path : string) (type_params : string list) (variant : variant) : string =
@@ -227,7 +262,7 @@ let render_enum_link (path : string) (type_params : string list) (variants : var
   @ [ "    end";
       "}." ]
 
-let render_record_link (path : string) (type_params : string list) (fields : field list) : string list =
+let render_record_link (layout : record_layout) (type_params : string list) (fields : field list) : string list =
   let instance_head =
     match type_params with
     | [] -> "Instance IsLink : Link t := {"
@@ -237,10 +272,10 @@ let render_record_link (path : string) (type_params : string list) (fields : fie
         ^ " : Link " ^ type_app type_params ^ " := {"
   in
   [ instance_head;
-    "  Φ := " ^ path_ty_with_args path (List.map (fun param -> "Φ " ^ param) type_params) ^ ";";
+    "  Φ := " ^ layout_ty layout type_params fields ^ ";";
     "  φ x :=" ]
   @ indent "    "
-      (render_record_value ~type_args:(type_param_ty_args type_params) path (sorted_fields fields)
+      (render_link_value ~type_args:(type_param_ty_args type_params) layout fields
          (fun field -> "φ x.(" ^ field.field_name ^ ")"))
   @ [ "}." ]
 
@@ -289,9 +324,13 @@ let render_enum_inductive_of_ty (path : string) (type_params : string list) : st
         ^ "); subst; reflexivity).";
         "Smpl Add eapply of_ty : of_ty." ]
 
-let render_type_of_ty (path : string) (type_params : string list) : string list =
+let render_type_of_ty (layout : record_layout) (type_params : string list) (fields : field list) : string list =
   match type_params with
-  | [] -> render_of_ty path
+  | [] ->
+      [ "Instance IsOfTy : OfTy.C (" ^ layout_ty layout type_params fields ^ ") := {";
+        "  A := t;";
+        "  eq := eq_refl;";
+        "}." ]
   | _ ->
       let params =
         List.map
@@ -301,13 +340,17 @@ let render_type_of_ty (path : string) (type_params : string list) : string list 
       [ "Instance IsOfTy" ]
       @ List.map (fun param -> "    " ^ param) params
       @ [ "    : OfTy.C ("
-          ^ path_ty_with_args path (List.map (fun param -> param ^ "'") type_params)
+          ^ (match layout with
+             | StructRecord path | StructTuple path ->
+                 path_ty_with_args path (List.map (fun param -> param ^ "'") type_params)
+             | Tuple ->
+                 tuple_ty fields)
           ^ ") := {";
           "  A := " ^ type_app_of_ty type_params ^ ";";
           "  eq := ltac:(sauto lq: on);";
           "}." ]
 
-let render_type_inductive_of_ty (path : string) (type_params : string list) : string list =
+let render_type_inductive_of_ty (layout : record_layout) (type_params : string list) (fields : field list) : string list =
   match type_params with
   | [] -> []
   | _ ->
@@ -320,7 +363,11 @@ let render_type_inductive_of_ty (path : string) (type_params : string list) : st
                (fun param -> "OfTy.t " ^ param)
                ty_params
              @ [ "OfTy.t ("
-                 ^ path_ty_with_args path ty_params
+                 ^ (match layout with
+                    | StructRecord path | StructTuple path ->
+                        path_ty_with_args path ty_params
+                    | Tuple ->
+                        tuple_ty fields)
                  ^ ")" ])
         ^ " :=";
         "  ltac:(intros " ^ String.concat " " intros
@@ -341,14 +388,18 @@ let render_instance_params ?(type_params = []) ?(use_of_ty = false) (fields : fi
       ^ " : OfValueWith.C (" ^ field_ty ^ ") " ^ field.field_name ^ "'}")
     fields
 
-let render_value_fields ?(type_args = "[]") (path : string) (fields : field list) : string list =
-  render_record_value ~type_args path fields (fun (field : field) -> field.field_name ^ "'")
+let render_value_fields ?(type_args = "[]") (layout : record_layout) (fields : field list) : string list =
+  render_link_value ~type_args layout fields (fun (field : field) -> field.field_name ^ "'")
 
 (* Record constructors still receive fields in declaration order; only the
    StructRecord value used for matching is sorted. *)
 let render_record_of_value
-    (kind : [ `Plain | `With ]) (path : string) (type_params : string list) (fields : field list) : string list =
-  let sorted = sorted_fields fields in
+    (kind : [ `Plain | `With ]) (layout : record_layout) (type_params : string list) (fields : field list) : string list =
+  let value_fields =
+    match layout with
+    | StructRecord _ -> sorted_fields fields
+    | StructTuple _ | Tuple -> fields
+  in
   let head =
     match kind with
     | `With -> "Instance IsOfValueWith"
@@ -397,10 +448,10 @@ let render_record_of_value
   in
   [ head ]
   @ params
-  @ render_instance_params ~type_params ~use_of_ty:(kind = `Plain) sorted
+  @ render_instance_params ~type_params ~use_of_ty:(kind = `Plain) value_fields
   @ [ "    :";
       "  " ^ class_head ^ " (" ]
-  @ indent "    " (render_value_fields ~type_args path sorted)
+  @ indent "    " (render_value_fields ~type_args layout value_fields)
   @ [ "  ) := {" ]
   @ of_value_body_prefix
   @ [ "  value := " ^ constructor ]
@@ -477,7 +528,8 @@ let render_enum_of_value
         [ "Value.StructTuple " ^ quote vpath ^ " [] " ^ type_args ^ " ["
           ^ String.concat "; " (List.map (fun (field : field) -> field.field_name ^ "'") fields)
           ^ "]" ]
-    | RecordPayload fields -> render_value_fields ~type_args vpath (sorted_fields fields)
+    | RecordPayload fields -> render_record_value ~type_args vpath (sorted_fields fields)
+                                (fun (field : field) -> field.field_name ^ "'")
   in
   if fields = [] then
     [ head ]
@@ -505,7 +557,7 @@ let render_enum_of_value
 (* SubPointer proofs are emitted as proof terms with ltac:(...), because the
    plugin interprets complete vernacular sentences rather than entering proof
    mode for generated tactic commands. *)
-let render_record_subpointer (path : string) (type_params : string list) (field : field) : string list =
+let render_record_subpointer (layout : record_layout) (type_params : string list) (index : int) (field : field) : string list =
   let get = "get_" ^ field.field_name in
   let definition_head =
     match type_params with
@@ -528,8 +580,17 @@ let render_record_subpointer (path : string) (type_params : string list) (field 
         ^ type_param_set_link_binders type_params
         ^ " :"
   in
+  let index_expr =
+    match layout with
+    | StructRecord path ->
+        "Pointer.Index.StructRecord " ^ quote path ^ " " ^ quote field.field_name
+    | StructTuple path ->
+        "Pointer.Index.StructTuple " ^ quote path ^ " " ^ string_of_int index
+    | Tuple ->
+        "Pointer.Index.Tuple " ^ string_of_int index
+  in
   [ definition_head;
-    "  (Pointer.Index.StructRecord " ^ quote path ^ " " ^ quote field.field_name ^ ") :=";
+    "  (" ^ index_expr ^ ") :=";
     "{|";
     "  SubPointer.Runner.projection x := Datatypes.Some x.(" ^ field.field_name ^ ");";
     "  SubPointer.Runner.injection x y := Datatypes.Some (x <| " ^ field.field_name ^ " := y |>);";
@@ -625,25 +686,25 @@ let render_subpointer_module (body : string list) : string list =
 
 (* Top-level renderers validate first so all downstream functions can assume a
    well-formed declaration. *)
-let render_record (path : string) (type_params : string list) (fields : field list) : string list =
-  validate (RecordDecl { path; type_params; fields });
+let render_record (layout : record_layout) (type_params : string list) (fields : field list) : string list =
+  validate (RecordDecl { layout; type_params; fields });
   render_record_decl type_params fields
   @ [ "" ]
-  @ render_record_link path type_params fields
+  @ render_record_link layout type_params fields
   @ [ "" ]
-  @ render_type_of_ty path type_params
+  @ render_type_of_ty layout type_params fields
   @ [ "" ]
-  @ render_type_inductive_of_ty path type_params
+  @ render_type_inductive_of_ty layout type_params fields
   @ [ "" ]
-  @ render_record_of_value `With path type_params fields
+  @ render_record_of_value `With layout type_params fields
   @ [ "" ]
-  @ render_record_of_value `Plain path type_params fields
+  @ render_record_of_value `Plain layout type_params fields
   @ [ "" ]
   @ render_subpointer_module
       (List.concat
          (List.mapi
             (fun i field ->
-              let lines = render_record_subpointer path type_params field in
+              let lines = render_record_subpointer layout type_params i field in
               if i = List.length fields - 1 then lines else lines @ [ "" ])
             fields))
 
@@ -682,5 +743,5 @@ let render_enum (path : string) (type_params : string list) (variants : variant 
 
 let render (command : command) : string list =
   match command with
-  | RecordDecl { path; type_params; fields } -> render_record path type_params fields
+  | RecordDecl { layout; type_params; fields } -> render_record layout type_params fields
   | EnumDecl { path; type_params; variants } -> render_enum path type_params variants

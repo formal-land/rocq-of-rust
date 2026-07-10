@@ -336,7 +336,65 @@ let () : unit =
                               Vernacextend.TyTerminal ("}", Vernacextend.TyNil) ) ) ) ) ),
           (fun path fields ?loc:_ ~atts () ->
             Attributes.unsupported_attributes atts;
-            command_typed_vernac (Link_model.RecordDecl { path; type_params = []; fields })),
+            command_typed_vernac
+              (Link_model.RecordDecl
+                 { layout = Link_model.StructRecord path; type_params = []; fields })),
+          None );
+    ]
+
+(* Rust tuple-struct command.  This handles structs such as [OpCode(u8)] whose
+   link type has a path but whose value uses [Value.StructTuple]. *)
+let () : unit =
+  Vernacextend.static_vernac_extend
+    ~plugin:(Some plugin_name)
+    ~command:"RocqOfRustLinkTupleStruct"
+    ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
+    [
+      Vernacextend.TyML
+        ( false,
+          Vernacextend.TyTerminal
+            ( "RocqOfRustLinkTupleStruct",
+              Vernacextend.TyNonTerminal
+                ( Extend.TUentry (Genarg.get_arg_tag wit_string),
+                  Vernacextend.TyTerminal
+                    ( ":=",
+                      Vernacextend.TyTerminal
+                        ( "{",
+                          Vernacextend.TyNonTerminal
+                            ( Extend.TUentry (Genarg.get_arg_tag wit_link_fields),
+                              Vernacextend.TyTerminal ("}", Vernacextend.TyNil) ) ) ) ) ),
+          (fun path fields ?loc:_ ~atts () ->
+            Attributes.unsupported_attributes atts;
+            command_typed_vernac
+              (Link_model.RecordDecl
+                 { layout = Link_model.StructTuple path; type_params = []; fields })),
+          None );
+    ]
+
+(* Plain tuple-value command.  This handles helper records whose link type is a
+   [Ty.tuple] and whose values are [Value.Tuple], without a Rust path. *)
+let () : unit =
+  Vernacextend.static_vernac_extend
+    ~plugin:(Some plugin_name)
+    ~command:"RocqOfRustLinkTupleRecord"
+    ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
+    [
+      Vernacextend.TyML
+        ( false,
+          Vernacextend.TyTerminal
+            ( "RocqOfRustLinkTupleRecord",
+              Vernacextend.TyTerminal
+                ( ":=",
+                  Vernacextend.TyTerminal
+                    ( "{",
+                      Vernacextend.TyNonTerminal
+                        ( Extend.TUentry (Genarg.get_arg_tag wit_link_fields),
+                          Vernacextend.TyTerminal ("}", Vernacextend.TyNil) ) ) ) ),
+          (fun fields ?loc:_ ~atts () ->
+            Attributes.unsupported_attributes atts;
+            command_typed_vernac
+              (Link_model.RecordDecl
+                 { layout = Link_model.Tuple; type_params = []; fields })),
           None );
     ]
 
@@ -366,7 +424,9 @@ let () : unit =
                                   Vernacextend.TyTerminal ("}", Vernacextend.TyNil) ) ) ) ) ) ),
           (fun path type_params fields ?loc:_ ~atts () ->
             Attributes.unsupported_attributes atts;
-            command_typed_vernac (Link_model.RecordDecl { path; type_params; fields })),
+            command_typed_vernac
+              (Link_model.RecordDecl
+                 { layout = Link_model.StructRecord path; type_params; fields })),
           None );
     ]
 
