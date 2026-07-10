@@ -43,7 +43,6 @@ make -j1 \
 Notes:
 
 - `make ... .vo` is the canonical workflow in this repo.
-- If you changed Jinja templates (`*.v.jinja2`), run `make jinja` first.
 - `-j1` is useful while debugging; increase parallelism when stable.
 
 ## Add a new test
