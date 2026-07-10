@@ -17,74 +17,10 @@ pub struct StateLoad<T> {
 }
 *)
 Module StateLoad.
-  Record t {T : Set} : Set := {
+  RocqOfRustLinkGenericRecord "revm_context_interface::journaled_state::StateLoad" [ T ] := {
     data : T;
-    is_cold : bool;
+    is_cold : bool
   }.
-  Arguments t : clear implicits.
-
-  Instance IsLink {T : Set} `{Link T} : Link (t T) := {
-    Φ := Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [Φ T];
-    φ x :=
-      Value.StructRecord "revm_context_interface::journaled_state::StateLoad" [] [Φ T] [
-        ("data", φ x.(data));
-        ("is_cold", φ x.(is_cold))
-      ];
-  }.
-
-  Definition of_ty (T_ty : Ty.t) :
-    OfTy.t T_ty ->
-    OfTy.t (Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [T_ty]).
-  Proof.
-    intros [T].
-    eapply OfTy.Make with (A := t T).
-    now subst.
-  Defined.
-  Smpl Add apply of_ty : of_ty.
-
-  Lemma of_value_with (T : Set) `{Link T}
-      (data : T) data'
-      (is_cold : bool) is_cold' :
-    data' = φ data ->
-    is_cold' = φ is_cold ->
-    Value.StructRecord "revm_context_interface::journaled_state::StateLoad" [] [Φ T] [
-      ("data", data');
-      ("is_cold", is_cold')
-    ] = φ (Build_t _ data is_cold).
-  Proof.
-    now intros; subst.
-  Qed.
-  Smpl Add eapply of_value_with : of_value.
-
-  Module SubPointer.
-    Definition get_data (T : Set) `{Link T} : SubPointer.Runner.t (t T)
-      (Pointer.Index.StructRecord "revm_context_interface::journaled_state::StateLoad" "data") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(data);
-      SubPointer.Runner.injection x y := Some (x <| data := y |>);
-    |}.
-
-    Lemma get_data_is_valid (T : Set) `{Link T} :
-      SubPointer.Runner.Valid.t (get_data T).
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_data_is_valid : run_sub_pointer.
-
-    Definition get_is_cold (T : Set) `{Link T} : SubPointer.Runner.t (t T)
-      (Pointer.Index.StructRecord "revm_context_interface::journaled_state::StateLoad" "is_cold") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(is_cold);
-      SubPointer.Runner.injection x y := Some (x <| is_cold := y |>);
-    |}.
-
-    Lemma get_is_cold_is_valid (T : Set) `{Link T} :
-      SubPointer.Runner.Valid.t (get_is_cold T).
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_is_cold_is_valid : run_sub_pointer.
-  End SubPointer.
 End StateLoad.
 Export (hints) StateLoad.
 
@@ -145,77 +81,10 @@ pub struct Eip7702CodeLoad<T> {
 }
 *)
 Module Eip7702CodeLoad.
-  Record t {T : Set} : Set := {
-    state_load : StateLoad.t T;
-    is_delegate_account_cold : option bool;
+  RocqOfRustLinkGenericRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [ T ] := {
+    state_load : (StateLoad.t T);
+    is_delegate_account_cold : (option bool)
   }.
-  Arguments t : clear implicits.
-
-  Instance IsLink {T : Set} `{Link T} : Link (t T) :=
-  {
-    Φ := Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [Φ T];
-    φ x :=
-      Value.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [] [Φ T] [
-        ("is_delegate_account_cold", φ x.(is_delegate_account_cold));
-        ("state_load", φ x.(state_load))
-      ];
-  }.
-
-  Definition of_ty (T_ty : Ty.t) :
-    OfTy.t T_ty ->
-    OfTy.t (Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [T_ty]).
-  Proof.
-    intros [T].
-    eapply OfTy.Make with (A := t T).
-    now subst.
-  Defined.
-  Smpl Add apply of_ty : of_ty.
-
-  Lemma of_value_with
-      {T : Set} `{Link T} T'
-      (state_load : StateLoad.t T) state_load'
-      (is_delegate_account_cold : option bool) is_delegate_account_cold' :
-    T' = Φ T ->
-    state_load' = φ state_load ->
-    is_delegate_account_cold' = φ is_delegate_account_cold ->
-    Value.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [] [T'] [
-      ("is_delegate_account_cold", is_delegate_account_cold');
-      ("state_load", state_load')
-    ] = φ (Build_t _ state_load is_delegate_account_cold).
-  Proof.
-    intros; now subst.
-  Qed.
-  Smpl Add apply of_value_with : of_value.
-
-  Module SubPointer.
-    Definition get_state_load (T : Set) `{Link T} : SubPointer.Runner.t (t T)
-      (Pointer.Index.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" "state_load") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(state_load);
-      SubPointer.Runner.injection x y := Some (x <| state_load := y |>);
-    |}.
-
-    Lemma get_state_load_is_valid (T : Set) `{Link T} :
-      SubPointer.Runner.Valid.t (get_state_load T).
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_state_load_is_valid : run_sub_pointer.
-
-    Definition get_is_delegate_account_cold (T : Set) `{Link T} : SubPointer.Runner.t (t T)
-      (Pointer.Index.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" "is_delegate_account_cold") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(is_delegate_account_cold);
-      SubPointer.Runner.injection x y := Some (x <| is_delegate_account_cold := y |>);
-    |}.
-
-    Lemma get_is_delegate_account_cold_is_valid (T : Set) `{Link T} :
-      SubPointer.Runner.Valid.t (get_is_delegate_account_cold T).
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_is_delegate_account_cold_is_valid : run_sub_pointer.
-  End SubPointer.
 End Eip7702CodeLoad.
 Export (hints) Eip7702CodeLoad.
 
@@ -307,53 +176,10 @@ End AccountLoad.
 Export (hints) AccountLoad.
 
 Module Cow.
-  Inductive t (T : Set) `{Link T} : Set :=
-  | Borrowed (_ : '& T)
-  | Owned (_ : T).
-  Arguments t _ {_}.
-  Arguments Borrowed {_ _}.
-  Arguments Owned {_ _}.
-
-  Instance IsLink {T : Set} `{Link T} : Link (t T) := {
-    Φ := Ty.apply (Ty.path "alloc::borrow::Cow") [] [Φ T];
-    φ x :=
-      match x with
-      | Borrowed value =>
-          Value.StructTuple "alloc::borrow::Cow::Borrowed" [] [Φ T] [φ value]
-      | Owned value =>
-          Value.StructTuple "alloc::borrow::Cow::Owned" [] [Φ T] [φ value]
-      end;
-  }.
-
-  Definition of_ty (T_ty : Ty.t) :
-    OfTy.t T_ty ->
-    OfTy.t (Ty.apply (Ty.path "alloc::borrow::Cow") [] [T_ty]).
-  Proof.
-    intros [T].
-    eapply OfTy.Make with (A := t T).
-    now subst.
-  Defined.
-  Smpl Add apply of_ty : of_ty.
-
-  Lemma of_value_with_Borrowed {T : Set} `{Link T} T' value' (value : '& T) :
-    T' = Φ T ->
-    value' = φ value ->
-    Value.StructTuple "alloc::borrow::Cow::Borrowed" [] [T'] [value'] =
-    φ (Borrowed value).
-  Proof.
-    now intros; subst.
-  Qed.
-  Smpl Add apply of_value_with_Borrowed : of_value.
-
-  Lemma of_value_with_Owned {T : Set} `{Link T} T' value' (value : T) :
-    T' = Φ T ->
-    value' = φ value ->
-    Value.StructTuple "alloc::borrow::Cow::Owned" [] [T'] [value'] =
-    φ (Owned value).
-  Proof.
-    now intros; subst.
-  Qed.
-  Smpl Add apply of_value_with_Owned : of_value.
+  RocqOfRustLinkLinkedGenericEnum "alloc::borrow::Cow" [ T ] :=
+  | Borrowed (value : ('& T))
+  | Owned (value : T)
+  .
 End Cow.
 Export (hints) Cow.
 

@@ -34,6 +34,16 @@ let path_ty_with_args (path : string) (args : string list) : string =
 let type_param_binders (type_params : string list) : string =
   String.concat " " (List.map (fun param -> "(" ^ param ^ " : Set)") type_params)
 
+let linked_type_param_binders (type_params : string list) : string =
+  String.concat " " (List.map (fun param -> "(" ^ param ^ " : Set) {H_" ^ param ^ " : Link " ^ param ^ "}") type_params)
+
+let inductive_type_param_binders (type_params : string list) (linked_type_params : string list) : string =
+  String.concat " " [ type_param_binders type_params; linked_type_param_binders linked_type_params ]
+  |> String.trim
+
+let implicit_type_param_binders (type_params : string list) : string =
+  String.concat " " (List.map (fun param -> "{" ^ param ^ " : Set}") type_params)
+
 let type_param_link_binders (type_params : string list) : string =
   String.concat " " (List.map (fun param -> "{H_" ^ param ^ " : Link " ^ param ^ "}") type_params)
 
@@ -56,11 +66,41 @@ let type_app_of_ty (type_params : string list) : string =
       ^ String.concat " " (List.map (fun param -> "H_" ^ param ^ ".(OfTy.A)") type_params)
       ^ ")"
 
+let is_ident_char (c : char) : bool =
+  match c with
+  | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '\'' -> true
+  | _ -> false
+
+let replace_type_params (type_params : string list) (field_ty : string) : string =
+  let replacements =
+    List.map (fun param -> (param, "H_" ^ param ^ ".(OfTy.A)")) type_params
+  in
+  let lookup word =
+    match List.assoc_opt word replacements with
+    | Some replacement -> replacement
+    | None -> word
+  in
+  let length = String.length field_ty in
+  let buffer = Buffer.create length in
+  let rec aux index =
+    if index >= length then
+      ()
+    else if is_ident_char field_ty.[index] then
+      let stop = ref index in
+      while !stop < length && is_ident_char field_ty.[!stop] do
+        incr stop
+      done;
+      Buffer.add_string buffer (lookup (String.sub field_ty index (!stop - index)));
+      aux !stop
+    else (
+      Buffer.add_char buffer field_ty.[index];
+      aux (index + 1))
+  in
+  aux 0;
+  Buffer.contents buffer
+
 let field_ty_for_of_ty (type_params : string list) (field_ty : string) : string =
-  if List.exists (( = ) field_ty) type_params then
-    "H_" ^ field_ty ^ ".(OfTy.A)"
-  else
-    field_ty
+  replace_type_params type_params field_ty
 
 let variant_path (path : string) (variant : variant) : string =
   path ^ "::" ^ variant.rust_name
@@ -87,11 +127,12 @@ let constructor_value ?(type_args = []) (variant : variant) (fields : field list
               (fun field -> "      H_" ^ field.field_name ^ ".(OfValueWith.value)")
               fields)
 
-let render_inductive (type_params : string list) (variants : variant list) : string list =
+let render_inductive (type_params : string list) (linked_type_params : string list) (variants : variant list) : string list =
+  let all_type_params = type_params @ linked_type_params in
   let header =
-    match type_params with
+    match all_type_params with
     | [] -> "Inductive t : Set :="
-    | _ -> "Inductive t " ^ type_param_binders type_params ^ " : Set :="
+    | _ -> "Inductive t " ^ inductive_type_param_binders type_params linked_type_params ^ " : Set :="
   in
   [ header ]
   @ List.map
@@ -108,15 +149,20 @@ let render_inductive (type_params : string list) (variants : variant list) : str
       variants
   @ [ "." ]
 
-let render_constructor_arguments (type_params : string list) (variant : variant) : string list =
-  match type_params with
+let render_constructor_arguments (type_params : string list) (linked_type_params : string list) (variant : variant) : string list =
+  let all_type_params = type_params @ linked_type_params in
+  match all_type_params with
   | [] -> []
   | _ ->
       let fields =
         match variant.payload with
         | TuplePayload fields | RecordPayload fields -> fields
       in
-      let implicit_params = String.concat " " (List.map (fun param -> "{" ^ param ^ "}") type_params) in
+      let implicit_params =
+        String.concat " "
+          (List.map (fun param -> "{" ^ param ^ "}") type_params
+           @ List.map (fun param -> "{" ^ param ^ " H_" ^ param ^ "}") linked_type_params)
+      in
       let field_names = String.concat " " (List.map (fun field -> field.field_name) fields) in
       let suffix =
         if field_names = "" then
@@ -126,10 +172,19 @@ let render_constructor_arguments (type_params : string list) (variant : variant)
       in
       [ "Arguments " ^ variant.name ^ " " ^ suffix ^ "." ]
 
-let render_record_decl (fields : field list) : string list =
-  [ "Record t : Set := {" ]
+let render_record_decl (type_params : string list) (fields : field list) : string list =
+  let header =
+    match type_params with
+    | [] -> "Record t : Set := {"
+    | _ -> "Record t " ^ implicit_type_param_binders type_params ^ " : Set := {"
+  in
+  [ header ]
   @ List.map (fun field -> "  " ^ field.field_name ^ " : " ^ field.field_ty ^ ";") fields
   @ [ "}." ]
+  @
+    match type_params with
+    | [] -> []
+    | _ -> [ "Arguments t : clear implicits." ]
 
 let render_record_value
     ?(type_args = "[]") (path : string) (fields : field list) (value_of : field -> string) : string list =
@@ -179,12 +234,21 @@ let render_enum_link (path : string) (type_params : string list) (variants : var
   @ [ "    end";
       "}." ]
 
-let render_record_link (path : string) (fields : field list) : string list =
-  [ "Instance IsLink : Link t := {";
-    "  Φ := " ^ path_ty path ^ ";";
+let render_record_link (path : string) (type_params : string list) (fields : field list) : string list =
+  let instance_head =
+    match type_params with
+    | [] -> "Instance IsLink : Link t := {"
+    | _ ->
+        "Instance IsLink "
+        ^ type_param_binders type_params ^ " "
+        ^ type_param_link_binders type_params
+        ^ " : Link " ^ type_app type_params ^ " := {"
+  in
+  [ instance_head;
+    "  Φ := " ^ path_ty_with_args path (List.map (fun param -> "Φ " ^ param) type_params) ^ ";";
     "  φ x :=" ]
   @ indent "    "
-      (render_record_value path (sorted_fields fields)
+      (render_record_value ~type_args:(type_param_ty_args type_params) path (sorted_fields fields)
          (fun field -> "φ x.(" ^ field.field_name ^ ")"))
   @ [ "}." ]
 
@@ -233,6 +297,45 @@ let render_enum_inductive_of_ty (path : string) (type_params : string list) : st
         ^ "); subst; reflexivity).";
         "Smpl Add eapply of_ty : of_ty." ]
 
+let render_type_of_ty (path : string) (type_params : string list) : string list =
+  match type_params with
+  | [] -> render_of_ty path
+  | _ ->
+      let params =
+        List.map
+          (fun param -> "(" ^ param ^ "' : Ty.t) {H_" ^ param ^ " : OfTy.C " ^ param ^ "'}")
+          type_params
+      in
+      [ "Instance IsOfTy" ]
+      @ List.map (fun param -> "    " ^ param) params
+      @ [ "    : OfTy.C ("
+          ^ path_ty_with_args path (List.map (fun param -> param ^ "'") type_params)
+          ^ ") := {";
+          "  A := " ^ type_app_of_ty type_params ^ ";";
+          "  eq := ltac:(sauto lq: on);";
+          "}." ]
+
+let render_type_inductive_of_ty (path : string) (type_params : string list) : string list =
+  match type_params with
+  | [] -> []
+  | _ ->
+      let ty_params = List.map (fun param -> param ^ "'") type_params in
+      let intros = List.map (fun param -> "[" ^ param ^ "]") type_params in
+      [ "Definition of_ty " ^ String.concat " " ty_params ^ " :";
+        "  "
+        ^ String.concat " -> "
+            (List.map
+               (fun param -> "OfTy.t " ^ param)
+               ty_params
+             @ [ "OfTy.t ("
+                 ^ path_ty_with_args path ty_params
+                 ^ ")" ])
+        ^ " :=";
+        "  ltac:(intros " ^ String.concat " " intros
+        ^ "; eapply OfTy.Make with (A := " ^ type_app type_params
+        ^ "); subst; reflexivity).";
+        "Smpl Add eapply of_ty : of_ty." ]
+
 let render_instance_params ?(type_params = []) ?(use_of_ty = false) (fields : field list) : string list =
   List.map
     (fun field ->
@@ -252,48 +355,12 @@ let render_value_fields ?(type_args = "[]") (path : string) (fields : field list
 (* Record constructors still receive fields in declaration order; only the
    StructRecord value used for matching is sorted. *)
 let render_record_of_value
-    (kind : [ `Plain | `With ]) (path : string) (fields : field list) : string list =
+    (kind : [ `Plain | `With ]) (path : string) (type_params : string list) (fields : field list) : string list =
   let sorted = sorted_fields fields in
   let head =
     match kind with
     | `With -> "Instance IsOfValueWith"
     | `Plain -> "Instance IsOfValue"
-  in
-  let class_head =
-    match kind with
-    | `With -> "OfValueWith.C t"
-    | `Plain -> "OfValue.C"
-  in
-  [ head ]
-  @ render_instance_params sorted
-  @ [ "    :";
-      "  " ^ class_head ^ " (" ]
-  @ indent "    " (render_value_fields path sorted)
-  @ [ "  ) := {";
-      "  value := Build_t" ]
-  @ List.map
-      (fun field -> "    H_" ^ field.field_name ^ ".(OfValueWith.value)")
-      fields
-  @ [ "  ;";
-      "  eq := ltac:(sauto lq: on);";
-      "}." ]
-
-let render_enum_of_value
-    (kind : [ `Plain | `With ]) (path : string) (type_params : string list) (variant : variant) : string list =
-  let fields =
-    match variant.payload with
-    | TuplePayload fields -> fields
-    | RecordPayload fields -> sorted_fields fields
-  in
-  let constructor_fields =
-    match variant.payload with
-    | TuplePayload fields | RecordPayload fields -> fields
-  in
-  let vpath = variant_path path variant in
-  let head =
-    match kind with
-    | `With -> "Instance IsOfValueWith_" ^ variant.name
-    | `Plain -> "Instance IsOfValue_" ^ variant.name
   in
   let class_head =
     match kind with
@@ -330,8 +397,92 @@ let render_enum_of_value
     | `With -> []
     | `Plain -> [ "  A := " ^ type_app_of_ty type_params ^ ";" ]
   in
+  let constructor =
+    match constructor_type_args with
+    | [] -> "Build_t"
+    | _ -> "@Build_t " ^ String.concat " " (List.map (fun arg -> "(" ^ arg ^ ")") constructor_type_args)
+  in
+  [ head ]
+  @ params
+  @ render_instance_params ~type_params ~use_of_ty:(kind = `Plain) sorted
+  @ [ "    :";
+      "  " ^ class_head ^ " (" ]
+  @ indent "    " (render_value_fields ~type_args path sorted)
+  @ [ "  ) := {" ]
+  @ of_value_body_prefix
+  @ [ "  value := " ^ constructor ]
+  @ List.map
+      (fun field -> "    H_" ^ field.field_name ^ ".(OfValueWith.value)")
+      fields
+  @ [ "  ;";
+      "  eq := ltac:(sauto lq: on);";
+      "}." ]
+
+let constructor_type_arguments
+    (kind : [ `Plain | `With ]) (type_params : string list) (linked_type_params : string list) : string list =
+  let type_arg param =
+    match kind with
+    | `With -> param
+    | `Plain -> "H_" ^ param ^ ".(OfTy.A)"
+  in
+  let linked_type_args param =
+    match kind with
+    | `With -> [ param; "H_" ^ param ]
+    | `Plain -> [ "H_" ^ param ^ ".(OfTy.A)"; "H_" ^ param ^ ".(OfTy.H)" ]
+  in
+  List.map type_arg type_params @ List.concat (List.map linked_type_args linked_type_params)
+
+let render_enum_of_value
+    (kind : [ `Plain | `With ]) (path : string) (type_params : string list) (linked_type_params : string list) (variant : variant) : string list =
+  let all_type_params = type_params @ linked_type_params in
+  let fields =
+    match variant.payload with
+    | TuplePayload fields -> fields
+    | RecordPayload fields -> sorted_fields fields
+  in
+  let constructor_fields =
+    match variant.payload with
+    | TuplePayload fields | RecordPayload fields -> fields
+  in
+  let vpath = variant_path path variant in
+  let head =
+    match kind with
+    | `With -> "Instance IsOfValueWith_" ^ variant.name
+    | `Plain -> "Instance IsOfValue_" ^ variant.name
+  in
+  let class_head =
+    match kind with
+    | `With -> "OfValueWith.C " ^ type_app all_type_params
+    | `Plain -> "OfValue.C"
+  in
+  let params =
+    match kind with
+    | `With ->
+        (match all_type_params with
+         | [] -> []
+         | _ ->
+             [ "    "
+               ^ type_param_binders all_type_params
+               ^ " "
+               ^ type_param_link_binders all_type_params ])
+    | `Plain ->
+        List.map
+          (fun param -> "    (" ^ param ^ "' : Ty.t) {H_" ^ param ^ " : OfTy.C " ^ param ^ "'}")
+          all_type_params
+  in
+  let type_args =
+    match kind with
+    | `With -> type_param_ty_args all_type_params
+    | `Plain -> type_param_of_ty_args all_type_params
+  in
+  let constructor_type_args = constructor_type_arguments kind type_params linked_type_params in
+  let of_value_body_prefix =
+    match kind with
+    | `With -> []
+    | `Plain -> [ "  A := " ^ type_app_of_ty all_type_params ^ ";" ]
+  in
   let no_field_eq =
-    match kind, type_params with
+    match kind, all_type_params with
     | `Plain, _ :: _ -> "ltac:(sauto lq: on)"
     | _ -> "eq_refl"
   in
@@ -355,7 +506,7 @@ let render_enum_of_value
   else
     [ head ]
     @ params
-    @ render_instance_params ~type_params ~use_of_ty:(kind = `Plain) fields
+    @ render_instance_params ~type_params:all_type_params ~use_of_ty:(kind = `Plain) fields
     @ [ "    :";
         "  " ^ class_head ^ " (" ]
     @ indent "    " value_lines
@@ -369,17 +520,40 @@ let render_enum_of_value
 (* SubPointer proofs are emitted as proof terms with ltac:(...), because the
    plugin interprets complete vernacular sentences rather than entering proof
    mode for generated tactic commands. *)
-let render_record_subpointer (path : string) (field : field) : string list =
+let render_record_subpointer (path : string) (type_params : string list) (field : field) : string list =
   let get = "get_" ^ field.field_name in
-  [ "Definition " ^ get ^ " : SubPointer.Runner.t t";
+  let definition_head =
+    match type_params with
+    | [] -> "Definition " ^ get ^ " : SubPointer.Runner.t t"
+    | _ ->
+        "Definition " ^ get ^ " "
+        ^ type_param_binders type_params ^ " "
+        ^ type_param_link_binders type_params
+        ^ " : SubPointer.Runner.t " ^ type_app type_params
+  in
+  let get_applied =
+    match type_params with
+    | [] -> get
+    | _ -> "(" ^ get ^ " " ^ String.concat " " type_params ^ ")"
+  in
+  let validity_head =
+    match type_params with
+    | [] -> "Definition " ^ get ^ "_is_valid :"
+    | _ ->
+        "Definition " ^ get ^ "_is_valid "
+        ^ type_param_binders type_params ^ " "
+        ^ type_param_link_binders type_params
+        ^ " :"
+  in
+  [ definition_head;
     "  (Pointer.Index.StructRecord " ^ quote path ^ " " ^ quote field.field_name ^ ") :=";
     "{|";
     "  SubPointer.Runner.projection x := Datatypes.Some x.(" ^ field.field_name ^ ");";
     "  SubPointer.Runner.injection x y := Datatypes.Some (x <| " ^ field.field_name ^ " := y |>);";
     "|}.";
     "";
-    "Definition " ^ get ^ "_is_valid :";
-    "  SubPointer.Runner.Valid.t " ^ get ^ " :=";
+    validity_head;
+    "  SubPointer.Runner.Valid.t " ^ get_applied ^ " :=";
     "  ltac:(now constructor).";
     "Smpl Add apply " ^ get ^ "_is_valid : run_sub_pointer." ]
 
@@ -470,43 +644,46 @@ let render_subpointer_module (body : string list) : string list =
 
 (* Top-level renderers validate first so all downstream functions can assume a
    well-formed declaration. *)
-let render_record (path : string) (fields : field list) : string list =
-  validate (RecordDecl { path; fields });
-  render_record_decl fields
+let render_record (path : string) (type_params : string list) (fields : field list) : string list =
+  validate (RecordDecl { path; type_params; fields });
+  render_record_decl type_params fields
   @ [ "" ]
-  @ render_record_link path fields
+  @ render_record_link path type_params fields
   @ [ "" ]
-  @ render_of_ty path
+  @ render_type_of_ty path type_params
   @ [ "" ]
-  @ render_record_of_value `With path fields
+  @ render_type_inductive_of_ty path type_params
   @ [ "" ]
-  @ render_record_of_value `Plain path fields
+  @ render_record_of_value `With path type_params fields
+  @ [ "" ]
+  @ render_record_of_value `Plain path type_params fields
   @ [ "" ]
   @ render_subpointer_module
       (List.concat
          (List.mapi
             (fun i field ->
-              let lines = render_record_subpointer path field in
+              let lines = render_record_subpointer path type_params field in
               if i = List.length fields - 1 then lines else lines @ [ "" ])
             fields))
 
-let render_enum (path : string) (type_params : string list) (variants : variant list) : string list =
-  validate (EnumDecl { path; type_params; variants });
-  render_inductive type_params variants
-  @ List.concat (List.map (render_constructor_arguments type_params) variants)
+let render_enum (path : string) (type_params : string list) (linked_type_params : string list) (variants : variant list) : string list =
+  let all_type_params = type_params @ linked_type_params in
+  validate (EnumDecl { path; type_params; linked_type_params; variants });
+  render_inductive type_params linked_type_params variants
+  @ List.concat (List.map (render_constructor_arguments type_params linked_type_params) variants)
   @ [ "" ]
-  @ render_enum_link path type_params variants
+  @ render_enum_link path all_type_params variants
   @ [ "" ]
-  @ render_enum_of_ty path type_params
+  @ render_enum_of_ty path all_type_params
   @ [ "" ]
-  @ render_enum_inductive_of_ty path type_params
+  @ render_enum_inductive_of_ty path all_type_params
   @ [ "" ]
   @ List.concat
       (List.map
          (fun variant ->
-           render_enum_of_value `With path type_params variant
+           render_enum_of_value `With path type_params linked_type_params variant
            @ [ "" ]
-           @ render_enum_of_value `Plain path type_params variant
+           @ render_enum_of_value `Plain path type_params linked_type_params variant
            @ [ "" ])
          variants)
   @ render_subpointer_module
@@ -519,11 +696,11 @@ let render_enum (path : string) (type_params : string list) (variants : variant 
               in
               List.concat
                 (List.mapi
-                   (fun i field -> render_enum_subpointer path type_params variant i field @ [ "" ])
+                   (fun i field -> render_enum_subpointer path all_type_params variant i field @ [ "" ])
                    fields))
             variants))
 
 let render (command : command) : string list =
   match command with
-  | RecordDecl { path; fields } -> render_record path fields
-  | EnumDecl { path; type_params; variants } -> render_enum path type_params variants
+  | RecordDecl { path; type_params; fields } -> render_record path type_params fields
+  | EnumDecl { path; type_params; linked_type_params; variants } -> render_enum path type_params linked_type_params variants

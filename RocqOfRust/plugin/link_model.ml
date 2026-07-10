@@ -21,10 +21,12 @@ type command =
   | EnumDecl of {
       path : string;
       type_params : string list;
+      linked_type_params : string list;
       variants : variant list;
     }
   | RecordDecl of {
       path : string;
+      type_params : string list;
       fields : field list;
     }
 
@@ -58,8 +60,10 @@ let validate_variant (variant : variant) : unit =
 
 let validate (command : command) : unit =
   match command with
-  | RecordDecl { fields; _ } -> validate_fields fields
-  | EnumDecl { type_params; variants; _ } ->
+  | RecordDecl { type_params; fields; _ } ->
       validate_unique "type parameter" type_params;
+      validate_fields fields
+  | EnumDecl { type_params; linked_type_params; variants; _ } ->
+      validate_unique "type parameter" (type_params @ linked_type_params);
       validate_unique "variant" (List.map (fun variant -> variant.name) variants);
       List.iter validate_variant variants
