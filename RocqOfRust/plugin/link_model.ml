@@ -17,6 +17,11 @@ type variant = {
   payload : variant_payload;
 }
 
+type record_layout =
+  | StructRecord of string
+  | StructTuple of string
+  | Tuple
+
 type command =
   | EnumDecl of {
       path : string;
@@ -24,7 +29,7 @@ type command =
       variants : variant list;
     }
   | RecordDecl of {
-      path : string;
+      layout : record_layout;
       type_params : string list;
       fields : field list;
     }

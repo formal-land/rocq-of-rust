@@ -56,3 +56,30 @@ Print DebugGenericRecord.IsOfTy.
 Check DebugGenericRecord.IsOfValueWith.
 Check DebugGenericRecord.IsOfValue.
 Check DebugGenericRecord.SubPointer.get_payload.
+
+Module DebugTupleStruct.
+  RocqOfRustLinkTupleStruct "debug::TupleStruct" := {
+    value : u8
+  }.
+End DebugTupleStruct.
+
+Print DebugTupleStruct.t.
+Print DebugTupleStruct.IsLink.
+Print DebugTupleStruct.IsOfTy.
+Check DebugTupleStruct.IsOfValueWith.
+Check DebugTupleStruct.IsOfValue.
+Check DebugTupleStruct.SubPointer.get_value.
+
+Module DebugTupleRecord.
+  RocqOfRustLinkTupleRecord := {
+    left : u64;
+    right : bool
+  }.
+End DebugTupleRecord.
+
+Print DebugTupleRecord.t.
+Print DebugTupleRecord.IsLink.
+Print DebugTupleRecord.IsOfTy.
+Check DebugTupleRecord.IsOfValueWith.
+Check DebugTupleRecord.IsOfValue.
+Check DebugTupleRecord.SubPointer.get_left.

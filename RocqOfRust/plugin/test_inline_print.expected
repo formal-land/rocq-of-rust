@@ -270,3 +270,72 @@ DebugGenericRecord.SubPointer.get_payload
      : forall (T : Set) (H_T : Link T),
        SubPointer.Runner.t (DebugGenericRecord.t T)
          (Pointer.Index.StructRecord "debug::GenericRecord" "payload")
+Record t : Set := Build_t { value : u8 }.
+
+t has primitive projections with eta conversion.
+Arguments DebugTupleStruct.Build_t value
+Arguments DebugTupleStruct.value t
+DebugTupleStruct.IsLink =
+{|
+  Φ := Ty.path "debug::TupleStruct";
+  φ :=
+    fun x : DebugTupleStruct.t =>
+    Value.StructTuple "debug::TupleStruct" [] []
+      [Integer.IsLink.(φ) x.(DebugTupleStruct.value)]
+|}
+     : Link DebugTupleStruct.t
+DebugTupleStruct.IsOfTy =
+{|
+  OfTy.A := DebugTupleStruct.t;
+  OfTy.H := DebugTupleStruct.IsLink;
+  OfTy.eq := eq_refl
+|}
+     : OfTy.C (Ty.path "debug::TupleStruct")
+DebugTupleStruct.IsOfValueWith
+     : forall value' : Value.t,
+       OfValueWith.C u8 value' ->
+       OfValueWith.C DebugTupleStruct.t
+         (Value.StructTuple "debug::TupleStruct" [] [] [value'])
+DebugTupleStruct.IsOfValue
+     : forall value' : Value.t,
+       OfValueWith.C u8 value' ->
+       OfValue.C (Value.StructTuple "debug::TupleStruct" [] [] [value'])
+DebugTupleStruct.SubPointer.get_value
+     : SubPointer.Runner.t DebugTupleStruct.t
+         (Pointer.Index.StructTuple "debug::TupleStruct" 0)
+Record t : Set := Build_t { left : u64;  right : bool }.
+
+t has primitive projections with eta conversion.
+Arguments DebugTupleRecord.Build_t left right%bool_scope
+Arguments DebugTupleRecord.left t
+Arguments DebugTupleRecord.right t
+DebugTupleRecord.IsLink =
+{|
+  Φ := Ty.tuple [Integer.IsLink.(Φ _); Bool.IsLink.(Φ _)];
+  φ :=
+    fun x : DebugTupleRecord.t =>
+    Value.Tuple
+      [Integer.IsLink.(φ) x.(DebugTupleRecord.left);
+       Bool.IsLink.(φ) x.(DebugTupleRecord.right)]
+|}
+     : Link DebugTupleRecord.t
+DebugTupleRecord.IsOfTy =
+{|
+  OfTy.A := DebugTupleRecord.t;
+  OfTy.H := DebugTupleRecord.IsLink;
+  OfTy.eq := eq_refl
+|}
+     : OfTy.C (Ty.tuple [Integer.IsLink.(Φ _); Bool.IsLink.(Φ _)])
+DebugTupleRecord.IsOfValueWith
+     : forall left' : Value.t,
+       OfValueWith.C u64 left' ->
+       forall right' : Value.t,
+       OfValueWith.C bool right' ->
+       OfValueWith.C DebugTupleRecord.t (Value.Tuple [left'; right'])
+DebugTupleRecord.IsOfValue
+     : forall left' : Value.t,
+       OfValueWith.C u64 left' ->
+       forall right' : Value.t,
+       OfValueWith.C bool right' -> OfValue.C (Value.Tuple [left'; right'])
+DebugTupleRecord.SubPointer.get_left
+     : SubPointer.Runner.t DebugTupleRecord.t (Pointer.Index.Tuple 0)
