@@ -6,7 +6,7 @@ Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_context_interface.links.journaled_state.
 
 Module Impl_Deref_for_StateLoad.
-  Definition Self (T : Set) : Set :=
+  Definition Self (T : Set) `{Link T} : Set :=
     StateLoad.t T.
 
   Definition deref {T : Set} `{Link T} : RefStub.t (Self T) T := {|
@@ -49,10 +49,10 @@ End Impl_Deref_for_StateLoad.
 Export (hints) Impl_Deref_for_StateLoad.
 
 Module Impl_Eip7702CodeLoad.
-  Definition Self (T : Set) : Set :=
+  Definition Self (T : Set) `{Link T} : Set :=
     Eip7702CodeLoad.t T.
 
-  Definition into_components {T : Set} (self : Self T) : T * Self unit :=
+  Definition into_components {T : Set} `{Link T} (self : Self T) : T * Self unit :=
     (
       self.(Eip7702CodeLoad.state_load).(StateLoad.data),
       {|

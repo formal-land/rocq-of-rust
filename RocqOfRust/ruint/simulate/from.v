@@ -7,7 +7,7 @@ Require Import ruint.links.lib.
 Require Import ruint.simulate.lib.
 
 Module UintTryFrom.
-  Class C (Self T : Set) : Set := {
+  Class C (Self T : Set) `{Link Self} : Set := {
     uint_try_from (value : T) : Result.t Self (ToUintError.t Self);
   }.
 
@@ -19,10 +19,10 @@ Module UintTryFrom.
       uint_try_from_eq (value : T) (stack : Stack.t) :
         {{
           SimulateM.eval_f
-            (UintTryFrom.run_uint_try_from value)
+            (UintTryFrom.run_uint_try_from (Self := Self) (T := T) value)
             stack 🌲
           (
-            Output.Success (uint_try_from value),
+            Output.Success (UintTryFrom.uint_try_from (Self := Self) (T := T) value),
             stack
           )
         }};
@@ -85,7 +85,7 @@ Module Impl_Uint.
   Definition from {BITS LIMBS : usize} {T : Set} `{!UintTryFrom.C (Self BITS LIMBS) T}
       (value : T) :
       Self BITS LIMBS :=
-    match UintTryFrom.uint_try_from value with
+    match UintTryFrom.uint_try_from (Self := Self BITS LIMBS) (T := T) value with
     | Result.Ok n => n
     | Result.Err e => Impl_Uint.ZERO
     end.
@@ -96,7 +96,7 @@ Module Impl_Uint.
       `{H_TryFrom : !UintTryFrom.Eq.C I_TryFrom}
       (value : T) (stack : Stack.t)
       (H_success :
-        match UintTryFrom.uint_try_from value with
+        match UintTryFrom.uint_try_from (Self := Self BITS LIMBS) (T := T) value with
         | Result.Ok _ => True
         | Result.Err _ => False
         end
