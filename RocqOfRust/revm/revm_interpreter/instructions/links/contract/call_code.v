@@ -72,6 +72,5 @@ Proof.
       CallInputs.value := CallValue.Transfer value20;
     |}).
   }
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_call_code.

@@ -58,14 +58,6 @@ Proof.
   destruct bytes.Impl_Deref_for_Bytes.run.
   destruct links.mod.Impl_Deref_for_Bytes.run.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt. }
-  { eapply Impl_Interpreter.run_halt_memory_oog. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_fatal. }
   {
     eapply Run.CallPrimitiveGetTraitMethod.
     { exact Impl_Deref_for_AccountInfoLoad.method_deref.(deref.Deref.deref_is_method).(IsTraitMethod.Make). }
@@ -75,8 +67,5 @@ Proof.
     intros.
     run_symbolic.
   }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_fatal. }
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_extcodecopy.

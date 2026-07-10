@@ -47,11 +47,5 @@ Proof.
   destruct run_InputsTrait_for_Input.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
-  all: match goal with
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_overflow _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt_overflow
-  end.
 Defined.
 Global Opaque run_address.

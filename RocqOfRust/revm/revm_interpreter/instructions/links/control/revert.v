@@ -43,6 +43,5 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
 Defined.
 Global Opaque run_revert.

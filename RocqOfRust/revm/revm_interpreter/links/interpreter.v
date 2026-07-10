@@ -67,6 +67,10 @@ Module Impl_Interpreter.
   Defined.
   Global Opaque run_halt.
 
+  #[export] Hint Extern 1
+    (Run.Trait (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt _) _ _ _ _) =>
+    eapply run_halt : typeclass_instances.
+
   (* pub fn halt_fatal(&mut self) *)
   Instance run_halt_fatal
       (IW : Set) `{Link IW}
@@ -83,6 +87,10 @@ Module Impl_Interpreter.
   Defined.
   Global Opaque run_halt_fatal.
 
+  #[export] Hint Extern 1
+    (Run.Trait (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_fatal _) _ _ _ _) =>
+    eapply run_halt_fatal : typeclass_instances.
+
   (* pub fn halt_oog(&mut self) *)
   Instance run_halt_oog
       (IW : Set) `{Link IW}
@@ -96,9 +104,12 @@ Module Impl_Interpreter.
   Proof.
     constructor.
     run_symbolic.
-    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
   Defined.
   Global Opaque run_halt_oog.
+
+  #[export] Hint Extern 1
+    (Run.Trait (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_oog _) _ _ _ _) =>
+    eapply run_halt_oog : typeclass_instances.
 
   (* pub fn halt_underflow(&mut self) *)
   Instance run_halt_underflow
@@ -113,10 +124,13 @@ Module Impl_Interpreter.
   Proof.
     constructor.
     run_symbolic.
-    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
   Defined.
 
   Global Opaque run_halt_underflow.
+
+  #[export] Hint Extern 1
+    (Run.Trait (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_underflow _) _ _ _ _) =>
+    eapply run_halt_underflow : typeclass_instances.
 
   (* pub fn halt_overflow(&mut self) *)
   Instance run_halt_overflow
@@ -131,9 +145,12 @@ Module Impl_Interpreter.
   Proof.
     constructor.
     run_symbolic.
-    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
   Defined.
   Global Opaque run_halt_overflow.
+
+  #[export] Hint Extern 1
+    (Run.Trait (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_overflow _) _ _ _ _) =>
+    eapply run_halt_overflow : typeclass_instances.
 
   (* pub fn halt_memory_oog(&mut self) *)
   Instance run_halt_memory_oog
@@ -148,9 +165,32 @@ Module Impl_Interpreter.
   Proof.
     constructor.
     run_symbolic.
-    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
   Defined.
   Global Opaque run_halt_memory_oog.
+
+  #[export] Hint Extern 1
+    (Run.Trait (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_memory_oog _) _ _ _ _) =>
+    eapply run_halt_memory_oog : typeclass_instances.
+
+  (* pub fn halt_memory_limit_oog(&mut self) *)
+  Instance run_halt_memory_limit_oog
+      (IW : Set) `{Link IW}
+      {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
+      {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW)) :
+    Run.Trait
+      (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_memory_limit_oog (Φ IW))
+      [] [] [φ self]
+      unit.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_halt_memory_limit_oog.
+
+  #[export] Hint Extern 1
+    (Run.Trait (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_memory_limit_oog _) _ _ _ _) =>
+    eapply run_halt_memory_limit_oog : typeclass_instances.
 
   (* pub fn halt_not_activated(&mut self) *)
   Instance run_halt_not_activated
@@ -165,9 +205,12 @@ Module Impl_Interpreter.
   Proof.
     constructor.
     run_symbolic.
-    eapply (@run_halt IW H IW_types H0 run_InterpreterTypes_for_IW).
   Defined.
   Global Opaque run_halt_not_activated.
+
+  #[export] Hint Extern 1
+    (Run.Trait (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_not_activated _) _ _ _ _) =>
+    eapply run_halt_not_activated : typeclass_instances.
 
   (* (*
   pub fn run<FN, H: Host>(
