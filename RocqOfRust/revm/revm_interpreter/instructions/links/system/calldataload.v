@@ -54,16 +54,6 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   destruct Impl_Ord_for_usize.run.
   run_symbolic.
-  all: try match goal with
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_underflow _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt_underflow
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_overflow _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt_overflow
-  end.
   all: admit.
 Admitted.
 Global Opaque run_calldataload.

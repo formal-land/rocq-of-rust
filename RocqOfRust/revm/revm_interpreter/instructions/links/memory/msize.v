@@ -37,6 +37,5 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
-  eapply Impl_Interpreter.run_halt_overflow.
 Defined.
 Global Opaque run_msize.

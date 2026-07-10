@@ -28,6 +28,5 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_slt.

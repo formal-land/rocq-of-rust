@@ -51,16 +51,6 @@ Proof.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct (Impl_Clone_for_Range.run usize).
   run_symbolic.
-  all: try match goal with
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_underflow _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt_underflow
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt
-  end.
   all: admit.
 Admitted.
 Global Opaque run_calldatacopy.

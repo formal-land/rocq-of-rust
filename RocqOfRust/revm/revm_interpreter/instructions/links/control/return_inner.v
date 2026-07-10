@@ -50,9 +50,5 @@ Proof.
   destruct Impl_Default_for_Bytes.run.
   destruct (Impl_Into_for_From_T.run Impl_From_Vec_u8_for_Bytes.run).
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt. }
-  { eapply Impl_Interpreter.run_halt. }
-  { eapply Impl_Interpreter.run_halt_memory_oog. }
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_return_inner.

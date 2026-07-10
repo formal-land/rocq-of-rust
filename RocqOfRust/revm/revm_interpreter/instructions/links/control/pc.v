@@ -42,6 +42,5 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_Jumps_for_Bytecode.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_pc.

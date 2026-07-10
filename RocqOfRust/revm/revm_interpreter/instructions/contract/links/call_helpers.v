@@ -113,8 +113,7 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
   all: first [
-    eapply (@Impl_Interpreter.run_halt WIRE H WIRE_types H0 run_InterpreterTypes_for_WIRE)
-  | eapply (@interpreter.links.shared_memory.run_resize_memory
+    eapply (@interpreter.links.shared_memory.run_resize_memory
       WIRE_types.(InterpreterTypes.Types.Memory)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
@@ -122,7 +121,6 @@ Proof.
       H0.(InterpreterTypes.Types.H_Memory_Synthetic)
       H0.(InterpreterTypes.Types.H_Memory_Synthetic1)
       (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_MemoryTrait_for_Memory)))
-  | eapply (@Impl_Interpreter.run_halt_memory_oog WIRE H WIRE_types H0 run_InterpreterTypes_for_WIRE)
   ].
 Defined.
 Global Opaque run_resize_memory.
@@ -152,7 +150,6 @@ Proof.
   run_symbolic.
   all: first [
     eapply Impl_usize.run_saturating_add
-  | eapply (@Impl_Interpreter.run_halt_underflow WIRE H WIRE_types H0 run_InterpreterTypes_for_WIRE)
   ].
 Defined.
 Global Opaque run_get_memory_input_and_out_ranges.

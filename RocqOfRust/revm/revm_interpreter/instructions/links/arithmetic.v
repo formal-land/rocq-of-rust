@@ -42,7 +42,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_add.
 
@@ -66,7 +65,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_mul.
 
@@ -90,7 +88,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_sub.
 
@@ -114,7 +111,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_div.
 
@@ -138,7 +134,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_sdiv.
 
@@ -162,7 +157,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_rem.
 
@@ -186,7 +180,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_smod.
 
@@ -210,7 +203,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_addmod.
 
@@ -234,7 +226,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_mulmod.
 
@@ -259,9 +250,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_oog. }
 Defined.
 Global Opaque run_exp.
 
@@ -290,6 +278,5 @@ Proof.
   destruct (Impl_Shl_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   destruct (Impl_Not_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_signextend.

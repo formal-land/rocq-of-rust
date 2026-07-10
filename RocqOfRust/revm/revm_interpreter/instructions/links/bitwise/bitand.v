@@ -29,6 +29,5 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct (Impl_BitAnd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_bitwise_bitand.

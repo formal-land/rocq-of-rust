@@ -55,12 +55,10 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_Host_for_H.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
   { eapply (@Host.run_block_number
       ('&mut H)
       _
       (@Impl_Host_for_RefMut.method_block_number H _ method_block_number)
       (Ref.cast_to Pointer.Kind.Ref sub_ref3)). }
-  { eapply Impl_Interpreter.run_halt_fatal. }
 Defined.
 Global Opaque run_blockhash.
