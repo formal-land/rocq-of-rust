@@ -53,6 +53,18 @@ let type_param_set_link_binders (type_params : string list) : string =
 let implicit_type_param_set_link_binders (type_params : string list) : string =
   String.concat " " (List.map (fun param -> "{" ^ param ^ " : Set} {H_" ^ param ^ " : Link " ^ param ^ "}") type_params)
 
+let interpreter_types_binder (interpreter_types_param : string) : string =
+  "{" ^ interpreter_types_param ^ " : InterpreterTypes.Types.t} "
+  ^ "{H_" ^ interpreter_types_param ^ " : InterpreterTypes.Types.AreLinks "
+  ^ interpreter_types_param ^ "}"
+
+let implicit_type_param_set_link_interpreter_types_binders
+    (type_params : string list) (interpreter_types_param : string) : string =
+  String.concat " "
+    [ implicit_type_param_set_link_binders type_params;
+      interpreter_types_binder interpreter_types_param ]
+  |> String.trim
+
 let type_param_ty_args (type_params : string list) : string =
   ty_args (List.map (fun param -> "Φ " ^ param) type_params)
 
@@ -63,6 +75,9 @@ let type_app (type_params : string list) : string =
   match type_params with
   | [] -> "t"
   | _ -> "(t " ^ String.concat " " type_params ^ ")"
+
+let type_app_with_interpreter_types (type_params : string list) (interpreter_types_param : string) : string =
+  "(t " ^ String.concat " " (type_params @ [ interpreter_types_param ]) ^ ")"
 
 let type_app_of_ty (type_params : string list) : string =
   match type_params with
@@ -189,6 +204,17 @@ let render_record_decl (type_params : string list) (fields : field list) : strin
     | [] -> []
     | _ -> [ "Arguments t " ^ String.concat " " (List.map (fun _ -> "_ {_}") type_params) ^ "." ]
 
+let render_interpreter_types_record_decl
+    (type_params : string list) (interpreter_types_param : string) (fields : field list) : string list =
+  [ "Record t "
+    ^ implicit_type_param_set_link_interpreter_types_binders type_params interpreter_types_param
+    ^ " : Set := {" ]
+  @ List.map (fun field -> "  " ^ field.field_name ^ " : " ^ field.field_ty ^ ";") fields
+  @ [ "}.";
+      "Arguments t "
+      ^ String.concat " " (List.map (fun _ -> "_ {_}") (type_params @ [ interpreter_types_param ]))
+      ^ "." ]
+
 let render_record_value
     ?(type_args = "[]") (path : string) (fields : field list) (value_of : field -> string) : string list =
   [ "Value.StructRecord " ^ quote path ^ " [] " ^ type_args ^ " [" ]
@@ -223,6 +249,30 @@ let render_link_value
       render_struct_tuple_value ~type_args path fields value_of
   | Tuple ->
       render_tuple_value fields value_of
+
+let render_interpreter_types_record_link
+    (path : string)
+    (type_params : string list)
+    (interpreter_types_param : string)
+    (use_value_type_args : bool)
+    (fields : field list) : string list =
+  let value_type_args =
+    if use_value_type_args then
+      type_param_ty_args type_params
+    else
+      "[]"
+  in
+  [ "Instance IsLink "
+    ^ implicit_type_param_set_link_interpreter_types_binders type_params interpreter_types_param
+    ^ " : Link "
+    ^ type_app_with_interpreter_types type_params interpreter_types_param
+    ^ " := {";
+    "  Φ := " ^ path_ty_with_args path (List.map (fun param -> "Φ " ^ param) type_params) ^ ";";
+    "  φ x :=" ]
+  @ indent "    "
+      (render_record_value ~type_args:value_type_args path fields
+         (fun field -> "φ x.(" ^ field.field_name ^ ")"))
+  @ [ "}." ]
 
 (* StructRecord values are rendered in sorted field-name order to keep the
    generated value shape stable across plugin migrations. *)
@@ -374,6 +424,45 @@ let render_type_inductive_of_ty (layout : record_layout) (type_params : string l
         ^ "; eapply OfTy.Make with (A := " ^ type_app type_params
         ^ "); subst; reflexivity).";
         "Smpl Add eapply of_ty : of_ty." ]
+
+let ty_name (param : string) : string = param ^ "_ty"
+
+let of_ty_name (param : string) : string = param ^ "_of_ty"
+
+let render_interpreter_types_of_ty
+    (path : string) (type_params : string list) (interpreter_types_param : string) : string list =
+  let ty_params = List.map ty_name type_params in
+  let of_ty_params = List.map of_ty_name type_params in
+  let of_ty_set_params = List.map (fun param -> "A_" ^ param) type_params in
+  let last_of_ty =
+    match List.rev of_ty_params with
+    | last :: _ -> last
+    | [] -> "WIRE_of_ty"
+  in
+  [ "Definition of_ty";
+    "    " ^ String.concat " " (List.map (fun ty -> "(" ^ ty ^ " : Ty.t)") ty_params);
+    "    " ^ interpreter_types_binder interpreter_types_param ]
+  @ List.map2
+      (fun of_ty_param ty_param -> "    (" ^ of_ty_param ^ " : OfTy.t " ^ ty_param ^ ")")
+      of_ty_params
+      ty_params
+  @ [ "    :";
+      "  InterpreterTypes.Run (OfTy.get_Set " ^ last_of_ty ^ ") " ^ interpreter_types_param ^ " ->";
+      "  OfTy.t (" ^ path_ty_with_args path ty_params ^ ") :=";
+      "  ltac:(intros;"
+      ^ String.concat ""
+          (List.map2
+             (fun of_ty_param type_param ->
+               " destruct " ^ of_ty_param ^ " as [" ^ type_param ^ "];")
+             of_ty_params
+             of_ty_set_params)
+      ^ " eapply OfTy.Make with (A := "
+      ^ type_app_with_interpreter_types of_ty_set_params interpreter_types_param
+      ^ "); subst; reflexivity).";
+      "Smpl Add (unshelve eapply of_ty; ["
+      ^ String.concat " | "
+          (List.map (fun _ -> "smpl of_ty") type_params @ [ "auto" ])
+      ^ "]) : of_ty." ]
 
 let render_instance_params ?(type_params = []) ?(use_of_ty = false) (fields : field list) : string list =
   List.map
@@ -601,6 +690,39 @@ let render_record_subpointer (layout : record_layout) (type_params : string list
     "  ltac:(now constructor).";
     "Smpl Add apply " ^ get ^ "_is_valid : run_sub_pointer." ]
 
+let render_interpreter_types_record_subpointer
+    (path : string)
+    (type_params : string list)
+    (interpreter_types_param : string)
+    (field : field) : string list =
+  let get = "get_" ^ field.field_name in
+  let binders =
+    implicit_type_param_set_link_interpreter_types_binders type_params interpreter_types_param
+  in
+  let type_app =
+    type_app_with_interpreter_types type_params interpreter_types_param
+  in
+  let get_applied =
+    "(" ^ get ^ " "
+    ^ String.concat " "
+        (List.map (fun param -> "(" ^ param ^ " := " ^ param ^ ")") type_params
+         @ [ "(" ^ interpreter_types_param ^ " := " ^ interpreter_types_param ^ ")" ])
+    ^ ")"
+  in
+  [ "Definition " ^ get ^ " " ^ binders ^ " :";
+    "  SubPointer.Runner.t";
+    "    " ^ type_app;
+    "    (Pointer.Index.StructRecord " ^ quote path ^ " " ^ quote field.field_name ^ ") :=";
+    "{|";
+    "  SubPointer.Runner.projection x := Datatypes.Some x.(" ^ field.field_name ^ ");";
+    "  SubPointer.Runner.injection x y := Datatypes.Some (x <| " ^ field.field_name ^ " := y |>);";
+    "|}.";
+    "";
+    "Definition " ^ get ^ "_is_valid " ^ binders ^ " :";
+    "  SubPointer.Runner.Valid.t " ^ get_applied ^ " :=";
+    "  ltac:(now constructor).";
+    "Smpl Add apply " ^ get ^ "_is_valid : run_sub_pointer." ]
+
 let render_enum_subpointer
     (path : string) (type_params : string list) (variant : variant) (index : int) (field : field) : string list =
   let vpath = variant_path path variant in
@@ -708,6 +830,35 @@ let render_record (layout : record_layout) (type_params : string list) (fields :
               if i = List.length fields - 1 then lines else lines @ [ "" ])
             fields))
 
+let render_interpreter_types_record
+    (path : string)
+    (type_params : string list)
+    (interpreter_types_param : string)
+    (use_value_type_args : bool)
+    (fields : field list) : string list =
+  validate (InterpreterTypesRecordDecl {
+    path;
+    type_params;
+    interpreter_types_param;
+    use_value_type_args;
+    fields;
+  });
+  render_interpreter_types_record_decl type_params interpreter_types_param fields
+  @ [ "" ]
+  @ render_interpreter_types_record_link path type_params interpreter_types_param use_value_type_args fields
+  @ [ "" ]
+  @ render_interpreter_types_of_ty path type_params interpreter_types_param
+  @ [ "" ]
+  @ render_subpointer_module
+      (List.concat
+         (List.mapi
+            (fun i field ->
+              let lines =
+                render_interpreter_types_record_subpointer path type_params interpreter_types_param field
+              in
+              if i = List.length fields - 1 then lines else lines @ [ "" ])
+            fields))
+
 let render_enum (path : string) (type_params : string list) (variants : variant list) : string list =
   validate (EnumDecl { path; type_params; variants });
   render_inductive type_params variants
@@ -744,4 +895,17 @@ let render_enum (path : string) (type_params : string list) (variants : variant 
 let render (command : command) : string list =
   match command with
   | RecordDecl { layout; type_params; fields } -> render_record layout type_params fields
+  | InterpreterTypesRecordDecl {
+      path;
+      type_params;
+      interpreter_types_param;
+      use_value_type_args;
+      fields;
+    } ->
+      render_interpreter_types_record
+        path
+        type_params
+        interpreter_types_param
+        use_value_type_args
+        fields
   | EnumDecl { path; type_params; variants } -> render_enum path type_params variants

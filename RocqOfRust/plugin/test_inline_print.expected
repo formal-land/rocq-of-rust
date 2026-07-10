@@ -339,3 +339,66 @@ DebugTupleRecord.IsOfValue
        OfValueWith.C bool right' -> OfValue.C (Value.Tuple [left'; right'])
 DebugTupleRecord.SubPointer.get_left
      : SubPointer.Runner.t DebugTupleRecord.t (Pointer.Index.Tuple 0)
+DebugInterpreterTypesRecord.t
+     : forall H : Set,
+       Link H ->
+       forall WIRE : Set,
+       Link WIRE ->
+       forall WIRE_types : InterpreterTypes.Types.t,
+       InterpreterTypes.Types.AreLinks WIRE_types -> Set
+DebugInterpreterTypesRecord.IsLink
+     : Link (DebugInterpreterTypesRecord.t ?H ?WIRE ?WIRE_types)
+where
+?H : [ |- Set]
+?H_H : [ |- Link ?H]
+?WIRE : [ |- Set]
+?H_WIRE : [ |- Link ?WIRE]
+?WIRE_types : [ |- InterpreterTypes.Types.t]
+?H_WIRE_types : [ |- InterpreterTypes.Types.AreLinks ?WIRE_types]
+DebugInterpreterTypesRecord.of_ty
+     : forall (H_ty WIRE_ty : Ty.t) (WIRE_types : InterpreterTypes.Types.t)
+         (H_WIRE_types : InterpreterTypes.Types.AreLinks WIRE_types),
+       OfTy.t H_ty ->
+       forall WIRE_of_ty : OfTy.t WIRE_ty,
+       InterpreterTypes.Run (OfTy.get_Set WIRE_of_ty) WIRE_types ->
+       OfTy.t
+         (Ty.apply (Ty.path "debug::InstructionContext") [] [H_ty; WIRE_ty])
+DebugInterpreterTypesRecord.SubPointer.get_interpreter
+     : SubPointer.Runner.t
+         (DebugInterpreterTypesRecord.t ?H ?WIRE ?WIRE_types)
+         (Pointer.Index.StructRecord "debug::InstructionContext"
+            "interpreter")
+where
+?H : [ |- Set]
+?H_H : [ |- Link ?H]
+?WIRE : [ |- Set]
+?H_WIRE : [ |- Link ?WIRE]
+?WIRE_types : [ |- InterpreterTypes.Types.t]
+?H_WIRE_types : [ |- InterpreterTypes.Types.AreLinks ?WIRE_types]
+DebugInterpreterTypesRecordNoValueArgs.t
+     : forall WIRE : Set,
+       Link WIRE ->
+       forall WIRE_types : InterpreterTypes.Types.t,
+       InterpreterTypes.Types.AreLinks WIRE_types -> Set
+DebugInterpreterTypesRecordNoValueArgs.IsLink
+     : Link (DebugInterpreterTypesRecordNoValueArgs.t ?WIRE ?WIRE_types)
+where
+?WIRE : [ |- Set]
+?H_WIRE : [ |- Link ?WIRE]
+?WIRE_types : [ |- InterpreterTypes.Types.t]
+?H_WIRE_types : [ |- InterpreterTypes.Types.AreLinks ?WIRE_types]
+DebugInterpreterTypesRecordNoValueArgs.of_ty
+     : forall (WIRE_ty : Ty.t) (WIRE_types : InterpreterTypes.Types.t)
+         (H_WIRE_types : InterpreterTypes.Types.AreLinks WIRE_types)
+         (WIRE_of_ty : OfTy.t WIRE_ty),
+       InterpreterTypes.Run (OfTy.get_Set WIRE_of_ty) WIRE_types ->
+       OfTy.t (Ty.apply (Ty.path "debug::Interpreter") [] [WIRE_ty])
+DebugInterpreterTypesRecordNoValueArgs.SubPointer.get_stack
+     : SubPointer.Runner.t
+         (DebugInterpreterTypesRecordNoValueArgs.t ?WIRE ?WIRE_types)
+         (Pointer.Index.StructRecord "debug::Interpreter" "stack")
+where
+?WIRE : [ |- Set]
+?H_WIRE : [ |- Link ?WIRE]
+?WIRE_types : [ |- InterpreterTypes.Types.t]
+?H_WIRE_types : [ |- InterpreterTypes.Types.AreLinks ?WIRE_types]

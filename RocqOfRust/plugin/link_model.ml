@@ -33,6 +33,13 @@ type command =
       type_params : string list;
       fields : field list;
     }
+  | InterpreterTypesRecordDecl of {
+      path : string;
+      type_params : string list;
+      interpreter_types_param : string;
+      use_value_type_args : bool;
+      fields : field list;
+    }
 
 exception Error of string
 
@@ -66,6 +73,9 @@ let validate (command : command) : unit =
   match command with
   | RecordDecl { type_params; fields; _ } ->
       validate_unique "type parameter" type_params;
+      validate_fields fields
+  | InterpreterTypesRecordDecl { type_params; interpreter_types_param; fields; _ } ->
+      validate_unique "type parameter" (interpreter_types_param :: type_params);
       validate_fields fields
   | EnumDecl { type_params; variants; _ } ->
       validate_unique "type parameter" type_params;
