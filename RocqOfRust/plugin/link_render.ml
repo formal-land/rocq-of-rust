@@ -189,8 +189,8 @@ let render_record_value
          fields)
   @ [ "]" ]
 
-(* StructRecord values are rendered in sorted field-name order, matching the
-   existing Jinja convention and keeping output stable. *)
+(* StructRecord values are rendered in sorted field-name order to keep the
+   generated value shape stable across plugin migrations. *)
 let render_variant_value (path : string) (type_params : string list) (variant : variant) : string =
   let vpath = variant_path path variant in
   let type_args = type_param_ty_args type_params in
