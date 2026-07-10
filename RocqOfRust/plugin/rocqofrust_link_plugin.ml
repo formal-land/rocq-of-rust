@@ -392,7 +392,7 @@ let () : unit =
                           Vernacextend.TyNil ) ) ) ),
           (fun path variants ?loc:_ ~atts () ->
             Attributes.unsupported_attributes atts;
-            command_typed_vernac (Link_model.EnumDecl { path; type_params = []; linked_type_params = []; variants })),
+            command_typed_vernac (Link_model.EnumDecl { path; type_params = []; variants })),
           None );
     ]
 
@@ -421,35 +421,6 @@ let () : unit =
                               Vernacextend.TyNil ) ) ) ) ),
           (fun path type_params variants ?loc:_ ~atts () ->
             Attributes.unsupported_attributes atts;
-            command_typed_vernac (Link_model.EnumDecl { path; type_params; linked_type_params = []; variants })),
-          None );
-    ]
-
-(* Linked generic enum command.  This is for generic enums whose own Rocq
-   inductive needs [Link] evidence for its type parameters, for example when a
-   variant directly stores a reference ['& T]. *)
-let () : unit =
-  Vernacextend.static_vernac_extend
-    ~plugin:(Some plugin_name)
-    ~command:"RocqOfRustLinkLinkedGenericEnum"
-    ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
-    [
-      Vernacextend.TyML
-        ( false,
-          Vernacextend.TyTerminal
-            ( "RocqOfRustLinkLinkedGenericEnum",
-              Vernacextend.TyNonTerminal
-                ( Extend.TUentry (Genarg.get_arg_tag wit_string),
-                  Vernacextend.TyNonTerminal
-                    ( Extend.TUentry (Genarg.get_arg_tag wit_link_type_params),
-                      Vernacextend.TyTerminal
-                        ( ":=",
-                          Vernacextend.TyNonTerminal
-                            ( Extend.TUlist1
-                                (Extend.TUentry (Genarg.get_arg_tag wit_link_variant)),
-                              Vernacextend.TyNil ) ) ) ) ),
-          (fun path linked_type_params variants ?loc:_ ~atts () ->
-            Attributes.unsupported_attributes atts;
-            command_typed_vernac (Link_model.EnumDecl { path; type_params = []; linked_type_params; variants })),
+            command_typed_vernac (Link_model.EnumDecl { path; type_params; variants })),
           None );
     ]

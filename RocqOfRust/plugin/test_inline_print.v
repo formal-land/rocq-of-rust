@@ -30,7 +30,7 @@ Check DebugGeneric.IsOfValue_WithValue.
 Check DebugGeneric.SubPointer.get_WithValue_0.
 
 Module DebugLinkedGeneric.
-  RocqOfRustLinkLinkedGenericEnum "debug::LinkedGeneric" [ T ] :=
+  RocqOfRustLinkGenericEnum "debug::LinkedGeneric" [ T ] :=
   | RefValue (value : ('& T))
   | OwnedValue (value : T)
   .

@@ -29,7 +29,7 @@ impl<T> Deref for StateLoad<T> {
     type Target = T;
 *)
 Module Impl_Deref_for_StateLoad.
-  Definition Self (T : Set) : Set :=
+  Definition Self (T : Set) `{Link T} : Set :=
     StateLoad.t T.
 
   Instance run_deref (T : Set) `{Link T} (self : '& (Self T)) :
@@ -59,7 +59,7 @@ End Impl_Deref_for_StateLoad.
 Export (hints) Impl_Deref_for_StateLoad.
 
 Module Impl_StateLoad.
-  Definition Self (T : Set) : Set :=
+  Definition Self (T : Set) `{Link T} : Set :=
     StateLoad.t T.
 
   Instance run_new (T : Set) `{Link T} (data : T) (is_cold : bool) :
@@ -176,7 +176,7 @@ End AccountLoad.
 Export (hints) AccountLoad.
 
 Module Cow.
-  RocqOfRustLinkLinkedGenericEnum "alloc::borrow::Cow" [ T ] :=
+  RocqOfRustLinkGenericEnum "alloc::borrow::Cow" [ T ] :=
   | Borrowed (value : ('& T))
   | Owned (value : T)
   .

@@ -37,12 +37,12 @@ DebugOrdering.IsOfValue_Less =
 |}
      : OfValue.C (Value.StructTuple "core::cmp::Ordering::Less" [] [] [])
 Module DebugOrdering.SubPointer := Struct  End
-Inductive t (T : Set) : Set :=
+Inductive t (T : Set) (H_T : Link T) : Set :=
     WithValue : T -> DebugGeneric.t T | Empty : DebugGeneric.t T.
 
-Arguments DebugGeneric.t T%type_scope
-Arguments DebugGeneric.WithValue {T}%type_scope value
-Arguments DebugGeneric.Empty {T}%type_scope
+Arguments DebugGeneric.t T%type_scope {H_T}
+Arguments DebugGeneric.WithValue {T}%type_scope {H_T} value
+Arguments DebugGeneric.Empty {T}%type_scope {H_T}
 DebugGeneric.IsLink =
 fun (T : Set) (H_T : Link T) =>
 {|
@@ -57,7 +57,7 @@ fun (T : Set) (H_T : Link T) =>
         Value.StructTuple "debug::Generic::Empty" [] [H_T.(Φ _)] []
     end
 |}
-     : forall T : Set, Link T -> Link (DebugGeneric.t T)
+     : forall (T : Set) {H_T : Link T}, Link (DebugGeneric.t T)
 
 Arguments DebugGeneric.IsLink T%type_scope {H_T}
 DebugGeneric.IsOfTy =
@@ -190,13 +190,14 @@ DebugLinkedGeneric.SubPointer.get_RefValue_0
      : forall (T : Set) (H_T : Link T),
        SubPointer.Runner.t (DebugLinkedGeneric.t T)
          (Pointer.Index.StructTuple "debug::LinkedGeneric::RefValue" 0)
-Record t (T : Set) : Set := Build_t { payload : T;  flag : bool }.
+Record t (T : Set) (H_T : Link T) : Set := Build_t
+  { payload : T;  flag : bool }.
 
 t has primitive projections with eta conversion.
-Arguments DebugGenericRecord.t T%type_scope
-Arguments DebugGenericRecord.Build_t T%type_scope payload flag%bool_scope
-Arguments DebugGenericRecord.payload {T}%type_scope t
-Arguments DebugGenericRecord.flag {T}%type_scope t
+Arguments DebugGenericRecord.t T%type_scope {H_T}
+Arguments DebugGenericRecord.Build_t T%type_scope H_T payload flag%bool_scope
+Arguments DebugGenericRecord.payload {T}%type_scope {H_T} t
+Arguments DebugGenericRecord.flag {T}%type_scope {H_T} t
 DebugGenericRecord.IsLink =
 fun (T : Set) (H_T : Link T) =>
 {|
@@ -208,7 +209,7 @@ fun (T : Set) (H_T : Link T) =>
       [("flag", Bool.IsLink.(φ) x.(DebugGenericRecord.flag));
        ("payload", H_T.(φ) x.(DebugGenericRecord.payload))]
 |}
-     : forall T : Set, Link T -> Link (DebugGenericRecord.t T)
+     : forall (T : Set) {H_T : Link T}, Link (DebugGenericRecord.t T)
 
 Arguments DebugGenericRecord.IsLink T%type_scope {H_T}
 DebugGenericRecord.IsOfTy =
