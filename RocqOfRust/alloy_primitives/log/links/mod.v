@@ -15,49 +15,11 @@ pub struct Log<T = LogData> {
     pub data: T,
 }
 *)
-(* Note: Log<T> is polymorphic, kept manually for now *)
 Module Log.
-  Record t {T : Set} : Set := {
+  RocqOfRustLinkGenericRecord "alloy_primitives::log::Log" [ T ] := {
     address : Address.t;
-    data : T;
+    data : T
   }.
-  Arguments t : clear implicits.
-
-  Instance IsLink (T : Set) `{Link T}: Link (t T) := {
-    Φ := Ty.apply (Ty.path "alloy_primitives::log::Log") [] [Φ T];
-    φ x :=
-      Value.StructRecord "alloy_primitives::log::Log" [] [Φ T] [
-        ("address", φ x.(address));
-        ("data", φ x.(data))
-      ];
-  }.
-
-  Definition of_ty T' :
-    OfTy.t T' ->
-    OfTy.t (Ty.apply (Ty.path "alloy_primitives::log::Log") [] [T']).
-  Proof.
-    intros [T].
-    eapply OfTy.Make with (A := t T).
-    now subst.
-  Defined.
-  Smpl Add unshelve eapply of_ty : of_ty.
-
-  Lemma of_value_with
-      (T : Set) `{Link T} T'
-      address address'
-      (data : T) data' :
-    T' = Φ T ->
-    address' = φ address ->
-    data' = φ data ->
-    Value.StructRecord "alloy_primitives::log::Log" [] [T'] [
-      ("address", address');
-      ("data", data')
-    ] = φ (Build_t T address data).
-  Proof.
-    intros.
-    now subst.
-  Qed.
-  Smpl Add unshelve eapply of_value_with : of_value.
 End Log.
 Export (hints) Log.
 

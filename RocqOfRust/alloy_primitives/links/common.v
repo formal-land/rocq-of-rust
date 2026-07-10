@@ -9,21 +9,9 @@ pub enum TxKind {
 }
 *)
 Module TxKind.
-  Inductive t : Set :=
+  RocqOfRustLinkEnum "alloy_primitives::common::TxKind" :=
   | Create
-  | Call (address : Address.t).
-
-  Instance IsLink : Link t := {
-    Φ := Ty.path "alloy_primitives::common::TxKind";
-    φ x :=
-      match x with
-      | Create => Value.StructTuple "alloy_primitives::common::TxKind::Create" [] [] []
-      | Call address => Value.StructTuple "alloy_primitives::common::TxKind::Call" [] [] [φ address]
-      end;
-  }.
-
-  Definition of_ty : OfTy.t (Ty.path "alloy_primitives::common::TxKind").
-  Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
-  Smpl Add apply of_ty : of_ty.
+  | Call (address : Address.t)
+  .
 End TxKind.
 Export (hints) TxKind.
