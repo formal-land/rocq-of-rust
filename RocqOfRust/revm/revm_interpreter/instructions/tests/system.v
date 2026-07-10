@@ -17,20 +17,35 @@ Require Import revm.revm_interpreter.instructions.simulate.system.memory_resize.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_action.
+Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_primitives.simulate.lib.
 Require Import ruint.links.lib.
 
+Definition bytecode_action
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InterpreterAction.t :=
+  interpreter.(Interpreter.bytecode).(Bytecode.action).
+
+Definition bytecode_result
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InstructionResult.t :=
+  match bytecode_action interpreter with
+  | Some (InterpreterAction.Return result) =>
+    Some result.(InterpreterResult.result)
+  | _ => None
+  end.
+
 (** ** GAS tests *)
 
-(** Test that GAS pushes remaining gas after BASE cost deduction.
-    Gas starts at 1000000, BASE cost = 2. After deducting 2, remaining = 999998. *)
+(** Test that GAS pushes the interpreter's remaining gas. *)
 Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
   let result := gas interpreter in
-  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 999998 |}].
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 1000000 |}].
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -66,7 +81,7 @@ Qed.
 
 Goal
   let interpreter := make_interpreter {| Stack.value := [] |} in
-  (address interpreter).(Interpreter.control).(Control.gas).(Gas.remaining) = 999998.
+  (address interpreter).(Interpreter.control).(Control.gas).(Gas.remaining) = 1000000.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -116,7 +131,7 @@ Qed.
 
 Goal
   let interpreter := make_interpreter {| Stack.value := [] |} in
-  (calldataload interpreter).(Interpreter.control).(Control.instruction_result) =
+  bytecode_result (calldataload interpreter) =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
@@ -125,7 +140,7 @@ Qed.
 
 Goal
   let interpreter := make_interpreter {| Stack.value := [] |} in
-  (calldatacopy interpreter).(Interpreter.control).(Control.instruction_result) =
+  bytecode_result (calldatacopy interpreter) =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
@@ -134,7 +149,7 @@ Qed.
 
 Goal
   let interpreter := make_interpreter {| Stack.value := [] |} in
-  (codecopy interpreter).(Interpreter.control).(Control.instruction_result) =
+  bytecode_result (codecopy interpreter) =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
@@ -143,7 +158,7 @@ Qed.
 
 Goal
   let interpreter := make_interpreter {| Stack.value := [] |} in
-  (returndatacopy interpreter).(Interpreter.control).(Control.instruction_result) =
+  bytecode_result (returndatacopy interpreter) =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.

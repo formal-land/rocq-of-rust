@@ -82,7 +82,7 @@ Module TestHost.
 
   Definition block_number (self : t) :
       aliases.U256.t * t :=
-    (Impl_Uint.ZERO, Make).
+    ({| Uint.value := 1 |}, Make).
 
   Definition host_timestamp (self : t) :
       aliases.U256.t * t :=
@@ -103,6 +103,10 @@ Module TestHost.
   Definition host_blob_gasprice (self : t) :
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
+
+  Definition host_effective_gas_price (self : t) :
+      aliases.U256.t * t :=
+    ({| Uint.value := 42 |}, Make).
 
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
@@ -128,6 +132,14 @@ Module TestHost.
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
 
+  Definition sload_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_key : aliases.U256.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t aliases.U256.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
+
   Definition sstore
       (self : t)
       (_address : Address.t)
@@ -135,6 +147,15 @@ Module TestHost.
       (_value : aliases.U256.t) :
       option (StateLoad.t SStoreResult.t) * t :=
     (None, Make).
+
+  Definition sstore_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_key : aliases.U256.t)
+      (_value : aliases.U256.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t SStoreResult.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
 
   Definition tload (self : t) (_address : Address.t) (_index : aliases.U256.t) :
       aliases.U256.t * t :=
@@ -285,13 +306,16 @@ Module TestHost.
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;
+    Host.effective_gas_price := host_effective_gas_price;
     Host.difficulty := host_difficulty;
     Host.prevrandao := host_prevrandao;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;
     Host.sload := sload;
+    Host.sload_skip_cold_load := sload_skip_cold_load;
     Host.sstore := sstore;
+    Host.sstore_skip_cold_load := sstore_skip_cold_load;
     Host.tload := tload;
     Host.tstore := tstore;
     Host.log := log;
@@ -377,7 +401,7 @@ Module TestHostWithAccount.
 
   Definition block_number (self : t) :
       aliases.U256.t * t :=
-    (Impl_Uint.ZERO, Make).
+    ({| Uint.value := 1 |}, Make).
 
   Definition host_timestamp (self : t) :
       aliases.U256.t * t :=
@@ -398,6 +422,10 @@ Module TestHostWithAccount.
   Definition host_blob_gasprice (self : t) :
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
+
+  Definition host_effective_gas_price (self : t) :
+      aliases.U256.t * t :=
+    ({| Uint.value := 42 |}, Make).
 
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
@@ -423,6 +451,14 @@ Module TestHostWithAccount.
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
 
+  Definition sload_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_key : aliases.U256.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t aliases.U256.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
+
   Definition sstore
       (self : t)
       (_address : Address.t)
@@ -430,6 +466,15 @@ Module TestHostWithAccount.
       (_value : aliases.U256.t) :
       option (StateLoad.t SStoreResult.t) * t :=
     (None, Make).
+
+  Definition sstore_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_key : aliases.U256.t)
+      (_value : aliases.U256.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t SStoreResult.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
 
   Definition tload (self : t) (_address : Address.t) (_index : aliases.U256.t) :
       aliases.U256.t * t :=
@@ -580,13 +625,16 @@ Module TestHostWithAccount.
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;
+    Host.effective_gas_price := host_effective_gas_price;
     Host.difficulty := host_difficulty;
     Host.prevrandao := host_prevrandao;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;
     Host.sload := sload;
+    Host.sload_skip_cold_load := sload_skip_cold_load;
     Host.sstore := sstore;
+    Host.sstore_skip_cold_load := sstore_skip_cold_load;
     Host.tload := tload;
     Host.tstore := tstore;
     Host.log := log;

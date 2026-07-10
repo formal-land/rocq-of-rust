@@ -1,5 +1,5 @@
 Require Import links.RocqOfRust.
-Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_Interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.instruction_context.
 
@@ -97,4 +97,3 @@ Require Import revm.revm_interpreter.instruction_context.
     Smpl Add apply get_host_is_valid : run_sub_pointer.
   End SubPointer.
 End InstructionContext.
-

@@ -6,9 +6,25 @@ Require Import revm.revm_interpreter.instructions.simulate.stack.push0.
 Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_action.
+Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import ruint.links.lib.
+
+Definition bytecode_action
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InterpreterAction.t :=
+  interpreter.(Interpreter.bytecode).(Bytecode.action).
+
+Definition bytecode_result
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InstructionResult.t :=
+  match bytecode_action interpreter with
+  | Some (InterpreterAction.Return result) =>
+    Some result.(InterpreterResult.result)
+  | _ => None
+  end.
 
 (** ** POP tests *)
 
@@ -31,7 +47,7 @@ Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
   let result := pop interpreter in
-  result.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
