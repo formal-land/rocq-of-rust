@@ -47,6 +47,13 @@ let comma : (Link_model.field list, Gramlib.Grammar.norec, unit) Procq.Symbol.t 
         (fun _ _loc -> ())
     ]
 
+let comma_type_param : (string list, Gramlib.Grammar.norec, unit) Procq.Symbol.t =
+  Symbol.rules
+    [ Rules.make
+        (Rule.next_norec Rule.stop (token ","))
+        (fun _ _loc -> ())
+    ]
+
 let pr_field (field : Link_model.field) : Pp.t =
   Pp.str field.Link_model.field_name ++ Pp.str " : " ++ Pp.str field.field_ty
 
@@ -54,6 +61,11 @@ let pr_field_list (fields : Link_model.field list) : Pp.t =
   Pp.str "{"
   ++ Pp.prlist_with_sep Pp.pr_semicolon pr_field fields
   ++ Pp.str "}"
+
+let pr_type_params (type_params : string list) : Pp.t =
+  Pp.str "["
+  ++ Pp.prlist_with_sep Pp.pr_comma Pp.str type_params
+  ++ Pp.str "]"
 
 (* Field grammar: [name : type]. *)
 let (wit_link_field, link_field) :
@@ -93,6 +105,24 @@ let (wit_link_fields, link_fields) :
       arg_printer =
         (fun _env _sigma fields ->
           Pp.prlist_with_sep Pp.pr_semicolon pr_field fields);
+    }
+
+let (wit_link_type_params, link_type_params) :
+    string list Genarg.vernac_genarg_type * string list Procq.Entry.t =
+  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_type_params"
+    {
+      Vernacextend.arg_parsing =
+        Vernacextend.Arg_rules
+          [
+            Production.make
+              (Rule.next
+                 (Rule.next
+                    (Rule.next Rule.stop (token "["))
+                    (Symbol.list1sep (Symbol.nterm Prim.ident) comma_type_param true))
+                 (token "]"))
+              (fun _ params _ _loc -> List.map string_of_id params);
+          ];
+      arg_printer = (fun _env _sigma -> pr_type_params);
     }
 
 (* Delimited field lists are reused for record declarations and record-like
@@ -332,6 +362,35 @@ let () : unit =
                           Vernacextend.TyNil ) ) ) ),
           (fun path variants ?loc:_ ~atts () ->
             Attributes.unsupported_attributes atts;
-            command_typed_vernac (Link_model.EnumDecl { path; variants })),
+            command_typed_vernac (Link_model.EnumDecl { path; type_params = []; variants })),
+          None );
+    ]
+
+(* Generic enum command.  This handles Rust enums such as [Foo<T>] whose link
+   type is represented with [Ty.apply] and type arguments on each variant
+   value. *)
+let () : unit =
+  Vernacextend.static_vernac_extend
+    ~plugin:(Some plugin_name)
+    ~command:"RocqOfRustLinkGenericEnum"
+    ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
+    [
+      Vernacextend.TyML
+        ( false,
+          Vernacextend.TyTerminal
+            ( "RocqOfRustLinkGenericEnum",
+              Vernacextend.TyNonTerminal
+                ( Extend.TUentry (Genarg.get_arg_tag wit_string),
+                  Vernacextend.TyNonTerminal
+                    ( Extend.TUentry (Genarg.get_arg_tag wit_link_type_params),
+                      Vernacextend.TyTerminal
+                        ( ":=",
+                          Vernacextend.TyNonTerminal
+                            ( Extend.TUlist1
+                                (Extend.TUentry (Genarg.get_arg_tag wit_link_variant)),
+                              Vernacextend.TyNil ) ) ) ) ),
+          (fun path type_params variants ?loc:_ ~atts () ->
+            Attributes.unsupported_attributes atts;
+            command_typed_vernac (Link_model.EnumDecl { path; type_params; variants })),
           None );
     ]
