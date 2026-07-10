@@ -125,6 +125,20 @@ let (wit_link_type_params, link_type_params) :
       arg_printer = (fun _env _sigma -> pr_type_params);
     }
 
+let (wit_link_ident, link_ident) :
+    Names.Id.t Genarg.vernac_genarg_type * Names.Id.t Procq.Entry.t =
+  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_ident"
+    {
+      Vernacextend.arg_parsing =
+        Vernacextend.Arg_rules
+          [
+            Production.make
+              (Rule.next Rule.stop (Symbol.nterm Prim.ident))
+              (fun name _loc -> name);
+          ];
+      arg_printer = (fun _env _sigma id -> Pp.str (string_of_id id));
+    }
+
 (* Delimited field lists are reused for record declarations and record-like
    enum variants. *)
 let fields_between
@@ -429,6 +443,55 @@ let () : unit =
                  { layout = Link_model.StructRecord path; type_params; fields })),
           None );
     ]
+
+let interpreter_types_record_command
+    ~(command : string)
+    ~(use_value_type_args : bool) : unit =
+  Vernacextend.static_vernac_extend
+    ~plugin:(Some plugin_name)
+    ~command
+    ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
+    [
+      Vernacextend.TyML
+        ( false,
+          Vernacextend.TyTerminal
+            ( command,
+              Vernacextend.TyNonTerminal
+                ( Extend.TUentry (Genarg.get_arg_tag wit_string),
+                  Vernacextend.TyNonTerminal
+                    ( Extend.TUentry (Genarg.get_arg_tag wit_link_type_params),
+                      Vernacextend.TyNonTerminal
+                        ( Extend.TUentry (Genarg.get_arg_tag wit_link_ident),
+                          Vernacextend.TyTerminal
+                            ( ":=",
+                              Vernacextend.TyTerminal
+                                ( "{",
+                                  Vernacextend.TyNonTerminal
+                                    ( Extend.TUentry (Genarg.get_arg_tag wit_link_fields),
+                                      Vernacextend.TyTerminal ("}", Vernacextend.TyNil) ) ) ) ) ) ) ),
+          (fun path type_params interpreter_types_param fields ?loc:_ ~atts () ->
+            Attributes.unsupported_attributes atts;
+            command_typed_vernac
+              (Link_model.InterpreterTypesRecordDecl
+                 {
+                   path;
+                   type_params;
+                   interpreter_types_param = string_of_id interpreter_types_param;
+                   use_value_type_args;
+                   fields;
+                 })),
+          None );
+    ]
+
+let () : unit =
+  interpreter_types_record_command
+    ~command:"RocqOfRustLinkInterpreterTypesRecord"
+    ~use_value_type_args:true
+
+let () : unit =
+  interpreter_types_record_command
+    ~command:"RocqOfRustLinkInterpreterTypesRecordNoValueArgs"
+    ~use_value_type_args:false
 
 (* Top-level enum command.  The body is a nonempty list of variant entries,
    each beginning with [|], just like an Inductive declaration. *)

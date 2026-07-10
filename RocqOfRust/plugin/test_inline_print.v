@@ -1,4 +1,5 @@
 Require Import links.RocqOfRust.
+Require Import revm.revm_interpreter.links.interpreter_types.
 
 Module DebugOrdering.
   RocqOfRustLinkEnum "core::cmp::Ordering" :=
@@ -83,3 +84,27 @@ Print DebugTupleRecord.IsOfTy.
 Check DebugTupleRecord.IsOfValueWith.
 Check DebugTupleRecord.IsOfValue.
 Check DebugTupleRecord.SubPointer.get_left.
+
+Module DebugInterpreterTypesRecord.
+  RocqOfRustLinkInterpreterTypesRecord "debug::InstructionContext" [ H, WIRE ] WIRE_types := {
+    interpreter : ('&mut WIRE);
+    host : ('&mut H)
+  }.
+End DebugInterpreterTypesRecord.
+
+Check DebugInterpreterTypesRecord.t.
+Check DebugInterpreterTypesRecord.IsLink.
+Check DebugInterpreterTypesRecord.of_ty.
+Check DebugInterpreterTypesRecord.SubPointer.get_interpreter.
+
+Module DebugInterpreterTypesRecordNoValueArgs.
+  RocqOfRustLinkInterpreterTypesRecordNoValueArgs "debug::Interpreter" [ WIRE ] WIRE_types := {
+    stack : WIRE_types.(InterpreterTypes.Types.Stack);
+    gas : u64
+  }.
+End DebugInterpreterTypesRecordNoValueArgs.
+
+Check DebugInterpreterTypesRecordNoValueArgs.t.
+Check DebugInterpreterTypesRecordNoValueArgs.IsLink.
+Check DebugInterpreterTypesRecordNoValueArgs.of_ty.
+Check DebugInterpreterTypesRecordNoValueArgs.SubPointer.get_stack.
