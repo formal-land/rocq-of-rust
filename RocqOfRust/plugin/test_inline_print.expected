@@ -112,6 +112,148 @@ DebugGeneric.SubPointer.get_WithValue_0
      : forall (T : Set) (H_T : Link T),
        SubPointer.Runner.t (DebugGeneric.t T)
          (Pointer.Index.StructTuple "debug::Generic::WithValue" 0)
+Inductive t (T E : Set) (H_T : Link T) (H_E : Link E) : Set :=
+    Left : T -> DebugGenericPair.t T E | Right : E -> DebugGenericPair.t T E.
+
+Arguments DebugGenericPair.t (T E)%type_scope {H_T H_E}
+Arguments DebugGenericPair.Left {T E}%type_scope {H_T H_E} value
+Arguments DebugGenericPair.Right {T E}%type_scope {H_T H_E} err
+DebugGenericPair.IsLink =
+fun (T E : Set) (H_T : Link T) (H_E : Link E) =>
+{|
+  Φ := Ty.apply (Ty.path "debug::GenericPair") [] [H_T.(Φ _); H_E.(Φ _)];
+  φ :=
+    fun x : DebugGenericPair.t T E =>
+    match x with
+    | DebugGenericPair.Left value =>
+        Value.StructTuple "debug::GenericPair::Left" []
+          [H_T.(Φ _); H_E.(Φ _)] [H_T.(φ) value]
+    | DebugGenericPair.Right err =>
+        Value.StructTuple "debug::GenericPair::Right" []
+          [H_T.(Φ _); H_E.(Φ _)] [H_E.(φ) err]
+    end
+|}
+     : forall (T E : Set) {H_T : Link T} {H_E : Link E},
+       Link (DebugGenericPair.t T E)
+
+Arguments DebugGenericPair.IsLink (T E)%type_scope {H_T H_E}
+DebugGenericPair.IsOfTy =
+fun (T' : Ty.t) (H_T : OfTy.C T') (E' : Ty.t) (H_E : OfTy.C E') =>
+{|
+  OfTy.A := DebugGenericPair.t H_T.(OfTy.A) H_E.(OfTy.A);
+  OfTy.H := DebugGenericPair.IsLink H_T.(OfTy.A) H_E.(OfTy.A);
+  OfTy.eq :=
+    ((fun (A : Set) (H : Link A) (eq0 : E' = H.(Φ _)) =>
+      EqdepFacts.internal_eq_rew_r_dep
+        (fun (E'0 : Ty.t) (eq1 : E'0 = H.(Φ _)) =>
+         Ty.apply (Ty.path "debug::GenericPair") [] [T'; E'0] =
+         (DebugGenericPair.IsLink H_T.(OfTy.A)
+            {| OfTy.A := A; OfTy.H := H; OfTy.eq := eq1 |}.(OfTy.A))
+         .(Φ _))
+        (((fun (Φ : Ty.t) (φ : A -> Value.t) =>
+           ((fun (A0 : Set) (H0 : Link A0) (eq1 : T' = H0.(M.Φ _)) =>
+             EqdepFacts.internal_eq_rew_r_dep
+               (fun (T'0 : Ty.t) (eq2 : T'0 = H0.(M.Φ _)) =>
+                Ty.apply (Ty.path "debug::GenericPair") []
+                  [T'0; {| Φ := Φ; φ := φ |}.(M.Φ _)] =
+                (DebugGenericPair.IsLink
+                   {| OfTy.A := A0; OfTy.H := H0; OfTy.eq := eq2 |}.(OfTy.A)
+                   {|
+                     OfTy.A := A;
+                     OfTy.H := {| Φ := Φ; φ := φ |};
+                     OfTy.eq := eq_refl
+                   |}.(OfTy.A))
+                .(M.Φ _))
+               ((eq_refl
+                 :
+                 Ty.apply (Ty.path "debug::GenericPair") []
+                   [H0.(M.Φ _); {| Φ := Φ; φ := φ |}.(M.Φ _)] =
+                 (DebugGenericPair.IsLink
+                    {| OfTy.A := A0; OfTy.H := H0; OfTy.eq := eq_refl |}
+                    .(OfTy.A)
+                    {|
+                      OfTy.A := A;
+                      OfTy.H := {| Φ := Φ; φ := φ |};
+                      OfTy.eq := eq_refl
+                    |}.(OfTy.A))
+                 .(M.Φ _))
+                :
+                Ty.apply (Ty.path "debug::GenericPair") []
+                  [H0.(M.Φ _); {| Φ := Φ; φ := φ |}.(M.Φ _)] =
+                (DebugGenericPair.IsLink
+                   {| OfTy.A := A0; OfTy.H := H0; OfTy.eq := eq_refl |}
+                   .(OfTy.A)
+                   {|
+                     OfTy.A := A;
+                     OfTy.H := {| Φ := Φ; φ := φ |};
+                     OfTy.eq := eq_refl
+                   |}.(OfTy.A))
+                .(M.Φ _))
+               eq1)
+              H_T.(OfTy.A) H_T.(OfTy.H) H_T.(OfTy.eq)
+            :
+            Ty.apply (Ty.path "debug::GenericPair") []
+              [T'; {| Φ := Φ; φ := φ |}.(M.Φ _)] =
+            (DebugGenericPair.IsLink H_T.(OfTy.A)
+               {|
+                 OfTy.A := A;
+                 OfTy.H := {| Φ := Φ; φ := φ |};
+                 OfTy.eq := eq_refl
+               |}.(OfTy.A))
+            .(M.Φ _))
+           :
+           Ty.apply (Ty.path "debug::GenericPair") []
+             [T'; {| Φ := Φ; φ := φ |}.(M.Φ _)] =
+           (DebugGenericPair.IsLink H_T.(OfTy.A)
+              {|
+                OfTy.A := A;
+                OfTy.H := {| Φ := Φ; φ := φ |};
+                OfTy.eq := eq_refl
+              |}.(OfTy.A))
+           .(M.Φ _)) H.(Φ _) H.(φ)
+          :
+          Ty.apply (Ty.path "debug::GenericPair") [] [T'; H.(Φ _)] =
+          (DebugGenericPair.IsLink H_T.(OfTy.A)
+             {| OfTy.A := A; OfTy.H := H; OfTy.eq := eq_refl |}.(OfTy.A))
+          .(Φ _))
+         :
+         Ty.apply (Ty.path "debug::GenericPair") [] [T'; H.(Φ _)] =
+         (DebugGenericPair.IsLink H_T.(OfTy.A)
+            {| OfTy.A := A; OfTy.H := H; OfTy.eq := eq_refl |}.(OfTy.A))
+         .(Φ _))
+        eq0)
+       H_E.(OfTy.A) H_E.(OfTy.H) H_E.(OfTy.eq)
+     :
+     Ty.apply (Ty.path "debug::GenericPair") [] [T'; E'] =
+     (DebugGenericPair.IsLink H_T.(OfTy.A) H_E.(OfTy.A)).(Φ _))
+    :
+    Ty.apply (Ty.path "debug::GenericPair") [] [T'; E'] =
+    (DebugGenericPair.IsLink H_T.(OfTy.A) H_E.(OfTy.A)).(Φ _)
+|}
+     : forall T' : Ty.t,
+       OfTy.C T' ->
+       forall E' : Ty.t,
+       OfTy.C E' ->
+       OfTy.C (Ty.apply (Ty.path "debug::GenericPair") [] [T'; E'])
+
+Arguments DebugGenericPair.IsOfTy T' {H_T} E' {H_E}
+DebugGenericPair.IsOfValueWith_Left
+     : forall (T E : Set) (H_T : Link T) (H_E : Link E) (value' : Value.t),
+       OfValueWith.C T value' ->
+       OfValueWith.C (DebugGenericPair.t T E)
+         (Value.StructTuple "debug::GenericPair::Left" []
+            [H_T.(Φ _); H_E.(Φ _)] [value'])
+DebugGenericPair.IsOfValue_Left
+     : forall (T' : Ty.t) (H_T : OfTy.C T') (E' : Ty.t),
+       OfTy.C E' ->
+       forall value' : Value.t,
+       OfValueWith.C H_T.(OfTy.A) value' ->
+       OfValue.C
+         (Value.StructTuple "debug::GenericPair::Left" [] [T'; E'] [value'])
+DebugGenericPair.SubPointer.get_Left_0
+     : forall (T E : Set) (H_T : Link T) (H_E : Link E),
+       SubPointer.Runner.t (DebugGenericPair.t T E)
+         (Pointer.Index.StructTuple "debug::GenericPair::Left" 0)
 Inductive t (T : Set) (H_T : Link T) : Set :=
     RefValue : '& T -> DebugLinkedGeneric.t T
   | OwnedValue : T -> DebugLinkedGeneric.t T.

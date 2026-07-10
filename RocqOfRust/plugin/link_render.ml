@@ -179,7 +179,8 @@ let render_constructor_arguments (type_params : string list) (variant : variant)
       in
       let implicit_params =
         String.concat " "
-          (List.map (fun param -> "{" ^ param ^ " H_" ^ param ^ "}") type_params)
+          (List.map (fun param -> "{" ^ param ^ "}") type_params
+           @ List.map (fun param -> "{H_" ^ param ^ "}") type_params)
       in
       let field_names = String.concat " " (List.map (fun field -> field.field_name) fields) in
       let suffix =
@@ -553,12 +554,17 @@ let render_record_of_value
 
 let constructor_type_arguments
     (kind : [ `Plain | `With ]) (type_params : string list) : string list =
-  let type_args param =
+  let set_args =
     match kind with
-    | `With -> [ param; "H_" ^ param ]
-    | `Plain -> [ "H_" ^ param ^ ".(OfTy.A)"; "H_" ^ param ^ ".(OfTy.H)" ]
+    | `With -> type_params
+    | `Plain -> List.map (fun param -> "H_" ^ param ^ ".(OfTy.A)") type_params
   in
-  List.concat (List.map type_args type_params)
+  let link_args =
+    match kind with
+    | `With -> List.map (fun param -> "H_" ^ param) type_params
+    | `Plain -> List.map (fun param -> "H_" ^ param ^ ".(OfTy.H)") type_params
+  in
+  set_args @ link_args
 
 let render_enum_of_value
     (kind : [ `Plain | `With ]) (path : string) (type_params : string list) (variant : variant) : string list =

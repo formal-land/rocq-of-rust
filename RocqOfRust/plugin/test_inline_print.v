@@ -30,6 +30,20 @@ Check DebugGeneric.IsOfValueWith_WithValue.
 Check DebugGeneric.IsOfValue_WithValue.
 Check DebugGeneric.SubPointer.get_WithValue_0.
 
+Module DebugGenericPair.
+  RocqOfRustLinkGenericEnum "debug::GenericPair" [ T, E ] :=
+  | Left (value : T)
+  | Right (err : E)
+  .
+End DebugGenericPair.
+
+Print DebugGenericPair.t.
+Print DebugGenericPair.IsLink.
+Print DebugGenericPair.IsOfTy.
+Check DebugGenericPair.IsOfValueWith_Left.
+Check DebugGenericPair.IsOfValue_Left.
+Check DebugGenericPair.SubPointer.get_Left_0.
+
 Module DebugLinkedGeneric.
   RocqOfRustLinkGenericEnum "debug::LinkedGeneric" [ T ] :=
   | RefValue (value : ('& T))
