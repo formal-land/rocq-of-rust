@@ -61,7 +61,7 @@ Proof.
   {
     eapply Run.CallPrimitiveGetTraitMethod.
     { exact Impl_Deref_for_AccountInfoLoad.method_deref.(deref.Deref.deref_is_method).(IsTraitMethod.Make). }
-    eapply (Run.CallClosure _ _ _ _ _ _ (Ref.of_ty_ref _ AccountInfo.of_ty)).
+    eapply (Run.CallClosure _ _ _ _ _ _ (Ref.of_ty_ref _ OfTy.to_inductive)).
     { exact (Impl_Deref_for_AccountInfoLoad.method_deref.(deref.Deref.run_deref)
         (Ref.cast_to Pointer.Kind.Ref output6)).(Run.run_f). }
     intros.

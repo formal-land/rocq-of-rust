@@ -58,13 +58,5 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   destruct revm.revm_context_interface.links.journaled_state.Impl_Deref_for_AccountInfoLoad.run.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
-  { eapply Impl_Interpreter.run_halt_underflow. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_fatal. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_fatal. }
 Defined.
 Global Opaque run_extcodehash.
