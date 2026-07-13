@@ -73,18 +73,5 @@ Proof.
   destruct (Impl_AsRef_for_Slice.run u8).
   destruct run_Deref_for_Synthetic.
   run_symbolic.
-  { eapply (@Impl_Interpreter.run_halt WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt_not_activated WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt_oog WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt_memory_oog WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt_oog WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt_oog WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt_underflow WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt_oog WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt_oog WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
-  { eapply (@Impl_Interpreter.run_halt_underflow WIRE H0 WIRE_types H2 run_InterpreterTypes_for_WIRE_copy). }
 Defined.
 Global Opaque run_create.

@@ -1,5 +1,6 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.common.
 Require Import alloy_primitives.links.aliases.
@@ -61,7 +62,7 @@ Module TestHost.
     (Result.Err LoadError.DBError, Make).
 
   Definition load_account_delegated (self : t) (_address : Address.t) :
-      option AccountLoad.t * t :=
+      option (StateLoad.t AccountLoad.t) * t :=
     (None, Make).
 
   Definition load_account_code (self : t) (_address : Address.t) :
@@ -104,6 +105,10 @@ Module TestHost.
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
 
+  Definition host_effective_gas_price (self : t) :
+      aliases.U256.t * t :=
+    (Impl_Uint.ZERO, Make).
+
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
@@ -128,6 +133,14 @@ Module TestHost.
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
 
+  Definition sload_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_key : aliases.U256.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t aliases.U256.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
+
   Definition sstore
       (self : t)
       (_address : Address.t)
@@ -135,6 +148,15 @@ Module TestHost.
       (_value : aliases.U256.t) :
       option (StateLoad.t SStoreResult.t) * t :=
     (None, Make).
+
+  Definition sstore_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_key : aliases.U256.t)
+      (_value : aliases.U256.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t SStoreResult.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
 
   Definition tload (self : t) (_address : Address.t) (_index : aliases.U256.t) :
       aliases.U256.t * t :=
@@ -285,13 +307,16 @@ Module TestHost.
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;
+    Host.effective_gas_price := host_effective_gas_price;
     Host.difficulty := host_difficulty;
     Host.prevrandao := host_prevrandao;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;
     Host.sload := sload;
+    Host.sload_skip_cold_load := sload_skip_cold_load;
     Host.sstore := sstore;
+    Host.sstore_skip_cold_load := sstore_skip_cold_load;
     Host.tload := tload;
     Host.tstore := tstore;
     Host.log := log;
@@ -336,15 +361,12 @@ Module TestHostWithAccount.
   Definition prevrandao (_self : t) : option aliases.B256.t := None.
   Definition blob_gasprice (_self : t) : option u128 := None.
 
-  Definition test_account_load : AccountLoad.t := {|
-    AccountLoad.load := {|
-      Eip7702CodeLoad.state_load := {|
-        StateLoad.data := tt;
-        StateLoad.is_cold := false;
-      |};
-      Eip7702CodeLoad.is_delegate_account_cold := None;
+  Definition test_account_load : StateLoad.t AccountLoad.t := {|
+    StateLoad.data := {|
+      AccountLoad.is_delegate_account_cold := None;
+      AccountLoad.is_empty := true;
     |};
-    AccountLoad.is_empty := true;
+    StateLoad.is_cold := false;
   |}.
 
   Definition load_account_info_skip_cold_load
@@ -356,7 +378,7 @@ Module TestHostWithAccount.
     (Result.Err LoadError.DBError, Make).
 
   Definition load_account_delegated (self : t) (_address : Address.t) :
-      option AccountLoad.t * t :=
+      option (StateLoad.t AccountLoad.t) * t :=
     (Some test_account_load, Make).
 
   Definition load_account_code (self : t) (_address : Address.t) :
@@ -399,6 +421,10 @@ Module TestHostWithAccount.
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
 
+  Definition host_effective_gas_price (self : t) :
+      aliases.U256.t * t :=
+    (Impl_Uint.ZERO, Make).
+
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
@@ -423,6 +449,14 @@ Module TestHostWithAccount.
       option (StateLoad.t aliases.U256.t) * t :=
     (None, Make).
 
+  Definition sload_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_key : aliases.U256.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t aliases.U256.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
+
   Definition sstore
       (self : t)
       (_address : Address.t)
@@ -430,6 +464,15 @@ Module TestHostWithAccount.
       (_value : aliases.U256.t) :
       option (StateLoad.t SStoreResult.t) * t :=
     (None, Make).
+
+  Definition sstore_skip_cold_load
+      (self : t)
+      (_address : Address.t)
+      (_key : aliases.U256.t)
+      (_value : aliases.U256.t)
+      (_skip_cold_load : bool) :
+      Result.t (StateLoad.t SStoreResult.t) LoadError.t * t :=
+    (Result.Err LoadError.DBError, Make).
 
   Definition tload (self : t) (_address : Address.t) (_index : aliases.U256.t) :
       aliases.U256.t * t :=
@@ -580,13 +623,16 @@ Module TestHostWithAccount.
     Host.chain_id := host_chain_id;
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;
+    Host.effective_gas_price := host_effective_gas_price;
     Host.difficulty := host_difficulty;
     Host.prevrandao := host_prevrandao;
     Host.balance := balance;
     Host.code := code;
     Host.code_hash := code_hash;
     Host.sload := sload;
+    Host.sload_skip_cold_load := sload_skip_cold_load;
     Host.sstore := sstore;
+    Host.sstore_skip_cold_load := sstore_skip_cold_load;
     Host.tload := tload;
     Host.tstore := tstore;
     Host.log := log;

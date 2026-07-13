@@ -394,11 +394,11 @@ Lemma warm_cold_cost_eq (stack : Stack.t) (is_cold : bool) :
   }}.
 Admitted.
 
-Definition warm_cold_cost_with_delegation (load : Eip7702CodeLoad.t unit) : u64 :=
+Definition warm_cold_cost_with_delegation (load : StateLoad.t AccountLoad.t) : u64 :=
   {| Integer.value := 0 |}.
 
 Lemma warm_cold_cost_with_delegation_eq (stack : Stack.t)
-    (load : Eip7702CodeLoad.t unit) :
+    (load : StateLoad.t AccountLoad.t) :
   {{
     SimulateM.eval_f
       (run_warm_cold_cost_with_delegation load)

@@ -55,7 +55,7 @@ Export (hints) SelfDestructResult.
 
 (*
 pub trait Host: TransactionGetter + BlockGetter + CfgGetter {
-    fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>;
+    fn load_account_delegated(&mut self, address: Address) -> Option<StateLoad<AccountLoad>>;
     fn block_hash(&mut self, number: u64) -> Option<B256>;
     fn max_initcode_size(&self) -> usize;
     fn beneficiary(&self) -> Address;
@@ -156,12 +156,14 @@ Module Host.
         (Result.t AccountInfoLoad.t LoadError.t);
   }.
 
-  (* fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>; *)
+  (* fn load_account_delegated(&mut self, address: Address) -> Option<StateLoad<AccountLoad>>; *)
   Class Method_load_account_delegated (Self : Set) `{Link Self} : Set := {
     load_account_delegated : PolymorphicFunction.t;
     load_account_delegated_is_method :: IsTraitMethod.C (trait Self) "load_account_delegated" load_account_delegated;
     run_load_account_delegated (self : '&mut Self) (address : Address.t) ::
-      Run.Trait load_account_delegated [] [] [ φ self; φ address ] (option AccountLoad.t);
+      Run.Trait
+        load_account_delegated [] [] [ φ self; φ address ]
+        (option (StateLoad.t AccountLoad.t));
   }.
 
   (* fn load_account_code(&mut self, address: Address) -> Option<StateLoad<Bytes>>; *)

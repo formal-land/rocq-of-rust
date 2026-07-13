@@ -144,7 +144,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := create false interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StateChangeDuringStaticCall \/
   bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
 Proof.
@@ -161,7 +161,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := create false interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StateChangeDuringStaticCall \/
   is_create_frame result_interpreter.
 Proof.
