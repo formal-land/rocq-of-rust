@@ -47,11 +47,11 @@ Module Host.
       (load_code : bool)
       (skip_cold_load : bool) :
       Result.t AccountInfoLoad.t LoadError.t * Self;
-    (* fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>; *)
+    (* fn load_account_delegated(&mut self, address: Address) -> Option<StateLoad<AccountLoad>>; *)
     load_account_delegated
       (self : Self)
       (address : Address.t) :
-      option AccountLoad.t * Self;
+      option (StateLoad.t AccountLoad.t) * Self;
     (* fn load_account_code(&mut self, address: Address) -> Option<StateLoad<Bytes>>; *)
     load_account_code
       (self : Self)

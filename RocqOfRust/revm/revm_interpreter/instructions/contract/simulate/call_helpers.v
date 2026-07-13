@@ -27,8 +27,8 @@ Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.simulate.lib.
 
-Parameter bytecode_of_account_load : AccountLoad.t -> Bytecode.t.
-Parameter bytecode_hash_of_account_load : AccountLoad.t -> aliases.B256.t.
+Parameter bytecode_of_account_load : StateLoad.t AccountLoad.t -> Bytecode.t.
+Parameter bytecode_hash_of_account_load : StateLoad.t AccountLoad.t -> aliases.B256.t.
 
 Definition resize_memory
     {WIRE : Set} `{Link WIRE}
@@ -240,7 +240,7 @@ Definition load_acc_and_calc_gas
     (None, interpreter, host)
   | (Some account_load, host) =>
 
-  let dynamic_gas := warm_cold_cost_with_delegation account_load.(AccountLoad.load) in
+  let dynamic_gas := warm_cold_cost_with_delegation account_load in
   gas_macro interpreter dynamic_gas
     (fun interpreter => (None, interpreter, host))
     (fun interpreter =>

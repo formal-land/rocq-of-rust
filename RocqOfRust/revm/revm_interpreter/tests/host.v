@@ -1,6 +1,7 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.common.
 Require Import alloy_primitives.links.aliases.
@@ -62,7 +63,7 @@ Module TestHost.
     (Result.Err LoadError.DBError, Make).
 
   Definition load_account_delegated (self : t) (_address : Address.t) :
-      option AccountLoad.t * t :=
+      option (StateLoad.t AccountLoad.t) * t :=
     (None, Make).
 
   Definition load_account_code (self : t) (_address : Address.t) :
@@ -107,7 +108,7 @@ Module TestHost.
 
   Definition host_effective_gas_price (self : t) :
       aliases.U256.t * t :=
-    ({| Uint.value := 42 |}, Make).
+    (Impl_Uint.ZERO, Make).
 
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
@@ -361,15 +362,12 @@ Module TestHostWithAccount.
   Definition prevrandao (_self : t) : option aliases.B256.t := None.
   Definition blob_gasprice (_self : t) : option u128 := None.
 
-  Definition test_account_load : AccountLoad.t := {|
-    AccountLoad.load := {|
-      Eip7702CodeLoad.state_load := {|
-        StateLoad.data := tt;
-        StateLoad.is_cold := false;
-      |};
-      Eip7702CodeLoad.is_delegate_account_cold := None;
+  Definition test_account_load : StateLoad.t AccountLoad.t := {|
+    StateLoad.data := {|
+      AccountLoad.is_delegate_account_cold := None;
+      AccountLoad.is_empty := true;
     |};
-    AccountLoad.is_empty := true;
+    StateLoad.is_cold := false;
   |}.
 
   Definition load_account_info_skip_cold_load
@@ -381,7 +379,7 @@ Module TestHostWithAccount.
     (Result.Err LoadError.DBError, Make).
 
   Definition load_account_delegated (self : t) (_address : Address.t) :
-      option AccountLoad.t * t :=
+      option (StateLoad.t AccountLoad.t) * t :=
     (Some test_account_load, Make).
 
   Definition load_account_code (self : t) (_address : Address.t) :
@@ -426,7 +424,7 @@ Module TestHostWithAccount.
 
   Definition host_effective_gas_price (self : t) :
       aliases.U256.t * t :=
-    ({| Uint.value := 42 |}, Make).
+    (Impl_Uint.ZERO, Make).
 
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=

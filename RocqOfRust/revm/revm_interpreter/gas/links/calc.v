@@ -289,8 +289,8 @@ Proof.
 Admitted.
 Global Opaque run_warm_cold_cost.
 
-(* pub const fn warm_cold_cost_with_delegation(load: Eip7702CodeLoad<()>) -> u64 *)
-Instance run_warm_cold_cost_with_delegation (load : Eip7702CodeLoad.t unit) :
+(* pub const fn warm_cold_cost_with_delegation(load: StateLoad<AccountLoad>) -> u64 *)
+Instance run_warm_cold_cost_with_delegation (load : StateLoad.t AccountLoad.t) :
   Run.Trait
     gas.calc.warm_cold_cost_with_delegation [] [] [ φ load ]
     u64.
