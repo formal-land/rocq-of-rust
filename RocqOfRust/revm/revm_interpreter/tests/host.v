@@ -1,4 +1,5 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.common.
@@ -125,7 +126,7 @@ Module TestHost.
     (None, Make).
 
   Definition code_hash (self : t) (_address : Address.t) :
-      option (Eip7702CodeLoad.t aliases.B256.t) * t :=
+      option (@Eip7702CodeLoad.t aliases.B256.t (FixedBytes.IsLink {| Integer.value := 32 |})) * t :=
     (None, Make).
 
   Definition sload (self : t) (_address : Address.t) (_index : aliases.U256.t) :
@@ -444,7 +445,7 @@ Module TestHostWithAccount.
     (None, Make).
 
   Definition code_hash (self : t) (_address : Address.t) :
-      option (Eip7702CodeLoad.t aliases.B256.t) * t :=
+      option (@Eip7702CodeLoad.t aliases.B256.t (FixedBytes.IsLink {| Integer.value := 32 |})) * t :=
     (None, Make).
 
   Definition sload (self : t) (_address : Address.t) (_index : aliases.U256.t) :
