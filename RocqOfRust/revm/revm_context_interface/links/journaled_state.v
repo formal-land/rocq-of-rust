@@ -95,6 +95,8 @@ pub struct AccountLoad {
 }
 *)
 Module AccountLoad.
+  (* This still models the pre-v103 [load] field. The translated v103 type uses
+     [is_delegate_account_cold], so it cannot be migrated mechanically. *)
   Record t : Set := {
     load : Eip7702CodeLoad.t unit;
     is_empty : bool;
@@ -184,107 +186,12 @@ End Cow.
 Export (hints) Cow.
 
 Module AccountInfo.
-  Record t : Set := {
+  RocqOfRustLinkRecord "revm_state::account_info::AccountInfo" := {
     balance : aliases.U256.t;
     nonce : u64;
     code_hash : aliases.B256.t;
-    code : option Bytecode.t;
+    code : (option Bytecode.t)
   }.
-
-  Instance IsLink : Link t := {
-    Φ := Ty.path "revm_state::account_info::AccountInfo";
-    φ x :=
-      Value.StructRecord "revm_state::account_info::AccountInfo" [] [] [
-        ("balance", φ x.(balance));
-        ("nonce", φ x.(nonce));
-        ("code_hash", φ x.(code_hash));
-        ("code", φ x.(code))
-      ];
-  }.
-
-  Definition of_ty : OfTy.t (Ty.path "revm_state::account_info::AccountInfo").
-  Proof.
-    eapply OfTy.Make with (A := t); reflexivity.
-  Defined.
-  Smpl Add apply of_ty : of_ty.
-
-  Lemma of_value_with
-      balance balance'
-      nonce nonce'
-      code_hash code_hash'
-      code code' :
-    balance' = φ balance ->
-    nonce' = φ nonce ->
-    code_hash' = φ code_hash ->
-    code' = φ code ->
-    Value.StructRecord "revm_state::account_info::AccountInfo" [] [] [
-      ("balance", balance');
-      ("nonce", nonce');
-      ("code_hash", code_hash');
-      ("code", code')
-    ] = φ (Build_t balance nonce code_hash code).
-  Proof.
-    now intros; subst.
-  Qed.
-  Smpl Add apply of_value_with : of_value.
-
-  Module SubPointer.
-    Definition get_balance : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_state::account_info::AccountInfo" "balance") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(balance);
-      SubPointer.Runner.injection x y := Some (x <| balance := y |>);
-    |}.
-
-    Lemma get_balance_is_valid :
-      SubPointer.Runner.Valid.t get_balance.
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_balance_is_valid : run_sub_pointer.
-
-    Definition get_nonce : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_state::account_info::AccountInfo" "nonce") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(nonce);
-      SubPointer.Runner.injection x y := Some (x <| nonce := y |>);
-    |}.
-
-    Lemma get_nonce_is_valid :
-      SubPointer.Runner.Valid.t get_nonce.
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_nonce_is_valid : run_sub_pointer.
-
-    Definition get_code_hash : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_state::account_info::AccountInfo" "code_hash") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(code_hash);
-      SubPointer.Runner.injection x y := Some (x <| code_hash := y |>);
-    |}.
-
-    Lemma get_code_hash_is_valid :
-      SubPointer.Runner.Valid.t get_code_hash.
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_code_hash_is_valid : run_sub_pointer.
-
-    Definition get_code : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_state::account_info::AccountInfo" "code") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(code);
-      SubPointer.Runner.injection x y := Some (x <| code := y |>);
-    |}.
-
-    Lemma get_code_is_valid :
-      SubPointer.Runner.Valid.t get_code.
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_code_is_valid : run_sub_pointer.
-  End SubPointer.
 End AccountInfo.
 Export (hints) AccountInfo.
 
@@ -323,86 +230,11 @@ pub struct AccountInfoLoad<'a> {
 }
 *)
 Module AccountInfoLoad.
-  Record t : Set := {
-    account : Cow.t AccountInfo.t;
+  RocqOfRustLinkRecord "revm_context_interface::journaled_state::AccountInfoLoad" := {
+    account : (Cow.t AccountInfo.t);
     is_cold : bool;
-    is_empty : bool;
+    is_empty : bool
   }.
-
-  Instance IsLink : Link t := {
-    Φ := Ty.path "revm_context_interface::journaled_state::AccountInfoLoad";
-    φ x :=
-      Value.StructRecord "revm_context_interface::journaled_state::AccountInfoLoad" [] [] [
-        ("account", φ x.(account));
-        ("is_cold", φ x.(is_cold));
-        ("is_empty", φ x.(is_empty))
-      ];
-  }.
-
-  Definition of_ty :
-    OfTy.t (Ty.path "revm_context_interface::journaled_state::AccountInfoLoad").
-  Proof.
-    eapply OfTy.Make with (A := t); reflexivity.
-  Defined.
-  Smpl Add apply of_ty : of_ty.
-
-  Lemma of_value_with account account' is_cold is_cold' is_empty is_empty' :
-    account' = φ account ->
-    is_cold' = φ is_cold ->
-    is_empty' = φ is_empty ->
-    Value.StructRecord "revm_context_interface::journaled_state::AccountInfoLoad" [] [] [
-      ("account", account');
-      ("is_cold", is_cold');
-      ("is_empty", is_empty')
-    ] = φ (Build_t account is_cold is_empty).
-  Proof.
-    now intros; subst.
-  Qed.
-  Smpl Add apply of_value_with : of_value.
-
-  Module SubPointer.
-    Definition get_account : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_context_interface::journaled_state::AccountInfoLoad" "account") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(account);
-      SubPointer.Runner.injection x y := Some (x <| account := y |>);
-    |}.
-
-    Lemma get_account_is_valid :
-      SubPointer.Runner.Valid.t get_account.
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_account_is_valid : run_sub_pointer.
-
-    Definition get_is_cold : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_context_interface::journaled_state::AccountInfoLoad" "is_cold") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(is_cold);
-      SubPointer.Runner.injection x y := Some (x <| is_cold := y |>);
-    |}.
-
-    Lemma get_is_cold_is_valid :
-      SubPointer.Runner.Valid.t get_is_cold.
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_is_cold_is_valid : run_sub_pointer.
-
-    Definition get_is_empty : SubPointer.Runner.t t
-      (Pointer.Index.StructRecord "revm_context_interface::journaled_state::AccountInfoLoad" "is_empty") :=
-    {|
-      SubPointer.Runner.projection x := Some x.(is_empty);
-      SubPointer.Runner.injection x y := Some (x <| is_empty := y |>);
-    |}.
-
-    Lemma get_is_empty_is_valid :
-      SubPointer.Runner.Valid.t get_is_empty.
-    Proof.
-      now constructor.
-    Qed.
-    Smpl Add apply get_is_empty_is_valid : run_sub_pointer.
-  End SubPointer.
 End AccountInfoLoad.
 Export (hints) AccountInfoLoad.
 
