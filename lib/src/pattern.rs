@@ -24,6 +24,11 @@ pub(crate) enum Pattern {
     Or(Vec<Rc<Pattern>>),
     Tuple(Vec<Rc<Pattern>>),
     Literal(Rc<Literal>),
+    Range {
+        lower_bound: Option<Rc<Literal>>,
+        upper_bound: Option<Rc<Literal>>,
+        is_inclusive: bool,
+    },
     Slice {
         prefix_patterns: Vec<Rc<Pattern>>,
         slice_pattern: Option<Rc<Pattern>>,
@@ -167,6 +172,7 @@ impl Pattern {
                 .flat_map(|pattern| pattern.get_free_vars())
                 .collect(),
             Pattern::Literal(_) => vec![],
+            Pattern::Range { .. } => vec![],
             Pattern::Slice {
                 prefix_patterns,
                 slice_pattern,
