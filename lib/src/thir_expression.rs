@@ -273,6 +273,53 @@ fn build_inner_match(
                 }),
                 body,
             }),
+            Pattern::Range {
+                lower_bound,
+                upper_bound,
+                is_inclusive,
+            } => {
+                let add_bound_check = |body: Rc<Expr>, operator: &str, bound: Rc<Literal>| {
+                    let comparison = Rc::new(Expr::Call {
+                        func: Expr::local_var(operator),
+                        args: vec![
+                            Expr::local_var(&scrutinee).read(),
+                            Rc::new(Expr::Literal(bound)),
+                        ],
+                        kind: CallKind::Closure(RocqType::path(&["bool"])),
+                    });
+
+                    Rc::new(Expr::Let {
+                        name: None,
+                        ty: None,
+                        init: Rc::new(Expr::Call {
+                            func: Expr::local_var("is_constant_or_break_match"),
+                            args: vec![
+                                comparison,
+                                Rc::new(Expr::Literal(Rc::new(Literal::Bool(true)))),
+                            ],
+                            kind: CallKind::Effectful,
+                        }),
+                        body,
+                    })
+                };
+                let body = match upper_bound {
+                    Some(upper_bound) => add_bound_check(
+                        body,
+                        if *is_inclusive {
+                            "BinOp.le"
+                        } else {
+                            "BinOp.lt"
+                        },
+                        upper_bound.clone(),
+                    ),
+                    None => body,
+                };
+
+                match lower_bound {
+                    Some(lower_bound) => add_bound_check(body, "BinOp.ge", lower_bound.clone()),
+                    None => body,
+                }
+            }
             Pattern::Slice {
                 prefix_patterns,
                 slice_pattern,
