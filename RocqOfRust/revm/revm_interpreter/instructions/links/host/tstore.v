@@ -51,8 +51,5 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_Host_for_H.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
-  { eapply Impl_Interpreter.run_halt. }
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_tstore.
