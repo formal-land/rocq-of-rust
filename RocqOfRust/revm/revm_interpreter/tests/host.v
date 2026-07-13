@@ -108,7 +108,7 @@ Module TestHost.
 
   Definition host_effective_gas_price (self : t) :
       aliases.U256.t * t :=
-    (Impl_Uint.ZERO, Make).
+    ({| Uint.value := 42 |}, Make).
 
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
@@ -424,7 +424,7 @@ Module TestHostWithAccount.
 
   Definition host_effective_gas_price (self : t) :
       aliases.U256.t * t :=
-    (Impl_Uint.ZERO, Make).
+    ({| Uint.value := 42 |}, Make).
 
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
