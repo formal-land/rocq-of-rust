@@ -25,69 +25,14 @@ Require Import ruint.links.lib.
 #[export] Existing Instance FixedBytes.IsLink.
 
 Module LoadAccAndCalcGasResult.
-  Record t : Set := {
+  RocqOfRustLinkTupleRecord := {
     gas_limit : u64;
     bytecode : Bytecode.t;
-    bytecode_hash : aliases.B256.t;
+    bytecode_hash : aliases.B256.t
   }.
-
-  Global Instance IsLink : Link t := {
-    Φ := Ty.tuple [
-      Φ u64;
-      Φ Bytecode.t;
-      Φ aliases.B256.t
-    ];
-    φ x := Value.Tuple [
-      φ x.(gas_limit);
-      φ x.(bytecode);
-      φ x.(bytecode_hash)
-    ];
-  }.
-
-  Definition of_ty :
-    OfTy.t (Ty.tuple [
-      Φ u64;
-      Φ Bytecode.t;
-      Φ aliases.B256.t
-    ]).
-  Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
-  Smpl Add apply of_ty : of_ty.
-
-  Module SubPointer.
-    Definition get_gas_limit : SubPointer.Runner.t t (Pointer.Index.Tuple 0) :=
-    {|
-      SubPointer.Runner.projection x := Some x.(gas_limit);
-      SubPointer.Runner.injection x y := Some (x <| gas_limit := y |>);
-    |}.
-
-    Lemma get_gas_limit_is_valid :
-      SubPointer.Runner.Valid.t get_gas_limit.
-    Proof. now constructor. Qed.
-    Smpl Add apply get_gas_limit_is_valid : run_sub_pointer.
-
-    Definition get_bytecode : SubPointer.Runner.t t (Pointer.Index.Tuple 1) :=
-    {|
-      SubPointer.Runner.projection x := Some x.(bytecode);
-      SubPointer.Runner.injection x y := Some (x <| bytecode := y |>);
-    |}.
-
-    Lemma get_bytecode_is_valid :
-      SubPointer.Runner.Valid.t get_bytecode.
-    Proof. now constructor. Qed.
-    Smpl Add apply get_bytecode_is_valid : run_sub_pointer.
-
-    Definition get_bytecode_hash : SubPointer.Runner.t t (Pointer.Index.Tuple 2) :=
-    {|
-      SubPointer.Runner.projection x := Some x.(bytecode_hash);
-      SubPointer.Runner.injection x y := Some (x <| bytecode_hash := y |>);
-    |}.
-
-    Lemma get_bytecode_hash_is_valid :
-      SubPointer.Runner.Valid.t get_bytecode_hash.
-    Proof. now constructor. Qed.
-    Smpl Add apply get_bytecode_hash_is_valid : run_sub_pointer.
-  End SubPointer.
 End LoadAccAndCalcGasResult.
+Export (hints) LoadAccAndCalcGasResult.
+#[export] Existing Instance LoadAccAndCalcGasResult.IsLink.
 
 (*
 pub fn resize_memory(
@@ -113,8 +58,7 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
   all: first [
-    eapply (@Impl_Interpreter.run_halt WIRE H WIRE_types H0 run_InterpreterTypes_for_WIRE)
-  | eapply (@interpreter.links.shared_memory.run_resize_memory
+    eapply (@interpreter.links.shared_memory.run_resize_memory
       WIRE_types.(InterpreterTypes.Types.Memory)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
       WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1)
@@ -122,7 +66,6 @@ Proof.
       H0.(InterpreterTypes.Types.H_Memory_Synthetic)
       H0.(InterpreterTypes.Types.H_Memory_Synthetic1)
       (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_MemoryTrait_for_Memory)))
-  | eapply (@Impl_Interpreter.run_halt_memory_oog WIRE H WIRE_types H0 run_InterpreterTypes_for_WIRE)
   ].
 Defined.
 Global Opaque run_resize_memory.
@@ -152,7 +95,6 @@ Proof.
   run_symbolic.
   all: first [
     eapply Impl_usize.run_saturating_add
-  | eapply (@Impl_Interpreter.run_halt_underflow WIRE H WIRE_types H0 run_InterpreterTypes_for_WIRE)
   ].
 Defined.
 Global Opaque run_get_memory_input_and_out_ranges.

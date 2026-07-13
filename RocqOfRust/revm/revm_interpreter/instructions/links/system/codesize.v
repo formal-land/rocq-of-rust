@@ -46,11 +46,5 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_LegacyBytecode_for_Bytecode.
   run_symbolic.
-  all: match goal with
-  | |- Run.Trait
-      (interpreter.interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.halt_overflow _)
-      _ _ _ _ =>
-      eapply Impl_Interpreter.run_halt_overflow
-  end.
 Defined.
 Global Opaque run_codesize.

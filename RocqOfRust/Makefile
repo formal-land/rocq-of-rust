@@ -1,8 +1,6 @@
-.PHONY: all clean clean-util distclean default watch generate jinja plugin plugin-inline-print-check
+.PHONY: all clean clean-util distclean default watch generate plugin plugin-inline-print-check
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
-JINJA_TEMPLATES := $(shell find -L . -name "*.v.jinja2" | sort)
-JINJA_GENERATED := $(JINJA_TEMPLATES:.v.jinja2=.v)
 PLUGIN_INLINE_PRINT_TEST := plugin/test_inline_print.v
 PLUGIN_INLINE_PRINT_EXPECTED := plugin/test_inline_print.expected
 PLUGIN_INLINE_PRINT_OUTPUT := /tmp/rocqofrust-plugin-inline-print.out
@@ -12,8 +10,6 @@ PLUGIN_PACKAGES := \
 PLUGIN_ML := plugin/link_model.ml plugin/link_render.ml plugin/rocqofrust_link_plugin.ml
 
 default: all
-
-jinja: $(JINJA_GENERATED)
 
 plugin: plugin/rocqofrust_link_plugin/rocqofrust_link_plugin.cmxs
 
@@ -32,9 +28,6 @@ RocqMakefile: plugin $(VFILES) blacklist.txt
 	@coq_makefile -f _RocqProject -o $@ $(VFILES)
 
 MAKEROCQ := +$(MAKE) -f RocqMakefile
-
-%.v: %.v.jinja2 scripts/macros.jinja2 scripts/jinja_preprocess.py
-	python scripts/jinja_preprocess.py $<
 
 %.vo: plugin RocqMakefile %.v
 	$(MAKEROCQ) $@

@@ -58,7 +58,6 @@ Proof.
   constructor.
   destruct (TryFrom_Uint_for_u64.method_try_from (BITS := {| Integer.value := 256 |}) (LIMBS := {| Integer.value := 4 |})).
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt. }
   {
     eapply (@Impl_Box.run_new CallInputs.t CallInputs.IsLink {|
       CallInputs.bytecode_address := value17;
@@ -73,6 +72,5 @@ Proof.
       CallInputs.value := CallValue.Transfer value20;
     |}).
   }
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_call.

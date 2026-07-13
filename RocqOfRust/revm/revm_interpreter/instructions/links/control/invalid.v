@@ -41,6 +41,5 @@ Proof.
   destruct run_InterpreterTypes_for_WIRE eqn:?.
   destruct run_LoopControl_for_Control.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt. }
 Defined.
 Global Opaque run_invalid.

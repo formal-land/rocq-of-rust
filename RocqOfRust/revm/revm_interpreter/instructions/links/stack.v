@@ -29,7 +29,6 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_pop.
 
@@ -51,8 +50,6 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_push0.
 
@@ -78,7 +75,6 @@ Proof.
   destruct run_Jumps_for_Bytecode.
   destruct run_Immediates_for_Bytecode.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt. }
 Defined.
 Global Opaque run_push.
 
@@ -102,7 +98,6 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt. }
 Defined.
 Global Opaque run_dup.
 
@@ -126,6 +121,5 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt. }
 Defined.
 Global Opaque run_swap.

@@ -81,14 +81,6 @@ Proof.
   ).
   destruct Impl_From_U256_for_FixedBytes_32.run.
   run_symbolic.
-  all: try eapply (@Impl_Interpreter.run_halt
-    WIRE _ WIRE_types _ run_InterpreterTypes_for_WIRE_copy).
-  all: try eapply (@Impl_Interpreter.run_halt_oog
-    WIRE _ WIRE_types _ run_InterpreterTypes_for_WIRE_copy).
-  all: try eapply (@Impl_Interpreter.run_halt_memory_oog
-    WIRE _ WIRE_types _ run_InterpreterTypes_for_WIRE_copy).
-  all: try eapply (@Impl_Interpreter.run_halt_underflow
-    WIRE _ WIRE_types _ run_InterpreterTypes_for_WIRE_copy).
   all: try eapply run_resize_memory.
   all: try exact run_MemoryTrait_for_Memory_copy.
   all: try eapply method_map0.(iterator.Iterator.run_map).

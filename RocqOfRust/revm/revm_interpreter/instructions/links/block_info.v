@@ -45,13 +45,11 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_Host_for_H.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
   { eapply (@Host.run_chain_id
       ('&mut H)
       _
       (@Impl_Host_for_RefMut.method_chain_id H _ method_chain_id)
       (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_chainid.
 
@@ -90,7 +88,6 @@ Proof.
       _
       (@Impl_Host_for_RefMut.method_beneficiary H _ method_beneficiary)
       (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_coinbase.
 
@@ -124,7 +121,6 @@ Proof.
       _
       (@Impl_Host_for_RefMut.method_timestamp H _ method_timestamp)
       (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_timestamp.
 
@@ -158,7 +154,6 @@ Proof.
       _
       (@Impl_Host_for_RefMut.method_block_number H _ method_block_number)
       (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_block_number.
 
@@ -203,13 +198,11 @@ Proof.
       _
       (@Impl_Host_for_RefMut.method_prevrandao H _ method_prevrandao)
       (Ref.cast_to Pointer.Kind.Ref sub_ref3)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
   { eapply (@Host.run_difficulty
       ('&mut H)
       _
       (@Impl_Host_for_RefMut.method_difficulty H _ method_difficulty)
       (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_difficulty.
 
@@ -243,7 +236,6 @@ Proof.
       _
       (@Impl_Host_for_RefMut.method_gas_limit H _ method_gas_limit)
       (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_gaslimit.
 
@@ -274,13 +266,11 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_Host_for_H.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
   { eapply (@Host.run_basefee
       ('&mut H)
       _
       (@Impl_Host_for_RefMut.method_basefee H _ method_basefee)
       (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_basefee.
 
@@ -311,12 +301,10 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_Host_for_H.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
   { eapply (@Host.run_blob_gasprice
       ('&mut H)
       _
       (@Impl_Host_for_RefMut.method_blob_gasprice H _ method_blob_gasprice)
       (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_blob_basefee.

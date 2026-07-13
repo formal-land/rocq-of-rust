@@ -62,9 +62,5 @@ Proof.
   all: try eapply Impl_Deref_for_StateLoad.run_deref.
   all: try eapply Impl_Gas.run_record_refund.
   all: try eapply run_SELFDESTRUCT_REFUND.
-  all: try eapply Impl_Interpreter.run_halt_oog.
-  all: try eapply Impl_Interpreter.run_halt_fatal.
-  all: try eapply Impl_Interpreter.run_halt.
-  all: try eapply Impl_Interpreter.run_halt_underflow.
 Defined.
 Global Opaque run_selfdestruct.

@@ -17,13 +17,27 @@ type variant = {
   payload : variant_payload;
 }
 
+type record_layout =
+  | StructRecord of string
+  | StructTuple of string
+  | Tuple
+
 type command =
   | EnumDecl of {
       path : string;
+      type_params : string list;
       variants : variant list;
     }
   | RecordDecl of {
+      layout : record_layout;
+      type_params : string list;
+      fields : field list;
+    }
+  | InterpreterTypesRecordDecl of {
       path : string;
+      type_params : string list;
+      interpreter_types_param : string;
+      use_value_type_args : bool;
       fields : field list;
     }
 
@@ -57,7 +71,13 @@ let validate_variant (variant : variant) : unit =
 
 let validate (command : command) : unit =
   match command with
-  | RecordDecl { fields; _ } -> validate_fields fields
-  | EnumDecl { variants; _ } ->
+  | RecordDecl { type_params; fields; _ } ->
+      validate_unique "type parameter" type_params;
+      validate_fields fields
+  | InterpreterTypesRecordDecl { type_params; interpreter_types_param; fields; _ } ->
+      validate_unique "type parameter" (interpreter_types_param :: type_params);
+      validate_fields fields
+  | EnumDecl { type_params; variants; _ } ->
+      validate_unique "type parameter" type_params;
       validate_unique "variant" (List.map (fun variant -> variant.name) variants);
       List.iter validate_variant variants

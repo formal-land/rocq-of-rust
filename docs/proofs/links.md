@@ -131,11 +131,49 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_add.
 ```
 
 `constructor` starts the `Run.Trait` proof, and `run_symbolic` symbolically
 executes the mechanically generated Rocq program. For this straight-line
 function, the tactic can discharge the proof automatically.
+
+### Extending function-link inference
+
+First rely on the default typeclass inference mechanism to find a function's
+`Run.Trait` instance. When that mechanism is not enough, for example when
+`run_symbolic` leaves the call as an unresolved `Run.Trait` goal and callers
+would otherwise need an explicit `eapply run_add`, register a targeted fallback
+in the `typeclass_instances` hint database:
+
+```coq
+#[export] Hint Extern 1
+  (Run.Trait Demo.add.add _ _ _ _) =>
+  eapply run_add : typeclass_instances.
+```
+
+Place this hint after the instance definition and its `Global Opaque`
+declaration. The pattern identifies the generated function being called while
+leaving its generic arguments, runtime arguments, and result type available
+for unification. Use `eapply`, rather than supplying all arguments explicitly,
+so Rocq can create the remaining obligations and infer them through typeclass
+search.
+
+`run_symbolic` uses the `typeclass_instances` database when it encounters a
+function call. With the exported hint in scope, a caller can therefore remain:
+
+```coq
+Proof.
+  constructor.
+  run_symbolic.
+Defined.
+```
+
+without a repeated proof step such as `eapply run_add`. This fallback is
+especially useful for shared helper links called from many instruction proofs,
+but it should not be added when default inference already succeeds. Keep the
+hint pattern specific to the generated function head; a catch-all hint for
+arbitrary `Run.Trait` goals can cause ambiguous search or loops.
 
 ## Simulation File
 

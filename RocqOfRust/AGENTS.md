@@ -74,7 +74,7 @@ This section overrides older notes below when they conflict.
 
 ## Log of tips (newest first)
 
-- Run `make jinja` to re-build all the Jinja generated files.
+- Use the links plugin for repetitive link type boilerplate.
 
 ## Directory Structure
 
@@ -387,7 +387,7 @@ Require Import core.ops.links.deref.  (* For Deref/DerefMut *)
 
 7. **Type paths**: The Rust path format is `crate_name::module::Type` with `::` separators.
 
-8. **Polymorphic types in Jinja templates**: Keep polymorphic types (like `ToUintError<T>`) manual in links files with comment `(* Note: ... is polymorphic, kept manually for now *)` rather than generating them with Jinja macros.
+8. **Polymorphic link types**: Use the links plugin generic commands when they support the type shape. If a polymorphic shape is not supported yet, keep it manual and note the blocker near the definition.
 
 ## Simulate Files
 
