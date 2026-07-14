@@ -16,7 +16,6 @@ core/net/ip_addr.v
 core/num/int_sqrt.v
 # Links that are not working yet
 move_sui/links/
-revm/revm_interpreter/links/instructions.v
 # We ignore the metering for now
 move_sui/simulations/move_bytecode_verifier_meter/lib.v
 # Because it does not change much right now and takes a long time to compile
