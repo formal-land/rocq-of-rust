@@ -25274,7 +25274,16 @@ Module fmt.
                               [
                                 fun γ =>
                                   ltac:(M.monadic
-                                    (M.read (|
+                                    (let _ :=
+                                      is_constant_or_break_match (|
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.lt,
+                                          [ M.read (| γ |); Value.Integer IntegerKind.Usize 10 ]
+                                        |),
+                                        Value.Bool true
+                                      |) in
+                                    M.read (|
                                       let~ _ : Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ] :=
                                         M.call_closure (|
                                           Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ],
@@ -25324,7 +25333,25 @@ Module fmt.
                                     |)));
                                 fun γ =>
                                   ltac:(M.monadic
-                                    (M.read (|
+                                    (let _ :=
+                                      is_constant_or_break_match (|
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.ge,
+                                          [ M.read (| γ |); Value.Integer IntegerKind.Usize 10 ]
+                                        |),
+                                        Value.Bool true
+                                      |) in
+                                    let _ :=
+                                      is_constant_or_break_match (|
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.lt,
+                                          [ M.read (| γ |); Value.Integer IntegerKind.Usize 100 ]
+                                        |),
+                                        Value.Bool true
+                                      |) in
+                                    M.read (|
                                       let~ _ : Ty.tuple [] :=
                                         M.read (|
                                           let~ _ : Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ] :=
@@ -29019,7 +29046,16 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (M.read (|
+                                  (let _ :=
+                                    is_constant_or_break_match (|
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.lt,
+                                        [ M.read (| γ |); Value.Integer IntegerKind.Usize 10 ]
+                                      |),
+                                      Value.Bool true
+                                    |) in
+                                  M.read (|
                                     let~ _ : Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ] :=
                                       M.call_closure (|
                                         Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ],
@@ -29068,7 +29104,25 @@ Module fmt.
                                   |)));
                               fun γ =>
                                 ltac:(M.monadic
-                                  (M.read (|
+                                  (let _ :=
+                                    is_constant_or_break_match (|
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.ge,
+                                        [ M.read (| γ |); Value.Integer IntegerKind.Usize 10 ]
+                                      |),
+                                      Value.Bool true
+                                    |) in
+                                  let _ :=
+                                    is_constant_or_break_match (|
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.lt,
+                                        [ M.read (| γ |); Value.Integer IntegerKind.Usize 100 ]
+                                      |),
+                                      Value.Bool true
+                                    |) in
+                                  M.read (|
                                     let~ _ : Ty.tuple [] :=
                                       M.read (|
                                         let~ _ : Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ] :=

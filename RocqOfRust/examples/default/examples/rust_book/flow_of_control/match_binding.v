@@ -103,6 +103,24 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               fun γ =>
                 ltac:(M.monadic
                   (let n := M.copy (| Ty.path "u32", γ |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 1 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 12 ]
+                      |),
+                      Value.Bool true
+                    |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
@@ -199,6 +217,24 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               fun γ =>
                 ltac:(M.monadic
                   (let n := M.copy (| Ty.path "u32", γ |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 13 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 19 ]
+                      |),
+                      Value.Bool true
+                    |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|

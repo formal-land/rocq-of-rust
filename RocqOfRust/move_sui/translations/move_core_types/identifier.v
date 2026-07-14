@@ -285,12 +285,48 @@ Module identifier.
                             (let γ := M.deref (| M.read (| γ |) |) in
                             let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                             let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                            let _ :=
+                              is_constant_or_break_match (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| γ1_0 |); Value.Integer IntegerKind.U8 97 ]
+                                |),
+                                Value.Bool true
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| γ1_0 |); Value.Integer IntegerKind.U8 122 ]
+                                |),
+                                Value.Bool true
+                              |) in
                             Value.Tuple []));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ := M.deref (| M.read (| γ |) |) in
                             let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                             let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                            let _ :=
+                              is_constant_or_break_match (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| γ1_0 |); Value.Integer IntegerKind.U8 65 ]
+                                |),
+                                Value.Bool true
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| γ1_0 |); Value.Integer IntegerKind.U8 90 ]
+                                |),
+                                Value.Bool true
+                              |) in
                             Value.Tuple []))
                       ],
                       fun γ =>

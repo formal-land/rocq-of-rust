@@ -685,6 +685,24 @@ Module wtf8.
               fun γ =>
                 ltac:(M.monadic
                   (let lead := M.copy (| Ty.path "u32", γ |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 55296 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 56319 ]
+                      |),
+                      Value.Bool true
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -731,6 +749,24 @@ Module wtf8.
               fun γ =>
                 ltac:(M.monadic
                   (let trail := M.copy (| Ty.path "u32", γ |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 56320 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 57343 ]
+                      |),
+                      Value.Bool true
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -777,7 +813,25 @@ Module wtf8.
             [
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple "core::option::Option::None" [] [ Ty.path "char" ] []));
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 55296 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 57343 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.StructTuple "core::option::Option::None" [] [ Ty.path "char" ] []));
               fun γ =>
                 ltac:(M.monadic
                   (let valid := M.copy (| Ty.path "u32", γ |) in
@@ -2919,6 +2973,24 @@ Module wtf8.
               fun γ =>
                 ltac:(M.monadic
                   (let ascii_byte := M.copy (| Ty.path "u8", γ |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 0 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 127 ]
+                      |),
+                      Value.Bool true
+                    |) in
                   M.read (| ascii_byte |)));
               fun γ => ltac:(M.monadic (Value.Integer IntegerKind.U8 255))
             ]
@@ -3951,6 +4023,24 @@ Module wtf8.
                       Value.Integer IntegerKind.U8 237
                     |) in
                   let b2 := M.copy (| Ty.path "u8", γ0_rev1 |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ0_rev1 |); Value.Integer IntegerKind.U8 160 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ0_rev1 |); Value.Integer IntegerKind.U8 175 ]
+                      |),
+                      Value.Bool true
+                    |) in
                   let b3 := M.copy (| Ty.path "u8", γ0_rev2 |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -4010,6 +4100,24 @@ Module wtf8.
                       Value.Integer IntegerKind.U8 237
                     |) in
                   let b2 := M.copy (| Ty.path "u8", γ0_1 |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ0_1 |); Value.Integer IntegerKind.U8 176 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ0_1 |); Value.Integer IntegerKind.U8 191 ]
+                      |),
+                      Value.Bool true
+                    |) in
                   let b3 := M.copy (| Ty.path "u8", γ0_2 |) in
                   Value.StructTuple
                     "core::option::Option::Some"

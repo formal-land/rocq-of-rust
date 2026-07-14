@@ -1037,6 +1037,24 @@ Module signature.
                 fun γ =>
                   ltac:(M.monadic
                     (let value := M.copy (| Ty.path "u64", γ |) in
+                    let _ :=
+                      is_constant_or_break_match (|
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.ge,
+                          [ M.read (| γ |); Value.Integer IntegerKind.U64 35 ]
+                        |),
+                        Value.Bool true
+                      |) in
+                    let _ :=
+                      is_constant_or_break_match (|
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.le,
+                          [ M.read (| γ |); Value.Integer IntegerKind.U64 18446744073709551615 ]
+                        |),
+                        Value.Bool true
+                      |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
                       []
@@ -1121,6 +1139,15 @@ Module signature.
                         0
                       |) in
                     let~ v : Ty.path "u64" := M.read (| γ0_0 |) in
+                    let _ :=
+                      is_constant_or_break_match (|
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.ge,
+                          [ M.read (| γ0_0 |); Value.Integer IntegerKind.U64 35 ]
+                        |),
+                        Value.Bool true
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.match_operator (|
@@ -1285,6 +1312,24 @@ Module signature.
                         0
                       |) in
                     let v := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                    let _ :=
+                      is_constant_or_break_match (|
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.ge,
+                          [ M.read (| γ1_0 |); Value.Integer IntegerKind.U64 0 ]
+                        |),
+                        Value.Bool true
+                      |) in
+                    let _ :=
+                      is_constant_or_break_match (|
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.le,
+                          [ M.read (| γ1_0 |); Value.Integer IntegerKind.U64 34 ]
+                        |),
+                        Value.Bool true
+                      |) in
                     M.call_closure (|
                       Ty.path "bool",
                       BinOp.eq,
@@ -1657,6 +1702,24 @@ Module signature.
                         0
                       |) in
                     let v := M.copy (| Ty.path "u64", γ0_0 |) in
+                    let _ :=
+                      is_constant_or_break_match (|
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.ge,
+                          [ M.read (| γ0_0 |); Value.Integer IntegerKind.U64 1 ]
+                        |),
+                        Value.Bool true
+                      |) in
+                    let _ :=
+                      is_constant_or_break_match (|
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.le,
+                          [ M.read (| γ0_0 |); Value.Integer IntegerKind.U64 34 ]
+                        |),
+                        Value.Bool true
+                      |) in
                     Value.StructTuple
                       "alloy_primitives::signature::parity::Parity::Eip155"
                       []
@@ -1713,6 +1776,15 @@ Module signature.
                         0
                       |) in
                     let v := M.copy (| Ty.path "u64", γ0_0 |) in
+                    let _ :=
+                      is_constant_or_break_match (|
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.ge,
+                          [ M.read (| γ0_0 |); Value.Integer IntegerKind.U64 35 ]
+                        |),
+                        Value.Bool true
+                      |) in
                     Value.StructTuple
                       "alloy_primitives::signature::parity::Parity::Eip155"
                       []

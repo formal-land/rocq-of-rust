@@ -11685,7 +11685,25 @@ Module collections.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.Tuple
+                        (let _ :=
+                          is_constant_or_break_match (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.ge,
+                              [ M.read (| γ |); Value.Integer IntegerKind.Usize 0 ]
+                            |),
+                            Value.Bool true
+                          |) in
+                        let _ :=
+                          is_constant_or_break_match (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.lt,
+                              [ M.read (| γ |); Value.Integer IntegerKind.Usize 5 ]
+                            |),
+                            Value.Bool true
+                          |) in
+                        Value.Tuple
                           [
                             M.call_closure (|
                               Ty.path "usize",

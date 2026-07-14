@@ -1,8 +1,0 @@
-warning: Ranges in patterns are not yet supported.
-  --> examples/rust_book/flow_of_control/match.rs:13:9
-   |
-13 |         13..=19 => println!("A teen"),
-   |         ^^^^^^^
-
-warning: 1 warning emitted
-

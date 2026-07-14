@@ -2671,9 +2671,42 @@ Module char.
             Ty.path "usize",
             code,
             [
-              fun γ => ltac:(M.monadic (Value.Integer IntegerKind.Usize 1));
-              fun γ => ltac:(M.monadic (Value.Integer IntegerKind.Usize 2));
-              fun γ => ltac:(M.monadic (Value.Integer IntegerKind.Usize 3));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.lt,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 128 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.Integer IntegerKind.Usize 1));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.lt,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 2048 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.Integer IntegerKind.Usize 2));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.lt,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U32 65536 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.Integer IntegerKind.Usize 3));
               fun γ => ltac:(M.monadic (Value.Integer IntegerKind.Usize 4))
             ]
           |)))

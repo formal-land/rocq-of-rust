@@ -207,7 +207,18 @@ Module signature.
                               Value.Integer IntegerKind.U64 28
                             |) in
                           Value.Tuple []));
-                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U64 35 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          Value.Tuple []))
                     ],
                     fun γ =>
                       ltac:(M.monadic
@@ -250,7 +261,25 @@ Module signature.
             [
               fun γ =>
                 ltac:(M.monadic
-                  (M.cast
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U64 0 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U64 26 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  M.cast
                     (Ty.path "u8")
                     (M.call_closure (|
                       Ty.path "u64",
@@ -259,7 +288,25 @@ Module signature.
                     |))));
               fun γ =>
                 ltac:(M.monadic
-                  (M.cast
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U64 27 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U64 34 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  M.cast
                     (Ty.path "u8")
                     (M.call_closure (|
                       Ty.path "u64",
@@ -275,7 +322,16 @@ Module signature.
                     |))));
               fun γ =>
                 ltac:(M.monadic
-                  (M.cast
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U64 35 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  M.cast
                     (Ty.path "u8")
                     (M.call_closure (|
                       Ty.path "u64",
