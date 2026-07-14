@@ -1,6 +1,9 @@
 Require Import links.RocqOfRust.
 Require Import core.links.array.
 Require Import revm.revm_bytecode.links.opcode.
+Require Import revm.revm_interpreter.instructions.arithmetic.
+Require Import revm.revm_interpreter.instructions.control.
+Require Import revm.revm_interpreter.instructions.host.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
@@ -8,9 +11,101 @@ Require Import revm.revm_interpreter.instructions.links.control.unknown.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.links.host.balance.
 Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.links.table.
 Require Import revm.revm_interpreter.instructions.
+
+Definition instruction_table_discriminant
+    {WIRE H : Set} `{Link WIRE} `{Link H} :
+    PolymorphicFunction.t :=
+  fun ε τ α =>
+    match ε, τ, α with
+    | [], [], [] =>
+      let table_ty :=
+        Ty.apply
+          (Ty.path "array")
+          [ Value.Integer IntegerKind.Usize 256 ]
+          [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ Φ WIRE; Φ H ] ] in
+      LowM.Let table_ty
+        (instructions.instruction_table_impl [] [ Φ WIRE; Φ H ] [])
+        (fun table =>
+          match table with
+          | inl table => M.alloc table_ty table
+          | inr error => LowM.Pure (inr error)
+          end)
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+
+Global Instance Instance_IsFunction_instruction_table_discriminant
+    {WIRE H : Set} `{Link WIRE} `{Link H} :
+  M.IsFunction.C
+    "revm_interpreter::instructions::instruction_table_discriminant"
+    (@instruction_table_discriminant WIRE H _ _).
+Admitted.
+
+Lemma run_instruction_table_impl_for_discriminant
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types) :
+  {{
+    instructions.instruction_table_impl [] [ Φ WIRE; Φ H ] []
+    🔽
+    '* (array.t (Instruction.t WIRE H WIRE_types) {| Integer.value := 256 |}),
+    array.t (Instruction.t WIRE H WIRE_types) {| Integer.value := 256 |}
+  }}.
+Admitted.
+
+Instance run_instruction_table_discriminant
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types) :
+  Run.Trait
+    (@instruction_table_discriminant WIRE H _ _)
+    [] [] []
+    ('* (array.t (Instruction.t WIRE H WIRE_types) {| Integer.value := 256 |})).
+Proof.
+  constructor.
+  change (instruction_table_discriminant [] [] []) with
+    (let table_ty :=
+      Ty.apply
+        (Ty.path "array")
+        [ Value.Integer IntegerKind.Usize 256 ]
+        [ Ty.apply (Ty.path "revm_interpreter::instructions::Instruction") [] [ Φ WIRE; Φ H ] ] in
+    LowM.Let table_ty
+      (instructions.instruction_table_impl [] [ Φ WIRE; Φ H ] [])
+      (fun table =>
+        match table with
+        | inl table => M.alloc table_ty table
+        | inr error => LowM.Pure (inr error)
+        end)).
+  unshelve eapply Run.Let.
+  { eapply array.of_ty with (length := {| Integer.value := 256 |}).
+    { reflexivity. }
+    {
+      pose (wire_of_ty := @OfTy.Make (Φ WIRE) WIRE H0 eq_refl).
+      pose (host_of_ty := @OfTy.Make (Φ H) H H1 eq_refl).
+      exact (Instruction.of_ty
+        (Φ WIRE) (Φ H) wire_of_ty host_of_ty run_InterpreterTypes_for_WIRE).
+    }
+  }
+  {
+    change
+      {{
+        instructions.instruction_table_impl [] [ Φ WIRE; Φ H ] [] 🔽
+        '* (array.t (Instruction.t WIRE H WIRE_types) {| Integer.value := 256 |}),
+        array.t (Instruction.t WIRE H WIRE_types) {| Integer.value := 256 |}
+      }}.
+    exact (run_instruction_table_impl_for_discriminant
+      (WIRE := WIRE)
+      (H := H)
+      (WIRE_types := WIRE_types)
+      run_InterpreterTypes_for_WIRE).
+  }
+  { cbn.
+    intros [table | []]; run_symbolic. }
+Defined.
+Global Opaque run_instruction_table_discriminant.
 
 (*
 pub const fn instruction_table<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -29,52 +124,6 @@ Instance run_instruction_table
 Proof.
   constructor.
   run_symbolic; cbn.
-  { change (Value.Closure _) with
-      (φ (Function2.of_run (run_unknown (H := H) run_InterpreterTypes_for_WIRE))).
-    set (F := Function2.t _ _ _).
-    now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
-  }
-  { (* unknown *)
-    eapply Run.Rewrite. {
-      exact (array.repeat_φ_eq 256 _).
-    }
-    run_symbolic.
-  }
-  { change (Value.Closure _) with
-      (φ (Function2.of_run (run_stop (H := H) run_InterpreterTypes_for_WIRE))).
-    set (F := Function2.t _ _ _).
-    now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
-  }
-  { change (Value.Closure _) with
-      (φ (Function2.of_run (run_add (H := H) run_InterpreterTypes_for_WIRE))).
-    set (F := Function2.t _ _ _).
-    now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
-  }
-  { change (Value.Closure _) with
-      (φ (Function2.of_run (run_balance run_InterpreterTypes_for_WIRE run_Host_for_H))).
-    set (F := Function2.t _ _ _).
-    now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
-  }
+  { typeclasses eauto. }
 Defined.
 Global Opaque run_instruction_table.
-
-(*
-pub const fn instruction<WIRE: InterpreterTypes, H: Host + ?Sized>(
-    opcode: u8,
-)
-*)
-Instance run_instruction
-    {WIRE H : Set} `{Link WIRE} `{Link H}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (run_Host_for_H : Host.Run H H_types)
-    (opcode : u8) :
-  Run.Trait
-    instructions.instruction [] [ Φ WIRE; Φ H ] [ φ opcode ]
-    (Instruction.t WIRE H WIRE_types).
-Proof.
-  constructor.
-  run_symbolic.
-Defined.
-Global Opaque run_instruction.
