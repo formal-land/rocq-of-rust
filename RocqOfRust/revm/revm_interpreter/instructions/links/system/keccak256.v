@@ -49,11 +49,5 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   destruct (Impl_AsRef_for_Slice.run u8).
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
-  { eapply Impl_Interpreter.run_halt. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt. }
-  { eapply Impl_Interpreter.run_halt_memory_oog. }
 Defined.
 Global Opaque run_keccak256.

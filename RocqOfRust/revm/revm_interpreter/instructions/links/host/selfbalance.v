@@ -53,8 +53,5 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_Host_for_H.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
-  { eapply Impl_Interpreter.run_halt_overflow. }
-  { eapply Impl_Interpreter.run_halt_fatal. }
 Defined.
 Global Opaque run_selfbalance.

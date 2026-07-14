@@ -50,7 +50,6 @@ Proof.
       _
       (@Impl_Host_for_RefMut.method_effective_gas_price H _ method_effective_gas_price)
       (Ref.cast_to Pointer.Kind.Ref sub_ref1)). }
-  { eapply Impl_Interpreter.run_halt_overflow. }
   Unshelve.
   all: try typeclasses eauto.
 Defined.

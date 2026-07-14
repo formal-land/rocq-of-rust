@@ -1,4 +1,5 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.bytes.links.mod.
@@ -83,7 +84,7 @@ Module TestHost.
 
   Definition block_number (self : t) :
       aliases.U256.t * t :=
-    (Impl_Uint.ZERO, Make).
+    ({| Uint.value := 1 |}, Make).
 
   Definition host_timestamp (self : t) :
       aliases.U256.t * t :=
@@ -107,7 +108,7 @@ Module TestHost.
 
   Definition host_effective_gas_price (self : t) :
       aliases.U256.t * t :=
-    (Impl_Uint.ZERO, Make).
+    ({| Uint.value := 42 |}, Make).
 
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
@@ -126,7 +127,7 @@ Module TestHost.
     (None, Make).
 
   Definition code_hash (self : t) (_address : Address.t) :
-      option (Eip7702CodeLoad.t aliases.B256.t) * t :=
+      option (@Eip7702CodeLoad.t aliases.B256.t (FixedBytes.IsLink {| Integer.value := 32 |})) * t :=
     (None, Make).
 
   Definition sload (self : t) (_address : Address.t) (_index : aliases.U256.t) :
@@ -399,7 +400,7 @@ Module TestHostWithAccount.
 
   Definition block_number (self : t) :
       aliases.U256.t * t :=
-    (Impl_Uint.ZERO, Make).
+    ({| Uint.value := 1 |}, Make).
 
   Definition host_timestamp (self : t) :
       aliases.U256.t * t :=
@@ -423,7 +424,7 @@ Module TestHostWithAccount.
 
   Definition host_effective_gas_price (self : t) :
       aliases.U256.t * t :=
-    (Impl_Uint.ZERO, Make).
+    ({| Uint.value := 42 |}, Make).
 
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
@@ -442,7 +443,7 @@ Module TestHostWithAccount.
     (None, Make).
 
   Definition code_hash (self : t) (_address : Address.t) :
-      option (Eip7702CodeLoad.t aliases.B256.t) * t :=
+      option (@Eip7702CodeLoad.t aliases.B256.t (FixedBytes.IsLink {| Integer.value := 32 |})) * t :=
     (None, Make).
 
   Definition sload (self : t) (_address : Address.t) (_index : aliases.U256.t) :

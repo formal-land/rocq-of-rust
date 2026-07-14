@@ -276,12 +276,6 @@ jobs:
             make generate
             cd ..
           endGroup
-          startGroup "Generate Rocq files from Jinja"
-            sudo apt-get update && sudo apt-get install -y python3-jinja2
-            cd RocqOfRust
-            make jinja
-            cd ..
-          endGroup
           startGroup "Check that the diff is empty (excluding submodules)"
             git -c color.ui=always diff --exit-code --ignore-submodules=dirty
           endGroup

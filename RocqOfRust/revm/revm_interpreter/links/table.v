@@ -1,19 +1,114 @@
 Require Import links.RocqOfRust.
+Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter_Interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 
 (*
-pub type Instruction<W, H> = for<'a> fn(&'a mut Interpreter<W>, &'a mut H);
+pub struct Instruction<W, H> {
+    fn_: fn(InstructionContext<'_, H, W>),
+    static_gas: u64,
+}
 *)
 Module Instruction.
-  Definition t
+  Record t
       (W H : Set) `{Link W} `{Link H}
       (W_types : InterpreterTypes.Types.t) `{InterpreterTypes.Types.AreLinks W_types} :
-      Set :=
-    Function2.t
-      ('&mut (Interpreter.t W W_types))
-      ('&mut H)
-      unit.
+      Set := {
+    fn_ : Function1.t (InstructionContext.t H W W_types) unit;
+    static_gas : u64;
+  }.
+  Arguments t _ _ {_ _} _ {_}.
+
+  Global Instance IsLink
+      (W H : Set) `{Link W} `{Link H}
+      (W_types : InterpreterTypes.Types.t) `{InterpreterTypes.Types.AreLinks W_types} :
+      Link (t W H W_types) := {
+    Φ := Ty.apply
+      (Ty.path "revm_interpreter::instructions::Instruction")
+      []
+      [Φ W; Φ H];
+    φ x :=
+      let '{| fn_ := fn_; static_gas := static_gas |} := x in
+      Value.StructRecord
+        "revm_interpreter::instructions::Instruction"
+        []
+        [Φ W; Φ H]
+        [
+          ("fn_", φ fn_);
+          ("static_gas", φ static_gas)
+        ];
+  }.
+
+  Definition of_ty
+      (wire host : Ty.t)
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (wire_of_ty : OfTy.t wire)
+      (host_of_ty : OfTy.t host) :
+    InterpreterTypes.Run (OfTy.get_Set wire_of_ty) WIRE_types ->
+    OfTy.t
+      (Ty.apply
+        (Ty.path "revm_interpreter::instructions::Instruction")
+        []
+        [wire; host]).
+  Proof.
+    intros.
+    destruct wire_of_ty as [WireT].
+    destruct host_of_ty as [HostT].
+    eapply OfTy.Make with (A := t WireT HostT WIRE_types).
+    subst.
+    reflexivity.
+  Defined.
+  Smpl Add (unshelve eapply of_ty; [smpl of_ty | smpl of_ty | auto]) : of_ty.
+
+  Module SubPointer.
+    Definition get_fn
+        {W H : Set} `{Link W} `{Link H}
+        {W_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks W_types} :
+      SubPointer.Runner.t
+        (t W H W_types)
+        (Pointer.Index.StructRecord
+          "revm_interpreter::instructions::Instruction"
+          "fn_") :=
+      {|
+        SubPointer.Runner.projection x :=
+          let '{| fn_ := fn_ |} := x in Some fn_;
+        SubPointer.Runner.injection x y :=
+          let '{| static_gas := static_gas |} := x in
+          Some {| fn_ := y; static_gas := static_gas |};
+      |}.
+
+    Lemma get_fn_is_valid
+        {W H : Set} `{Link W} `{Link H}
+        {W_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks W_types} :
+      SubPointer.Runner.Valid.t
+        (get_fn (W := W) (H := H) (W_types := W_types)).
+    Proof. now constructor. Qed.
+    Smpl Add apply get_fn_is_valid : run_sub_pointer.
+
+    Definition get_static_gas
+        {W H : Set} `{Link W} `{Link H}
+        {W_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks W_types} :
+      SubPointer.Runner.t
+        (t W H W_types)
+        (Pointer.Index.StructRecord
+          "revm_interpreter::instructions::Instruction"
+          "static_gas") :=
+      {|
+        SubPointer.Runner.projection x :=
+          let '{| static_gas := static_gas |} := x in Some static_gas;
+        SubPointer.Runner.injection x y :=
+          let '{| fn_ := fn_ |} := x in
+          Some {| fn_ := fn_; static_gas := y |};
+      |}.
+
+    Lemma get_static_gas_is_valid
+        {W H : Set} `{Link W} `{Link H}
+        {W_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks W_types} :
+      SubPointer.Runner.Valid.t
+        (get_static_gas (W := W) (H := H) (W_types := W_types)).
+    Proof. now constructor. Qed.
+    Smpl Add apply get_static_gas_is_valid : run_sub_pointer.
+  End SubPointer.
 End Instruction.
 
 (*

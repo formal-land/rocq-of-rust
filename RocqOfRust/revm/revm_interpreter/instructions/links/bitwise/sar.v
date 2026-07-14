@@ -35,7 +35,5 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_bitwise_sar.

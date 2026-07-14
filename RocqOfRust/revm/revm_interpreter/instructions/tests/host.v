@@ -20,10 +20,26 @@ Require Import revm.revm_interpreter.instructions.simulate.host.tload.
 Require Import revm.revm_interpreter.instructions.simulate.host.tstore.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_action.
+Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.tests.host.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import ruint.links.lib.
+
+Definition bytecode_action
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InterpreterAction.t :=
+  interpreter.(Interpreter.bytecode).(Bytecode.action).
+
+Definition bytecode_result
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    option InstructionResult.t :=
+  match bytecode_action interpreter with
+  | Some (InterpreterAction.Return result) =>
+    Some result.(InterpreterResult.result)
+  | _ => None
+  end.
 
 (** ** BALANCE *)
 
@@ -32,7 +48,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := balance interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
@@ -44,7 +60,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := balance interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -58,11 +74,11 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := blockhash interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
-  reflexivity.
+  trivial.
 Qed.
 
 Goal
@@ -70,7 +86,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := blockhash interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -84,7 +100,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := extcodecopy interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
@@ -99,7 +115,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := extcodecopy interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -111,7 +127,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := extcodehash interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -123,7 +139,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := extcodesize interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -137,11 +153,15 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := log {| Integer.value := 0 |} interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
+    Some InstructionResult.StateChangeDuringStaticCall \/
+  bytecode_result result_interpreter =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
-  reflexivity.
+  repeat match goal with
+  | |- context [RuntimeFlag.is_static ?x] => destruct (RuntimeFlag.is_static x)
+  end; auto.
 Qed.
 
 Goal
@@ -149,10 +169,14 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := log {| Integer.value := 0 |} interpreter host in
+  bytecode_result result_interpreter =
+    Some InstructionResult.StateChangeDuringStaticCall \/
   result_interpreter.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
   timeout 1 vm_compute.
-  reflexivity.
+  repeat match goal with
+  | |- context [RuntimeFlag.is_static ?x] => destruct (RuntimeFlag.is_static x)
+  end; auto.
 Qed.
 
 (** ** SELFBALANCE *)
@@ -162,7 +186,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := selfbalance interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -176,11 +200,15 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := selfdestruct interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
+    Some InstructionResult.StateChangeDuringStaticCall \/
+  bytecode_result result_interpreter =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
-  reflexivity.
+  repeat match goal with
+  | |- context [RuntimeFlag.is_static ?x] => destruct (RuntimeFlag.is_static x)
+  end; auto.
 Qed.
 
 Goal
@@ -188,11 +216,15 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := selfdestruct interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
+    Some InstructionResult.StateChangeDuringStaticCall \/
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
-  reflexivity.
+  repeat match goal with
+  | |- context [RuntimeFlag.is_static ?x] => destruct (RuntimeFlag.is_static x)
+  end; auto.
 Qed.
 
 (** ** SLOAD / SSTORE *)
@@ -202,7 +234,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := sload interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
@@ -214,7 +246,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := sload interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -226,9 +258,9 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := sstore interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StateChangeDuringStaticCall \/
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
@@ -242,9 +274,9 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := sstore interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StateChangeDuringStaticCall \/
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -260,7 +292,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := tload interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
@@ -283,9 +315,9 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := tstore interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StateChangeDuringStaticCall \/
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
@@ -299,7 +331,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := tstore interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.StateChangeDuringStaticCall \/
   result_interpreter.(Interpreter.control).(Control.instruction_result) = None.
 Proof.

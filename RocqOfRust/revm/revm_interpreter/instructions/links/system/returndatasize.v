@@ -51,7 +51,5 @@ Proof.
   destruct alloy_primitives.bytes.links.mod.Impl_Deref_for_Bytes.run.
   destruct bytes.Impl_Deref_for_Bytes.run.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
-  { eapply Impl_Interpreter.run_halt_overflow. }
 Defined.
 Global Opaque run_returndatasize.

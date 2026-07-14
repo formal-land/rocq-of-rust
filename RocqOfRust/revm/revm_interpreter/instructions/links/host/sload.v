@@ -51,11 +51,5 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_Host_for_H.
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_underflow. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_oog. }
-  { eapply Impl_Interpreter.run_halt_fatal. }
-  { eapply Impl_Interpreter.run_halt_fatal. }
 Defined.
 Global Opaque run_sload.

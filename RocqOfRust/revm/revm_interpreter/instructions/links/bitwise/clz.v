@@ -35,7 +35,5 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct (TryFrom_usize_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
-  { eapply Impl_Interpreter.run_halt_not_activated. }
-  { eapply Impl_Interpreter.run_halt_underflow. }
 Defined.
 Global Opaque run_bitwise_clz.
