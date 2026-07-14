@@ -1544,7 +1544,34 @@ Module processor.
                                                         γ,
                                                         [
                                                           fun γ =>
-                                                            ltac:(M.monadic (Value.Tuple []));
+                                                            ltac:(M.monadic
+                                                              (let _ :=
+                                                                is_constant_or_break_match (|
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.ge,
+                                                                    [
+                                                                      M.read (| γ |);
+                                                                      Value.Integer IntegerKind.U8 4
+                                                                    ]
+                                                                  |),
+                                                                  Value.Bool true
+                                                                |) in
+                                                              let _ :=
+                                                                is_constant_or_break_match (|
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.le,
+                                                                    [
+                                                                      M.read (| γ |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U8
+                                                                        13
+                                                                    ]
+                                                                  |),
+                                                                  Value.Bool true
+                                                                |) in
+                                                              Value.Tuple []));
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let _ :=

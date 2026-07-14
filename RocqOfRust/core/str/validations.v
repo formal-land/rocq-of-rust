@@ -1750,6 +1750,38 @@ Module str.
                                                                                     IntegerKind.U8
                                                                                     224
                                                                                 |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        160
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        191
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
                                                                               Value.Tuple []));
                                                                           fun γ =>
                                                                             ltac:(M.monadic
@@ -1762,6 +1794,70 @@ Module str.
                                                                                 M.SubPointer.get_tuple_field (|
                                                                                   γ,
                                                                                   1
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_0
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        225
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_0
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        236
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        128
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        191
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
                                                                                 |) in
                                                                               Value.Tuple []));
                                                                           fun γ =>
@@ -1783,6 +1879,38 @@ Module str.
                                                                                     IntegerKind.U8
                                                                                     237
                                                                                 |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        128
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        159
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
                                                                               Value.Tuple []));
                                                                           fun γ =>
                                                                             ltac:(M.monadic
@@ -1795,6 +1923,70 @@ Module str.
                                                                                 M.SubPointer.get_tuple_field (|
                                                                                   γ,
                                                                                   1
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_0
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        238
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_0
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        239
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        128
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        191
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
                                                                                 |) in
                                                                               Value.Tuple []))
                                                                         ],
@@ -2185,6 +2377,38 @@ Module str.
                                                                                     IntegerKind.U8
                                                                                     240
                                                                                 |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        144
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        191
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
                                                                               Value.Tuple []));
                                                                           fun γ =>
                                                                             ltac:(M.monadic
@@ -2197,6 +2421,70 @@ Module str.
                                                                                 M.SubPointer.get_tuple_field (|
                                                                                   γ,
                                                                                   1
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_0
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        241
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_0
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        243
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        128
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        191
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
                                                                                 |) in
                                                                               Value.Tuple []));
                                                                           fun γ =>
@@ -2217,6 +2505,38 @@ Module str.
                                                                                   Value.Integer
                                                                                     IntegerKind.U8
                                                                                     244
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        128
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
+                                                                                |) in
+                                                                              let _ :=
+                                                                                is_constant_or_break_match (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.le,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        γ0_1
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.U8
+                                                                                        143
+                                                                                    ]
+                                                                                  |),
+                                                                                  Value.Bool true
                                                                                 |) in
                                                                               Value.Tuple []))
                                                                         ],

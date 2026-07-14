@@ -7217,6 +7217,24 @@ Module net.
                                 M.read (| γ0_0 |),
                                 Value.Integer IntegerKind.U16 16383
                               |) in
+                            let _ :=
+                              is_constant_or_break_match (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| γ0_1 |); Value.Integer IntegerKind.U16 0 ]
+                                |),
+                                Value.Bool true
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| γ0_1 |); Value.Integer IntegerKind.U16 4095 ]
+                                |),
+                                Value.Bool true
+                              |) in
                             Value.Tuple []))
                       ],
                       fun γ =>
