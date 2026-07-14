@@ -7,6 +7,40 @@ use rustc_middle::thir::{Pat, PatKind};
 use rustc_type_ir::TyKind;
 use std::rc::Rc;
 
+fn compile_literal<'a>(
+    ty: rustc_middle::ty::Ty<'a>,
+    valtree: rustc_middle::ty::ValTree<'a>,
+) -> Option<Rc<Literal>> {
+    match &ty.kind() {
+        rustc_middle::ty::TyKind::Int(int_ty) => {
+            let uint_value = valtree.try_to_scalar_int().unwrap();
+            let int_value = uint_value.to_int(uint_value.size());
+
+            Some(Rc::new(Literal::Integer(LiteralInteger {
+                kind: capitalize(&format!("{int_ty:?}")),
+                negative_sign: int_value < 0,
+                // This also handles the absolute value of the minimal i128.
+                value: int_value.unsigned_abs(),
+            })))
+        }
+        rustc_middle::ty::TyKind::Uint(uint_ty) => {
+            let uint_value = valtree.try_to_scalar_int().unwrap();
+
+            Some(Rc::new(Literal::Integer(LiteralInteger {
+                kind: capitalize(&format!("{uint_ty:?}")),
+                negative_sign: false,
+                value: uint_value.to_bits(uint_value.size()),
+            })))
+        }
+        rustc_middle::ty::TyKind::Char => {
+            let char_value = char::from_u32(valtree.try_to_scalar_int().unwrap().to_u32()).unwrap();
+
+            Some(Rc::new(Literal::Char(char_value)))
+        }
+        _ => None,
+    }
+}
+
 pub(crate) fn compile_pattern<'a>(
     env: &Env<'a>,
     generics: &'a rustc_middle::ty::Generics,
@@ -129,46 +163,13 @@ pub(crate) fn compile_pattern<'a>(
                     ))));
                 }
                 // And for the rest...
-                match &ty.kind() {
-                    rustc_middle::ty::TyKind::Int(int_ty) => {
-                        let uint_value = value.valtree.try_to_scalar_int().unwrap();
-                        let int_value = uint_value.to_int(uint_value.size());
-
-                        return Rc::new(Pattern::Literal(Rc::new(Literal::Integer(
-                            LiteralInteger {
-                                kind: capitalize(&format!("{int_ty:?}")),
-                                negative_sign: int_value < 0,
-                                // The `unsigned_abs` method is necessary to get the minimal int128's
-                                // absolute value.
-                                value: int_value.unsigned_abs(),
-                            },
-                        ))));
-                    }
-                    rustc_middle::ty::TyKind::Uint(uint_ty) => {
-                        let uint_value = value.valtree.try_to_scalar_int().unwrap();
-
-                        return Rc::new(Pattern::Literal(Rc::new(Literal::Integer(
-                            LiteralInteger {
-                                kind: capitalize(&format!("{uint_ty:?}")),
-                                negative_sign: false,
-                                value: uint_value.to_bits(uint_value.size()),
-                            },
-                        ))));
-                    }
-                    rustc_middle::ty::TyKind::Bool => {
-                        let bool_value = value.try_to_bool().unwrap();
-
-                        return Rc::new(Pattern::Literal(Rc::new(Literal::Bool(bool_value))));
-                    }
-                    rustc_middle::ty::TyKind::Char => {
-                        let char_value =
-                            char::from_u32(value.valtree.try_to_scalar_int().unwrap().to_u32())
-                                .unwrap();
-
-                        return Rc::new(Pattern::Literal(Rc::new(Literal::Char(char_value))));
-                    }
-                    // TODO: handle other kinds of constants
-                    _ => {}
+                if let rustc_middle::ty::TyKind::Bool = ty.kind() {
+                    return Rc::new(Pattern::Literal(Rc::new(Literal::Bool(
+                        value.try_to_bool().unwrap(),
+                    ))));
+                }
+                if let Some(literal) = compile_literal(ty, value.valtree) {
+                    return Rc::new(Pattern::Literal(literal));
                 }
             }
             emit_warning_with_note(
@@ -180,15 +181,80 @@ pub(crate) fn compile_pattern<'a>(
 
             Rc::new(Pattern::Wild)
         }
-        PatKind::Range(_) => {
-            emit_warning_with_note(
-                env,
-                &pat.span,
-                "Ranges in patterns are not yet supported.",
-                None,
-            );
+        PatKind::Range(range) => {
+            if !matches!(
+                range.ty.kind(),
+                rustc_middle::ty::TyKind::Int(_) | rustc_middle::ty::TyKind::Uint(_)
+            ) {
+                emit_warning_with_note(
+                    env,
+                    &pat.span,
+                    "Only integer ranges in patterns are currently supported.",
+                    None,
+                );
 
-            Rc::new(Pattern::Wild)
+                return Rc::new(Pattern::Wild);
+            }
+            let lower_bound = match range.lo {
+                rustc_middle::thir::PatRangeBoundary::NegInfinity => None,
+                rustc_middle::thir::PatRangeBoundary::Finite(value) => {
+                    let Some(literal) = compile_literal(range.ty, value) else {
+                        emit_warning_with_note(
+                            env,
+                            &pat.span,
+                            "This kind of lower range bound is not yet supported.",
+                            None,
+                        );
+
+                        return Rc::new(Pattern::Wild);
+                    };
+
+                    Some(literal)
+                }
+                rustc_middle::thir::PatRangeBoundary::PosInfinity => {
+                    emit_warning_with_note(
+                        env,
+                        &pat.span,
+                        "Unexpected positive infinity as a lower range bound.",
+                        None,
+                    );
+
+                    return Rc::new(Pattern::Wild);
+                }
+            };
+            let upper_bound = match range.hi {
+                rustc_middle::thir::PatRangeBoundary::PosInfinity => None,
+                rustc_middle::thir::PatRangeBoundary::Finite(value) => {
+                    let Some(literal) = compile_literal(range.ty, value) else {
+                        emit_warning_with_note(
+                            env,
+                            &pat.span,
+                            "This kind of upper range bound is not yet supported.",
+                            None,
+                        );
+
+                        return Rc::new(Pattern::Wild);
+                    };
+
+                    Some(literal)
+                }
+                rustc_middle::thir::PatRangeBoundary::NegInfinity => {
+                    emit_warning_with_note(
+                        env,
+                        &pat.span,
+                        "Unexpected negative infinity as an upper range bound.",
+                        None,
+                    );
+
+                    return Rc::new(Pattern::Wild);
+                }
+            };
+
+            Rc::new(Pattern::Range {
+                lower_bound,
+                upper_bound,
+                is_inclusive: range.end == rustc_hir::RangeEnd::Included,
+            })
         }
         PatKind::Slice {
             prefix,

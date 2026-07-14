@@ -69800,8 +69800,48 @@ Module num.
                   (M.find_or_pattern (Ty.tuple []) (|
                     γ,
                     [
-                      fun γ => ltac:(M.monadic (Value.Tuple []));
-                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 65 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 90 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 97 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 122 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          Value.Tuple []))
                     ],
                     fun γ =>
                       ltac:(M.monadic
@@ -69835,7 +69875,27 @@ Module num.
             Ty.path "bool",
             M.deref (| M.read (| self |) |),
             [
-              fun γ => ltac:(M.monadic (Value.Bool true));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 65 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 90 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.Bool true));
               fun γ => ltac:(M.monadic (Value.Bool false))
             ]
           |)))
@@ -69861,7 +69921,27 @@ Module num.
             Ty.path "bool",
             M.deref (| M.read (| self |) |),
             [
-              fun γ => ltac:(M.monadic (Value.Bool true));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 97 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 122 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.Bool true));
               fun γ => ltac:(M.monadic (Value.Bool false))
             ]
           |)))
@@ -69895,7 +69975,27 @@ Module num.
                     Ty.path "bool",
                     M.deref (| M.read (| self |) |),
                     [
-                      fun γ => ltac:(M.monadic (Value.Bool true));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 48 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 57 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          Value.Bool true));
                       fun γ => ltac:(M.monadic (Value.Bool false))
                     ]
                   |);
@@ -69903,7 +70003,27 @@ Module num.
                     Ty.path "bool",
                     M.deref (| M.read (| self |) |),
                     [
-                      fun γ => ltac:(M.monadic (Value.Bool true));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 65 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 90 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          Value.Bool true));
                       fun γ => ltac:(M.monadic (Value.Bool false))
                     ]
                   |)
@@ -69913,7 +70033,27 @@ Module num.
                 Ty.path "bool",
                 M.deref (| M.read (| self |) |),
                 [
-                  fun γ => ltac:(M.monadic (Value.Bool true));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let _ :=
+                        is_constant_or_break_match (|
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.ge,
+                            [ M.read (| γ |); Value.Integer IntegerKind.U8 97 ]
+                          |),
+                          Value.Bool true
+                        |) in
+                      let _ :=
+                        is_constant_or_break_match (|
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.le,
+                            [ M.read (| γ |); Value.Integer IntegerKind.U8 122 ]
+                          |),
+                          Value.Bool true
+                        |) in
+                      Value.Bool true));
                   fun γ => ltac:(M.monadic (Value.Bool false))
                 ]
               |)
@@ -69941,7 +70081,27 @@ Module num.
             Ty.path "bool",
             M.deref (| M.read (| self |) |),
             [
-              fun γ => ltac:(M.monadic (Value.Bool true));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 48 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 57 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.Bool true));
               fun γ => ltac:(M.monadic (Value.Bool false))
             ]
           |)))
@@ -69967,7 +70127,27 @@ Module num.
             Ty.path "bool",
             M.deref (| M.read (| self |) |),
             [
-              fun γ => ltac:(M.monadic (Value.Bool true));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 48 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 55 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.Bool true));
               fun γ => ltac:(M.monadic (Value.Bool false))
             ]
           |)))
@@ -70001,7 +70181,27 @@ Module num.
                     Ty.path "bool",
                     M.deref (| M.read (| self |) |),
                     [
-                      fun γ => ltac:(M.monadic (Value.Bool true));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 48 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 57 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          Value.Bool true));
                       fun γ => ltac:(M.monadic (Value.Bool false))
                     ]
                   |);
@@ -70009,7 +70209,27 @@ Module num.
                     Ty.path "bool",
                     M.deref (| M.read (| self |) |),
                     [
-                      fun γ => ltac:(M.monadic (Value.Bool true));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 65 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 70 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          Value.Bool true));
                       fun γ => ltac:(M.monadic (Value.Bool false))
                     ]
                   |)
@@ -70019,7 +70239,27 @@ Module num.
                 Ty.path "bool",
                 M.deref (| M.read (| self |) |),
                 [
-                  fun γ => ltac:(M.monadic (Value.Bool true));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let _ :=
+                        is_constant_or_break_match (|
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.ge,
+                            [ M.read (| γ |); Value.Integer IntegerKind.U8 97 ]
+                          |),
+                          Value.Bool true
+                        |) in
+                      let _ :=
+                        is_constant_or_break_match (|
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.le,
+                            [ M.read (| γ |); Value.Integer IntegerKind.U8 102 ]
+                          |),
+                          Value.Bool true
+                        |) in
+                      Value.Bool true));
                   fun γ => ltac:(M.monadic (Value.Bool false))
                 ]
               |)
@@ -70062,7 +70302,27 @@ Module num.
                         Ty.path "bool",
                         M.deref (| M.read (| self |) |),
                         [
-                          fun γ => ltac:(M.monadic (Value.Bool true));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let _ :=
+                                is_constant_or_break_match (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.ge,
+                                    [ M.read (| γ |); Value.Integer IntegerKind.U8 33 ]
+                                  |),
+                                  Value.Bool true
+                                |) in
+                              let _ :=
+                                is_constant_or_break_match (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.le,
+                                    [ M.read (| γ |); Value.Integer IntegerKind.U8 47 ]
+                                  |),
+                                  Value.Bool true
+                                |) in
+                              Value.Bool true));
                           fun γ => ltac:(M.monadic (Value.Bool false))
                         ]
                       |);
@@ -70070,7 +70330,27 @@ Module num.
                         Ty.path "bool",
                         M.deref (| M.read (| self |) |),
                         [
-                          fun γ => ltac:(M.monadic (Value.Bool true));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let _ :=
+                                is_constant_or_break_match (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.ge,
+                                    [ M.read (| γ |); Value.Integer IntegerKind.U8 58 ]
+                                  |),
+                                  Value.Bool true
+                                |) in
+                              let _ :=
+                                is_constant_or_break_match (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.le,
+                                    [ M.read (| γ |); Value.Integer IntegerKind.U8 64 ]
+                                  |),
+                                  Value.Bool true
+                                |) in
+                              Value.Bool true));
                           fun γ => ltac:(M.monadic (Value.Bool false))
                         ]
                       |)
@@ -70080,7 +70360,27 @@ Module num.
                     Ty.path "bool",
                     M.deref (| M.read (| self |) |),
                     [
-                      fun γ => ltac:(M.monadic (Value.Bool true));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 91 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 96 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          Value.Bool true));
                       fun γ => ltac:(M.monadic (Value.Bool false))
                     ]
                   |)
@@ -70090,7 +70390,27 @@ Module num.
                 Ty.path "bool",
                 M.deref (| M.read (| self |) |),
                 [
-                  fun γ => ltac:(M.monadic (Value.Bool true));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let _ :=
+                        is_constant_or_break_match (|
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.ge,
+                            [ M.read (| γ |); Value.Integer IntegerKind.U8 123 ]
+                          |),
+                          Value.Bool true
+                        |) in
+                      let _ :=
+                        is_constant_or_break_match (|
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.le,
+                            [ M.read (| γ |); Value.Integer IntegerKind.U8 126 ]
+                          |),
+                          Value.Bool true
+                        |) in
+                      Value.Bool true));
                   fun γ => ltac:(M.monadic (Value.Bool false))
                 ]
               |)
@@ -70118,7 +70438,27 @@ Module num.
             Ty.path "bool",
             M.deref (| M.read (| self |) |),
             [
-              fun γ => ltac:(M.monadic (Value.Bool true));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 33 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U8 126 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.Bool true));
               fun γ => ltac:(M.monadic (Value.Bool false))
             ]
           |)))
@@ -70227,7 +70567,27 @@ Module num.
                   (M.find_or_pattern (Ty.tuple []) (|
                     γ,
                     [
-                      fun γ => ltac:(M.monadic (Value.Tuple []));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 0 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.le,
+                                [ M.read (| γ |); Value.Integer IntegerKind.U8 31 ]
+                              |),
+                              Value.Bool true
+                            |) in
+                          Value.Tuple []));
                       fun γ =>
                         ltac:(M.monadic
                           (let _ :=
@@ -80341,7 +80701,27 @@ Module num.
             Ty.path "bool",
             self,
             [
-              fun γ => ltac:(M.monadic (Value.Bool true));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.ge,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U16 55296 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  let _ :=
+                    is_constant_or_break_match (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ M.read (| γ |); Value.Integer IntegerKind.U16 57343 ]
+                      |),
+                      Value.Bool true
+                    |) in
+                  Value.Bool true));
               fun γ => ltac:(M.monadic (Value.Bool false))
             ]
           |)))

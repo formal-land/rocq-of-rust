@@ -685,8 +685,60 @@ Module escape.
                                         (M.find_or_pattern (Ty.tuple []) (|
                                           γ,
                                           [
-                                            fun γ => ltac:(M.monadic (Value.Tuple []));
-                                            fun γ => ltac:(M.monadic (Value.Tuple []))
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let _ :=
+                                                  is_constant_or_break_match (|
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.ge,
+                                                      [
+                                                        M.read (| γ |);
+                                                        Value.Integer IntegerKind.U8 0
+                                                      ]
+                                                    |),
+                                                    Value.Bool true
+                                                  |) in
+                                                let _ :=
+                                                  is_constant_or_break_match (|
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.le,
+                                                      [
+                                                        M.read (| γ |);
+                                                        Value.Integer IntegerKind.U8 31
+                                                      ]
+                                                    |),
+                                                    Value.Bool true
+                                                  |) in
+                                                Value.Tuple []));
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let _ :=
+                                                  is_constant_or_break_match (|
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.ge,
+                                                      [
+                                                        M.read (| γ |);
+                                                        Value.Integer IntegerKind.U8 127
+                                                      ]
+                                                    |),
+                                                    Value.Bool true
+                                                  |) in
+                                                let _ :=
+                                                  is_constant_or_break_match (|
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.le,
+                                                      [
+                                                        M.read (| γ |);
+                                                        Value.Integer IntegerKind.U8 255
+                                                      ]
+                                                    |),
+                                                    Value.Bool true
+                                                  |) in
+                                                Value.Tuple []))
                                           ],
                                           fun γ =>
                                             ltac:(M.monadic
