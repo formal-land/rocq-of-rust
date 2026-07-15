@@ -21,16 +21,16 @@ Definition run_choose_and_add : Translated.Execution.t :=
     runtime
     100
     (choose_and_add
-      nil
-      nil
-      (cons
-        (Value.Bool true)
-        (cons
-          (Value.Tuple
-            (cons
-              (Value.Integer IntegerKind.U32 10)
-              (cons (Value.Integer IntegerKind.U32 20) nil)))
-          (cons (Value.Integer IntegerKind.U32 5) nil)))).
+      []
+      []
+      [
+        Value.Bool true;
+        Value.Tuple [
+          Value.Integer IntegerKind.U32 10;
+          Value.Integer IntegerKind.U32 20
+        ];
+        Value.Integer IntegerKind.U32 5
+      ]).
 
 Definition run_choose_and_add_is_15 : bool :=
   match run_choose_and_add with
