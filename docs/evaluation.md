@@ -7,15 +7,16 @@ evaluation layers.
 ## Generated code
 
 The generated code has type `M` and is the closest representation to the Rust
-source. Evaluating it directly would test the translation before linking, but
-the evaluator would need executable resolution for types, functions, associated
-functions, and trait methods.
+source. Evaluating it directly would test the translation before linking. Type
+resolution can be avoided, but the evaluator would still need executable
+resolution for functions, associated functions, and trait methods.
 
 ## Linked code without mutable stack access
 
-The evaluator in [`M.v`](M.v) runs the typed `LinkM` representation produced by
-`links.M.evaluate`. It uses fuel for recursive calls and currently handles the
-cases needed by the [`add_one` test](../examples/default/examples/custom/evaluate/add_one.v).
+The evaluator in [`M.v`](../RocqOfRust/evaluate/M.v) runs the typed `LinkM`
+representation produced by `links.M.evaluate`. It uses fuel for recursive calls
+and currently handles the cases needed by the
+[`add_one` test](../RocqOfRust/examples/default/examples/custom/evaluate/add_one.v).
 
 This evaluator returns `Unsupported` for operations that require mutable stack
 access. `Stack.t` is heterogeneous, so reading or writing a mutable reference
@@ -39,5 +40,7 @@ corresponding `_eq` lemma connects that model to the linked translation.
 
 An executable Rocq evaluator or simulate definition can be extracted to OCaml.
 This may provide faster execution and easier integration with an external test
-runner, but it still depends on first choosing and completing the Rocq
-evaluation layer.
+runner. OCaml is also more expressive and supports side effects, which could be
+used to implement name and trait resolution outside Rocq. This can be an
+advantage for evaluation methods that require these resolutions, but extraction
+still depends on first choosing and completing the Rocq evaluation layer.
