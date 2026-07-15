@@ -34,7 +34,9 @@ Module Evaluate.
             )).
           }
         }
-        { exact Execution.Unsupported. }
+        { (* Mutable references require access evidence for the heterogeneous stack. *)
+          exact Execution.Unsupported.
+        }
       }
       { exact Execution.Unsupported. }
       { exact (@eval fuel R Output (k (SubPointer.Runner.apply ref_core runner)) stack). }
