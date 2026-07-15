@@ -1,5 +1,6 @@
 .PHONY: all clean clean-util distclean default watch generate plugin plugin-inline-print-check \
-	evaluate-translated-add-one
+	evaluate-translated-examples evaluate-translated-add-one \
+	evaluate-translated-choose-and-add
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 PLUGIN_INLINE_PRINT_TEST := plugin/test_inline_print.v
@@ -13,6 +14,9 @@ PLUGIN_ML := plugin/link_model.ml plugin/link_render.ml plugin/rocqofrust_link_p
 TRANSLATED_ADD_ONE_VO := examples/default/examples/custom/evaluate/translated_add_one.vo
 TRANSLATED_ADD_ONE_EXTRACTED := evaluate/extracted/translated_add_one
 TRANSLATED_ADD_ONE_BINARY := /tmp/rocqofrust-translated-add-one
+TRANSLATED_CHOOSE_AND_ADD_VO := examples/default/examples/custom/evaluate/translated_choose_and_add.vo
+TRANSLATED_CHOOSE_AND_ADD_EXTRACTED := evaluate/extracted/translated_choose_and_add
+TRANSLATED_CHOOSE_AND_ADD_BINARY := /tmp/rocqofrust-translated-choose-and-add
 
 default: all
 
@@ -26,6 +30,8 @@ plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PR
 	@echo "COQC plugin inline print $(PLUGIN_INLINE_PRINT_TEST)"
 	@coqc -R . RocqOfRust -I plugin -impredicative-set $(PLUGIN_INLINE_PRINT_TEST) > $(PLUGIN_INLINE_PRINT_OUTPUT)
 	@diff -u $(PLUGIN_INLINE_PRINT_EXPECTED) $(PLUGIN_INLINE_PRINT_OUTPUT)
+
+evaluate-translated-examples: evaluate-translated-add-one evaluate-translated-choose-and-add
 
 evaluate-translated-add-one: $(TRANSLATED_ADD_ONE_VO)
 	coqc -R . RocqOfRust -I plugin -impredicative-set \
@@ -41,6 +47,21 @@ evaluate-translated-add-one: $(TRANSLATED_ADD_ONE_VO)
 		-o $(TRANSLATED_ADD_ONE_BINARY)
 	@$(TRANSLATED_ADD_ONE_BINARY)
 	@echo "Translated add_one(41) evaluated to 42."
+
+evaluate-translated-choose-and-add: $(TRANSLATED_CHOOSE_AND_ADD_VO)
+	coqc -R . RocqOfRust -I plugin -impredicative-set \
+		examples/default/examples/custom/evaluate/translated_choose_and_add.v
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+		-c $(TRANSLATED_CHOOSE_AND_ADD_EXTRACTED).mli
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+		-I evaluate/extracted \
+		-c $(TRANSLATED_CHOOSE_AND_ADD_EXTRACTED).ml
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel -linkpkg \
+		-I evaluate/extracted \
+		$(TRANSLATED_CHOOSE_AND_ADD_EXTRACTED).cmx \
+		-o $(TRANSLATED_CHOOSE_AND_ADD_BINARY)
+	@$(TRANSLATED_CHOOSE_AND_ADD_BINARY)
+	@echo "Translated choose_and_add(true, (10, 20), 5) evaluated to 15."
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.

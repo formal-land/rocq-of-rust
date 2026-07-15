@@ -1,15 +1,11 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import evaluate.translated.
+Require Import evaluate.ocaml.
 Require Import examples.default.examples.custom.add_one.
-
-From Stdlib Require Import extraction.Extraction.
-From Stdlib Require Import extraction.ExtrOcamlBasic.
-From Stdlib Require Import extraction.ExtrOcamlNatInt.
-From Stdlib Require Import extraction.ExtrOcamlZInt.
-From Stdlib Require Import extraction.ExtrOCamlPString.
 
 Definition run_add_one : Translated.Execution.t :=
   Translated.Evaluate.eval
+    Translated.Runtime.empty
     20
     (add_one
       nil
@@ -27,16 +23,6 @@ Parameter assert_true : bool -> unit.
 Definition main : unit :=
   assert_true run_add_one_is_42.
 
-Extraction Language OCaml.
-
-Extract Constant Ty.t => "unit".
-Extract Constant Ty.path => "(fun _ -> ())".
-Extract Constant Translated.Evaluate.closure_body =>
-  "(fun value ->
-    match value with
-    | Value.Closure (ExistS (_, body)) ->
-      Some ((Obj.magic body : Value.t list -> m))
-    | _ -> None)".
 Extract Constant assert_true =>
   "(fun value -> if value then () else failwith ""expected add_one(41) = 42"")".
 
