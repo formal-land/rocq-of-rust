@@ -990,10 +990,10 @@ Module Impl_erc721_Erc721.
   *)
   Definition balance_of_or_zero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ self; of ] =>
+    | [], [], [ self; of_ ] =>
       ltac:(M.monadic
         (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ], self |) in
-        let of := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ], of |) in
+        let of_ := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ], of_ |) in
         M.call_closure (|
           Ty.path "u32",
           M.get_associated_function (|
@@ -1023,7 +1023,7 @@ Module Impl_erc721_Erc721.
                     "owned_tokens_count"
                   |)
                 |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| of |) |) |)
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| of_ |) |) |)
               ]
             |);
             M.read (| M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 0 |)) |)
