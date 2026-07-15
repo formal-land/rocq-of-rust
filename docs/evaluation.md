@@ -11,6 +11,14 @@ source. Evaluating it directly would test the translation before linking. Type
 resolution can be avoided, but the evaluator would still need executable
 resolution for functions, associated functions, and trait methods.
 
+The experimental evaluator in
+[`translated.v`](../RocqOfRust/evaluate/translated.v) can be extracted to OCaml.
+The command `make evaluate-translated-add-one`, run from the `RocqOfRust`
+directory, checks that the generated translation of `add_one` evaluates to `42`
+on input `41`. This first experiment handles immediate allocation and reading,
+closure calls, lets, tuple matching, and conditionals. Mutation and name or
+trait resolution are not handled yet.
+
 ## Linked code without mutable stack access
 
 The evaluator in [`M.v`](../RocqOfRust/evaluate/M.v) runs the typed `LinkM`

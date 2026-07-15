@@ -1,4 +1,5 @@
-.PHONY: all clean clean-util distclean default watch generate plugin plugin-inline-print-check
+.PHONY: all clean clean-util distclean default watch generate plugin plugin-inline-print-check \
+	evaluate-translated-add-one
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 PLUGIN_INLINE_PRINT_TEST := plugin/test_inline_print.v
@@ -8,6 +9,10 @@ PLUGIN_INLINE_PRINT_OUTPUT := /tmp/rocqofrust-plugin-inline-print.out
 PLUGIN_PACKAGES := \
 	rocq-runtime.clib,rocq-runtime.config,rocq-runtime.engine,rocq-runtime.interp,rocq-runtime.kernel,rocq-runtime.lib,rocq-runtime.library,rocq-runtime.parsing,rocq-runtime.pretyping,rocq-runtime.printing,rocq-runtime.proofs,rocq-runtime.tactics,rocq-runtime.vernac
 PLUGIN_ML := plugin/link_model.ml plugin/link_render.ml plugin/rocqofrust_link_plugin.ml
+
+TRANSLATED_ADD_ONE_VO := examples/default/examples/custom/evaluate/translated_add_one.vo
+TRANSLATED_ADD_ONE_EXTRACTED := evaluate/extracted/translated_add_one
+TRANSLATED_ADD_ONE_BINARY := /tmp/rocqofrust-translated-add-one
 
 default: all
 
@@ -21,6 +26,21 @@ plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PR
 	@echo "COQC plugin inline print $(PLUGIN_INLINE_PRINT_TEST)"
 	@coqc -R . RocqOfRust -I plugin -impredicative-set $(PLUGIN_INLINE_PRINT_TEST) > $(PLUGIN_INLINE_PRINT_OUTPUT)
 	@diff -u $(PLUGIN_INLINE_PRINT_EXPECTED) $(PLUGIN_INLINE_PRINT_OUTPUT)
+
+evaluate-translated-add-one: $(TRANSLATED_ADD_ONE_VO)
+	coqc -R . RocqOfRust -I plugin -impredicative-set \
+		examples/default/examples/custom/evaluate/translated_add_one.v
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+		-c $(TRANSLATED_ADD_ONE_EXTRACTED).mli
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+		-I evaluate/extracted \
+		-c $(TRANSLATED_ADD_ONE_EXTRACTED).ml
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel -linkpkg \
+		-I evaluate/extracted \
+		$(TRANSLATED_ADD_ONE_EXTRACTED).cmx \
+		-o $(TRANSLATED_ADD_ONE_BINARY)
+	@$(TRANSLATED_ADD_ONE_BINARY)
+	@echo "Translated add_one(41) evaluated to 42."
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.
