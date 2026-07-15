@@ -34,6 +34,7 @@ impl Callbacks for ToRocq {
         let crate::options::Options {
             axiomatize,
             with_json,
+            with_function_table,
             ..
         } = self.opts;
 
@@ -43,7 +44,13 @@ impl Callbacks for ToRocq {
         println!("Compiling crate {current_crate_name_string:}");
 
         let crate_name = current_crate_name_string.clone();
-        let translation = translate_top_level(&tcx, TopLevelOptions { axiomatize });
+        let translation = translate_top_level(
+            &tcx,
+            TopLevelOptions {
+                axiomatize,
+                with_function_table,
+            },
+        );
 
         let mut file = File::create(format!("{crate_name}.v")).unwrap();
         let index_content = get_index_rocq_file_content(translation.keys().cloned().collect());

@@ -8,6 +8,7 @@ pub struct CliOptions {
     pub path: path::PathBuf,
     pub output: path::PathBuf,
     pub axiomatize: bool,
+    pub with_function_table: bool,
 }
 
 pub const LINE_WIDTH: usize = 80;
@@ -109,6 +110,7 @@ fn create_translation_to_rocq(opts: &CliOptions) -> String {
 
     struct TranslateSingleFile {
         axiomatize: bool,
+        with_function_table: bool,
         translation: Option<std::collections::HashMap<String, (String, String)>>,
     }
 
@@ -122,6 +124,7 @@ fn create_translation_to_rocq(opts: &CliOptions) -> String {
                 &tcx,
                 TopLevelOptions {
                     axiomatize: self.axiomatize,
+                    with_function_table: self.with_function_table,
                 },
             ));
             rustc_driver::Compilation::Stop
@@ -130,6 +133,7 @@ fn create_translation_to_rocq(opts: &CliOptions) -> String {
 
     let mut callbacks = TranslateSingleFile {
         axiomatize: opts.axiomatize,
+        with_function_table: opts.with_function_table,
         translation: None,
     };
     let args = vec![

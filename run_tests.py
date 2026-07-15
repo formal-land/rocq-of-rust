@@ -14,6 +14,10 @@ import shlex
 
 test_folder = "examples"
 
+function_table_files = {
+    "examples/custom/choose_and_add.rs",
+}
+
 # For each file recursively in the test folder
 rs_files = []
 for root, _dirs, files in os.walk(test_folder):
@@ -41,6 +45,8 @@ def compile_with_option(file: str, output_path: str, is_axiomatized: bool):
     ]
     if is_axiomatized:
         command.append("--axiomatize")
+    if not is_axiomatized and file in function_table_files:
+        command.append("--with-function-table")
     command += ["--output-path", output_path]
     print(
         " ".join(shlex.quote(arg) for arg in command)

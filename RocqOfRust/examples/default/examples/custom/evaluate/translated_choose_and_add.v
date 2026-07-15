@@ -3,18 +3,8 @@ Require Import evaluate.translated.
 Require Import evaluate.ocaml.
 Require Import examples.default.examples.custom.choose_and_add.
 
-Definition resolve_function
-    (path : string)
-    (_ : list Value.t)
-    (_ : list Ty.t) :
-    option PolymorphicFunction.t :=
-  match PrimString.compare path "choose_and_add::choose_u32" with
-  | Eq => Some choose_u32
-  | _ => None
-  end.
-
 Definition runtime : Translated.Runtime.t :=
-  {| Translated.Runtime.get_function := resolve_function |}.
+  Translated.Runtime.of_function_table function_table.
 
 Definition run_choose_and_add : Translated.Execution.t :=
   Translated.Evaluate.eval

@@ -98,3 +98,10 @@ Global Instance Instance_IsFunction_choose_and_add :
   M.IsFunction.C "choose_and_add::choose_and_add" choose_and_add.
 Admitted.
 Global Typeclasses Opaque choose_and_add.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("choose_and_add::choose_u32", choose_u32);
+    ("choose_and_add::add_pair", add_pair);
+    ("choose_and_add::choose_and_add", choose_and_add)
+  ].

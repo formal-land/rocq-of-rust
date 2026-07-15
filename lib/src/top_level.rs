@@ -20,8 +20,10 @@ use std::rc::Rc;
 use std::string::ToString;
 use std::vec;
 
+#[derive(Clone, Copy)]
 pub(crate) struct TopLevelOptions {
     pub(crate) axiomatize: bool,
+    pub(crate) with_function_table: bool,
 }
 
 #[derive(Debug)]
@@ -1254,7 +1256,10 @@ pub(crate) fn translate_top_level(
         .map(|(file_name, top_level)| {
             (
                 file_name,
-                (top_level.to_pretty(LINE_WIDTH), top_level.to_json()),
+                (
+                    top_level.to_pretty(LINE_WIDTH, opts.with_function_table),
+                    top_level.to_json(),
+                ),
             )
         })
         .collect()
@@ -1855,7 +1860,7 @@ impl TopLevelItem {
             TopLevelItem::Module { name, body } => {
                 vec![Rc::new(rocq::TopLevelItem::Module(rocq::Module::new(
                     name,
-                    body.to_rocq(),
+                    body.to_rocq(false),
                 )))]
             }
             TopLevelItem::TypeAlias {
@@ -2387,20 +2392,75 @@ impl TopLevelItem {
 }
 
 impl TopLevel {
-    fn to_rocq(&self) -> Rc<rocq::TopLevel> {
-        rocq::TopLevel::new(
-            &itertools::Itertools::intersperse(
-                self.0.iter().map(|item| item.item.to_rocq()),
-                vec![Rc::new(rocq::TopLevelItem::Line)],
-            )
-            .flatten()
-            .collect_vec(),
-        )
+    fn function_table_entries(&self, module_path: &[String]) -> Vec<(String, Rc<Path>)> {
+        self.0
+            .iter()
+            .flat_map(|entry| match entry.item.as_ref() {
+                TopLevelItem::Const { name, path, .. }
+                | TopLevelItem::Definition { name, path, .. } => {
+                    let mut rocq_path = module_path.to_vec();
+                    rocq_path.push(name.clone());
+
+                    vec![(path.to_string(), Path::new(&rocq_path))]
+                }
+                TopLevelItem::Module { name, body } => {
+                    let mut nested_module_path = module_path.to_vec();
+                    nested_module_path.push(name.clone());
+                    body.function_table_entries(&nested_module_path)
+                }
+                _ => vec![],
+            })
+            .collect()
     }
 
-    pub fn to_pretty(&self, width: usize) -> String {
+    fn function_table_to_rocq(&self) -> Rc<rocq::TopLevelItem> {
+        let entries = self
+            .function_table_entries(&[])
+            .into_iter()
+            .map(|(rust_path, rocq_path)| {
+                Rc::new(rocq::Expression::Tuple(vec![
+                    Rc::new(rocq::Expression::String(rust_path)),
+                    Rc::new(rocq::Expression::Variable {
+                        ident: rocq_path,
+                        no_implicit: false,
+                    }),
+                ]))
+            })
+            .collect();
+        let entry_type = rocq::Expression::multiply(
+            rocq::Expression::just_name("string"),
+            rocq::Expression::just_name("PolymorphicFunction.t"),
+        );
+
+        Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
+            "function_table",
+            Rc::new(rocq::DefinitionKind::Alias {
+                args: vec![],
+                ty: Some(rocq::Expression::just_name("list").apply(entry_type)),
+                body: Rc::new(rocq::Expression::List { exprs: entries }),
+            }),
+        )))
+    }
+
+    fn to_rocq(&self, with_function_table: bool) -> Rc<rocq::TopLevel> {
+        let mut items = itertools::Itertools::intersperse(
+            self.0.iter().map(|item| item.item.to_rocq()),
+            vec![Rc::new(rocq::TopLevelItem::Line)],
+        )
+        .flatten()
+        .collect_vec();
+
+        if with_function_table {
+            items.push(Rc::new(rocq::TopLevelItem::Line));
+            items.push(self.function_table_to_rocq());
+        }
+
+        rocq::TopLevel::new(&items)
+    }
+
+    pub fn to_pretty(&self, width: usize, with_function_table: bool) -> String {
         let mut w = Vec::new();
-        self.to_rocq()
+        self.to_rocq(with_function_table)
             .to_doc(&pretty::Arena::new())
             .render(width, &mut w)
             .unwrap();

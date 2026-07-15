@@ -19,6 +19,11 @@ Module Translated.
 
     Definition empty : t :=
       {| get_function := fun _ _ _ => None |}.
+
+    Definition of_function_table
+        (functions : list (string * PolymorphicFunction.t)) :
+        t :=
+      {| get_function := fun path _ _ => List.assoc functions path |}.
   End Runtime.
 
   Module Evaluate.
