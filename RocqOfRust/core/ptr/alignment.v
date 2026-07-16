@@ -243,7 +243,7 @@ Module ptr.
               const { Alignment::new(align_of::<T>()).unwrap() }
           }
       *)
-      Definition of (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition of_ (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [ T ], [] =>
           ltac:(M.monadic
@@ -256,9 +256,9 @@ Module ptr.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_of : M.IsAssociatedFunction.C Self "of" of.
+      Global Instance AssociatedFunction_of : M.IsAssociatedFunction.C Self "of" of_.
       Admitted.
-      Global Typeclasses Opaque of.
+      Global Typeclasses Opaque of_.
       
       (*
           pub const fn new(align: usize) -> Option<Self> {

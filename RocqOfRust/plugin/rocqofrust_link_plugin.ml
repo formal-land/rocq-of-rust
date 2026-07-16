@@ -1,4 +1,4 @@
-let () : unit = Mltop.add_known_module "rocqofrust_link_plugin"
+let () : unit = Rocqofrust_plugin_compat.register_known_module "rocqofrust_link_plugin"
 
 open Procq
 open Stdarg
@@ -20,7 +20,7 @@ let string_of_id (id : Names.Id.t) : string = Names.Id.to_string id
 let string_of_constr_expr (expr : Constrexpr.constr_expr) : string =
   let env = Global.env () in
   let sigma = Evd.from_env env in
-  Pp.string_of_ppcmds (Ppconstr.pr_constr_expr env sigma expr)
+  Pp.string_of_ppcmds (Rocqofrust_plugin_compat.pr_constr_expr env sigma expr)
 
 let user_err (message : string) : 'a = CErrors.user_err (Pp.str message)
 
@@ -29,7 +29,7 @@ let convert_error (f : 'a -> 'b) (x : 'a) : 'b =
   | Link_model.Error message -> user_err message
 
 let token (s : string) : ('a, Gramlib.Grammar.norec, string) Procq.Symbol.t =
-  Symbol.token (terminal s)
+  Symbol.token (Rocqofrust_plugin_compat.terminal s)
 
 (* Separators are generic grammar symbols.  Their phantom result type is fixed
    by the list parser that consumes them. *)
@@ -70,7 +70,7 @@ let pr_type_params (type_params : string list) : Pp.t =
 (* Field grammar: [name : type]. *)
 let (wit_link_field, link_field) :
     Link_model.field Genarg.vernac_genarg_type * Link_model.field Procq.Entry.t =
-  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_field"
+  Rocqofrust_plugin_compat.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_field"
     {
       Vernacextend.arg_parsing =
         Vernacextend.Arg_rules
@@ -92,14 +92,14 @@ let (wit_link_field, link_field) :
 (* Shared grammar for semicolon-separated field lists without delimiters. *)
 let (wit_link_fields, link_fields) :
     Link_model.field list Genarg.vernac_genarg_type * Link_model.field list Procq.Entry.t =
-  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_fields"
+  Rocqofrust_plugin_compat.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_fields"
     {
       Vernacextend.arg_parsing =
         Vernacextend.Arg_rules
           [
             Production.make
               (Rule.next_norec Rule.stop
-                 (Symbol.list1sep (Symbol.nterm link_field) semi true))
+                 (Rocqofrust_plugin_compat.symbol_list1sep (Symbol.nterm link_field) semi))
               (fun fields _loc -> fields);
           ];
       arg_printer =
@@ -109,7 +109,7 @@ let (wit_link_fields, link_fields) :
 
 let (wit_link_type_params, link_type_params) :
     string list Genarg.vernac_genarg_type * string list Procq.Entry.t =
-  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_type_params"
+  Rocqofrust_plugin_compat.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_type_params"
     {
       Vernacextend.arg_parsing =
         Vernacextend.Arg_rules
@@ -118,7 +118,7 @@ let (wit_link_type_params, link_type_params) :
               (Rule.next
                  (Rule.next
                     (Rule.next Rule.stop (token "["))
-                    (Symbol.list1sep (Symbol.nterm Prim.ident) comma_type_param true))
+                    (Rocqofrust_plugin_compat.symbol_list1sep (Symbol.nterm Prim.ident) comma_type_param))
                  (token "]"))
               (fun _ params _ _loc -> List.map string_of_id params);
           ];
@@ -127,7 +127,7 @@ let (wit_link_type_params, link_type_params) :
 
 let (wit_link_ident, link_ident) :
     Names.Id.t Genarg.vernac_genarg_type * Names.Id.t Procq.Entry.t =
-  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_ident"
+  Rocqofrust_plugin_compat.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_ident"
     {
       Vernacextend.arg_parsing =
         Vernacextend.Arg_rules
@@ -153,7 +153,7 @@ let fields_between
 
 let (wit_link_record_fields, link_record_fields) :
     Link_model.field list Genarg.vernac_genarg_type * Link_model.field list Procq.Entry.t =
-  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_record_fields"
+  Rocqofrust_plugin_compat.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_record_fields"
     {
       Vernacextend.arg_parsing =
         Vernacextend.Arg_rules [ fields_between "{" "}" ];
@@ -164,7 +164,7 @@ let (wit_link_record_fields, link_record_fields) :
    declarations convenient in both record-like and tuple-like styles. *)
 let (wit_link_tuple_fields, link_tuple_fields) :
     Link_model.field list Genarg.vernac_genarg_type * Link_model.field list Procq.Entry.t =
-  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_tuple_fields"
+  Rocqofrust_plugin_compat.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_tuple_fields"
     {
       Vernacextend.arg_parsing =
         Vernacextend.Arg_rules
@@ -173,14 +173,14 @@ let (wit_link_tuple_fields, link_tuple_fields) :
               (Rule.next
                  (Rule.next
                     (Rule.next Rule.stop (token "("))
-                    (Symbol.list1sep (Symbol.nterm link_field) semi true))
+                    (Rocqofrust_plugin_compat.symbol_list1sep (Symbol.nterm link_field) semi))
                  (token ")"))
               (fun _ fields _ _loc -> fields);
             Production.make
               (Rule.next
                  (Rule.next
                     (Rule.next Rule.stop (token "("))
-                    (Symbol.list1sep (Symbol.nterm link_field) comma true))
+                    (Rocqofrust_plugin_compat.symbol_list1sep (Symbol.nterm link_field) comma))
                  (token ")"))
               (fun _ fields _ _loc -> fields);
           ];
@@ -206,7 +206,7 @@ let variant_default
    the Rocq constructor name independent from the Rust path component. *)
 let (wit_link_variant, link_variant) :
     Link_model.variant Genarg.vernac_genarg_type * Link_model.variant Procq.Entry.t =
-  Vernacextend.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_variant"
+  Rocqofrust_plugin_compat.vernac_argument_extend ~plugin:plugin_name ~name:"rocqofrust_link_variant"
     {
       Vernacextend.arg_parsing =
         Vernacextend.Arg_rules
@@ -330,8 +330,8 @@ let command_typed_vernac (command : Link_model.command) : Vernactypes.typed_vern
    a custom nonterminal so the vernacular parser recognizes the command head
    reliably after [:=]. *)
 let () : unit =
-  Vernacextend.static_vernac_extend
-    ~plugin:(Some plugin_name)
+  Rocqofrust_plugin_compat.static_vernac_extend
+    ~plugin:plugin_name
     ~command:"RocqOfRustLinkRecord"
     ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
     [
@@ -359,8 +359,8 @@ let () : unit =
 (* Rust tuple-struct command.  This handles structs such as [OpCode(u8)] whose
    link type has a path but whose value uses [Value.StructTuple]. *)
 let () : unit =
-  Vernacextend.static_vernac_extend
-    ~plugin:(Some plugin_name)
+  Rocqofrust_plugin_compat.static_vernac_extend
+    ~plugin:plugin_name
     ~command:"RocqOfRustLinkTupleStruct"
     ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
     [
@@ -388,8 +388,8 @@ let () : unit =
 (* Plain tuple-value command.  This handles helper records whose link type is a
    [Ty.tuple] and whose values are [Value.Tuple], without a Rust path. *)
 let () : unit =
-  Vernacextend.static_vernac_extend
-    ~plugin:(Some plugin_name)
+  Rocqofrust_plugin_compat.static_vernac_extend
+    ~plugin:plugin_name
     ~command:"RocqOfRustLinkTupleRecord"
     ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
     [
@@ -416,8 +416,8 @@ let () : unit =
    link type is represented with [Ty.apply] and whose StructRecord values carry
    type arguments. *)
 let () : unit =
-  Vernacextend.static_vernac_extend
-    ~plugin:(Some plugin_name)
+  Rocqofrust_plugin_compat.static_vernac_extend
+    ~plugin:plugin_name
     ~command:"RocqOfRustLinkGenericRecord"
     ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
     [
@@ -447,8 +447,8 @@ let () : unit =
 let interpreter_types_record_command
     ~(command : string)
     ~(use_value_type_args : bool) : unit =
-  Vernacextend.static_vernac_extend
-    ~plugin:(Some plugin_name)
+  Rocqofrust_plugin_compat.static_vernac_extend
+    ~plugin:plugin_name
     ~command
     ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
     [
@@ -496,8 +496,8 @@ let () : unit =
 (* Top-level enum command.  The body is a nonempty list of variant entries,
    each beginning with [|], just like an Inductive declaration. *)
 let () : unit =
-  Vernacextend.static_vernac_extend
-    ~plugin:(Some plugin_name)
+  Rocqofrust_plugin_compat.static_vernac_extend
+    ~plugin:plugin_name
     ~command:"RocqOfRustLinkEnum"
     ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
     [
@@ -523,8 +523,8 @@ let () : unit =
    type is represented with [Ty.apply] and type arguments on each variant
    value. *)
 let () : unit =
-  Vernacextend.static_vernac_extend
-    ~plugin:(Some plugin_name)
+  Rocqofrust_plugin_compat.static_vernac_extend
+    ~plugin:plugin_name
     ~command:"RocqOfRustLinkGenericEnum"
     ~classifier:(fun _ -> Vernacextend.classify_as_sideeff)
     [
