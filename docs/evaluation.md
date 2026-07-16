@@ -26,7 +26,7 @@ arguments and concrete `Self` type. The example selects the `Double` and
 to `41`.
 
 The `let_mut` example evaluates a mutable local variable. Allocations are kept
-in evaluator memory, and pointers record an allocation address and a path into
+on the evaluator stack, and pointers record an allocation address and a path into
 the stored value. A write updates the allocation, so reading the same pointer
 after `x = x + 1` returns `6` rather than the original `5`.
 

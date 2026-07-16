@@ -100,7 +100,7 @@ Module Translated.
       of_tables functions [].
   End Runtime.
 
-  Module Memory.
+  Module Stack.
     Definition t : Set := list Value.t.
 
     Definition empty : t := [].
@@ -141,10 +141,10 @@ Module Translated.
         end
       end.
 
-    Definition alloc (memory : t) (value : Value.t) : Value.t * t :=
-      (make_pointer (List.length memory) [], memory ++ [value]).
+    Definition alloc (stack : t) (value : Value.t) : Value.t * t :=
+      (make_pointer (List.length stack) [], stack ++ [value]).
 
-    Definition read (memory : t) (pointer : Value.t) : option Value.t :=
+    Definition read (stack : t) (pointer : Value.t) : option Value.t :=
       match pointer with
       | Value.Pointer pointer =>
         match pointer.(Pointer.core) with
@@ -152,7 +152,7 @@ Module Translated.
         | Pointer.Core.Mutable address path =>
           match address_to_nat address with
           | Some address =>
-            match List.nth_error memory address with
+            match List.nth_error stack address with
             | Some value => read_path value path
             | None => None
             end
@@ -163,7 +163,7 @@ Module Translated.
       end.
 
     Definition write
-        (memory : t)
+        (stack : t)
         (pointer update : Value.t) :
         option t :=
       match pointer with
@@ -173,10 +173,10 @@ Module Translated.
         | Pointer.Core.Mutable address path =>
           match address_to_nat address with
           | Some address =>
-            match List.nth_error memory address with
+            match List.nth_error stack address with
             | Some value =>
               match write_path value path update with
-              | Some value => Some (List.replace_at memory address value)
+              | Some value => Some (List.replace_at stack address value)
               | None => None
               end
             | None => None
@@ -188,7 +188,7 @@ Module Translated.
       end.
 
     Definition get_sub_pointer
-        (memory : t)
+        (stack : t)
         (pointer : Value.t)
         (index : Pointer.Index.t) :
         option Value.t :=
@@ -209,7 +209,7 @@ Module Translated.
           | None => None
           end
         | Pointer.Core.Mutable address path =>
-          match read memory (Value.Pointer pointer) with
+          match read stack (Value.Pointer pointer) with
           | Some value =>
             match Value.read_index value index with
             | Some _ =>
@@ -224,57 +224,57 @@ Module Translated.
         end
       | _ => None
       end.
-  End Memory.
+  End Stack.
 
   Module Evaluate.
     Parameter closure_body : Value.t -> option (list Value.t -> M).
 
     Module Result.
       Inductive t : Set :=
-      | Done (output : Value.t + Exception.t) (memory : Memory.t)
+      | Done (output : Value.t + Exception.t) (stack : Stack.t)
       | OutOfFuel
       | Unsupported (message : string).
     End Result.
 
-    Fixpoint eval_with_memory
+    Fixpoint eval_with_stack
         (runtime : Runtime.t)
         (fuel : nat)
-        (memory : Memory.t)
+        (stack : Stack.t)
         (expression : M) :
         Result.t :=
       match fuel with
       | O => Result.OutOfFuel
       | S fuel =>
         match expression with
-        | LowM.Pure output => Result.Done output memory
+        | LowM.Pure output => Result.Done output stack
         | LowM.CallPrimitive primitive k =>
           match primitive with
           | Primitive.StateAlloc _ value =>
-            let '(pointer, memory) := Memory.alloc memory value in
-            eval_with_memory runtime fuel memory (k pointer)
+            let '(pointer, stack) := Stack.alloc stack value in
+            eval_with_stack runtime fuel stack (k pointer)
           | Primitive.StateRead pointer =>
-            match Memory.read memory pointer with
-            | Some value => eval_with_memory runtime fuel memory (k value)
+            match Stack.read stack pointer with
+            | Some value => eval_with_stack runtime fuel stack (k value)
             | None => Result.Unsupported "unable to read pointer"
             end
           | Primitive.StateWrite pointer update =>
-            match Memory.write memory pointer update with
-            | Some memory =>
-              eval_with_memory runtime fuel memory (k (Value.Tuple []))
+            match Stack.write stack pointer update with
+            | Some stack =>
+              eval_with_stack runtime fuel stack (k (Value.Tuple []))
             | None => Result.Unsupported "unable to write pointer"
             end
           | Primitive.GetSubPointer pointer index =>
-            match Memory.get_sub_pointer memory pointer index with
-            | Some pointer => eval_with_memory runtime fuel memory (k pointer)
+            match Stack.get_sub_pointer stack pointer index with
+            | Some pointer => eval_with_stack runtime fuel stack (k pointer)
             | None => Result.Unsupported "unable to get sub-pointer"
             end
           | Primitive.GetFunction path generic_consts generic_tys =>
             match runtime.(Runtime.get_function) path generic_consts generic_tys with
             | Some function =>
-              eval_with_memory
+              eval_with_stack
                 runtime
                 fuel
-                memory
+                stack
                 (k (M.closure (function generic_consts generic_tys)))
             | None => Result.Unsupported "function not found"
             end
@@ -291,10 +291,10 @@ Module Translated.
               generic_consts
               generic_tys with
             | Some method =>
-              eval_with_memory
+              eval_with_stack
                 runtime
                 fuel
-                memory
+                stack
                 (k (M.closure (method generic_consts generic_tys)))
             | None => Result.Unsupported "trait method not found"
             end
@@ -302,9 +302,9 @@ Module Translated.
         | LowM.CallClosure _ closure arguments k =>
           match closure_body closure with
           | Some body =>
-            match eval_with_memory runtime fuel memory (body arguments) with
-            | Result.Done output memory =>
-              eval_with_memory runtime fuel memory (k output)
+            match eval_with_stack runtime fuel stack (body arguments) with
+            | Result.Done output stack =>
+              eval_with_stack runtime fuel stack (k output)
             | Result.OutOfFuel => Result.OutOfFuel
             | Result.Unsupported message => Result.Unsupported message
             end
@@ -313,41 +313,41 @@ Module Translated.
         | LowM.CallLogicalOp _ _ _ _ =>
           Result.Unsupported "logical operator"
         | LowM.Let _ expression k =>
-          match eval_with_memory runtime fuel memory expression with
-          | Result.Done output memory =>
-            eval_with_memory runtime fuel memory (k output)
+          match eval_with_stack runtime fuel stack expression with
+          | Result.Done output stack =>
+            eval_with_stack runtime fuel stack (k output)
           | Result.OutOfFuel => Result.OutOfFuel
           | Result.Unsupported message => Result.Unsupported message
           end
         | LowM.LetAlloc _ expression k =>
-          match eval_with_memory runtime fuel memory expression with
-          | Result.Done (inl value) memory =>
-            let '(pointer, memory) := Memory.alloc memory value in
-            eval_with_memory runtime fuel memory (k (inl pointer))
-          | Result.Done (inr exception) memory =>
-            eval_with_memory runtime fuel memory (k (inr exception))
+          match eval_with_stack runtime fuel stack expression with
+          | Result.Done (inl value) stack =>
+            let '(pointer, stack) := Stack.alloc stack value in
+            eval_with_stack runtime fuel stack (k (inl pointer))
+          | Result.Done (inr exception) stack =>
+            eval_with_stack runtime fuel stack (k (inr exception))
           | Result.OutOfFuel => Result.OutOfFuel
           | Result.Unsupported message => Result.Unsupported message
           end
         | LowM.Loop _ _ _ => Result.Unsupported "loop"
         | LowM.MatchTuple tuple k =>
           match tuple with
-          | Value.Tuple fields => eval_with_memory runtime fuel memory (k fields)
+          | Value.Tuple fields => eval_with_stack runtime fuel stack (k fields)
           | _ => Result.Unsupported "expected a tuple"
           end
         | LowM.IfThenElse _ condition then_ else_ k =>
           match condition with
           | Value.Bool true =>
-            match eval_with_memory runtime fuel memory then_ with
-            | Result.Done output memory =>
-              eval_with_memory runtime fuel memory (k output)
+            match eval_with_stack runtime fuel stack then_ with
+            | Result.Done output stack =>
+              eval_with_stack runtime fuel stack (k output)
             | Result.OutOfFuel => Result.OutOfFuel
             | Result.Unsupported message => Result.Unsupported message
             end
           | Value.Bool false =>
-            match eval_with_memory runtime fuel memory else_ with
-            | Result.Done output memory =>
-              eval_with_memory runtime fuel memory (k output)
+            match eval_with_stack runtime fuel stack else_ with
+            | Result.Done output stack =>
+              eval_with_stack runtime fuel stack (k output)
             | Result.OutOfFuel => Result.OutOfFuel
             | Result.Unsupported message => Result.Unsupported message
             end
@@ -362,7 +362,7 @@ Module Translated.
         (fuel : nat)
         (expression : M) :
         Execution.t :=
-      match eval_with_memory runtime fuel Memory.empty expression with
+      match eval_with_stack runtime fuel Stack.empty expression with
       | Result.Done output _ => Execution.Done output
       | Result.OutOfFuel => Execution.OutOfFuel
       | Result.Unsupported message => Execution.Unsupported message

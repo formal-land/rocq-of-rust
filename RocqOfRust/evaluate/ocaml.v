@@ -18,7 +18,7 @@ Extract Constant Ty.tuple =>
   "(fun types ->
     Pstring.unsafe_of_string
       (""("" ^ String.concat "","" (Stdlib.List.map Pstring.to_string types) ^ "")""))".
-Extract Constant Translated.Memory.address_to_nat =>
+Extract Constant Translated.Stack.address_to_nat =>
   "(fun address -> Some (Obj.magic address : int))".
 Extract Constant Translated.Evaluate.closure_body =>
   "(fun value ->
