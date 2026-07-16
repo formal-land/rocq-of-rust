@@ -11,6 +11,9 @@ Extraction Language OCaml.
 
 Extract Constant Ty.t => "Pstring.t".
 Extract Constant Ty.path => "(fun path -> path)".
+Extract Constant Ty.eqb =>
+  "(fun left right ->
+    String.equal (Pstring.to_string left) (Pstring.to_string right))".
 Extract Constant Ty.tuple =>
   "(fun types ->
     Pstring.unsafe_of_string

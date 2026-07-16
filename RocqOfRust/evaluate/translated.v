@@ -15,15 +15,87 @@ Module Translated.
         list Value.t ->
         list Ty.t ->
         option PolymorphicFunction.t;
+      get_trait_method :
+        string ->
+        Ty.t ->
+        list Value.t ->
+        list Ty.t ->
+        string ->
+        list Value.t ->
+        list Ty.t ->
+        option PolymorphicFunction.t;
     }.
 
     Definition empty : t :=
-      {| get_function := fun _ _ _ => None |}.
+      {|
+        get_function := fun _ _ _ => None;
+        get_trait_method := fun _ _ _ _ _ _ _ => None;
+      |}.
+
+    Fixpoint find_trait_method
+        (methods :
+          list
+            (string *
+              list Ty.t *
+              Ty.t *
+              string *
+              PolymorphicFunction.t))
+        (trait_name : string)
+        (trait_tys : list Ty.t)
+        (self_ty : Ty.t)
+        (method_name : string) :
+        option PolymorphicFunction.t :=
+      match methods with
+      | [] => None
+      | (entry_trait_name,
+          entry_trait_tys,
+          entry_self_ty,
+          entry_method_name,
+          method) :: methods =>
+        match PrimString.compare entry_trait_name trait_name with
+        | Eq =>
+          if List.eqb Ty.eqb entry_trait_tys trait_tys then
+            if Ty.eqb entry_self_ty self_ty then
+              match PrimString.compare entry_method_name method_name with
+              | Eq => Some method
+              | _ => find_trait_method methods trait_name trait_tys self_ty method_name
+              end
+            else find_trait_method methods trait_name trait_tys self_ty method_name
+          else find_trait_method methods trait_name trait_tys self_ty method_name
+        | _ => find_trait_method methods trait_name trait_tys self_ty method_name
+        end
+      end.
+
+    Definition of_tables
+        (functions : list (string * PolymorphicFunction.t))
+        (trait_methods :
+          list
+            (string *
+              list Ty.t *
+              Ty.t *
+              string *
+              PolymorphicFunction.t)) :
+        t :=
+      {|
+        get_function := fun path _ _ => List.assoc functions path;
+        get_trait_method :=
+          fun trait_name self_ty trait_consts trait_tys method_name _ _ =>
+            match trait_consts with
+            | [] =>
+              find_trait_method
+                trait_methods
+                trait_name
+                trait_tys
+                self_ty
+                method_name
+            | _ => None
+            end;
+      |}.
 
     Definition of_function_table
         (functions : list (string * PolymorphicFunction.t)) :
         t :=
-      {| get_function := fun path _ _ => List.assoc functions path |}.
+      of_tables functions [].
   End Runtime.
 
   Module Evaluate.
@@ -92,8 +164,20 @@ Module Translated.
             end
           | Primitive.GetAssociatedFunction _ _ _ _ =>
             Execution.Unsupported "associated function resolution"
-          | Primitive.GetTraitMethod _ _ _ _ _ _ _ =>
-            Execution.Unsupported "trait method resolution"
+          | Primitive.GetTraitMethod
+              trait_name self_ty trait_consts trait_tys method_name generic_consts generic_tys =>
+            match runtime.(Runtime.get_trait_method)
+              trait_name
+              self_ty
+              trait_consts
+              trait_tys
+              method_name
+              generic_consts
+              generic_tys with
+            | Some method =>
+              eval runtime fuel (k (M.closure (method generic_consts generic_tys)))
+            | None => Execution.Unsupported "trait method not found"
+            end
           end
         | LowM.CallClosure _ closure arguments k =>
           match closure_body closure with

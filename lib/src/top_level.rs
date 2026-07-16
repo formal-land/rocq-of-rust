@@ -1784,6 +1784,51 @@ impl TypeStructStruct {
     }
 }
 
+fn trait_impl_module_name(
+    predicates: &[Rc<WherePredicate>],
+    self_ty: &RocqType,
+    of_trait: &Path,
+    trait_const_params: &[Rc<Expr>],
+    trait_ty_params: &[Rc<RocqType>],
+) -> String {
+    format!(
+        "Impl_{}{}{}{}_for_{}",
+        of_trait.to_name(),
+        predicates
+            .iter()
+            .map(|where_predicate| {
+                let WherePredicate { bound, ty } = where_predicate.as_ref();
+                let TraitBound { name, ty_params } = bound.as_ref();
+
+                format!(
+                    "_where_{}_{}{}",
+                    name.to_name(),
+                    ty.to_name(),
+                    ty_params
+                        .iter()
+                        .filter_map(|(_, ty_param)| match ty_param.as_ref() {
+                            FieldWithDefault::RequiredValue(ty)
+                            | FieldWithDefault::OptionalValue(ty) => {
+                                Some(format!("_{}", ty.to_name()))
+                            }
+                            FieldWithDefault::Default => None,
+                        })
+                        .join(""),
+                )
+            })
+            .collect::<String>(),
+        trait_const_params
+            .iter()
+            .map(|const_| format!("_{}", const_.to_name()))
+            .join(""),
+        trait_ty_params
+            .iter()
+            .map(|ty| format!("_{}", ty.to_name()))
+            .join(""),
+        self_ty.to_name()
+    )
+}
+
 impl TopLevelItem {
     #[allow(clippy::format_collect)]
     fn to_rocq(&self) -> Vec<Rc<rocq::TopLevelItem>> {
@@ -2223,40 +2268,12 @@ impl TopLevelItem {
                 items,
             } => {
                 let generics = [generic_consts.clone(), generic_tys.clone()].concat();
-                let module_name = format!(
-                    "Impl_{}{}{}{}_for_{}",
-                    of_trait.to_name(),
-                    predicates
-                        .iter()
-                        .map(|where_predicate| {
-                            let WherePredicate { bound, ty } = where_predicate.as_ref();
-                            let TraitBound { name, ty_params } = bound.as_ref();
-
-                            format!(
-                                "_where_{}_{}{}",
-                                name.to_name(),
-                                ty.to_name(),
-                                ty_params
-                                    .iter()
-                                    .filter_map(|(_, ty_param)| match ty_param.as_ref() {
-                                        FieldWithDefault::RequiredValue(ty)
-                                        | FieldWithDefault::OptionalValue(ty) =>
-                                            Some(format!("_{}", ty.to_name())),
-                                        FieldWithDefault::Default => None,
-                                    })
-                                    .join(""),
-                            )
-                        })
-                        .collect::<String>(),
-                    trait_const_params
-                        .iter()
-                        .map(|const_| format!("_{}", const_.to_name()))
-                        .join(""),
-                    trait_ty_params
-                        .iter()
-                        .map(|ty| format!("_{}", ty.to_name()))
-                        .join(""),
-                    self_ty.to_name()
+                let module_name = trait_impl_module_name(
+                    predicates,
+                    self_ty,
+                    of_trait,
+                    trait_const_params,
+                    trait_ty_params,
                 );
                 let items_rocq = items
                     .iter()
@@ -2442,6 +2459,90 @@ impl TopLevel {
         )))
     }
 
+    fn trait_method_table_entries(&self, module_path: &[String]) -> Vec<Rc<rocq::Expression>> {
+        self.0
+            .iter()
+            .flat_map(|entry| match entry.item.as_ref() {
+                TopLevelItem::TraitImpl {
+                    generic_consts,
+                    generic_tys,
+                    predicates,
+                    self_ty,
+                    of_trait,
+                    trait_const_params,
+                    trait_ty_params,
+                    items,
+                } if generic_consts.is_empty()
+                    && generic_tys.is_empty()
+                    && predicates.is_empty()
+                    && trait_const_params.is_empty() =>
+                {
+                    let module_name = trait_impl_module_name(
+                        predicates,
+                        self_ty,
+                        of_trait,
+                        trait_const_params,
+                        trait_ty_params,
+                    );
+
+                    items
+                        .iter()
+                        .filter_map(|item| {
+                            let kind: Option<&ImplItemKind> = item.kind.as_ref().into();
+                            let kind = kind?;
+
+                            match kind {
+                                ImplItemKind::Const { .. } | ImplItemKind::Definition { .. } => {
+                                    let mut rocq_path = module_path.to_vec();
+                                    rocq_path.push(module_name.clone());
+                                    rocq_path.push(kind.to_definition_name(item.name.to_string()));
+
+                                    Some(Rc::new(rocq::Expression::Tuple(vec![
+                                        Rc::new(rocq::Expression::String(of_trait.to_string())),
+                                        Rc::new(rocq::Expression::List {
+                                            exprs: trait_ty_params
+                                                .iter()
+                                                .map(|ty| ty.to_rocq())
+                                                .collect(),
+                                        }),
+                                        self_ty.to_rocq(),
+                                        Rc::new(rocq::Expression::String(item.name.to_string())),
+                                        Rc::new(rocq::Expression::Variable {
+                                            ident: Path::new(&rocq_path),
+                                            no_implicit: false,
+                                        }),
+                                    ])))
+                                }
+                                ImplItemKind::Type { .. } => None,
+                            }
+                        })
+                        .collect()
+                }
+                TopLevelItem::Module { name, body } => {
+                    let mut nested_module_path = module_path.to_vec();
+                    nested_module_path.push(name.clone());
+                    body.trait_method_table_entries(&nested_module_path)
+                }
+                _ => vec![],
+            })
+            .collect()
+    }
+
+    fn trait_method_table_to_rocq(&self) -> Rc<rocq::TopLevelItem> {
+        Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
+            "trait_method_table",
+            Rc::new(rocq::DefinitionKind::Alias {
+                args: vec![],
+                ty: Some(rocq::Expression::just_name(
+                    "list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t)",
+                )),
+                body: Rc::new(rocq::Expression::List {
+                    exprs: self.trait_method_table_entries(&[]),
+                }),
+            }),
+        )))
+    }
+
     fn to_rocq(&self, with_function_table: bool) -> Rc<rocq::TopLevel> {
         let mut items = itertools::Itertools::intersperse(
             self.0.iter().map(|item| item.item.to_rocq()),
@@ -2453,6 +2554,8 @@ impl TopLevel {
         if with_function_table {
             items.push(Rc::new(rocq::TopLevelItem::Line));
             items.push(self.function_table_to_rocq());
+            items.push(Rc::new(rocq::TopLevelItem::Line));
+            items.push(self.trait_method_table_to_rocq());
         }
 
         rocq::TopLevel::new(&items)

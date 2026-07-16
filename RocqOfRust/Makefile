@@ -1,6 +1,6 @@
 .PHONY: all clean clean-util distclean default watch generate plugin plugin-inline-print-check \
 	evaluate-translated-examples evaluate-translated-add-one \
-	evaluate-translated-choose-and-add
+	evaluate-translated-choose-and-add evaluate-translated-evaluation-traits
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 PLUGIN_INLINE_PRINT_TEST := plugin/test_inline_print.v
@@ -17,6 +17,9 @@ TRANSLATED_ADD_ONE_BINARY := /tmp/rocqofrust-translated-add-one
 TRANSLATED_CHOOSE_AND_ADD_VO := examples/default/examples/custom/evaluate/translated_choose_and_add.vo
 TRANSLATED_CHOOSE_AND_ADD_EXTRACTED := evaluate/extracted/translated_choose_and_add
 TRANSLATED_CHOOSE_AND_ADD_BINARY := /tmp/rocqofrust-translated-choose-and-add
+TRANSLATED_EVALUATION_TRAITS_VO := examples/default/examples/custom/evaluate/translated_evaluation_traits.vo
+TRANSLATED_EVALUATION_TRAITS_EXTRACTED := evaluate/extracted/translated_evaluation_traits
+TRANSLATED_EVALUATION_TRAITS_BINARY := /tmp/rocqofrust-translated-evaluation-traits
 
 default: all
 
@@ -31,7 +34,8 @@ plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PR
 	@coqc -R . RocqOfRust -I plugin -impredicative-set $(PLUGIN_INLINE_PRINT_TEST) > $(PLUGIN_INLINE_PRINT_OUTPUT)
 	@diff -u $(PLUGIN_INLINE_PRINT_EXPECTED) $(PLUGIN_INLINE_PRINT_OUTPUT)
 
-evaluate-translated-examples: evaluate-translated-add-one evaluate-translated-choose-and-add
+evaluate-translated-examples: evaluate-translated-add-one evaluate-translated-choose-and-add \
+	evaluate-translated-evaluation-traits
 
 evaluate-translated-add-one: $(TRANSLATED_ADD_ONE_VO)
 	coqc -R . RocqOfRust -I plugin -impredicative-set \
@@ -62,6 +66,21 @@ evaluate-translated-choose-and-add: $(TRANSLATED_CHOOSE_AND_ADD_VO)
 		-o $(TRANSLATED_CHOOSE_AND_ADD_BINARY)
 	@$(TRANSLATED_CHOOSE_AND_ADD_BINARY)
 	@echo "Translated choose_and_add(true, (10, 20), 5) evaluated to 15."
+
+evaluate-translated-evaluation-traits: $(TRANSLATED_EVALUATION_TRAITS_VO)
+	coqc -R . RocqOfRust -I plugin -impredicative-set \
+		examples/default/examples/custom/evaluate/translated_evaluation_traits.v
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+		-c $(TRANSLATED_EVALUATION_TRAITS_EXTRACTED).mli
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+		-I evaluate/extracted \
+		-c $(TRANSLATED_EVALUATION_TRAITS_EXTRACTED).ml
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel -linkpkg \
+		-I evaluate/extracted \
+		$(TRANSLATED_EVALUATION_TRAITS_EXTRACTED).cmx \
+		-o $(TRANSLATED_EVALUATION_TRAITS_BINARY)
+	@$(TRANSLATED_EVALUATION_TRAITS_BINARY)
+	@echo "Translated evaluation_traits::compute() evaluated to 41."
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.

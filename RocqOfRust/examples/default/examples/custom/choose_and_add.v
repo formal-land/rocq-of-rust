@@ -105,3 +105,6 @@ Definition function_table : list (string * PolymorphicFunction.t) :=
     ("choose_and_add::add_pair", add_pair);
     ("choose_and_add::choose_and_add", choose_and_add)
   ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

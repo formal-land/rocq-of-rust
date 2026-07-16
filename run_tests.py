@@ -16,6 +16,7 @@ test_folder = "examples"
 
 function_table_files = {
     "examples/custom/choose_and_add.rs",
+    "examples/custom/evaluation_traits.rs",
 }
 
 # For each file recursively in the test folder
