@@ -137,8 +137,8 @@ pub(crate) fn to_valid_rocq_name(is_value: IsValue, str: &str) -> String {
     let str = str.replace("r#", "");
 
     let reserved_names = [
-        "M", "Set", "Type", "Unset", "at", "by", "else", "end", "exists", "fix", "fun", "if",
-        "is", "of", "pair", "then", "tt", "unit", "with",
+        "M", "Set", "Type", "Unset", "at", "by", "else", "end", "exists", "fix", "fun", "if", "is",
+        "of", "pair", "then", "tt", "unit", "with",
     ];
 
     if reserved_names.contains(&str.as_str()) {
