@@ -165,8 +165,6 @@ Module Ty.
   Parameter function : list Ty.t -> Ty.t -> Ty.t.
 
   Parameter tuple : list Ty.t -> Ty.t.
-
-  Parameter eqb : Ty.t -> Ty.t -> bool.
 End Ty.
 
 Module Pointer.

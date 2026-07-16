@@ -14,7 +14,7 @@ resolution for functions, associated functions, and trait methods.
 The experimental evaluator in
 [`translated.v`](../RocqOfRust/evaluate/translated.v) can be extracted to OCaml.
 The command `make evaluate-translated-examples`, run from the `RocqOfRust`
-directory, checks three generated translations. The `add_one` example evaluates
+directory, checks four generated translations. The `add_one` example evaluates
 to `42` on input `41`. The `choose_and_add` example uses a generated function
 table to resolve its call to `choose_u32` by name at runtime, and evaluates to
 `15` on inputs `true`, `(10, 20)`, and `5`. The `evaluation_traits` example is a
@@ -25,13 +25,19 @@ arguments and concrete `Self` type. The example selects the `Double` and
 `Convert<bool>` for the same `Offset` type. Its `compute()` function evaluates
 to `41`.
 
-This experiment handles immediate allocation and reading, sub-pointers,
+The `let_mut` example evaluates a mutable local variable. Allocations are kept
+in evaluator memory, and pointers record an allocation address and a path into
+the stored value. A write updates the allocation, so reading the same pointer
+after `x = x + 1` returns `6` rather than the original `5`.
+
+This experiment handles allocation, reading and writing, sub-pointers,
 closure calls, function-name resolution, monomorphic trait-method resolution,
 lets, tuple matching, and conditionals. The trait-method table currently covers
 only non-generic implementations without trait constant arguments. Its type
 comparison is supplied at extraction time and only represents the type forms
-used by these examples. Mutation and associated-function resolution are not
-handled yet.
+used by these examples. Mutation through a local variable is supported;
+associated-function resolution, loops, and a wider set of mutation patterns are
+not handled yet.
 
 ## Linked code without mutable stack access
 

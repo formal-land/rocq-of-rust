@@ -11,13 +11,15 @@ Extraction Language OCaml.
 
 Extract Constant Ty.t => "Pstring.t".
 Extract Constant Ty.path => "(fun path -> path)".
-Extract Constant Ty.eqb =>
+Extract Constant Translated.ty_eqb =>
   "(fun left right ->
     String.equal (Pstring.to_string left) (Pstring.to_string right))".
 Extract Constant Ty.tuple =>
   "(fun types ->
     Pstring.unsafe_of_string
       (""("" ^ String.concat "","" (Stdlib.List.map Pstring.to_string types) ^ "")""))".
+Extract Constant Translated.Memory.address_to_nat =>
+  "(fun address -> Some (Obj.magic address : int))".
 Extract Constant Translated.Evaluate.closure_body =>
   "(fun value ->
     match value with

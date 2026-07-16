@@ -1,6 +1,7 @@
 .PHONY: all clean clean-util distclean default watch generate plugin plugin-inline-print-check \
 	evaluate-translated-examples evaluate-translated-add-one \
-	evaluate-translated-choose-and-add evaluate-translated-evaluation-traits
+	evaluate-translated-choose-and-add evaluate-translated-evaluation-traits \
+	evaluate-translated-let-mut
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 PLUGIN_INLINE_PRINT_TEST := plugin/test_inline_print.v
@@ -20,6 +21,9 @@ TRANSLATED_CHOOSE_AND_ADD_BINARY := /tmp/rocqofrust-translated-choose-and-add
 TRANSLATED_EVALUATION_TRAITS_VO := examples/default/examples/custom/evaluate/translated_evaluation_traits.vo
 TRANSLATED_EVALUATION_TRAITS_EXTRACTED := evaluate/extracted/translated_evaluation_traits
 TRANSLATED_EVALUATION_TRAITS_BINARY := /tmp/rocqofrust-translated-evaluation-traits
+TRANSLATED_LET_MUT_VO := examples/default/examples/custom/evaluate/translated_let_mut.vo
+TRANSLATED_LET_MUT_EXTRACTED := evaluate/extracted/translated_let_mut
+TRANSLATED_LET_MUT_BINARY := /tmp/rocqofrust-translated-let-mut
 
 default: all
 
@@ -35,7 +39,7 @@ plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PR
 	@diff -u $(PLUGIN_INLINE_PRINT_EXPECTED) $(PLUGIN_INLINE_PRINT_OUTPUT)
 
 evaluate-translated-examples: evaluate-translated-add-one evaluate-translated-choose-and-add \
-	evaluate-translated-evaluation-traits
+	evaluate-translated-evaluation-traits evaluate-translated-let-mut
 
 evaluate-translated-add-one: $(TRANSLATED_ADD_ONE_VO)
 	coqc -R . RocqOfRust -I plugin -impredicative-set \
@@ -81,6 +85,21 @@ evaluate-translated-evaluation-traits: $(TRANSLATED_EVALUATION_TRAITS_VO)
 		-o $(TRANSLATED_EVALUATION_TRAITS_BINARY)
 	@$(TRANSLATED_EVALUATION_TRAITS_BINARY)
 	@echo "Translated evaluation_traits::compute() evaluated to 41."
+
+evaluate-translated-let-mut: $(TRANSLATED_LET_MUT_VO)
+	coqc -R . RocqOfRust -I plugin -impredicative-set \
+		examples/default/examples/custom/evaluate/translated_let_mut.v
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+		-c $(TRANSLATED_LET_MUT_EXTRACTED).mli
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+		-I evaluate/extracted \
+		-c $(TRANSLATED_LET_MUT_EXTRACTED).ml
+	ocamlfind ocamlopt -thread -package rocq-runtime.kernel -linkpkg \
+		-I evaluate/extracted \
+		$(TRANSLATED_LET_MUT_EXTRACTED).cmx \
+		-o $(TRANSLATED_LET_MUT_BINARY)
+	@$(TRANSLATED_LET_MUT_BINARY)
+	@echo "Translated let_mut() evaluated to 6."
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.
