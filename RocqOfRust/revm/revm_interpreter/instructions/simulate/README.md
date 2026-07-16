@@ -150,7 +150,9 @@ Rust source: [`../tx_info.rs`](../tx_info.rs)
 
 | Instruction | Status |
 |---|:---:|
+| [blob_hash](tx_info/blob_hash.v) | ✓ |
 | [gasprice](tx_info/gasprice.v) | ✓ |
+| [origin](tx_info/origin.v) | ✓ |
 
 ## Summary
 
@@ -165,5 +167,5 @@ Rust source: [`../tx_info.rs`](../tx_info.rs)
 | memory | 5 | 0 | 5 |
 | stack | 5 | 0 | 5 |
 | system | 12 | 1 | 13 |
-| tx_info | 1 | 2 | 3 |
+| tx_info | 3 | 0 | 3 |
 | **Total** | **82** | **5** | **87** |

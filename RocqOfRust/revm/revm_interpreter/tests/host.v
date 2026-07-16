@@ -110,6 +110,14 @@ Module TestHost.
       aliases.U256.t * t :=
     ({| Uint.value := 42 |}, Make).
 
+  Definition host_caller (self : t) :
+      Address.t * t :=
+    ({| Address.value := 0 |}, Make).
+
+  Definition host_blob_hash (self : t) (_number : usize) :
+      option aliases.U256.t * t :=
+    (None, Make).
+
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
@@ -309,6 +317,8 @@ Module TestHost.
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;
     Host.effective_gas_price := host_effective_gas_price;
+    Host.caller := host_caller;
+    Host.blob_hash := host_blob_hash;
     Host.difficulty := host_difficulty;
     Host.prevrandao := host_prevrandao;
     Host.balance := balance;
@@ -426,6 +436,14 @@ Module TestHostWithAccount.
       aliases.U256.t * t :=
     ({| Uint.value := 42 |}, Make).
 
+  Definition host_caller (self : t) :
+      Address.t * t :=
+    ({| Address.value := 0 |}, Make).
+
+  Definition host_blob_hash (self : t) (_number : usize) :
+      option aliases.U256.t * t :=
+    (None, Make).
+
   Definition host_difficulty (self : t) :
       aliases.U256.t * t :=
     (Impl_Uint.ZERO, Make).
@@ -625,6 +643,8 @@ Module TestHostWithAccount.
     Host.basefee := host_basefee;
     Host.blob_gasprice := host_blob_gasprice;
     Host.effective_gas_price := host_effective_gas_price;
+    Host.caller := host_caller;
+    Host.blob_hash := host_blob_hash;
     Host.difficulty := host_difficulty;
     Host.prevrandao := host_prevrandao;
     Host.balance := balance;
