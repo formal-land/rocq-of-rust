@@ -14,7 +14,7 @@ resolution for functions, associated functions, and trait methods.
 The experimental evaluator in
 [`translated.v`](../RocqOfRust/evaluate/translated.v) can be extracted to OCaml.
 The command `make evaluate-translated-examples`, run from the `RocqOfRust`
-directory, checks four generated translations. The `add_one` example evaluates
+directory, checks five generated translations. The `add_one` example evaluates
 to `42` on input `41`. The `choose_and_add` example uses a generated function
 table to resolve its call to `choose_u32` by name at runtime, and evaluates to
 `15` on inputs `true`, `(10, 20)`, and `5`. The `evaluation_traits` example is a
@@ -30,14 +30,23 @@ on the evaluator stack, and pointers record an allocation address and a path int
 the stored value. A write updates the allocation, so reading the same pointer
 after `x = x + 1` returns `6` rather than the original `5`.
 
+The `ruint` evaluation runs the translated `nlimbs` and `mask` functions over
+20 boundary cases. These cases include `mask(64)`, which returns the full
+`u64::MAX` value. The extracted evaluator therefore uses arbitrary-precision
+integers through Zarith rather than OCaml machine integers. Applied types are
+encoded with their type arguments and integer or boolean constant arguments,
+and primitive integer `MIN` and `MAX` associated constants are resolved at
+runtime.
+
 This experiment handles allocation, reading and writing, sub-pointers,
 closure calls, function-name resolution, monomorphic trait-method resolution,
 lets, tuple matching, and conditionals. The trait-method table currently covers
 only non-generic implementations without trait constant arguments. Its type
-comparison is supplied at extraction time and only represents the type forms
-used by these examples. Mutation through a local variable is supported;
-associated-function resolution, loops, and a wider set of mutation patterns are
-not handled yet.
+comparison is supplied at extraction time and currently represents paths,
+tuples, and the applied types used by these examples. Mutation through a local
+variable is supported, as are primitive integer `MIN` and `MAX` lookups;
+general associated-function resolution, loops, and a wider set of mutation
+patterns are not handled yet.
 
 ## Linked code without mutable stack access
 

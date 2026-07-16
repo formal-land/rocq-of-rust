@@ -17,6 +17,12 @@ Module Translated.
         list Value.t ->
         list Ty.t ->
         option PolymorphicFunction.t;
+      get_associated_function :
+        Ty.t ->
+        string ->
+        list Value.t ->
+        list Ty.t ->
+        option PolymorphicFunction.t;
       get_trait_method :
         string ->
         Ty.t ->
@@ -28,9 +34,54 @@ Module Translated.
         option PolymorphicFunction.t;
     }.
 
+    Definition integer_kind_of_ty (ty : Ty.t) : option IntegerKind.t :=
+      if ty_eqb ty (Ty.path "i8") then Some IntegerKind.I8 else
+      if ty_eqb ty (Ty.path "i16") then Some IntegerKind.I16 else
+      if ty_eqb ty (Ty.path "i32") then Some IntegerKind.I32 else
+      if ty_eqb ty (Ty.path "i64") then Some IntegerKind.I64 else
+      if ty_eqb ty (Ty.path "i128") then Some IntegerKind.I128 else
+      if ty_eqb ty (Ty.path "isize") then Some IntegerKind.Isize else
+      if ty_eqb ty (Ty.path "u8") then Some IntegerKind.U8 else
+      if ty_eqb ty (Ty.path "u16") then Some IntegerKind.U16 else
+      if ty_eqb ty (Ty.path "u32") then Some IntegerKind.U32 else
+      if ty_eqb ty (Ty.path "u64") then Some IntegerKind.U64 else
+      if ty_eqb ty (Ty.path "u128") then Some IntegerKind.U128 else
+      if ty_eqb ty (Ty.path "usize") then Some IntegerKind.Usize else
+      None.
+
+    Definition constant_function
+        (ty : Ty.t)
+        (value : Value.t) :
+        PolymorphicFunction.t :=
+      fun _ _ args =>
+        match args with
+        | [] => M.alloc ty value
+        | _ => M.impossible "an associated constant takes no arguments"
+        end.
+
+    Definition get_primitive_associated_function
+        (ty : Ty.t)
+        (name : string)
+        (_ : list Value.t)
+        (_ : list Ty.t) :
+        option PolymorphicFunction.t :=
+      match integer_kind_of_ty ty with
+      | Some kind =>
+        match PrimString.compare name "MIN" with
+        | Eq => Some (constant_function ty (Value.Integer kind (Integer.min kind)))
+        | _ =>
+          match PrimString.compare name "MAX" with
+          | Eq => Some (constant_function ty (Value.Integer kind (Integer.max kind)))
+          | _ => None
+          end
+        end
+      | None => None
+      end.
+
     Definition empty : t :=
       {|
         get_function := fun _ _ _ => None;
+        get_associated_function := get_primitive_associated_function;
         get_trait_method := fun _ _ _ _ _ _ _ => None;
       |}.
 
@@ -80,6 +131,7 @@ Module Translated.
         t :=
       {|
         get_function := fun path _ _ => List.assoc functions path;
+        get_associated_function := get_primitive_associated_function;
         get_trait_method :=
           fun trait_name self_ty trait_consts trait_tys method_name _ _ =>
             match trait_consts with
@@ -278,8 +330,17 @@ Module Translated.
                 (k (M.closure (function generic_consts generic_tys)))
             | None => Result.Unsupported "function not found"
             end
-          | Primitive.GetAssociatedFunction _ _ _ _ =>
-            Result.Unsupported "associated function resolution"
+          | Primitive.GetAssociatedFunction ty name generic_consts generic_tys =>
+            match runtime.(Runtime.get_associated_function)
+              ty name generic_consts generic_tys with
+            | Some function =>
+              eval_with_stack
+                runtime
+                fuel
+                stack
+                (k (M.closure (function generic_consts generic_tys)))
+            | None => Result.Unsupported "associated function not found"
+            end
           | Primitive.GetTraitMethod
               trait_name self_ty trait_consts trait_tys method_name generic_consts generic_tys =>
             match runtime.(Runtime.get_trait_method)

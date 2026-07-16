@@ -1,7 +1,7 @@
 .PHONY: all clean clean-util distclean default watch generate plugin plugin-inline-print-check \
 	evaluate-translated-examples evaluate-translated-add-one \
 	evaluate-translated-choose-and-add evaluate-translated-evaluation-traits \
-	evaluate-translated-let-mut
+	evaluate-translated-let-mut evaluate-translated-ruint
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 PLUGIN_INLINE_PRINT_TEST := plugin/test_inline_print.v
@@ -10,6 +10,7 @@ PLUGIN_INLINE_PRINT_OUTPUT := /tmp/rocqofrust-plugin-inline-print.out
 
 PLUGIN_PACKAGES := \
 	rocq-runtime.clib,rocq-runtime.config,rocq-runtime.engine,rocq-runtime.interp,rocq-runtime.kernel,rocq-runtime.lib,rocq-runtime.library,rocq-runtime.parsing,rocq-runtime.pretyping,rocq-runtime.printing,rocq-runtime.proofs,rocq-runtime.tactics,rocq-runtime.vernac
+EVALUATE_PACKAGES := rocq-runtime.kernel,zarith
 PLUGIN_ML := plugin/link_model.ml plugin/link_render.ml plugin/rocqofrust_link_plugin.ml
 
 TRANSLATED_ADD_ONE_VO := examples/default/examples/custom/evaluate/translated_add_one.vo
@@ -24,6 +25,9 @@ TRANSLATED_EVALUATION_TRAITS_BINARY := /tmp/rocqofrust-translated-evaluation-tra
 TRANSLATED_LET_MUT_VO := examples/default/examples/custom/evaluate/translated_let_mut.vo
 TRANSLATED_LET_MUT_EXTRACTED := evaluate/extracted/translated_let_mut
 TRANSLATED_LET_MUT_BINARY := /tmp/rocqofrust-translated-let-mut
+TRANSLATED_RUINT_VO := ruint/evaluate/lib.vo
+TRANSLATED_RUINT_EXTRACTED := evaluate/extracted/ruint
+TRANSLATED_RUINT_BINARY := /tmp/rocqofrust-translated-ruint
 
 default: all
 
@@ -39,17 +43,18 @@ plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PR
 	@diff -u $(PLUGIN_INLINE_PRINT_EXPECTED) $(PLUGIN_INLINE_PRINT_OUTPUT)
 
 evaluate-translated-examples: evaluate-translated-add-one evaluate-translated-choose-and-add \
-	evaluate-translated-evaluation-traits evaluate-translated-let-mut
+	evaluate-translated-evaluation-traits evaluate-translated-let-mut \
+	evaluate-translated-ruint
 
 evaluate-translated-add-one: $(TRANSLATED_ADD_ONE_VO)
 	coqc -R . RocqOfRust -I plugin -impredicative-set \
 		examples/default/examples/custom/evaluate/translated_add_one.v
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
 		-c $(TRANSLATED_ADD_ONE_EXTRACTED).mli
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
 		-I evaluate/extracted \
 		-c $(TRANSLATED_ADD_ONE_EXTRACTED).ml
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel -linkpkg \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) -linkpkg \
 		-I evaluate/extracted \
 		$(TRANSLATED_ADD_ONE_EXTRACTED).cmx \
 		-o $(TRANSLATED_ADD_ONE_BINARY)
@@ -59,12 +64,12 @@ evaluate-translated-add-one: $(TRANSLATED_ADD_ONE_VO)
 evaluate-translated-choose-and-add: $(TRANSLATED_CHOOSE_AND_ADD_VO)
 	coqc -R . RocqOfRust -I plugin -impredicative-set \
 		examples/default/examples/custom/evaluate/translated_choose_and_add.v
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
 		-c $(TRANSLATED_CHOOSE_AND_ADD_EXTRACTED).mli
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
 		-I evaluate/extracted \
 		-c $(TRANSLATED_CHOOSE_AND_ADD_EXTRACTED).ml
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel -linkpkg \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) -linkpkg \
 		-I evaluate/extracted \
 		$(TRANSLATED_CHOOSE_AND_ADD_EXTRACTED).cmx \
 		-o $(TRANSLATED_CHOOSE_AND_ADD_BINARY)
@@ -74,12 +79,12 @@ evaluate-translated-choose-and-add: $(TRANSLATED_CHOOSE_AND_ADD_VO)
 evaluate-translated-evaluation-traits: $(TRANSLATED_EVALUATION_TRAITS_VO)
 	coqc -R . RocqOfRust -I plugin -impredicative-set \
 		examples/default/examples/custom/evaluate/translated_evaluation_traits.v
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
 		-c $(TRANSLATED_EVALUATION_TRAITS_EXTRACTED).mli
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
 		-I evaluate/extracted \
 		-c $(TRANSLATED_EVALUATION_TRAITS_EXTRACTED).ml
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel -linkpkg \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) -linkpkg \
 		-I evaluate/extracted \
 		$(TRANSLATED_EVALUATION_TRAITS_EXTRACTED).cmx \
 		-o $(TRANSLATED_EVALUATION_TRAITS_BINARY)
@@ -89,17 +94,31 @@ evaluate-translated-evaluation-traits: $(TRANSLATED_EVALUATION_TRAITS_VO)
 evaluate-translated-let-mut: $(TRANSLATED_LET_MUT_VO)
 	coqc -R . RocqOfRust -I plugin -impredicative-set \
 		examples/default/examples/custom/evaluate/translated_let_mut.v
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
 		-c $(TRANSLATED_LET_MUT_EXTRACTED).mli
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
 		-I evaluate/extracted \
 		-c $(TRANSLATED_LET_MUT_EXTRACTED).ml
-	ocamlfind ocamlopt -thread -package rocq-runtime.kernel -linkpkg \
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) -linkpkg \
 		-I evaluate/extracted \
 		$(TRANSLATED_LET_MUT_EXTRACTED).cmx \
 		-o $(TRANSLATED_LET_MUT_BINARY)
 	@$(TRANSLATED_LET_MUT_BINARY)
 	@echo "Translated let_mut() evaluated to 6."
+
+evaluate-translated-ruint: $(TRANSLATED_RUINT_VO)
+	coqc -R . RocqOfRust -I plugin -impredicative-set ruint/evaluate/lib.v
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
+		-c $(TRANSLATED_RUINT_EXTRACTED).mli
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) \
+		-I evaluate/extracted \
+		-c $(TRANSLATED_RUINT_EXTRACTED).ml
+	ocamlfind ocamlopt -thread -package $(EVALUATE_PACKAGES) -linkpkg \
+		-I evaluate/extracted \
+		$(TRANSLATED_RUINT_EXTRACTED).cmx \
+		-o $(TRANSLATED_RUINT_BINARY)
+	@$(TRANSLATED_RUINT_BINARY)
+	@echo "Translated ruint nlimbs and mask cases passed."
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.

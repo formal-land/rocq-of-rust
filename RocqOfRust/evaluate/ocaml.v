@@ -4,7 +4,7 @@ Require Import evaluate.translated.
 From Stdlib Require Export extraction.Extraction.
 From Stdlib Require Export extraction.ExtrOcamlBasic.
 From Stdlib Require Export extraction.ExtrOcamlNatInt.
-From Stdlib Require Export extraction.ExtrOcamlZInt.
+From Stdlib Require Export extraction.ExtrOcamlZBigInt.
 From Stdlib Require Export extraction.ExtrOCamlPString.
 
 Extraction Language OCaml.
@@ -18,6 +18,19 @@ Extract Constant Ty.tuple =>
   "(fun types ->
     Pstring.unsafe_of_string
       (""("" ^ String.concat "","" (Stdlib.List.map Pstring.to_string types) ^ "")""))".
+Extract Constant Ty.apply =>
+  "(fun ty consts types ->
+    let const_to_string value =
+      match value with
+      | Value.Integer (_, value) -> Big_int_Z.string_of_big_int value
+      | Value.Bool value -> string_of_bool value
+      | _ -> ""?""
+    in
+    Pstring.unsafe_of_string
+      (""apply("" ^
+        Pstring.to_string ty ^ "";["" ^
+        String.concat "","" (Stdlib.List.map const_to_string consts) ^ ""];["" ^
+        String.concat "","" (Stdlib.List.map Pstring.to_string types) ^ ""])""))".
 Extract Constant Translated.Stack.address_to_nat =>
   "(fun address -> Some (Obj.magic address : int))".
 Extract Constant Translated.Evaluate.closure_body =>
