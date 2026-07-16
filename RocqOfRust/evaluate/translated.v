@@ -65,17 +65,21 @@ Module Translated.
         (_ : list Value.t)
         (_ : list Ty.t) :
         option PolymorphicFunction.t :=
-      match integer_kind_of_ty ty with
-      | Some kind =>
-        match PrimString.compare name "MIN" with
-        | Eq => Some (constant_function ty (Value.Integer kind (Integer.min kind)))
-        | _ =>
-          match PrimString.compare name "MAX" with
-          | Eq => Some (constant_function ty (Value.Integer kind (Integer.max kind)))
-          | _ => None
-          end
+      match PrimString.compare name "MIN" with
+      | Eq =>
+        match integer_kind_of_ty ty with
+        | Some kind => Some (constant_function ty (Value.Integer kind (Integer.min kind)))
+        | None => None
         end
-      | None => None
+      | _ =>
+        match PrimString.compare name "MAX" with
+        | Eq =>
+          match integer_kind_of_ty ty with
+          | Some kind => Some (constant_function ty (Value.Integer kind (Integer.max kind)))
+          | None => None
+          end
+        | _ => None
+        end
       end.
 
     Definition empty : t :=
@@ -107,14 +111,15 @@ Module Translated.
           method) :: methods =>
         match PrimString.compare entry_trait_name trait_name with
         | Eq =>
-          if List.eqb ty_eqb entry_trait_tys trait_tys then
-            if ty_eqb entry_self_ty self_ty then
-              match PrimString.compare entry_method_name method_name with
-              | Eq => Some method
-              | _ => find_trait_method methods trait_name trait_tys self_ty method_name
-              end
+          match PrimString.compare entry_method_name method_name with
+          | Eq =>
+            if List.eqb ty_eqb entry_trait_tys trait_tys then
+              if ty_eqb entry_self_ty self_ty then
+                Some method
+              else find_trait_method methods trait_name trait_tys self_ty method_name
             else find_trait_method methods trait_name trait_tys self_ty method_name
-          else find_trait_method methods trait_name trait_tys self_ty method_name
+          | _ => find_trait_method methods trait_name trait_tys self_ty method_name
+          end
         | _ => find_trait_method methods trait_name trait_tys self_ty method_name
         end
       end.

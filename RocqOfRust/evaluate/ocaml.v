@@ -9,28 +9,56 @@ From Stdlib Require Export extraction.ExtrOCamlPString.
 
 Extraction Language OCaml.
 
-Extract Constant Ty.t => "Pstring.t".
-Extract Constant Ty.path => "(fun path -> path)".
+Extract Constant Ty.t => "Extracted_ty.t".
+Extract Constant Ty.path => "Extracted_ty.path".
+Extract Constant Ty.function => "Extracted_ty.function_".
+Extract Constant Ty.tuple => "Extracted_ty.tuple".
 Extract Constant Translated.ty_eqb =>
-  "(fun left right ->
-    String.equal (Pstring.to_string left) (Pstring.to_string right))".
-Extract Constant Ty.tuple =>
-  "(fun types ->
-    Pstring.unsafe_of_string
-      (""("" ^ String.concat "","" (Stdlib.List.map Pstring.to_string types) ^ "")""))".
+  "Extracted_ty.equal".
 Extract Constant Ty.apply =>
   "(fun ty consts types ->
-    let const_to_string value =
-      match value with
-      | Value.Integer (_, value) -> Big_int_Z.string_of_big_int value
-      | Value.Bool value -> string_of_bool value
-      | _ -> ""?""
+    let consts =
+      Stdlib.List.map
+        (function
+          | Value.Integer (_, value) ->
+            Extracted_ty.Integer (Big_int_Z.string_of_big_int value)
+          | Value.Bool value -> Extracted_ty.Bool value
+          | _ -> Extracted_ty.Unsupported)
+        consts
     in
-    Pstring.unsafe_of_string
-      (""apply("" ^
-        Pstring.to_string ty ^ "";["" ^
-        String.concat "","" (Stdlib.List.map const_to_string consts) ^ ""];["" ^
-        String.concat "","" (Stdlib.List.map Pstring.to_string types) ^ ""])""))".
+    Extracted_ty.apply ty consts types)".
+Extract Constant Ty.dyn => "Extracted_ty.dyn".
+Extract Constant Ty.associated_in_trait =>
+  "(fun trait_name consts types self_ty associated_name ->
+    let consts =
+      Stdlib.List.map
+        (function
+          | Value.Integer (_, value) ->
+            Extracted_ty.Integer (Big_int_Z.string_of_big_int value)
+          | Value.Bool value -> Extracted_ty.Bool value
+          | _ -> Extracted_ty.Unsupported)
+        consts
+    in
+    Extracted_ty.associated_in_trait
+      trait_name consts types self_ty associated_name)".
+Extract Constant Ty.associated_unknown => "Extracted_ty.Associated_unknown".
+Extract Constant M.cast =>
+  "(fun ty value ->
+    match Extracted_ty.path_name ty, value with
+    | Some ""u8"", Value.Integer (_, value) ->
+      Value.Integer (IntegerKind.U8, Big_int_Z.extract_big_int value 0 8)
+    | Some ""u16"", Value.Integer (_, value) ->
+      Value.Integer (IntegerKind.U16, Big_int_Z.extract_big_int value 0 16)
+    | Some ""u32"", Value.Integer (_, value) ->
+      Value.Integer (IntegerKind.U32, Big_int_Z.extract_big_int value 0 32)
+    | Some ""u64"", Value.Integer (_, value) ->
+      Value.Integer (IntegerKind.U64, Big_int_Z.extract_big_int value 0 64)
+    | Some ""u128"", Value.Integer (_, value) ->
+      Value.Integer (IntegerKind.U128, Big_int_Z.extract_big_int value 0 128)
+    | Some ""usize"", Value.Integer (_, value) ->
+      Value.Integer (IntegerKind.Usize, Big_int_Z.extract_big_int value 0 64)
+    | _ -> failwith ""unsupported extracted cast""
+    )".
 Extract Constant Translated.Stack.address_to_nat =>
   "(fun address -> Some (Obj.magic address : int))".
 Extract Constant Translated.Evaluate.closure_body =>

@@ -30,23 +30,31 @@ on the evaluator stack, and pointers record an allocation address and a path int
 the stored value. A write updates the allocation, so reading the same pointer
 after `x = x + 1` returns `6` rather than the original `5`.
 
-The `ruint` evaluation runs the translated `nlimbs` and `mask` functions over
-20 boundary cases. These cases include `mask(64)`, which returns the full
-`u64::MAX` value. The extracted evaluator therefore uses arbitrary-precision
-integers through Zarith rather than OCaml machine integers. Applied types are
-encoded with their type arguments and integer or boolean constant arguments,
-and primitive integer `MIN` and `MAX` associated constants are resolved at
-runtime.
+The `ruint` evaluation runs the translated `nlimbs`, `mask`, and `adc`
+functions over 23 cases. These cases include `mask(64)`, which returns the full
+`u64::MAX` value, and additions that carry from the low `u64` into the high
+word. The extracted evaluator therefore uses arbitrary-precision integers
+through Zarith rather than OCaml machine integers. The `adc` cases execute the
+translated `core::convert::From<u64> for u128` implementation and the
+translated `ruint` `DoubleWord::split` implementation through the runtime trait
+table.
+
+Extracted types have a structural OCaml representation for paths, tuples,
+function types, applications, dynamic traits, and associated types. Type and
+constant arguments are stored separately rather than encoded into one string.
+Primitive integer `MIN` and `MAX` associated constants are resolved at runtime.
 
 This experiment handles allocation, reading and writing, sub-pointers,
 closure calls, function-name resolution, monomorphic trait-method resolution,
 lets, tuple matching, and conditionals. The trait-method table currently covers
 only non-generic implementations without trait constant arguments. Its type
-comparison is supplied at extraction time and currently represents paths,
-tuples, and the applied types used by these examples. Mutation through a local
-variable is supported, as are primitive integer `MIN` and `MAX` lookups;
-general associated-function resolution, loops, and a wider set of mutation
-patterns are not handled yet.
+comparison is supplied at extraction time. Mutation through a local variable is
+supported, as are primitive integer `MIN` and `MAX` lookups. Extracted casts
+currently cover unsigned integer targets. The focused `ruint` runtime table
+lists the required `core` and `DoubleWord` methods explicitly; generating a
+complete runtime table for the already translated libraries remains future
+work. General associated-function resolution, loops, and a wider set of
+mutation patterns are not handled yet.
 
 ## Linked code without mutable stack access
 
