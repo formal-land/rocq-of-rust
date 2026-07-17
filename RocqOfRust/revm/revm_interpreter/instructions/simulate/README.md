@@ -5,7 +5,7 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 - ✓ = fully proven (`Qed`)
 - ✗ = admitted (`Admitted`)
 
-Some entries are helper functions used by other instructions rather than standalone EVM opcodes (e.g., `jump_inner`, `return_inner`, `extcall_input`, `memory_resize`).
+Some entries are helper functions used by other instructions rather than standalone EVM opcodes (e.g., `jump_inner`, `return_inner`, `memory_resize`).
 
 ## arithmetic/
 Rust source: [`../arithmetic.rs`](../arithmetic.rs)
@@ -33,6 +33,7 @@ Rust source: [`../bitwise.rs`](../bitwise.rs)
 | [bitor](bitwise/bitor.v) | ✓ |
 | [bitxor](bitwise/bitxor.v) | ✓ |
 | [byte](bitwise/byte.v) | ✓ |
+| [clz](bitwise/clz.v) | ✓ |
 | [eq](bitwise/eq.v) | ✓ |
 | [gt](bitwise/gt.v) | ✓ |
 | [iszero](bitwise/iszero.v) | ✓ |
@@ -63,11 +64,11 @@ Rust source: [`../contract.rs`](../contract.rs)
 
 | Instruction | Status |
 |---|:---:|
-| [call](contract/call.v) | ✓ |
-| [call_code](contract/call_code.v) | ✓ |
-| [delegate_call](contract/delegate_call.v) | ✓ |
-| [extcall_input](contract/extcall_input.v) | ✓ |
-| [static_call](contract/static_call.v) | ✓ |
+| [call](contract/call.v) | ✗ |
+| [call_code](contract/call_code.v) | ✗ |
+| [create](contract/create.v) | ✗ |
+| [delegate_call](contract/delegate_call.v) | ✗ |
+| [static_call](contract/static_call.v) | ✗ |
 
 ## control/
 Rust source: [`../control.rs`](../control.rs)
@@ -91,11 +92,11 @@ Rust source: [`../host.rs`](../host.rs)
 
 | Instruction | Status |
 |---|:---:|
-| [balance](host/balance.v) | ✓ |
+| [balance](host/balance.v) | ✗ |
 | [blockhash](host/blockhash.v) | ✓ |
-| [extcodecopy](host/extcodecopy.v) | ✓ |
-| [extcodehash](host/extcodehash.v) | ✓ |
-| [extcodesize](host/extcodesize.v) | ✓ |
+| [extcodecopy](host/extcodecopy.v) | ✗ |
+| [extcodehash](host/extcodehash.v) | ✗ |
+| [extcodesize](host/extcodesize.v) | ✗ |
 | [log](host/log.v) | ✗ |
 | [selfdestruct](host/selfdestruct.v) | ✗ |
 | [selfbalance](host/selfbalance.v) | ✓ |
@@ -132,7 +133,7 @@ Rust source: [`../system.rs`](../system.rs)
 | Instruction | Status |
 |---|:---:|
 | [address](system/address.v) | ✓ |
-| [calldatacopy](system/calldatacopy.v) | ✓ |
+| [calldatacopy](system/calldatacopy.v) | ✗ |
 | [calldataload](system/calldataload.v) | ✗ |
 | [calldatasize](system/calldatasize.v) | ✓ |
 | [caller](system/caller.v) | ✓ |
@@ -159,13 +160,13 @@ Rust source: [`../tx_info.rs`](../tx_info.rs)
 | Category | Proven | Admitted | Total |
 |---|:---:|:---:|:---:|
 | arithmetic | 11 | 0 | 11 |
-| bitwise | 14 | 0 | 14 |
+| bitwise | 15 | 0 | 15 |
 | block_info | 8 | 0 | 8 |
-| contract | 5 | 0 | 5 |
+| contract | 0 | 5 | 5 |
 | control | 11 | 0 | 11 |
-| host | 10 | 2 | 12 |
+| host | 6 | 6 | 12 |
 | memory | 5 | 0 | 5 |
 | stack | 5 | 0 | 5 |
-| system | 12 | 1 | 13 |
+| system | 11 | 2 | 13 |
 | tx_info | 3 | 0 | 3 |
-| **Total** | **82** | **5** | **87** |
+| **Total** | **75** | **13** | **88** |
