@@ -143,7 +143,7 @@ evaluate-translated-ruint: $(TRANSLATED_RUINT_VO) $(EXTRACTED_TY_CMX)
 		$(TRANSLATED_RUINT_EXTRACTED).cmx \
 		-o $(TRANSLATED_RUINT_BINARY)
 	@$(TRANSLATED_RUINT_BINARY)
-	@echo "Translated ruint nlimbs, mask, and adc cases passed."
+	@echo "Translated ruint arithmetic, Uint, mutation, and loop cases passed."
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.

@@ -30,14 +30,21 @@ on the evaluator stack, and pointers record an allocation address and a path int
 the stored value. A write updates the allocation, so reading the same pointer
 after `x = x + 1` returns `6` rather than the original `5`.
 
-The `ruint` evaluation runs the translated `nlimbs`, `mask`, and `adc`
-functions over 23 cases. These cases include `mask(64)`, which returns the full
-`u64::MAX` value, and additions that carry from the low `u64` into the high
-word. The extracted evaluator therefore uses arbitrary-precision integers
-through Zarith rather than OCaml machine integers. The `adc` cases execute the
-translated `core::convert::From<u64> for u128` implementation and the
-translated `ruint` `DoubleWord::split` implementation through the runtime trait
-table.
+The `ruint` evaluation runs translated arithmetic over boundary-focused inputs.
+It covers `nlimbs`, `mask`, `adc`, `sbb`, `rem_up`, and all methods of the
+translated `DoubleWord<u64> for u128` implementation. For `Uint<128, 2>`, it
+also evaluates the main constants, construction and conversion of limbs,
+immutable and mutable limb access, mutation through the returned pointer,
+cloning, default construction, and equality. The extracted evaluator therefore
+uses arbitrary-precision integers through Zarith rather than OCaml machine
+integers.
+
+The evaluator supports short-circuit logical operators and fuelled loops. The
+current `ruint` harness supplies the focused slice-length and `Range<usize>`
+runtime entries needed to exercise that control flow. Running the translated
+`adc_n` loop currently exposes a separate translation issue in the tuple-place
+assignment `(lhs[i], carry) = ...`: both generated tuple outputs are bound as
+`lhs`, so the original slice pointer is lost before the write.
 
 Extracted types have a structural OCaml representation for paths, tuples,
 function types, applications, dynamic traits, and associated types. Type and

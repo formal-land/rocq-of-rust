@@ -124,8 +124,27 @@ Module Translated.
         end
       end.
 
-    Definition of_tables
+    Fixpoint find_associated_function
+        (functions : list (Ty.t * string * PolymorphicFunction.t))
+        (ty : Ty.t)
+        (name : string) :
+        option PolymorphicFunction.t :=
+      match functions with
+      | [] => None
+      | (entry_ty, entry_name, function) :: functions =>
+        match PrimString.compare entry_name name with
+        | Eq =>
+          if ty_eqb entry_ty ty then
+            Some function
+          else
+            find_associated_function functions ty name
+        | _ => find_associated_function functions ty name
+        end
+      end.
+
+    Definition of_all_tables
         (functions : list (string * PolymorphicFunction.t))
+        (associated_functions : list (Ty.t * string * PolymorphicFunction.t))
         (trait_methods :
           list
             (string *
@@ -136,7 +155,12 @@ Module Translated.
         t :=
       {|
         get_function := fun path _ _ => List.assoc functions path;
-        get_associated_function := get_primitive_associated_function;
+        get_associated_function :=
+          fun ty name _ _ =>
+            match find_associated_function associated_functions ty name with
+            | Some function => Some function
+            | None => get_primitive_associated_function ty name [] []
+            end;
         get_trait_method :=
           fun trait_name self_ty trait_consts trait_tys method_name _ _ =>
             match trait_consts with
@@ -150,6 +174,18 @@ Module Translated.
             | _ => None
             end;
       |}.
+
+    Definition of_tables
+        (functions : list (string * PolymorphicFunction.t))
+        (trait_methods :
+          list
+            (string *
+              list Ty.t *
+              Ty.t *
+              string *
+              PolymorphicFunction.t)) :
+        t :=
+      of_all_tables functions [] trait_methods.
 
     Definition of_function_table
         (functions : list (string * PolymorphicFunction.t)) :
@@ -450,8 +486,24 @@ Module Translated.
             end
           | None => Result.Unsupported "value is not a closure"
           end
-        | LowM.CallLogicalOp _ _ _ _ =>
-          Result.Unsupported "logical operator"
+        | LowM.CallLogicalOp op lhs rhs k =>
+          match lhs with
+          | Value.Bool lhs =>
+            match op, lhs with
+            | LogicalOp.And, false =>
+              eval_with_stack runtime fuel stack (k (inl (Value.Bool false)))
+            | LogicalOp.Or, true =>
+              eval_with_stack runtime fuel stack (k (inl (Value.Bool true)))
+            | _, _ =>
+              match eval_with_stack runtime fuel stack rhs with
+              | Result.Done output stack =>
+                eval_with_stack runtime fuel stack (k output)
+              | Result.OutOfFuel => Result.OutOfFuel
+              | Result.Unsupported message => Result.Unsupported message
+              end
+            end
+          | _ => Result.Unsupported "expected a boolean logical operand"
+          end
         | LowM.Let _ expression k =>
           match eval_with_stack runtime fuel stack expression with
           | Result.Done output stack =>
@@ -469,7 +521,15 @@ Module Translated.
           | Result.OutOfFuel => Result.OutOfFuel
           | Result.Unsupported message => Result.Unsupported message
           end
-        | LowM.Loop _ _ _ => Result.Unsupported "loop"
+        | LowM.Loop ty body k =>
+          match eval_with_stack runtime fuel stack body with
+          | Result.Done (inl _) stack =>
+            eval_with_stack runtime fuel stack (LowM.Loop ty body k)
+          | Result.Done (inr exception) stack =>
+            eval_with_stack runtime fuel stack (k (inr exception))
+          | Result.OutOfFuel => Result.OutOfFuel
+          | Result.Unsupported message => Result.Unsupported message
+          end
         | LowM.MatchTuple tuple k =>
           match tuple with
           | Value.Tuple fields => eval_with_stack runtime fuel stack (k fields)

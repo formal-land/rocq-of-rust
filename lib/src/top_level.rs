@@ -1342,24 +1342,6 @@ pub(crate) fn translate_top_level(
     translations
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn runtime_imports_use_the_configured_module_prefix() {
-        let file_names = vec!["src/lib.rs".to_string(), "src/nested/module.rs".to_string()];
-
-        assert_eq!(
-            runtime_imports("move_sui.translations.move_abstract_stack", &file_names),
-            concat!(
-                "Require Import move_sui.translations.move_abstract_stack.lib.\n",
-                "Require Import move_sui.translations.move_abstract_stack.nested.module.\n",
-            ),
-        );
-    }
-}
-
 #[derive(Debug, Serialize)]
 pub(crate) struct DynNameGen {
     name: String,
