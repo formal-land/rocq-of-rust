@@ -54,7 +54,10 @@ Lemma good_size
     (IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.slice_len) mem
       offset 32)) =
   32%nat.
-Admitted.
+Proof.
+  rewrite MemoryTrait.slice_len_length.
+  reflexivity.
+Qed.
 
 Lemma mload_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
