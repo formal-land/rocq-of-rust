@@ -169,3 +169,15 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_main : M.IsFunction.C "converting_to_string::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [ ("converting_to_string::main", main) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [
+    ("core::fmt::Display",
+      [],
+      Ty.path "converting_to_string::Circle",
+      "fmt",
+      Impl_core_fmt_Display_for_converting_to_string_Circle.fmt)
+  ].

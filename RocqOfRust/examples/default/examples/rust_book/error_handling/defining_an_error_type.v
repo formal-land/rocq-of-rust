@@ -872,3 +872,29 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_main : M.IsFunction.C "defining_an_error_type::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("defining_an_error_type::double_first", double_first);
+    ("defining_an_error_type::print", print);
+    ("defining_an_error_type::main", main)
+  ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [
+    ("core::fmt::Debug",
+      [],
+      Ty.path "defining_an_error_type::DoubleError",
+      "fmt",
+      Impl_core_fmt_Debug_for_defining_an_error_type_DoubleError.fmt);
+    ("core::clone::Clone",
+      [],
+      Ty.path "defining_an_error_type::DoubleError",
+      "clone",
+      Impl_core_clone_Clone_for_defining_an_error_type_DoubleError.clone);
+    ("core::fmt::Display",
+      [],
+      Ty.path "defining_an_error_type::DoubleError",
+      "fmt",
+      Impl_core_fmt_Display_for_defining_an_error_type_DoubleError.fmt)
+  ].

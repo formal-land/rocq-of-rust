@@ -50,11 +50,14 @@ lets, tuple matching, and conditionals. The trait-method table currently covers
 only non-generic implementations without trait constant arguments. Its type
 comparison is supplied at extraction time. Mutation through a local variable is
 supported, as are primitive integer `MIN` and `MAX` lookups. Extracted casts
-currently cover unsigned integer targets. The focused `ruint` runtime table
-lists the required `core` and `DoubleWord` methods explicitly; generating a
-complete runtime table for the already translated libraries remains future
-work. General associated-function resolution, loops, and a wider set of
-mutation patterns are not handled yet.
+currently cover unsigned integer targets. The focused `ruint` evaluation lists
+only the `core` and `DoubleWord` methods it needs. The translator now generates
+complete runtime tables automatically: standalone example files include the
+tables at the end of the translation, while Cargo translations produce one
+`rocq_of_rust_runtime.v` file for each crate. `Runtime.combine` searches a list
+of these crate runtimes, so an extracted evaluator can use definitions from
+several crates. General associated-function resolution, loops, and a wider set
+of mutation patterns are not handled yet.
 
 ## Linked code without mutable stack access
 

@@ -352,3 +352,9 @@ Global Instance Instance_IsFunction_main :
   M.IsFunction.C "iterating_over_results_handle_via_filter_map::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [ ("iterating_over_results_handle_via_filter_map::main", main) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

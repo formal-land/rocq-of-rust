@@ -18,9 +18,6 @@ struct Translate {
     /// Output path where to place the translation
     #[arg(long, value_name = "output_path", value_parser = is_valid_path, default_value = "rocq_translation")]
     output_path: PathBuf,
-    /// Generate a table mapping Rust function paths to their Rocq definitions
-    #[arg(long, default_value_t = false)]
-    with_function_table: bool,
 }
 
 fn is_valid_path(path: &str) -> Result<PathBuf, String> {
@@ -60,7 +57,6 @@ fn main() {
                 path: t.path,
                 output: t.output_path,
                 axiomatize: t.axiomatize,
-                with_function_table: t.with_function_table,
             });
             println!("Finished.");
         }

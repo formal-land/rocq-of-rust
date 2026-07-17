@@ -374,3 +374,13 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_main : M.IsFunction.C "map_in_result_via_match::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("map_in_result_via_match::multiply", multiply);
+    ("map_in_result_via_match::print", print);
+    ("map_in_result_via_match::main", main)
+  ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

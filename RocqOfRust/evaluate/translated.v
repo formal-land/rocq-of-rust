@@ -155,6 +155,80 @@ Module Translated.
         (functions : list (string * PolymorphicFunction.t)) :
         t :=
       of_tables functions [].
+
+    Fixpoint get_function_from
+        (runtimes : list t)
+        (path : string)
+        (generic_consts : list Value.t)
+        (generic_tys : list Ty.t) :
+        option PolymorphicFunction.t :=
+      match runtimes with
+      | [] => None
+      | runtime :: runtimes =>
+        match runtime.(get_function) path generic_consts generic_tys with
+        | Some function => Some function
+        | None => get_function_from runtimes path generic_consts generic_tys
+        end
+      end.
+
+    Fixpoint get_associated_function_from
+        (runtimes : list t)
+        (ty : Ty.t)
+        (name : string)
+        (generic_consts : list Value.t)
+        (generic_tys : list Ty.t) :
+        option PolymorphicFunction.t :=
+      match runtimes with
+      | [] => None
+      | runtime :: runtimes =>
+        match runtime.(get_associated_function) ty name generic_consts generic_tys with
+        | Some function => Some function
+        | None =>
+          get_associated_function_from runtimes ty name generic_consts generic_tys
+        end
+      end.
+
+    Fixpoint get_trait_method_from
+        (runtimes : list t)
+        (trait_name : string)
+        (self_ty : Ty.t)
+        (trait_consts : list Value.t)
+        (trait_tys : list Ty.t)
+        (method_name : string)
+        (generic_consts : list Value.t)
+        (generic_tys : list Ty.t) :
+        option PolymorphicFunction.t :=
+      match runtimes with
+      | [] => None
+      | runtime :: runtimes =>
+        match runtime.(get_trait_method)
+          trait_name
+          self_ty
+          trait_consts
+          trait_tys
+          method_name
+          generic_consts
+          generic_tys with
+        | Some method => Some method
+        | None =>
+          get_trait_method_from
+            runtimes
+            trait_name
+            self_ty
+            trait_consts
+            trait_tys
+            method_name
+            generic_consts
+            generic_tys
+        end
+      end.
+
+    Definition combine (runtimes : list t) : t :=
+      {|
+        get_function := get_function_from runtimes;
+        get_associated_function := get_associated_function_from runtimes;
+        get_trait_method := get_trait_method_from runtimes;
+      |}.
   End Runtime.
 
   Module Stack.

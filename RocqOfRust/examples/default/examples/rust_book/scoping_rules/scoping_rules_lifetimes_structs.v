@@ -787,3 +787,25 @@ Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_lifetimes_structs::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [ ("scoping_rules_lifetimes_structs::main", main) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [
+    ("core::fmt::Debug",
+      [],
+      Ty.path "scoping_rules_lifetimes_structs::Borrowed",
+      "fmt",
+      Impl_core_fmt_Debug_for_scoping_rules_lifetimes_structs_Borrowed.fmt);
+    ("core::fmt::Debug",
+      [],
+      Ty.path "scoping_rules_lifetimes_structs::NamedBorrowed",
+      "fmt",
+      Impl_core_fmt_Debug_for_scoping_rules_lifetimes_structs_NamedBorrowed.fmt);
+    ("core::fmt::Debug",
+      [],
+      Ty.path "scoping_rules_lifetimes_structs::Either",
+      "fmt",
+      Impl_core_fmt_Debug_for_scoping_rules_lifetimes_structs_Either.fmt)
+  ].

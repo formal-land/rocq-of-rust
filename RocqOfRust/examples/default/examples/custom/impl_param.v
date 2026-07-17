@@ -88,3 +88,9 @@ Definition with_impls (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
 Global Instance Instance_IsFunction_with_impls : M.IsFunction.C "impl_param::with_impls" with_impls.
 Admitted.
 Global Typeclasses Opaque with_impls.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [ ("impl_param::with_impls", with_impls) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

@@ -1090,3 +1090,24 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_main : M.IsFunction.C "other_uses_of_question_mark::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("other_uses_of_question_mark::double_first", double_first);
+    ("other_uses_of_question_mark::print", print);
+    ("other_uses_of_question_mark::main", main)
+  ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [
+    ("core::fmt::Debug",
+      [],
+      Ty.path "other_uses_of_question_mark::EmptyVec",
+      "fmt",
+      Impl_core_fmt_Debug_for_other_uses_of_question_mark_EmptyVec.fmt);
+    ("core::fmt::Display",
+      [],
+      Ty.path "other_uses_of_question_mark::EmptyVec",
+      "fmt",
+      Impl_core_fmt_Display_for_other_uses_of_question_mark_EmptyVec.fmt)
+  ].

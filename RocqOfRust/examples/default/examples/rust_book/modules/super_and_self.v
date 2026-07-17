@@ -290,3 +290,16 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_main : M.IsFunction.C "super_and_self::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("super_and_self::function", function);
+    ("super_and_self::cool::function", cool.function);
+    ("super_and_self::my::function", my.function);
+    ("super_and_self::my::cool::function", my.cool.function);
+    ("super_and_self::my::indirect_call", my.indirect_call);
+    ("super_and_self::main", main)
+  ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

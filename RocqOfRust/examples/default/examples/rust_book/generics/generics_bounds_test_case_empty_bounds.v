@@ -365,3 +365,13 @@ Global Instance Instance_IsFunction_main :
   M.IsFunction.C "generics_bounds_test_case_empty_bounds::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("generics_bounds_test_case_empty_bounds::red", red);
+    ("generics_bounds_test_case_empty_bounds::blue", blue);
+    ("generics_bounds_test_case_empty_bounds::main", main)
+  ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

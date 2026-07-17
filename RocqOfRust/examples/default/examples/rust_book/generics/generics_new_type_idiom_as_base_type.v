@@ -62,3 +62,9 @@ Global Instance Instance_IsFunction_main :
   M.IsFunction.C "generics_new_type_idiom_as_base_type::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [ ("generics_new_type_idiom_as_base_type::main", main) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

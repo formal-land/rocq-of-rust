@@ -315,3 +315,14 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_main : M.IsFunction.C "drop::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) := [ ("drop::main", main) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [
+    ("core::ops::drop::Drop",
+      [],
+      Ty.path "drop::Droppable",
+      "drop",
+      Impl_core_ops_drop_Drop_for_drop_Droppable.drop)
+  ].

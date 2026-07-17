@@ -359,3 +359,25 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_main : M.IsFunction.C "provided_method::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [ ("provided_method::main", main) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [
+    ("provided_method::ProvidedAndRequired",
+      [],
+      Ty.path "i32",
+      "required",
+      Impl_provided_method_ProvidedAndRequired_for_i32.required);
+    ("provided_method::ProvidedAndRequired",
+      [],
+      Ty.path "u32",
+      "required",
+      Impl_provided_method_ProvidedAndRequired_for_u32.required);
+    ("provided_method::ProvidedAndRequired",
+      [],
+      Ty.path "u32",
+      "provided",
+      Impl_provided_method_ProvidedAndRequired_for_u32.provided)
+  ].

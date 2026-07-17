@@ -1388,3 +1388,34 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_main : M.IsFunction.C "wrapping_errors::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("wrapping_errors::double_first", double_first);
+    ("wrapping_errors::print", print);
+    ("wrapping_errors::main", main)
+  ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [
+    ("core::fmt::Debug",
+      [],
+      Ty.path "wrapping_errors::DoubleError",
+      "fmt",
+      Impl_core_fmt_Debug_for_wrapping_errors_DoubleError.fmt);
+    ("core::fmt::Display",
+      [],
+      Ty.path "wrapping_errors::DoubleError",
+      "fmt",
+      Impl_core_fmt_Display_for_wrapping_errors_DoubleError.fmt);
+    ("core::error::Error",
+      [],
+      Ty.path "wrapping_errors::DoubleError",
+      "source",
+      Impl_core_error_Error_for_wrapping_errors_DoubleError.source);
+    ("core::convert::From",
+      [ Ty.path "core::num::error::ParseIntError" ],
+      Ty.path "wrapping_errors::DoubleError",
+      "from",
+      Impl_core_convert_From_core_num_error_ParseIntError_for_wrapping_errors_DoubleError.from)
+  ].

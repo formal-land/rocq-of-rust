@@ -285,3 +285,12 @@ Global Instance Instance_IsFunction_steps_between :
   M.IsFunction.C "pattern_in_function_parameters::steps_between" steps_between.
 Admitted.
 Global Typeclasses Opaque steps_between.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("pattern_in_function_parameters::sum", sum);
+    ("pattern_in_function_parameters::steps_between", steps_between)
+  ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

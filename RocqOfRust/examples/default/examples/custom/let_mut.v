@@ -86,3 +86,9 @@ Definition match_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
 Global Instance Instance_IsFunction_match_mut : M.IsFunction.C "let_mut::match_mut" match_mut.
 Admitted.
 Global Typeclasses Opaque match_mut.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [ ("let_mut::let_mut", let_mut); ("let_mut::match_mut", match_mut) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

@@ -16,6 +16,7 @@ use rustc_span::symbol::{sym, Symbol};
 use serde::Serialize;
 use std::collections::HashMap;
 use std::iter::repeat;
+use std::path::Path as FilePath;
 use std::rc::Rc;
 use std::string::ToString;
 use std::vec;
@@ -23,7 +24,7 @@ use std::vec;
 #[derive(Clone, Copy)]
 pub(crate) struct TopLevelOptions {
     pub(crate) axiomatize: bool,
-    pub(crate) with_function_table: bool,
+    pub(crate) separate_runtime_file: bool,
 }
 
 #[derive(Debug)]
@@ -1244,25 +1245,99 @@ fn compile_top_level(tcx: &TyCtxt, opts: TopLevelOptions) -> Rc<TopLevel> {
 
 const LINE_WIDTH: usize = 100;
 
+fn runtime_file_path(file_names: &[String]) -> String {
+    let root_file = file_names
+        .iter()
+        .find(|file_name| {
+            matches!(
+                FilePath::new(file_name)
+                    .file_name()
+                    .and_then(|name| name.to_str()),
+                Some("lib.rs" | "main.rs")
+            )
+        })
+        .or_else(|| file_names.first());
+
+    root_file
+        .and_then(|file_name| FilePath::new(file_name).parent())
+        .unwrap_or_else(|| FilePath::new(""))
+        .join("rocq_of_rust_runtime.v")
+        .to_string_lossy()
+        .to_string()
+}
+
+fn runtime_module_name(crate_name: &str, file_name: &str) -> Option<String> {
+    let components = FilePath::new(file_name)
+        .components()
+        .map(|component| component.as_os_str().to_string_lossy().to_string())
+        .collect_vec();
+    let src_index = components
+        .iter()
+        .rposition(|component| component == "src")?;
+    let mut module_path = vec![crate_name.to_string()];
+
+    for component in &components[src_index + 1..] {
+        module_path.push(
+            FilePath::new(component)
+                .with_extension("")
+                .to_string_lossy()
+                .to_string(),
+        );
+    }
+
+    Some(module_path.join("."))
+}
+
+fn runtime_imports(crate_name: &str, file_names: &[String]) -> String {
+    let mut module_names = file_names
+        .iter()
+        .filter_map(|file_name| runtime_module_name(crate_name, file_name))
+        .collect_vec();
+    module_names.sort();
+    module_names.dedup();
+
+    module_names
+        .into_iter()
+        .map(|module_name| format!("Require Import {module_name}.\n"))
+        .collect()
+}
+
 pub(crate) fn translate_top_level(
     tcx: &TyCtxt,
     opts: TopLevelOptions,
 ) -> HashMap<String, (String, String)> {
     let top_level = compile_top_level(tcx, opts);
-    let top_level_groups = group_top_level_by_file_name(top_level);
+    let top_level_groups = group_top_level_by_file_name(top_level.clone());
+    let include_runtime_in_file = !opts.axiomatize && !opts.separate_runtime_file;
 
-    top_level_groups
+    let mut translations = top_level_groups
         .into_iter()
         .map(|(file_name, top_level)| {
             (
                 file_name,
                 (
-                    top_level.to_pretty(LINE_WIDTH, opts.with_function_table),
+                    top_level.to_pretty(LINE_WIDTH, include_runtime_in_file),
                     top_level.to_json(),
                 ),
             )
         })
-        .collect()
+        .collect::<HashMap<_, _>>();
+
+    if !opts.axiomatize && opts.separate_runtime_file {
+        let mut file_names = translations.keys().cloned().collect_vec();
+        file_names.sort();
+        let crate_name = tcx.crate_name(rustc_hir::def_id::LOCAL_CRATE).to_string();
+        let runtime = format!(
+            "{}{}\n{}",
+            HEADER,
+            runtime_imports(&crate_name, &file_names),
+            top_level.runtime_to_pretty(LINE_WIDTH),
+        );
+
+        translations.insert(runtime_file_path(&file_names), (runtime, String::new()));
+    }
+
+    translations
 }
 
 #[derive(Debug, Serialize)]
@@ -2543,7 +2618,15 @@ impl TopLevel {
         )))
     }
 
-    fn to_rocq(&self, with_function_table: bool) -> Rc<rocq::TopLevel> {
+    fn runtime_to_rocq(&self) -> Rc<rocq::TopLevel> {
+        rocq::TopLevel::new(&[
+            self.function_table_to_rocq(),
+            Rc::new(rocq::TopLevelItem::Line),
+            self.trait_method_table_to_rocq(),
+        ])
+    }
+
+    fn to_rocq(&self, include_runtime: bool) -> Rc<rocq::TopLevel> {
         let mut items = itertools::Itertools::intersperse(
             self.0.iter().map(|item| item.item.to_rocq()),
             vec![Rc::new(rocq::TopLevelItem::Line)],
@@ -2551,7 +2634,7 @@ impl TopLevel {
         .flatten()
         .collect_vec();
 
-        if with_function_table {
+        if include_runtime {
             items.push(Rc::new(rocq::TopLevelItem::Line));
             items.push(self.function_table_to_rocq());
             items.push(Rc::new(rocq::TopLevelItem::Line));
@@ -2561,13 +2644,22 @@ impl TopLevel {
         rocq::TopLevel::new(&items)
     }
 
-    pub fn to_pretty(&self, width: usize, with_function_table: bool) -> String {
+    pub fn to_pretty(&self, width: usize, include_runtime: bool) -> String {
         let mut w = Vec::new();
-        self.to_rocq(with_function_table)
+        self.to_rocq(include_runtime)
             .to_doc(&pretty::Arena::new())
             .render(width, &mut w)
             .unwrap();
         format!("{}{}\n", HEADER, String::from_utf8(w).unwrap())
+    }
+
+    pub fn runtime_to_pretty(&self, width: usize) -> String {
+        let mut w = Vec::new();
+        self.runtime_to_rocq()
+            .to_doc(&pretty::Arena::new())
+            .render(width, &mut w)
+            .unwrap();
+        format!("{}\n", String::from_utf8(w).unwrap())
     }
 
     pub fn to_json(&self) -> String {

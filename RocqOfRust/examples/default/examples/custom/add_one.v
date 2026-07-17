@@ -22,3 +22,9 @@ Definition add_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
 Global Instance Instance_IsFunction_add_one : M.IsFunction.C "add_one::add_one" add_one.
 Admitted.
 Global Typeclasses Opaque add_one.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [ ("add_one::add_one", add_one) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

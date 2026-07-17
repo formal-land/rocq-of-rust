@@ -78,3 +78,9 @@ Definition div (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_div : M.IsFunction.C "documentation_testing::div" div.
 Admitted.
 Global Typeclasses Opaque div.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [ ("documentation_testing::add", add); ("documentation_testing::div", div) ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

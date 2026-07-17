@@ -636,3 +636,14 @@ Definition max_array (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
 Global Instance Instance_IsFunction_max_array : M.IsFunction.C "loops::max_array" max_array.
 Admitted.
 Global Typeclasses Opaque max_array.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("loops::sum_checked", sum_checked);
+    ("loops::reverse_in_place", reverse_in_place);
+    ("loops::is_sorted", is_sorted);
+    ("loops::max_array", max_array)
+  ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].

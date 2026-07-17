@@ -530,3 +530,14 @@ Global Instance Instance_IsFunction_main :
   M.IsFunction.C "functions_closures_as_output_parameters::main" main.
 Admitted.
 Global Typeclasses Opaque main.
+
+Definition function_table : list (string * PolymorphicFunction.t) :=
+  [
+    ("functions_closures_as_output_parameters::create_fn", create_fn);
+    ("functions_closures_as_output_parameters::create_fnmut", create_fnmut);
+    ("functions_closures_as_output_parameters::create_fnonce", create_fnonce);
+    ("functions_closures_as_output_parameters::main", main)
+  ].
+
+Definition trait_method_table : list (string * list Ty.t * Ty.t * string * PolymorphicFunction.t) :=
+  [].
