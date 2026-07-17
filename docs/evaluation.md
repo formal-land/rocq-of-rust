@@ -56,8 +56,10 @@ complete runtime tables automatically: standalone example files include the
 tables at the end of the translation, while Cargo translations produce one
 `rocq_of_rust_runtime.v` file for each crate. `Runtime.combine` searches a list
 of these crate runtimes, so an extracted evaluator can use definitions from
-several crates. General associated-function resolution, loops, and a wider set
-of mutation patterns are not handled yet.
+several crates. When translations are installed under a logical Rocq path that
+differs from the Rust crate name, `--runtime-module-prefix` sets that path for
+the runtime imports. General associated-function resolution, loops, and a wider
+set of mutation patterns are not handled yet.
 
 ## Linked code without mutable stack access
 

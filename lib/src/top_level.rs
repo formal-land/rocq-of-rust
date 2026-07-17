@@ -22,9 +22,10 @@ use std::string::ToString;
 use std::vec;
 
 #[derive(Clone, Copy)]
-pub(crate) struct TopLevelOptions {
+pub(crate) struct TopLevelOptions<'a> {
     pub(crate) axiomatize: bool,
     pub(crate) separate_runtime_file: bool,
+    pub(crate) runtime_module_prefix: Option<&'a str>,
 }
 
 #[derive(Debug)]
@@ -1227,7 +1228,7 @@ fn compile_trait_item_body<'a>(
     }
 }
 
-fn compile_top_level(tcx: &TyCtxt, opts: TopLevelOptions) -> Rc<TopLevel> {
+fn compile_top_level(tcx: &TyCtxt, opts: TopLevelOptions<'_>) -> Rc<TopLevel> {
     let env = Env {
         tcx: *tcx,
         axiomatize: opts.axiomatize,
@@ -1266,7 +1267,7 @@ fn runtime_file_path(file_names: &[String]) -> String {
         .to_string()
 }
 
-fn runtime_module_name(crate_name: &str, file_name: &str) -> Option<String> {
+fn runtime_module_name(module_prefix: &str, file_name: &str) -> Option<String> {
     let components = FilePath::new(file_name)
         .components()
         .map(|component| component.as_os_str().to_string_lossy().to_string())
@@ -1274,7 +1275,7 @@ fn runtime_module_name(crate_name: &str, file_name: &str) -> Option<String> {
     let src_index = components
         .iter()
         .rposition(|component| component == "src")?;
-    let mut module_path = vec![crate_name.to_string()];
+    let mut module_path = vec![module_prefix.to_string()];
 
     for component in &components[src_index + 1..] {
         module_path.push(
@@ -1288,10 +1289,10 @@ fn runtime_module_name(crate_name: &str, file_name: &str) -> Option<String> {
     Some(module_path.join("."))
 }
 
-fn runtime_imports(crate_name: &str, file_names: &[String]) -> String {
+fn runtime_imports(module_prefix: &str, file_names: &[String]) -> String {
     let mut module_names = file_names
         .iter()
-        .filter_map(|file_name| runtime_module_name(crate_name, file_name))
+        .filter_map(|file_name| runtime_module_name(module_prefix, file_name))
         .collect_vec();
     module_names.sort();
     module_names.dedup();
@@ -1304,7 +1305,7 @@ fn runtime_imports(crate_name: &str, file_names: &[String]) -> String {
 
 pub(crate) fn translate_top_level(
     tcx: &TyCtxt,
-    opts: TopLevelOptions,
+    opts: TopLevelOptions<'_>,
 ) -> HashMap<String, (String, String)> {
     let top_level = compile_top_level(tcx, opts);
     let top_level_groups = group_top_level_by_file_name(top_level.clone());
@@ -1327,10 +1328,11 @@ pub(crate) fn translate_top_level(
         let mut file_names = translations.keys().cloned().collect_vec();
         file_names.sort();
         let crate_name = tcx.crate_name(rustc_hir::def_id::LOCAL_CRATE).to_string();
+        let module_prefix = opts.runtime_module_prefix.unwrap_or(&crate_name);
         let runtime = format!(
             "{}{}\n{}",
             HEADER,
-            runtime_imports(&crate_name, &file_names),
+            runtime_imports(module_prefix, &file_names),
             top_level.runtime_to_pretty(LINE_WIDTH),
         );
 
@@ -1338,6 +1340,24 @@ pub(crate) fn translate_top_level(
     }
 
     translations
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn runtime_imports_use_the_configured_module_prefix() {
+        let file_names = vec!["src/lib.rs".to_string(), "src/nested/module.rs".to_string()];
+
+        assert_eq!(
+            runtime_imports("move_sui.translations.move_abstract_stack", &file_names),
+            concat!(
+                "Require Import move_sui.translations.move_abstract_stack.lib.\n",
+                "Require Import move_sui.translations.move_abstract_stack.nested.module.\n",
+            ),
+        );
+    }
 }
 
 #[derive(Debug, Serialize)]

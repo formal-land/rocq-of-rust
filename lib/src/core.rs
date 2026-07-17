@@ -123,6 +123,7 @@ fn create_translation_to_rocq(opts: &CliOptions) -> String {
                 TopLevelOptions {
                     axiomatize: self.axiomatize,
                     separate_runtime_file: false,
+                    runtime_module_prefix: None,
                 },
             ));
             rustc_driver::Compilation::Stop

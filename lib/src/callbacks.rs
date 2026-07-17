@@ -37,6 +37,7 @@ impl Callbacks for ToRocq {
         let crate::options::Options {
             axiomatize,
             with_json,
+            ref runtime_module_prefix,
             ..
         } = self.opts;
 
@@ -51,6 +52,7 @@ impl Callbacks for ToRocq {
             TopLevelOptions {
                 axiomatize,
                 separate_runtime_file: true,
+                runtime_module_prefix: runtime_module_prefix.as_deref(),
             },
         );
 
