@@ -314,7 +314,7 @@ Module any.
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_is : M.IsAssociatedFunction.C Self "is" is_.
+    Global Instance AssociatedFunction_is_ : M.IsAssociatedFunction.C Self "is" is_.
     Admitted.
     Global Typeclasses Opaque is_.
     
@@ -807,7 +807,7 @@ Module any.
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_is : M.IsAssociatedFunction.C Self "is" is_.
+    Global Instance AssociatedFunction_is_ : M.IsAssociatedFunction.C Self "is" is_.
     Admitted.
     Global Typeclasses Opaque is_.
     
@@ -1108,7 +1108,7 @@ Module any.
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_is : M.IsAssociatedFunction.C Self "is" is_.
+    Global Instance AssociatedFunction_is_ : M.IsAssociatedFunction.C Self "is" is_.
     Admitted.
     Global Typeclasses Opaque is_.
     
@@ -1754,7 +1754,7 @@ Module any.
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_of : M.IsAssociatedFunction.C Self "of" of_.
+    Global Instance AssociatedFunction_of_ : M.IsAssociatedFunction.C Self "of" of_.
     Admitted.
     Global Typeclasses Opaque of_.
     

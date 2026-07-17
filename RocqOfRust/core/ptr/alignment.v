@@ -256,7 +256,7 @@ Module ptr.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_of : M.IsAssociatedFunction.C Self "of" of_.
+      Global Instance AssociatedFunction_of_ : M.IsAssociatedFunction.C Self "of" of_.
       Admitted.
       Global Typeclasses Opaque of_.
       
