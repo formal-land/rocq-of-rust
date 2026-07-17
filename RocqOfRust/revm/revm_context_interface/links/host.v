@@ -254,6 +254,22 @@ Module Host.
       Run.Trait effective_gas_price [] [] [ φ self ] aliases.U256.t;
   }.
 
+  (* fn caller(&self) -> Address; *)
+  Class Method_caller (Self : Set) `{Link Self} : Set := {
+    caller : PolymorphicFunction.t;
+    caller_is_method :: IsTraitMethod.C (trait Self) "caller" caller;
+    run_caller (self : '& Self) ::
+      Run.Trait caller [] [] [ φ self ] Address.t;
+  }.
+
+  (* fn blob_hash(&self, number: usize) -> Option<U256>; *)
+  Class Method_blob_hash (Self : Set) `{Link Self} : Set := {
+    blob_hash : PolymorphicFunction.t;
+    blob_hash_is_method :: IsTraitMethod.C (trait Self) "blob_hash" blob_hash;
+    run_blob_hash (self : '& Self) (number : usize) ::
+      Run.Trait blob_hash [] [] [ φ self; φ number ] (option aliases.U256.t);
+  }.
+
   (* fn difficulty(&self) -> U256; *)
   Class Method_difficulty (Self : Set) `{Link Self} : Set := {
     difficulty : PolymorphicFunction.t;
@@ -435,6 +451,8 @@ Module Host.
     method_basefee :: Method_basefee Self;
     method_blob_gasprice :: Method_blob_gasprice Self;
     method_effective_gas_price :: Method_effective_gas_price Self;
+    method_caller :: Method_caller Self;
+    method_blob_hash :: Method_blob_hash Self;
     method_difficulty :: Method_difficulty Self;
     method_prevrandao :: Method_prevrandao Self;
     method_balance :: Method_balance Self;
@@ -552,6 +570,40 @@ Module Impl_Host_for_RefMut.
     - intros self.
       constructor.
       destruct method_effective_gas_price.
+      run_symbolic.
+  Defined.
+
+  Instance method_caller
+      (Self : Set) `{Link Self}
+      (method_caller : Host.Method_caller Self) :
+    Host.Method_caller ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.caller (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self.
+      constructor.
+      destruct method_caller.
+      run_symbolic.
+  Defined.
+
+  Instance method_blob_hash
+      (Self : Set) `{Link Self}
+      (method_blob_hash : Host.Method_blob_hash Self) :
+    Host.Method_blob_hash ('&mut Self).
+  Proof.
+    unshelve econstructor.
+    - exact (host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.blob_hash (Φ Self)).
+    - constructor.
+      econstructor.
+      + apply host.underscore.Impl_revm_context_interface_host_Host_where_revm_context_interface_host_Host_T_where_core_marker_Sized_T_for_ref_mut_T.Implements.
+      + reflexivity.
+    - intros self number.
+      constructor.
+      destruct method_blob_hash.
       run_symbolic.
   Defined.
 
