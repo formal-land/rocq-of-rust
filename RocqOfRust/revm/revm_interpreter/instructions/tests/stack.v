@@ -151,24 +151,26 @@ Qed.
 
 (** ** PUSH tests *)
 
-(** Test that PUSH1 pushes a value onto the stack (zero bytes from test bytecode) *)
+(** Test that PUSH1 pushes the immediate byte onto the stack *)
 Goal
   let stack := {| Stack.value := [] |} in
-  let interpreter := make_interpreter stack in
+  let interpreter := make_interpreter_with_bytecode [(42 : u8)] stack in
   let result := push 1 interpreter in
-  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 42 |}].
 Proof.
   timeout 1 vm_compute.
   reflexivity.
 Qed.
 
-(** Test that PUSH1 does not set an error *)
+(** Test that PUSH2 reads bytes in big-endian order and advances the program counter *)
 Goal
   let stack := {| Stack.value := [] |} in
-  let interpreter := make_interpreter stack in
-  let result := push 1 interpreter in
-  result.(Interpreter.control).(Control.instruction_result) = None.
+  let interpreter :=
+    make_interpreter_with_bytecode [(18 : u8); (52 : u8)] stack in
+  let result := push 2 interpreter in
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 4660 |}] /\
+  result.(Interpreter.bytecode).(Bytecode.pc) = {| Integer.value := 2 |}.
 Proof.
   timeout 1 vm_compute.
-  reflexivity.
+  split; reflexivity.
 Qed.

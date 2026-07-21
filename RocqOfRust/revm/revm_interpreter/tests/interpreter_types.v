@@ -127,6 +127,7 @@ Export (hints) MemorySlice.
 
 Module Bytecode.
   Record t : Set := {
+    code : list u8;
     pc : usize;
     action : option InterpreterAction.t;
   }.
@@ -135,6 +136,7 @@ Module Bytecode.
     Φ := Ty.path "revm_interpreter::tests::Bytecode";
     φ x :=
       Value.StructRecord "revm_interpreter::tests::Bytecode" [] [] [
+        ("code", φ x.(code));
         ("pc", φ x.(pc));
         ("action", φ x.(action))
       ];
@@ -179,9 +181,13 @@ Module Immediates.
   Definition read_u8 (self : Self) : u8 := 0.
   Definition read_offset_i16 (self : Self) (offset : isize) : i16 := 0.
   Definition read_offset_u16 (self : Self) (offset : isize) : u16 := 0.
+  Definition read_slice_value (self : Self) (len : usize) : list u8 :=
+    Memory.take_pad
+      (Z.to_nat i[len])
+      (List.skipn (Z.to_nat i[self.(Bytecode.pc)]) self.(Bytecode.code)).
   Definition read_slice (len : usize) : RefStub.t Self (list u8) := {|
     RefStub.path := [];
-    RefStub.projection := fun _ => List.repeat (0 : u8) (Z.to_nat i[len]);
+    RefStub.projection := fun self => read_slice_value self len;
     RefStub.injection := fun x _ => x;
   |}.
 
