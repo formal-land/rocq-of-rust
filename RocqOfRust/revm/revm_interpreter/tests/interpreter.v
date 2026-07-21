@@ -5,8 +5,12 @@ Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 
-Definition make_interpreter (stack : Stack.t) : Interpreter.t WIRE WIRE_types := {|
+Definition make_interpreter_with_bytecode
+    (code : list u8)
+    (stack : Stack.t) :
+    Interpreter.t WIRE WIRE_types := {|
   Interpreter.bytecode := {|
+    Bytecode.code := code;
     Bytecode.pc := {| Integer.value := 0 |};
     Bytecode.action := None;
   |};
@@ -40,3 +44,6 @@ Definition make_interpreter (stack : Stack.t) : Interpreter.t WIRE WIRE_types :=
   Interpreter.runtime_flag := SpecId.PRAGUE;
   Interpreter.extend := tt;
 |}.
+
+Definition make_interpreter (stack : Stack.t) : Interpreter.t WIRE WIRE_types :=
+  make_interpreter_with_bytecode [] stack.
