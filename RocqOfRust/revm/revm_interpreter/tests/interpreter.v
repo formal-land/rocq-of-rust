@@ -25,7 +25,10 @@ Definition make_interpreter_with_bytecode
   |};
   Interpreter.stack := stack;
   Interpreter.return_data := tt;
-  Interpreter.memory := {| Memory.value := [] |};
+  Interpreter.memory := {|
+    Memory.value := [];
+    Memory.shared_buffer := [];
+  |};
   Interpreter.input := tt;
   Interpreter.sub_routine := tt;
   Interpreter.control := {|

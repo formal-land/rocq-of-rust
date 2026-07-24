@@ -33,10 +33,11 @@ Module Stack.
 End Stack.
 Export (hints) Stack.
 
-(** Memory represented as a list of bytes *)
+(** Local memory together with the shared buffer used by call inputs. *)
 Module Memory.
   Record t : Set := {
     value : list u8;
+    shared_buffer : list u8;
   }.
 
   Instance IsLink : Link t.
@@ -91,11 +92,14 @@ Module Memory.
     prefix ++ data ++ suffix.
 
   Definition set (self : t) (offset : usize) (data : list u8) : t :=
-    {| value := set_bytes_at self.(value) (Z.to_nat i[offset]) data |}.
+    {|
+      value := set_bytes_at self.(value) (Z.to_nat i[offset]) data;
+      shared_buffer := self.(shared_buffer);
+    |}.
 
   Definition set_data (self : t) (memory_offset data_offset len : usize) (data : list u8) : t :=
     let src := List.skipn (Z.to_nat i[data_offset]) data in
-    let to_copy := List.firstn (Z.to_nat i[len]) src in
+    let to_copy := take_pad (Z.to_nat i[len]) src in
     set self memory_offset to_copy.
 
   Definition copy (self : t) (dst src len : usize) : t :=
@@ -103,7 +107,10 @@ Module Memory.
     set self dst data.
 
   Definition resize (self : t) (new_size : usize) : t :=
-    {| value := extend_to self.(value) (Z.to_nat i[new_size]) |}.
+    {|
+      value := extend_to self.(value) (Z.to_nat i[new_size]);
+      shared_buffer := self.(shared_buffer);
+    |}.
 
   Definition size (self : t) : usize :=
     Z.of_nat (List.length self.(value)).
@@ -526,10 +533,16 @@ Module MemoryTrait.
     Memory.set_data self memory_offset data_offset len data.
 
   Definition set_data_from_global
-      (self : Self) (memory_offset _data_offset len : usize)
+      (self : Self) (memory_offset data_offset len : usize)
       (data_range : Range.t usize) : Self :=
-    let data := Memory.slice self data_range.(Range.start) len in
-    Memory.set self memory_offset data.
+    let range_start := Z.to_nat i[data_range.(Range.start)] in
+    let range_len :=
+      Z.to_nat
+        (i[data_range.(Range.end_)] - i[data_range.(Range.start)]) in
+    let data :=
+      List.firstn range_len
+        (List.skipn range_start self.(Memory.shared_buffer)) in
+    Memory.set_data self memory_offset data_offset len data.
 
   Definition set (self : Self) (memory_offset : usize) (data : list u8) : Self :=
     Memory.set self memory_offset data.
