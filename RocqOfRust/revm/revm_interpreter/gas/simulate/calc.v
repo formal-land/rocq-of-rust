@@ -1,5 +1,6 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
+Require Import core.num.simulate.mod.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_interpreter.gas.links.calc.
@@ -57,8 +58,23 @@ Lemma exp_cost_eq (stack : Stack.t)
   }}.
 Admitted.
 
+Definition cost_per_word_impl (len : usize) (multiple : u64) : option u64 :=
+  let num_words :=
+    lib.BinOp.Wrap.div
+      (Impl_usize.saturating_add len
+        (@lib.Integer_of_Z IntegerKind.Usize 31))
+      (@lib.Integer_of_Z IntegerKind.Usize 32) in
+  BinOp.Checked.mul multiple
+    {| Integer.value := num_words.(Integer.value) |}.
+
+Definition copy_cost_impl (base_cost : u64) (len : usize) : option u64 :=
+  match cost_per_word_impl len COPY with
+  | Some word_cost => BinOp.Checked.add base_cost word_cost
+  | None => None
+  end.
+
 Definition copy_cost_verylow (len : usize) : option u64 :=
-  Some {| Integer.value := 0 |}.
+  copy_cost_impl VERYLOW len.
 
 Lemma copy_cost_verylow_eq (stack : Stack.t) (len : usize) :
   {{
@@ -87,7 +103,7 @@ Lemma extcodecopy_cost_eq (stack : Stack.t)
 Admitted.
 
 Definition copy_cost (base_cost : u64) (len : usize) : option u64 :=
-  Some {| Integer.value := 0 |}.
+  copy_cost_impl base_cost len.
 
 Lemma copy_cost_eq (stack : Stack.t) (base_cost : u64) (len : usize) :
   {{
@@ -123,7 +139,7 @@ Lemma keccak256_cost_eq (stack : Stack.t) (len : usize) :
 Admitted.
 
 Definition cost_per_word (len : usize) (multiple : u64) : option u64 :=
-  Some {| Integer.value := 0 |}.
+  cost_per_word_impl len multiple.
 
 Lemma cost_per_word_eq (stack : Stack.t) (len : usize) (multiple : u64) :
   {{
@@ -408,7 +424,13 @@ Lemma warm_cold_cost_with_delegation_eq (stack : Stack.t)
 Admitted.
 
 Definition memory_gas (num_words : usize) : u64 :=
-  {| Integer.value := 0 |}.
+  let num_words : u64 :=
+    {| Integer.value := num_words.(Integer.value) |} in
+  Impl_u64.saturating_add
+    (Impl_u64.saturating_mul MEMORY num_words)
+    (lib.BinOp.Wrap.div
+      (Impl_u64.saturating_mul num_words num_words)
+      (@lib.Integer_of_Z IntegerKind.U64 512)).
 
 Lemma memory_gas_eq (stack : Stack.t) (num_words : usize) :
   {{

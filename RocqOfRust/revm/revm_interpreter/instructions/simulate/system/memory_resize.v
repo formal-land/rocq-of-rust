@@ -5,6 +5,7 @@ Require Import revm.revm_interpreter.instructions.links.system.memory_resize.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 
 Definition memory_resize
@@ -55,9 +56,16 @@ Proof.
   s. {
     apply calc.copy_cost_verylow_eq.
   }
-  gas_macro_eq idtac.
-  s.
-  destruct (_ =? 0); [s|].
-  as_usize_or_fail_macro_eq InterpreterTypesEq.
-  resize_memory_macro_eq InterpreterTypesEq.
+  destruct (calc.copy_cost_verylow len) eqn:H_cost;
+    cbn.
+  - gas_macro_eq idtac.
+    s.
+    destruct (_ =? 0); [s|].
+    as_usize_or_fail_macro_eq InterpreterTypesEq.
+    resize_memory_macro_eq InterpreterTypesEq.
+  - s; [
+      eapply halt_oog_eq;
+      try eassumption
+    |].
+    s.
 Qed.

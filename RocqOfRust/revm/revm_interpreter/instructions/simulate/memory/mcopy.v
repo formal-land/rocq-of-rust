@@ -91,6 +91,14 @@ Proof.
     apply calc.copy_cost_verylow_eq.
   }
   unfold gas_or_fail_macro, calc.copy_cost_verylow.
+  destruct (calc.copy_cost_impl VERYLOW _) eqn:H_copy_cost; cbn.
+  2: {
+    s. {
+      eapply halt_oog_eq;
+      try eassumption.
+    }
+    s.
+  }
   gas_macro_eq idtac.
   destruct (((len.(Uint.value) mod 2 ^ 64) mod 2 ^ 64) =? 0) eqn:H_len_zero.
   - s.

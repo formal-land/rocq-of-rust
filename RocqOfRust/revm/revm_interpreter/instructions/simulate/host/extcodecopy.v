@@ -160,6 +160,9 @@ Proof.
   s. {
     apply Impl_u64.max_eq.
   }
+  s. {
+    apply Impl_Option.unwrap_or_eq.
+  }
   gas_macro_eq idtac.
   s.
   destruct ((len.(lib.Uint.value) mod 2 ^ 64) mod 2 ^ 64 =? 0) eqn:?; cbn.

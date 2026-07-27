@@ -1,5 +1,6 @@
 Require Import simulate.RocqOfRust.
 Require Import core.num.simulate.mod.
+Require Import revm.revm_interpreter.gas.simulate.calc.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -29,7 +30,17 @@ Module Impl_MemoryGas.
   Qed.
 
   Definition record_new_len (self : Self) (new_num : usize) : option u64 * Self :=
-    (Some (0 : u64), self).
+    if new_num.(Integer.value) <=?
+       self.(MemoryGas.words_num).(Integer.value)
+    then
+      (None, self)
+    else
+      let new_cost := calc.memory_gas new_num in
+      (Some
+        (lib.BinOp.Wrap.sub new_cost self.(MemoryGas.expansion_cost)),
+       self
+         <| MemoryGas.words_num := new_num |>
+         <| MemoryGas.expansion_cost := new_cost |>).
 
   Lemma record_new_len_eq
       {WIRE : Set} `{Link WIRE}
