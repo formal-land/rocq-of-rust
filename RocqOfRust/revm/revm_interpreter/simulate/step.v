@@ -11,18 +11,20 @@ Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 
 Module InterpreterStep.
-  Inductive Preparation
-      (H WIRE : Set) `{Link H} `{Link WIRE}
-      (WIRE_types : InterpreterTypes.Types.t)
-      `{InterpreterTypes.Types.AreLinks WIRE_types} : Set :=
-  | OutOfGas (state : InstructionContext.State H WIRE WIRE_types)
-  | Ready
-      (opcode : u8)
-      (instruction : Instruction.t WIRE H WIRE_types)
-      (state : InstructionContext.State H WIRE WIRE_types).
+  Module Preparation.
+    Inductive t
+        (H WIRE : Set) `{Link H} `{Link WIRE}
+        (WIRE_types : InterpreterTypes.Types.t)
+        `{InterpreterTypes.Types.AreLinks WIRE_types} : Set :=
+    | OutOfGas (state : InstructionContext.State.t H WIRE WIRE_types)
+    | Ready
+        (opcode : u8)
+        (instruction : Instruction.t WIRE H WIRE_types)
+        (state : InstructionContext.State.t H WIRE WIRE_types).
 
-  Arguments OutOfGas {_ _ _ _ _ _} _.
-  Arguments Ready {_ _ _ _ _ _} _ _ _.
+    Arguments OutOfGas {_ _ _ _ _ _} _.
+    Arguments Ready {_ _ _ _ _ _} _ _ _.
+  End Preparation.
 
   Definition instruction_at
       {H WIRE : Set} `{Link H} `{Link WIRE}
@@ -54,12 +56,12 @@ Module InterpreterStep.
         array.t
           (Instruction.t WIRE H WIRE_types)
           {| Integer.value := 256 |})
-      (state : InstructionContext.State H WIRE WIRE_types) :
-      option (Preparation H WIRE WIRE_types) :=
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+      option (Preparation.t H WIRE WIRE_types) :=
     match state with
     | {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := host
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host
       |} =>
         let jumps :=
           IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode) in
@@ -80,20 +82,20 @@ Module InterpreterStep.
             with
             | None =>
                 Some
-                  (OutOfGas {|
-                    InstructionContext.state_interpreter :=
+                  (Preparation.OutOfGas {|
+                    InstructionContext.State.interpreter :=
                       halt_oog interpreter;
-                    InstructionContext.state_host := host;
+                    InstructionContext.State.host := host;
                   |})
             | Some gas =>
                 Some
-                  (Ready
+                  (Preparation.Ready
                     opcode
                     instruction
                     {|
-                      InstructionContext.state_interpreter :=
+                      InstructionContext.State.interpreter :=
                         interpreter <| Interpreter.gas := gas |>;
-                      InstructionContext.state_host := host;
+                      InstructionContext.State.host := host;
                     |})
             end
         end
@@ -104,20 +106,22 @@ Module InterpreterStep.
       (WIRE_types : InterpreterTypes.Types.t)
       `{InterpreterTypes.Types.AreLinks WIRE_types} : Set :=
     u8 ->
-    InstructionContext.State H WIRE WIRE_types ->
-    InstructionContext.State H WIRE WIRE_types.
+    InstructionContext.State.t H WIRE WIRE_types ->
+    InstructionContext.State.t H WIRE WIRE_types.
 
-  Inductive Result
-      (H WIRE : Set) `{Link H} `{Link WIRE}
-      (WIRE_types : InterpreterTypes.Types.t)
-      `{InterpreterTypes.Types.AreLinks WIRE_types} : Set :=
-  | MissingInstruction
-  | OutOfGasResult (state : InstructionContext.State H WIRE WIRE_types)
-  | Success (state : InstructionContext.State H WIRE WIRE_types).
+  Module Result.
+    Inductive t
+        (H WIRE : Set) `{Link H} `{Link WIRE}
+        (WIRE_types : InterpreterTypes.Types.t)
+        `{InterpreterTypes.Types.AreLinks WIRE_types} : Set :=
+    | MissingInstruction
+    | OutOfGas (state : InstructionContext.State.t H WIRE WIRE_types)
+    | Success (state : InstructionContext.State.t H WIRE WIRE_types).
 
-  Arguments MissingInstruction {_ _ _ _ _ _}.
-  Arguments OutOfGasResult {_ _ _ _ _ _} _.
-  Arguments Success {_ _ _ _ _ _} _.
+    Arguments MissingInstruction {_ _ _ _ _ _}.
+    Arguments OutOfGas {_ _ _ _ _ _} _.
+    Arguments Success {_ _ _ _ _ _} _.
+  End Result.
 
   Definition step_result
       {H WIRE : Set} `{Link H} `{Link WIRE}
@@ -129,12 +133,12 @@ Module InterpreterStep.
         array.t
           (Instruction.t WIRE H WIRE_types)
           {| Integer.value := 256 |})
-      (state : InstructionContext.State H WIRE WIRE_types) :
-      Result H WIRE WIRE_types :=
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+      Result.t H WIRE WIRE_types :=
     match prepare IInterpreterTypes table state with
-    | None => MissingInstruction
-    | Some (OutOfGas state) => OutOfGasResult state
-    | Some (Ready opcode _ state) =>
-        Success (dispatch opcode state)
+    | None => Result.MissingInstruction
+    | Some (Preparation.OutOfGas state) => Result.OutOfGas state
+    | Some (Preparation.Ready opcode _ state) =>
+        Result.Success (dispatch opcode state)
     end.
 End InterpreterStep.

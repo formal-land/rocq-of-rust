@@ -4,13 +4,15 @@ Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 
 Module InstructionContext.
-  Record State
-      (H WIRE : Set) `{Link H} `{Link WIRE}
-      (WIRE_types : InterpreterTypes.Types.t)
-      `{InterpreterTypes.Types.AreLinks WIRE_types} : Set := {
-    state_interpreter : Interpreter.t WIRE WIRE_types;
-    state_host : H;
-  }.
+  Module State.
+    Record t
+        (H WIRE : Set) `{Link H} `{Link WIRE}
+        (WIRE_types : InterpreterTypes.Types.t)
+        `{InterpreterTypes.Types.AreLinks WIRE_types} : Set := {
+      interpreter : Interpreter.t WIRE WIRE_types;
+      host : H;
+    }.
+  End State.
 
   Definition make
       {H WIRE : Set} `{Link H} `{Link WIRE}
@@ -26,7 +28,7 @@ Module InstructionContext.
       {H WIRE : Set} `{Link H} `{Link WIRE}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (_state : State H WIRE WIRE_types) :
+      (_state : State.t H WIRE WIRE_types) :
       instruction_context.InstructionContext.t H WIRE WIRE_types :=
     make.
 
@@ -37,13 +39,13 @@ Module InstructionContext.
       (f :
         Interpreter.t WIRE WIRE_types ->
         Interpreter.t WIRE WIRE_types)
-      (state : State H WIRE WIRE_types) :
-      State H WIRE WIRE_types :=
+      (state : State.t H WIRE WIRE_types) :
+      State.t H WIRE WIRE_types :=
     match state with
-    | {| state_interpreter := interpreter; state_host := host |} =>
+    | {| State.interpreter := interpreter; State.host := host |} =>
         {|
-          state_interpreter := f interpreter;
-          state_host := host;
+          State.interpreter := f interpreter;
+          State.host := host;
         |}
     end.
 End InstructionContext.

@@ -59,8 +59,8 @@ Module InterpreterDispatch.
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
       (opcode : u8)
-      (state : InstructionContext.State H WIRE WIRE_types) :
-      InstructionContext.State H WIRE WIRE_types :=
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+      InstructionContext.State.t H WIRE WIRE_types :=
     InstructionContext.map_interpreter
       (if Z.eqb opcode.(Integer.value) 0 then
         stop
@@ -75,7 +75,7 @@ Module InterpreterDispatch.
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
-      (state : InstructionContext.State H WIRE WIRE_types) :
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 0 |} state =
     InstructionContext.map_interpreter stop state.
   Proof.
@@ -87,7 +87,7 @@ Module InterpreterDispatch.
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
-      (state : InstructionContext.State H WIRE WIRE_types) :
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 1 |} state =
     InstructionContext.map_interpreter add state.
   Proof.
@@ -103,8 +103,8 @@ Module InterpreterDispatch.
         array.t
           (Instruction.t WIRE H WIRE_types)
           {| Integer.value := 256 |})
-      (state : InstructionContext.State H WIRE WIRE_types) :
-      InterpreterStep.Result H WIRE WIRE_types :=
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+      InterpreterStep.Result.t H WIRE WIRE_types :=
     InterpreterStep.step_result
       IInterpreterTypes
       (fun opcode state =>
@@ -119,13 +119,13 @@ Module InterpreterDispatch.
       {H WIRE : Set} `{Link H} `{Link WIRE}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (initial_state : InstructionContext.State H WIRE WIRE_types)
-      (result : InterpreterStep.Result H WIRE WIRE_types) :
-      InstructionContext.State H WIRE WIRE_types :=
+      (initial_state : InstructionContext.State.t H WIRE WIRE_types)
+      (result : InterpreterStep.Result.t H WIRE WIRE_types) :
+      InstructionContext.State.t H WIRE WIRE_types :=
     match result with
-    | InterpreterStep.MissingInstruction => initial_state
-    | InterpreterStep.OutOfGasResult state => state
-    | InterpreterStep.Success state => state
+    | InterpreterStep.Result.MissingInstruction => initial_state
+    | InterpreterStep.Result.OutOfGas state => state
+    | InterpreterStep.Result.Success state => state
     end.
 
   Definition stack_with_table
@@ -136,12 +136,12 @@ Module InterpreterDispatch.
         array.t
           (Instruction.t WIRE H WIRE_types)
           {| Integer.value := 256 |})
-      (state : InstructionContext.State H WIRE WIRE_types) :
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
       Stack.t :=
     match state with
     | {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := host
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host
       |} =>
         [interpreter; table; host]%stack
     end.
@@ -157,7 +157,7 @@ Module InterpreterDispatch.
       (InterpreterTypesEq :
         InterpreterTypes.Eq.t
           WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
-      (state : InstructionContext.State H WIRE WIRE_types) :
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
     let table :=
       FragmentInstructionTable.table
         (H := H)
@@ -194,13 +194,13 @@ Module InterpreterDispatch.
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
-      (state : InstructionContext.State H WIRE WIRE_types) :
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
       InterpreterAction.t *
-        InstructionContext.State H WIRE WIRE_types :=
+        InstructionContext.State.t H WIRE WIRE_types :=
     match state with
     | {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := host
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host
       |} =>
         let '(action, bytecode) :=
           IInterpreterTypes
@@ -208,9 +208,9 @@ Module InterpreterDispatch.
             .(LoopControl.take_next_action)
             interpreter.(Interpreter.bytecode) in
         (action, {|
-          InstructionContext.state_interpreter :=
+          InstructionContext.State.interpreter :=
             interpreter <| Interpreter.bytecode := bytecode |>;
-          InstructionContext.state_host := host;
+          InstructionContext.State.host := host;
         |})
     end.
 
@@ -221,14 +221,14 @@ Module InterpreterDispatch.
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
       (is_not_end :
         WIRE_types.(InterpreterTypes.Types.Bytecode) -> bool)
-      (state : InstructionContext.State H WIRE WIRE_types) :
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
       option
         (InterpreterAction.t *
-          InstructionContext.State H WIRE WIRE_types) :=
+          InstructionContext.State.t H WIRE WIRE_types) :=
     match state with
     | {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := _
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := _
       |} =>
         if is_not_end interpreter.(Interpreter.bytecode)
         then None
@@ -247,10 +247,10 @@ Module InterpreterDispatch.
         array.t
           (Instruction.t WIRE H WIRE_types)
           {| Integer.value := 256 |})
-      (state : InstructionContext.State H WIRE WIRE_types) :
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
       option
         (InterpreterAction.t *
-          InstructionContext.State H WIRE WIRE_types) :=
+          InstructionContext.State.t H WIRE WIRE_types) :=
     match finish_if_halted IInterpreterTypes is_not_end state with
     | Some result => Some result
     | None =>
@@ -258,9 +258,9 @@ Module InterpreterDispatch.
         | O => None
         | S fuel =>
             match step_result_simple IInterpreterTypes table state with
-            | InterpreterStep.MissingInstruction => None
-            | InterpreterStep.OutOfGasResult state
-            | InterpreterStep.Success state =>
+            | InterpreterStep.Result.MissingInstruction => None
+            | InterpreterStep.Result.OutOfGas state
+            | InterpreterStep.Result.Success state =>
                 run_plain_fuel
                   fuel IInterpreterTypes is_not_end table state
             end
@@ -300,7 +300,7 @@ Module InterpreterDispatch.
       (run_InterpreterTypes_for_WIRE :
         InterpreterTypes.Run WIRE WIRE_types)
       (initial_state final_state :
-        InstructionContext.State H WIRE WIRE_types)
+        InstructionContext.State.t H WIRE WIRE_types)
       (action : InterpreterAction.t) : Prop :=
     let table :=
       FragmentInstructionTable.table
@@ -344,7 +344,7 @@ Module InterpreterDispatch.
           WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
       (fuel : nat)
       (initial_state final_state :
-        InstructionContext.State H WIRE WIRE_types)
+        InstructionContext.State.t H WIRE WIRE_types)
       (action : InterpreterAction.t)
       (H_run :
         run_plain_fuel
@@ -384,7 +384,7 @@ Module InterpreterDispatch.
         Interpreter.t WIRE WIRE_types ->
         Interpreter.t WIRE WIRE_types)
       (H_dispatch :
-        forall state : InstructionContext.State H WIRE WIRE_types,
+        forall state : InstructionContext.State.t H WIRE WIRE_types,
           simple
             (IInterpreterTypes := IInterpreterTypes)
             opcode state =
@@ -404,13 +404,13 @@ Module InterpreterDispatch.
         Some gas) :
     step_result_simple IInterpreterTypes table
       {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := host;
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host;
       |} =
-    InterpreterStep.Success
+    InterpreterStep.Result.Success
       (InstructionContext.map_interpreter operation
         {|
-          InstructionContext.state_interpreter :=
+          InstructionContext.State.interpreter :=
             (interpreter
                 <| Interpreter.bytecode :=
                   IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
@@ -419,7 +419,7 @@ Module InterpreterDispatch.
                     {| Integer.value := 1 |}
                 |>)
               <| Interpreter.gas := gas |>;
-          InstructionContext.state_host := host;
+          InstructionContext.State.host := host;
         |}).
   Proof.
     destruct interpreter.
@@ -462,13 +462,13 @@ Module InterpreterDispatch.
         Some gas) :
     step_result_simple IInterpreterTypes table
       {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := host;
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host;
       |} =
-    InterpreterStep.Success
+    InterpreterStep.Result.Success
       (InstructionContext.map_interpreter stop
         {|
-          InstructionContext.state_interpreter :=
+          InstructionContext.State.interpreter :=
             (interpreter
                 <| Interpreter.bytecode :=
                   IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
@@ -477,7 +477,7 @@ Module InterpreterDispatch.
                     {| Integer.value := 1 |}
                 |>)
               <| Interpreter.gas := gas |>;
-          InstructionContext.state_host := host;
+          InstructionContext.State.host := host;
         |}).
   Proof.
     eapply step_result_success
@@ -520,13 +520,13 @@ Module InterpreterDispatch.
         Some gas) :
     step_result_simple IInterpreterTypes table
       {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := host;
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host;
       |} =
-    InterpreterStep.Success
+    InterpreterStep.Result.Success
       (InstructionContext.map_interpreter add
         {|
-          InstructionContext.state_interpreter :=
+          InstructionContext.State.interpreter :=
             (interpreter
                 <| Interpreter.bytecode :=
                   IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
@@ -535,7 +535,7 @@ Module InterpreterDispatch.
                     {| Integer.value := 1 |}
                 |>)
               <| Interpreter.gas := gas |>;
-          InstructionContext.state_host := host;
+          InstructionContext.State.host := host;
         |}).
   Proof.
     eapply step_result_success
@@ -574,12 +574,12 @@ Module InterpreterDispatch.
         None) :
     step_result_simple IInterpreterTypes table
       {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := host;
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host;
       |} =
-    InterpreterStep.OutOfGasResult
+    InterpreterStep.Result.OutOfGas
       {|
-        InstructionContext.state_interpreter :=
+        InstructionContext.State.interpreter :=
           halt_oog
             (interpreter
               <| Interpreter.bytecode :=
@@ -588,7 +588,7 @@ Module InterpreterDispatch.
                   interpreter.(Interpreter.bytecode)
                   {| Integer.value := 1 |}
               |>);
-        InstructionContext.state_host := host;
+        InstructionContext.State.host := host;
       |}.
   Proof.
     destruct interpreter.
