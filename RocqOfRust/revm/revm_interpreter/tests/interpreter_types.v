@@ -225,7 +225,44 @@ Module Jumps.
     self <| Bytecode.pc := offset |>.
   Definition is_valid_legacy_jump (self : Self) (_offset : usize) : bool * Self := (true, self).
   Definition pc (self : Self) : usize := self.(Bytecode.pc).
-  Definition opcode (self : Self) : u8 := 0.
+  Definition opcode (self : Self) : u8 :=
+    match
+      List.nth_error
+        self.(Bytecode.code)
+        (Z.to_nat self.(Bytecode.pc).(Integer.value))
+    with
+    | Some opcode => opcode
+    | None => 0
+    end.
+
+  Lemma opcode_in_bounds
+      (self : Self)
+      (opcode : u8)
+      (H_opcode :
+        List.nth_error
+          self.(Bytecode.code)
+          (Z.to_nat self.(Bytecode.pc).(Integer.value)) =
+        Some opcode) :
+    Jumps.opcode self = opcode.
+  Proof.
+    unfold Jumps.opcode.
+    rewrite H_opcode.
+    reflexivity.
+  Qed.
+
+  Lemma opcode_out_of_bounds
+      (self : Self)
+      (H_opcode :
+        List.nth_error
+          self.(Bytecode.code)
+          (Z.to_nat self.(Bytecode.pc).(Integer.value)) =
+        None) :
+    Jumps.opcode self = 0.
+  Proof.
+    unfold Jumps.opcode.
+    rewrite H_opcode.
+    reflexivity.
+  Qed.
 
   Instance I : Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
     simulate.interpreter_types.Jumps.relative_jump := relative_jump;

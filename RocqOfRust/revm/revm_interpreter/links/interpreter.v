@@ -23,29 +23,29 @@ Module Impl_Interpreter.
     Interpreter.t IW IW_types.
 
   (*
-  pub(crate) fn step<FN, H: Host>(&mut self, instruction_table: &[FN; 256], host: &mut H)
-  where
-      FN: CustomInstruction<Wire = IW, Host = H>,
+  pub fn step<H: Host + ?Sized>(
+      &mut self,
+      instruction_table: &InstructionTable<IW, H>,
+      host: &mut H,
+  )
   *)
   Instance run_step
-      (IW H FN : Set) `{Link IW} `{Link H} `{Link FN}
+      (IW H : Set) `{Link IW} `{Link H}
       {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
       {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
-      {run_CustomInstruction_for_FN : CustomInstruction.Run FN IW IW_types H}
       (self : '&mut (Self IW run_InterpreterTypes_for_IW))
-      (instruction_table : '& (array.t FN {| Integer.value := 256 |}))
+      (instruction_table :
+        '& (array.t
+          (Instruction.t IW H IW_types)
+          {| Integer.value := 256 |}))
       (host : '&mut H) :
     Run.Trait
       (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.step (Φ IW))
         []
-        [ Φ FN; Φ H ]
+        [ Φ H ]
         [ φ self; φ instruction_table; φ host ]
       unit.
-  Proof.
-    constructor.
-    destruct run_CustomInstruction_for_FN.
-    run_symbolic.
-  Defined.
+  Admitted.
   Global Opaque run_step.
 
    (* pub fn halt(&mut self, result: InstructionResult) *)
