@@ -107,33 +107,6 @@ Module InterpreterStep.
     InstructionContext.State H WIRE WIRE_types ->
     InstructionContext.State H WIRE WIRE_types.
 
-  Definition finish
-      {H WIRE : Set} `{Link H} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t}
-      `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (dispatch : Dispatch H WIRE WIRE_types)
-      (preparation : Preparation H WIRE WIRE_types) :
-      InstructionContext.State H WIRE WIRE_types :=
-    match preparation with
-    | OutOfGas state => state
-    | Ready opcode _ state => dispatch opcode state
-    end.
-
-  Definition step
-      {H WIRE : Set} `{Link H} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t}
-      `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
-      (dispatch : Dispatch H WIRE WIRE_types)
-      (table :
-        array.t
-          (Instruction.t WIRE H WIRE_types)
-          {| Integer.value := 256 |})
-      (state : InstructionContext.State H WIRE WIRE_types) :
-      option (InstructionContext.State H WIRE WIRE_types) :=
-    option_map (finish dispatch)
-      (prepare IInterpreterTypes table state).
-
   Inductive Result
       (H WIRE : Set) `{Link H} `{Link WIRE}
       (WIRE_types : InterpreterTypes.Types.t)

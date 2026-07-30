@@ -235,35 +235,6 @@ Module Jumps.
     | None => 0
     end.
 
-  Lemma opcode_in_bounds
-      (self : Self)
-      (opcode : u8)
-      (H_opcode :
-        List.nth_error
-          self.(Bytecode.code)
-          (Z.to_nat self.(Bytecode.pc).(Integer.value)) =
-        Some opcode) :
-    Jumps.opcode self = opcode.
-  Proof.
-    unfold Jumps.opcode.
-    rewrite H_opcode.
-    reflexivity.
-  Qed.
-
-  Lemma opcode_out_of_bounds
-      (self : Self)
-      (H_opcode :
-        List.nth_error
-          self.(Bytecode.code)
-          (Z.to_nat self.(Bytecode.pc).(Integer.value)) =
-        None) :
-    Jumps.opcode self = 0.
-  Proof.
-    unfold Jumps.opcode.
-    rewrite H_opcode.
-    reflexivity.
-  Qed.
-
   Instance I : Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
     simulate.interpreter_types.Jumps.relative_jump := relative_jump;
     simulate.interpreter_types.Jumps.absolute_jump := absolute_jump;

@@ -94,27 +94,6 @@ Module InterpreterDispatch.
     reflexivity.
   Qed.
 
-  Definition step_simple
-      {H WIRE : Set} `{Link H} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t}
-      `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
-      (table :
-        array.t
-          (Instruction.t WIRE H WIRE_types)
-          {| Integer.value := 256 |})
-      (state : InstructionContext.State H WIRE WIRE_types) :
-      option (InstructionContext.State H WIRE WIRE_types) :=
-    InterpreterStep.step
-      IInterpreterTypes
-      (fun opcode state =>
-        simple
-          (IInterpreterTypes := IInterpreterTypes)
-          opcode
-          state)
-      table
-      state.
-
   Definition step_result_simple
       {H WIRE : Set} `{Link H} `{Link WIRE}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -386,120 +365,6 @@ Module InterpreterDispatch.
     (* Admitted boundary: iteration of step_simple_eq and take_next_action. *)
   Admitted.
 
-  Lemma step_stop
-      {H WIRE : Set} `{Link H} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t}
-      `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
-      (table :
-        array.t
-          (Instruction.t WIRE H WIRE_types)
-          {| Integer.value := 256 |})
-      (interpreter : Interpreter.t WIRE WIRE_types)
-      (host : H)
-      (instruction : Instruction.t WIRE H WIRE_types)
-      (gas : Gas.t)
-      (H_opcode :
-        IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
-          .(Jumps.opcode) interpreter.(Interpreter.bytecode) =
-        {| Integer.value := 0 |})
-      (H_instruction :
-        InterpreterStep.instruction_at table {| Integer.value := 0 |} =
-        Some instruction)
-      (H_gas :
-        InterpreterStep.instruction_static_gas instruction =
-        {| Integer.value := 0 |})
-      (H_charge :
-        Impl_Gas.record_cost
-          interpreter.(Interpreter.gas)
-          {| Integer.value := 0 |} =
-        Some gas) :
-    step_simple IInterpreterTypes table
-      {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := host;
-      |} =
-    Some
-      (InstructionContext.map_interpreter stop
-        {|
-          InstructionContext.state_interpreter :=
-            (interpreter
-                <| Interpreter.bytecode :=
-                  IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
-                    .(Jumps.relative_jump)
-                    interpreter.(Interpreter.bytecode)
-                    {| Integer.value := 1 |}
-                |>)
-              <| Interpreter.gas := gas |>;
-          InstructionContext.state_host := host;
-        |}).
-  Proof.
-    destruct interpreter.
-    cbn in H_charge.
-    unfold step_simple, InterpreterStep.step, InterpreterStep.prepare.
-    rewrite H_opcode, H_instruction, H_gas.
-    cbn in H_charge |- *.
-    rewrite H_charge.
-    reflexivity.
-  Qed.
-
-  Lemma step_add
-      {H WIRE : Set} `{Link H} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t}
-      `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
-      (table :
-        array.t
-          (Instruction.t WIRE H WIRE_types)
-          {| Integer.value := 256 |})
-      (interpreter : Interpreter.t WIRE WIRE_types)
-      (host : H)
-      (instruction : Instruction.t WIRE H WIRE_types)
-      (gas : Gas.t)
-      (H_opcode :
-        IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
-          .(Jumps.opcode) interpreter.(Interpreter.bytecode) =
-        {| Integer.value := 1 |})
-      (H_instruction :
-        InterpreterStep.instruction_at table {| Integer.value := 1 |} =
-        Some instruction)
-      (H_gas :
-        InterpreterStep.instruction_static_gas instruction =
-        {| Integer.value := 5 |})
-      (H_charge :
-        Impl_Gas.record_cost
-          interpreter.(Interpreter.gas)
-          {| Integer.value := 5 |} =
-        Some gas) :
-    step_simple IInterpreterTypes table
-      {|
-        InstructionContext.state_interpreter := interpreter;
-        InstructionContext.state_host := host;
-      |} =
-    Some
-      (InstructionContext.map_interpreter add
-        {|
-          InstructionContext.state_interpreter :=
-            (interpreter
-              <| Interpreter.bytecode :=
-                IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
-                  .(Jumps.relative_jump)
-                  interpreter.(Interpreter.bytecode)
-                  {| Integer.value := 1 |}
-              |>)
-              <| Interpreter.gas := gas |>;
-          InstructionContext.state_host := host;
-        |}).
-  Proof.
-    destruct interpreter.
-    cbn in H_charge.
-    unfold step_simple, InterpreterStep.step, InterpreterStep.prepare.
-    rewrite H_opcode, H_instruction, H_gas.
-    cbn in H_charge |- *.
-    rewrite H_charge.
-    reflexivity.
-  Qed.
-
   Lemma step_result_success
       {H WIRE : Set} `{Link H} `{Link WIRE}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -615,14 +480,14 @@ Module InterpreterDispatch.
           InstructionContext.state_host := host;
         |}).
   Proof.
-    destruct interpreter.
-    cbn in H_charge.
-    unfold step_result_simple, InterpreterStep.step_result,
-      InterpreterStep.prepare.
-    rewrite H_opcode, H_instruction, H_gas.
-    cbn in H_charge |- *.
-    rewrite H_charge.
-    reflexivity.
+    eapply step_result_success
+      with
+        (opcode := {| Integer.value := 0 |})
+        (instruction := instruction)
+        (static_gas := {| Integer.value := 0 |});
+      try eassumption.
+    intros state.
+    apply simple_stop.
   Qed.
 
   Lemma step_result_add
@@ -673,14 +538,14 @@ Module InterpreterDispatch.
           InstructionContext.state_host := host;
         |}).
   Proof.
-    destruct interpreter.
-    cbn in H_charge.
-    unfold step_result_simple, InterpreterStep.step_result,
-      InterpreterStep.prepare.
-    rewrite H_opcode, H_instruction, H_gas.
-    cbn in H_charge |- *.
-    rewrite H_charge.
-    reflexivity.
+    eapply step_result_success
+      with
+        (opcode := {| Integer.value := 1 |})
+        (instruction := instruction)
+        (static_gas := {| Integer.value := 3 |});
+      try eassumption.
+    intros state.
+    apply simple_add.
   Qed.
 
   Lemma step_result_out_of_gas

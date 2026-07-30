@@ -30,16 +30,6 @@ Module InstructionContext.
       instruction_context.InstructionContext.t H WIRE WIRE_types :=
     make.
 
-  Definition stack
-      {H WIRE : Set} `{Link H} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t}
-      `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (state : State H WIRE WIRE_types) : Stack.t :=
-    match state with
-    | {| state_interpreter := interpreter; state_host := host |} =>
-        [interpreter; host]%stack
-    end.
-
   Definition map_interpreter
       {H WIRE : Set} `{Link H} `{Link WIRE}
       {WIRE_types : InterpreterTypes.Types.t}
