@@ -41,6 +41,17 @@ Module FragmentInstructionTable.
     Function1.of_run
       (fun context => run_sub run_InterpreterTypes_for_WIRE context).
 
+  Definition mul_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_mul run_InterpreterTypes_for_WIRE context).
+
   Definition unknown_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -81,6 +92,11 @@ Module FragmentInstructionTable.
         sub_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 3 |};
     |} in
+    let mul_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        mul_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
     @array.Build_t
       (Instruction.t WIRE H WIRE_types)
       {| Integer.value := 256 |}
@@ -90,7 +106,7 @@ Module FragmentInstructionTable.
           (ArrayPair.Build_t
             add_instruction
             (ArrayPair.Build_t
-              unknown_instruction
+              mul_instruction
               (ArrayPair.Build_t
                 sub_instruction
                 (ArrayPairs.repeat unknown_instruction 252))))
