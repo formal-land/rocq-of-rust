@@ -362,13 +362,15 @@ Lemma load_acc_and_calc_gas_eq
     (transfers_value create_empty_account : bool)
     (stack_gas_limit : u64)
     (stack : Stack.t) :
-  let ref_context := make_ref (A := InstructionContext.t H WIRE WIRE_types) 0 in
-  let ref_interpreter := make_ref (A := Interpreter.t WIRE WIRE_types) 1 in
-  let ref_host := make_ref (A := H) 2 in
+  let ref_interpreter := make_ref (A := Interpreter.t WIRE WIRE_types) 0 in
+  let ref_host := make_ref (A := H) 1 in
   let context := {|
     InstructionContext.interpreter := ref_interpreter;
     InstructionContext.host := ref_host;
   |} in
+  let ref_context : '&mut (InstructionContext.t H WIRE WIRE_types) :=
+    Ref.cast_to Pointer.Kind.MutRef
+      (Ref.immediate Pointer.Kind.Raw context) in
   {{
     SimulateM.eval_f (
       run_load_acc_and_calc_gas
@@ -378,7 +380,7 @@ Lemma load_acc_and_calc_gas_eq
         create_empty_account
         stack_gas_limit
     )
-    (context :: interpreter :: host :: stack)%stack 🌲
+    (interpreter :: host :: stack)%stack 🌲
     let '(result, interpreter, host) :=
       @load_acc_and_calc_gas
         WIRE
@@ -399,7 +401,7 @@ Lemma load_acc_and_calc_gas_eq
         stack_gas_limit in
     (
       Output.Success result,
-      (context :: interpreter :: host :: stack)%stack
+      (interpreter :: host :: stack)%stack
     )
   }}.
 Proof.
