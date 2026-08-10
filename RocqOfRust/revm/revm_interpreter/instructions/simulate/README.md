@@ -67,7 +67,7 @@ Rust source: [`../contract.rs`](../contract.rs)
 | [call](contract/call.v) | ✗ |
 | [call_code](contract/call_code.v) | ✗ |
 | [create](contract/create.v) | ✗ |
-| [delegate_call](contract/delegate_call.v) | ✗ |
+| [delegate_call](contract/delegate_call.v) | ✓ |
 | [static_call](contract/static_call.v) | ✓ |
 
 ## control/
@@ -162,11 +162,11 @@ Rust source: [`../tx_info.rs`](../tx_info.rs)
 | arithmetic | 11 | 0 | 11 |
 | bitwise | 15 | 0 | 15 |
 | block_info | 8 | 0 | 8 |
-| contract | 1 | 4 | 5 |
+| contract | 2 | 3 | 5 |
 | control | 11 | 0 | 11 |
 | host | 6 | 6 | 12 |
 | memory | 5 | 0 | 5 |
 | stack | 5 | 0 | 5 |
 | system | 11 | 2 | 13 |
 | tx_info | 3 | 0 | 3 |
-| **Total** | **76** | **12** | **88** |
+| **Total** | **77** | **11** | **88** |
