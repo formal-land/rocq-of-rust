@@ -330,6 +330,7 @@ Module str.
     
     Global Instance Instance_IsFunction_str_index_overflow_fail :
       M.IsFunction.C "core::str::traits::str_index_overflow_fail" str_index_overflow_fail.
+    Proof.
     Admitted.
     Global Typeclasses Opaque str_index_overflow_fail.
     

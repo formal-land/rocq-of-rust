@@ -120,6 +120,7 @@ Module Impl_Option.
     Run.Trait
       (option.Impl_core_option_Option_T.as_ref (Φ T)) [] [] [ φ self ]
       (option ('& T)).
+  Proof.
   Admitted.
   Global Opaque run_as_ref.
 
@@ -134,6 +135,7 @@ Module Impl_Option.
     Run.Trait
       (option.Impl_core_option_Option_T.map (Φ T)) [] [ Φ U; Φ F ] [ φ self; φ f ]
       (option U).
+  Proof.
   Admitted.
   Global Opaque run_map.
 
@@ -236,6 +238,7 @@ Module Impl_Try_for_Option.
   Defined.
 
   Instance run (T : Set) `{Link T} : Try.Run (Self T) (Types T).
+  Proof.
   Admitted.
 End Impl_Try_for_Option.
 Export (hints) Impl_Try_for_Option.
@@ -246,6 +249,7 @@ Module Impl_FromResidual_Infallible_for_Option.
     option T.
 
   Instance run (T : Set) `{Link T} : FromResidual.Run (Self T) (option Infallible.t).
+  Proof.
   Admitted.
 End Impl_FromResidual_Infallible_for_Option.
 Export (hints) Impl_FromResidual_Infallible_for_Option.

@@ -5,15 +5,18 @@ Parameter choose_u32 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_choose_u32 :
   M.IsFunction.C "choose_and_add::choose_u32" choose_u32.
+Proof.
 Admitted.
 
 Parameter add_pair : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_add_pair : M.IsFunction.C "choose_and_add::add_pair" add_pair.
+Proof.
 Admitted.
 
 Parameter choose_and_add : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_choose_and_add :
   M.IsFunction.C "choose_and_add::choose_and_add" choose_and_add.
+Proof.
 Admitted.

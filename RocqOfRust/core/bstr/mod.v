@@ -59,6 +59,7 @@ Module bstr.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -105,6 +106,7 @@ Module bstr.
     
     Global Instance AssociatedFunction_from_bytes :
       M.IsAssociatedFunction.C Self "from_bytes" from_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_bytes.
     
@@ -164,6 +166,7 @@ Module bstr.
     
     Global Instance AssociatedFunction_from_bytes_mut :
       M.IsAssociatedFunction.C Self "from_bytes_mut" from_bytes_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_bytes_mut.
     
@@ -195,6 +198,7 @@ Module bstr.
       end.
     
     Global Instance AssociatedFunction_as_bytes : M.IsAssociatedFunction.C Self "as_bytes" as_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes.
     
@@ -232,6 +236,7 @@ Module bstr.
     
     Global Instance AssociatedFunction_as_bytes_mut :
       M.IsAssociatedFunction.C Self "as_bytes_mut" as_bytes_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes_mut.
   End Impl_core_bstr_ByteStr.

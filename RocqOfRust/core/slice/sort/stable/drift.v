@@ -1126,6 +1126,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_sort :
           M.IsFunction.C "core::slice::sort::stable::drift::sort" sort.
+        Proof.
         Admitted.
         Global Typeclasses Opaque sort.
         
@@ -1141,6 +1142,7 @@ Module slice.
             M.IsFunction.C
               "core::slice::sort::stable::drift::sort::MIN_SQRT_RUN_LEN"
               value_MIN_SQRT_RUN_LEN.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_MIN_SQRT_RUN_LEN.
         End sort.
@@ -1241,6 +1243,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::stable::drift::merge_tree_scale_factor"
             merge_tree_scale_factor.
+        Proof.
         Admitted.
         Global Typeclasses Opaque merge_tree_scale_factor.
         
@@ -1311,6 +1314,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_merge_tree_depth :
           M.IsFunction.C "core::slice::sort::stable::drift::merge_tree_depth" merge_tree_depth.
+        Proof.
         Admitted.
         Global Typeclasses Opaque merge_tree_depth.
         
@@ -1387,6 +1391,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_sqrt_approx :
           M.IsFunction.C "core::slice::sort::stable::drift::sqrt_approx" sqrt_approx.
+        Proof.
         Admitted.
         Global Typeclasses Opaque sqrt_approx.
         
@@ -1815,6 +1820,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_logical_merge :
           M.IsFunction.C "core::slice::sort::stable::drift::logical_merge" logical_merge.
+        Proof.
         Admitted.
         Global Typeclasses Opaque logical_merge.
         
@@ -2241,6 +2247,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_create_run :
           M.IsFunction.C "core::slice::sort::stable::drift::create_run" create_run.
+        Proof.
         Admitted.
         Global Typeclasses Opaque create_run.
         
@@ -2338,6 +2345,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_stable_quicksort :
           M.IsFunction.C "core::slice::sort::stable::drift::stable_quicksort" stable_quicksort.
+        Proof.
         Admitted.
         Global Typeclasses Opaque stable_quicksort.
         
@@ -2442,6 +2450,7 @@ Module slice.
           
           Global Instance AssociatedFunction_new_sorted :
             M.IsAssociatedFunction.C Self "new_sorted" new_sorted.
+          Proof.
           Admitted.
           Global Typeclasses Opaque new_sorted.
           
@@ -2471,6 +2480,7 @@ Module slice.
           
           Global Instance AssociatedFunction_new_unsorted :
             M.IsAssociatedFunction.C Self "new_unsorted" new_unsorted.
+          Proof.
           Admitted.
           Global Typeclasses Opaque new_unsorted.
           
@@ -2510,6 +2520,7 @@ Module slice.
             end.
           
           Global Instance AssociatedFunction_sorted : M.IsAssociatedFunction.C Self "sorted" sorted.
+          Proof.
           Admitted.
           Global Typeclasses Opaque sorted.
           
@@ -2542,6 +2553,7 @@ Module slice.
             end.
           
           Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+          Proof.
           Admitted.
           Global Typeclasses Opaque len.
         End Impl_core_slice_sort_stable_drift_DriftsortRun.

@@ -1739,6 +1739,7 @@ Module algorithms.
       
       Global Instance Instance_IsFunction_div_nxm_normalized :
         M.IsFunction.C "ruint::algorithms::div::knuth::div_nxm_normalized" div_nxm_normalized.
+      Proof.
       Admitted.
       Global Typeclasses Opaque div_nxm_normalized.
       
@@ -4800,6 +4801,7 @@ Module algorithms.
       
       Global Instance Instance_IsFunction_div_nxm :
         M.IsFunction.C "ruint::algorithms::div::knuth::div_nxm" div_nxm.
+      Proof.
       Admitted.
       Global Typeclasses Opaque div_nxm.
     End knuth.

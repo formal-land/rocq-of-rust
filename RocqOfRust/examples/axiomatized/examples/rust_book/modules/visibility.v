@@ -6,18 +6,21 @@ Module my_mod.
   
   Global Instance Instance_IsFunction_private_function :
     M.IsFunction.C "visibility::my_mod::private_function" private_function.
+  Proof.
   Admitted.
   
   Parameter function : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_function :
     M.IsFunction.C "visibility::my_mod::function" function.
+  Proof.
   Admitted.
   
   Parameter indirect_access : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_indirect_access :
     M.IsFunction.C "visibility::my_mod::indirect_access" indirect_access.
+  Proof.
   Admitted.
   
   Module nested.
@@ -25,12 +28,14 @@ Module my_mod.
     
     Global Instance Instance_IsFunction_function :
       M.IsFunction.C "visibility::my_mod::nested::function" function.
+    Proof.
     Admitted.
     
     Parameter private_function : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
     
     Global Instance Instance_IsFunction_private_function :
       M.IsFunction.C "visibility::my_mod::nested::private_function" private_function.
+    Proof.
     Admitted.
     
     Parameter public_function_in_my_mod : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -39,6 +44,7 @@ Module my_mod.
       M.IsFunction.C
         "visibility::my_mod::nested::public_function_in_my_mod"
         public_function_in_my_mod.
+    Proof.
     Admitted.
     
     Parameter public_function_in_nested : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -47,6 +53,7 @@ Module my_mod.
       M.IsFunction.C
         "visibility::my_mod::nested::public_function_in_nested"
         public_function_in_nested.
+    Proof.
     Admitted.
     
     Parameter public_function_in_super_mod : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -55,6 +62,7 @@ Module my_mod.
       M.IsFunction.C
         "visibility::my_mod::nested::public_function_in_super_mod"
         public_function_in_super_mod.
+    Proof.
     Admitted.
   End nested.
   
@@ -64,12 +72,14 @@ Module my_mod.
     M.IsFunction.C
       "visibility::my_mod::call_public_function_in_my_mod"
       call_public_function_in_my_mod.
+  Proof.
   Admitted.
   
   Parameter public_function_in_crate : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_public_function_in_crate :
     M.IsFunction.C "visibility::my_mod::public_function_in_crate" public_function_in_crate.
+  Proof.
   Admitted.
   
   Module private_nested.
@@ -77,12 +87,14 @@ Module my_mod.
     
     Global Instance Instance_IsFunction_function :
       M.IsFunction.C "visibility::my_mod::private_nested::function" function.
+    Proof.
     Admitted.
     
     Parameter restricted_function : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
     
     Global Instance Instance_IsFunction_restricted_function :
       M.IsFunction.C "visibility::my_mod::private_nested::restricted_function" restricted_function.
+    Proof.
     Admitted.
   End private_nested.
 End my_mod.
@@ -90,9 +102,11 @@ End my_mod.
 Parameter function : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_function : M.IsFunction.C "visibility::function" function.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "visibility::main" main.
+Proof.
 Admitted.

@@ -19,6 +19,7 @@ Lemma sstore_refund_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (sstore_refund spec_id vals), stack)
   }}.
+Proof.
 Admitted.
 
 Definition create2_cost (len : usize) : option u64 :=
@@ -31,6 +32,7 @@ Lemma create2_cost_eq (stack : Stack.t) (len : usize) :
       stack 🌲
     (Output.Success (create2_cost len), stack)
   }}.
+Proof.
 Admitted.
 
 Definition log2floor (value : aliases.U256.t) : u64 :=
@@ -43,6 +45,7 @@ Lemma log2floor_eq (stack : Stack.t) (value : aliases.U256.t) :
       stack 🌲
     (Output.Success (log2floor value), stack)
   }}.
+Proof.
 Admitted.
 
 Definition exp_cost (spec_id : SpecId.t) (power : aliases.U256.t) : option u64 :=
@@ -56,6 +59,7 @@ Lemma exp_cost_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (exp_cost spec_id power), stack)
   }}.
+Proof.
 Admitted.
 
 Definition cost_per_word_impl (len : usize) (multiple : u64) : option u64 :=
@@ -83,6 +87,7 @@ Lemma copy_cost_verylow_eq (stack : Stack.t) (len : usize) :
       stack 🌲
     (Output.Success (copy_cost_verylow len), stack)
   }}.
+Proof.
 Admitted.
 
 Definition extcodecopy_cost
@@ -100,6 +105,7 @@ Lemma extcodecopy_cost_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (extcodecopy_cost spec_id len load), stack)
   }}.
+Proof.
 Admitted.
 
 Definition copy_cost (base_cost : u64) (len : usize) : option u64 :=
@@ -112,6 +118,7 @@ Lemma copy_cost_eq (stack : Stack.t) (base_cost : u64) (len : usize) :
       stack 🌲
     (Output.Success (copy_cost base_cost len), stack)
   }}.
+Proof.
 Admitted.
 
 Definition log_cost (n : u8) (len : u64) : option u64 :=
@@ -124,6 +131,7 @@ Lemma log_cost_eq (stack : Stack.t) (n : u8) (len : u64) :
       stack 🌲
     (Output.Success (log_cost n len), stack)
   }}.
+Proof.
 Admitted.
 
 Definition keccak256_cost (len : usize) : option u64 :=
@@ -136,6 +144,7 @@ Lemma keccak256_cost_eq (stack : Stack.t) (len : usize) :
       stack 🌲
     (Output.Success (keccak256_cost len), stack)
   }}.
+Proof.
 Admitted.
 
 Definition cost_per_word (len : usize) (multiple : u64) : option u64 :=
@@ -148,6 +157,7 @@ Lemma cost_per_word_eq (stack : Stack.t) (len : usize) (multiple : u64) :
       stack 🌲
     (Output.Success (cost_per_word len multiple), stack)
   }}.
+Proof.
 Admitted.
 
 Definition initcode_cost (len : usize) : u64 :=
@@ -160,6 +170,7 @@ Lemma initcode_cost_eq (stack : Stack.t) (len : usize) :
       stack 🌲
     (Output.Success (initcode_cost len), stack)
   }}.
+Proof.
 Admitted.
 
 Definition sload_cost (spec_id : SpecId.t) (is_cold : bool) : u64 :=
@@ -173,6 +184,7 @@ Lemma sload_cost_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (sload_cost spec_id is_cold), stack)
   }}.
+Proof.
 Admitted.
 
 Definition static_sstore_cost (spec_id : SpecId.t) : u64 :=
@@ -254,6 +266,7 @@ Lemma sstore_cost_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (sstore_cost spec_id vals is_cold), stack)
   }}.
+Proof.
 Admitted.
 
 Definition dyn_sstore_cost
@@ -304,6 +317,7 @@ Lemma istanbul_sstore_cost_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (istanbul_sstore_cost vals), stack)
   }}.
+Proof.
 Admitted.
 
 Definition frontier_sstore_cost (vals : '& SStoreResult.t) : u64 :=
@@ -317,6 +331,7 @@ Lemma frontier_sstore_cost_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (frontier_sstore_cost vals), stack)
   }}.
+Proof.
 Admitted.
 
 Definition static_selfdestruct_cost (spec_id : SpecId.t) : u64 :=
@@ -329,6 +344,7 @@ Lemma static_selfdestruct_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
       stack 🌲
     (Output.Success (static_selfdestruct_cost spec_id), stack)
   }}.
+Proof.
 Admitted.
 
 Definition dyn_selfdestruct_cost
@@ -345,6 +361,7 @@ Lemma dyn_selfdestruct_cost_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (dyn_selfdestruct_cost spec_id res), stack)
   }}.
+Proof.
 Admitted.
 
 Definition selfdestruct_cold_beneficiary_cost (spec_id : SpecId.t) : u64 :=
@@ -357,6 +374,7 @@ Lemma selfdestruct_cold_beneficiary_cost_eq (stack : Stack.t) (spec_id : SpecId.
       stack 🌲
     (Output.Success (selfdestruct_cold_beneficiary_cost spec_id), stack)
   }}.
+Proof.
 Admitted.
 
 Definition selfdestruct_cost
@@ -373,6 +391,7 @@ Lemma selfdestruct_cost_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (selfdestruct_cost spec_id res), stack)
   }}.
+Proof.
 Admitted.
 
 Definition calc_call_static_gas
@@ -389,6 +408,7 @@ Lemma calc_call_static_gas_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (calc_call_static_gas spec_id has_transfer), stack)
   }}.
+Proof.
 Admitted.
 
 Definition call_cost
@@ -408,6 +428,7 @@ Lemma warm_cold_cost_eq (stack : Stack.t) (is_cold : bool) :
       stack 🌲
     (Output.Success (warm_cold_cost is_cold), stack)
   }}.
+Proof.
 Admitted.
 
 Definition warm_cold_cost_with_delegation (load : StateLoad.t AccountLoad.t) : u64 :=
@@ -421,6 +442,7 @@ Lemma warm_cold_cost_with_delegation_eq (stack : Stack.t)
       stack 🌲
     (Output.Success (warm_cold_cost_with_delegation load), stack)
   }}.
+Proof.
 Admitted.
 
 Definition memory_gas (num_words : usize) : u64 :=
@@ -439,4 +461,5 @@ Lemma memory_gas_eq (stack : Stack.t) (num_words : usize) :
       stack 🌲
     (Output.Success (memory_gas num_words), stack)
   }}.
+Proof.
 Admitted.

@@ -173,6 +173,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "new" (new I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -209,6 +210,7 @@ Module iter.
         Global Instance AssociatedFunction_into_inner :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "into_inner" (into_inner I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_inner.
       End Impl_core_iter_adapters_copied_Copied_I.
@@ -271,6 +273,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_copy_fold :
         M.IsFunction.C "core::iter::adapters::copied::copy_fold" copy_fold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque copy_fold.
       
@@ -332,6 +335,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_copy_try_fold :
         M.IsFunction.C "core::iter::adapters::copied::copy_try_fold" copy_try_fold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque copy_try_fold.
       

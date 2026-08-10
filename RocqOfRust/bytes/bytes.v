@@ -113,6 +113,7 @@ Module bytes.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -198,6 +199,7 @@ Module bytes.
     
     Global Instance AssociatedFunction_from_static :
       M.IsAssociatedFunction.C Self "from_static" from_static.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_static.
     
@@ -223,6 +225,7 @@ Module bytes.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -255,6 +258,7 @@ Module bytes.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -307,6 +311,7 @@ Module bytes.
     
     Global Instance AssociatedFunction_is_unique :
       M.IsAssociatedFunction.C Self "is_unique" is_unique.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_unique.
     
@@ -359,6 +364,7 @@ Module bytes.
     
     Global Instance AssociatedFunction_copy_from_slice :
       M.IsAssociatedFunction.C Self "copy_from_slice" copy_from_slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque copy_from_slice.
     
@@ -1002,6 +1008,7 @@ Module bytes.
       end.
     
     Global Instance AssociatedFunction_slice : M.IsAssociatedFunction.C Self "slice" slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slice.
     
@@ -1765,6 +1772,7 @@ Module bytes.
     
     Global Instance AssociatedFunction_slice_ref :
       M.IsAssociatedFunction.C Self "slice_ref" slice_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slice_ref.
     
@@ -2146,6 +2154,7 @@ Module bytes.
     
     Global Instance AssociatedFunction_split_off :
       M.IsAssociatedFunction.C Self "split_off" split_off.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_off.
     
@@ -2523,6 +2532,7 @@ Module bytes.
       end.
     
     Global Instance AssociatedFunction_split_to : M.IsAssociatedFunction.C Self "split_to" split_to.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_to.
     
@@ -2786,6 +2796,7 @@ Module bytes.
       end.
     
     Global Instance AssociatedFunction_truncate : M.IsAssociatedFunction.C Self "truncate" truncate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque truncate.
     
@@ -2816,6 +2827,7 @@ Module bytes.
       end.
     
     Global Instance AssociatedFunction_clear : M.IsAssociatedFunction.C Self "clear" clear.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clear.
     
@@ -2890,6 +2902,7 @@ Module bytes.
     
     Global Instance AssociatedFunction_try_into_mut :
       M.IsAssociatedFunction.C Self "try_into_mut" try_into_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_into_mut.
     
@@ -2936,6 +2949,7 @@ Module bytes.
     
     Global Instance AssociatedFunction_with_vtable :
       M.IsAssociatedFunction.C Self "with_vtable" with_vtable.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_vtable.
     
@@ -2979,6 +2993,7 @@ Module bytes.
       end.
     
     Global Instance AssociatedFunction_as_slice : M.IsAssociatedFunction.C Self "as_slice" as_slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_slice.
     
@@ -3108,6 +3123,7 @@ Module bytes.
     
     Global Instance AssociatedFunction_inc_start :
       M.IsAssociatedFunction.C Self "inc_start" inc_start.
+    Proof.
     Admitted.
     Global Typeclasses Opaque inc_start.
   End Impl_bytes_bytes_Bytes.
@@ -7354,6 +7370,7 @@ Module bytes.
   
   Global Instance Instance_IsConstant_value_STATIC_VTABLE :
     M.IsFunction.C "bytes::bytes::STATIC_VTABLE" value_STATIC_VTABLE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_STATIC_VTABLE.
   
@@ -7415,6 +7432,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_static_clone :
     M.IsFunction.C "bytes::bytes::static_clone" static_clone.
+  Proof.
   Admitted.
   Global Typeclasses Opaque static_clone.
   
@@ -7482,6 +7500,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_static_to_vec :
     M.IsFunction.C "bytes::bytes::static_to_vec" static_to_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque static_to_vec.
   
@@ -7551,6 +7570,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_static_to_mut :
     M.IsFunction.C "bytes::bytes::static_to_mut" static_to_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque static_to_mut.
   
@@ -7581,6 +7601,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_static_is_unique :
     M.IsFunction.C "bytes::bytes::static_is_unique" static_is_unique.
+  Proof.
   Admitted.
   Global Typeclasses Opaque static_is_unique.
   
@@ -7629,6 +7650,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_static_drop :
     M.IsFunction.C "bytes::bytes::static_drop" static_drop.
+  Proof.
   Admitted.
   Global Typeclasses Opaque static_drop.
   
@@ -7836,6 +7858,7 @@ Module bytes.
   
   Global Instance Instance_IsConstant_value_PROMOTABLE_EVEN_VTABLE :
     M.IsFunction.C "bytes::bytes::PROMOTABLE_EVEN_VTABLE" value_PROMOTABLE_EVEN_VTABLE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PROMOTABLE_EVEN_VTABLE.
   
@@ -8043,6 +8066,7 @@ Module bytes.
   
   Global Instance Instance_IsConstant_value_PROMOTABLE_ODD_VTABLE :
     M.IsFunction.C "bytes::bytes::PROMOTABLE_ODD_VTABLE" value_PROMOTABLE_ODD_VTABLE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PROMOTABLE_ODD_VTABLE.
   
@@ -8379,6 +8403,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_even_clone :
     M.IsFunction.C "bytes::bytes::promotable_even_clone" promotable_even_clone.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_even_clone.
   
@@ -8723,6 +8748,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_to_vec :
     M.IsFunction.C "bytes::bytes::promotable_to_vec" promotable_to_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_to_vec.
   
@@ -9076,6 +9102,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_to_mut :
     M.IsFunction.C "bytes::bytes::promotable_to_mut" promotable_to_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_to_mut.
   
@@ -9204,6 +9231,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_even_to_vec :
     M.IsFunction.C "bytes::bytes::promotable_even_to_vec" promotable_even_to_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_even_to_vec.
   
@@ -9332,6 +9360,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_even_to_mut :
     M.IsFunction.C "bytes::bytes::promotable_even_to_mut" promotable_even_to_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_even_to_mut.
   
@@ -9804,6 +9833,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_even_drop :
     M.IsFunction.C "bytes::bytes::promotable_even_drop" promotable_even_drop.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_even_drop.
   
@@ -10084,6 +10114,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_odd_clone :
     M.IsFunction.C "bytes::bytes::promotable_odd_clone" promotable_odd_clone.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_odd_clone.
   
@@ -10163,6 +10194,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_odd_to_vec :
     M.IsFunction.C "bytes::bytes::promotable_odd_to_vec" promotable_odd_to_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_odd_to_vec.
   
@@ -10242,6 +10274,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_odd_to_mut :
     M.IsFunction.C "bytes::bytes::promotable_odd_to_mut" promotable_odd_to_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_odd_to_mut.
   
@@ -10655,6 +10688,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_odd_drop :
     M.IsFunction.C "bytes::bytes::promotable_odd_drop" promotable_odd_drop.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_odd_drop.
   
@@ -10782,6 +10816,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_promotable_is_unique :
     M.IsFunction.C "bytes::bytes::promotable_is_unique" promotable_is_unique.
+  Proof.
   Admitted.
   Global Typeclasses Opaque promotable_is_unique.
   
@@ -10871,6 +10906,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_free_boxed_slice :
     M.IsFunction.C "bytes::bytes::free_boxed_slice" free_boxed_slice.
+  Proof.
   Admitted.
   Global Typeclasses Opaque free_boxed_slice.
   
@@ -11168,6 +11204,7 @@ Module bytes.
   
   Global Instance Instance_IsConstant_value_SHARED_VTABLE :
     M.IsFunction.C "bytes::bytes::SHARED_VTABLE" value_SHARED_VTABLE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SHARED_VTABLE.
   
@@ -11176,6 +11213,7 @@ Module bytes.
   
   Global Instance Instance_IsConstant_value_KIND_ARC :
     M.IsFunction.C "bytes::bytes::KIND_ARC" value_KIND_ARC.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_KIND_ARC.
   
@@ -11184,6 +11222,7 @@ Module bytes.
   
   Global Instance Instance_IsConstant_value_KIND_VEC :
     M.IsFunction.C "bytes::bytes::KIND_VEC" value_KIND_VEC.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_KIND_VEC.
   
@@ -11192,6 +11231,7 @@ Module bytes.
   
   Global Instance Instance_IsConstant_value_KIND_MASK :
     M.IsFunction.C "bytes::bytes::KIND_MASK" value_KIND_MASK.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_KIND_MASK.
   
@@ -11250,6 +11290,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_shared_clone :
     M.IsFunction.C "bytes::bytes::shared_clone" shared_clone.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shared_clone.
   
@@ -11527,6 +11568,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_shared_to_vec_impl :
     M.IsFunction.C "bytes::bytes::shared_to_vec_impl" shared_to_vec_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shared_to_vec_impl.
   
@@ -11586,6 +11628,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_shared_to_vec :
     M.IsFunction.C "bytes::bytes::shared_to_vec" shared_to_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shared_to_vec.
   
@@ -11899,6 +11942,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_shared_to_mut_impl :
     M.IsFunction.C "bytes::bytes::shared_to_mut_impl" shared_to_mut_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shared_to_mut_impl.
   
@@ -11958,6 +12002,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_shared_to_mut :
     M.IsFunction.C "bytes::bytes::shared_to_mut" shared_to_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shared_to_mut.
   
@@ -12041,6 +12086,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_shared_is_unique :
     M.IsFunction.C "bytes::bytes::shared_is_unique" shared_is_unique.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shared_is_unique.
   
@@ -12148,6 +12194,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_shared_drop :
     M.IsFunction.C "bytes::bytes::shared_drop" shared_drop.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shared_drop.
   
@@ -12285,6 +12332,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_shallow_clone_arc :
     M.IsFunction.C "bytes::bytes::shallow_clone_arc" shallow_clone_arc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shallow_clone_arc.
   
@@ -12750,6 +12798,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_shallow_clone_vec :
     M.IsFunction.C "bytes::bytes::shallow_clone_vec" shallow_clone_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shallow_clone_vec.
   
@@ -12904,6 +12953,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction_release_shared :
     M.IsFunction.C "bytes::bytes::release_shared" release_shared.
+  Proof.
   Admitted.
   Global Typeclasses Opaque release_shared.
   
@@ -12948,6 +12998,7 @@ Module bytes.
     end.
   
   Global Instance Instance_IsFunction_ptr_map : M.IsFunction.C "bytes::bytes::ptr_map" ptr_map.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ptr_map.
   
@@ -12960,6 +13011,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction__split_to_must_use :
     M.IsFunction.C "bytes::bytes::_split_to_must_use" _split_to_must_use.
+  Proof.
   Admitted.
   Global Typeclasses Opaque _split_to_must_use.
   
@@ -12972,6 +13024,7 @@ Module bytes.
   
   Global Instance Instance_IsFunction__split_off_must_use :
     M.IsFunction.C "bytes::bytes::_split_off_must_use" _split_off_must_use.
+  Proof.
   Admitted.
   Global Typeclasses Opaque _split_off_must_use.
 End bytes.

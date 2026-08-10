@@ -237,6 +237,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_shift_left_small :
       M.IsFunction.C "ruint::algorithms::shift::shift_left_small" shift_left_small.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shift_left_small.
     
@@ -537,6 +538,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_shift_right_small :
       M.IsFunction.C "ruint::algorithms::shift::shift_right_small" shift_right_small.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shift_right_small.
   End shift.

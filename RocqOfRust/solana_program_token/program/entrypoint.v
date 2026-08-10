@@ -147,6 +147,7 @@ Module entrypoint.
   
   Global Instance Instance_IsFunction_process_instruction :
     M.IsFunction.C "spl_token::entrypoint::process_instruction" process_instruction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque process_instruction.
 End entrypoint.

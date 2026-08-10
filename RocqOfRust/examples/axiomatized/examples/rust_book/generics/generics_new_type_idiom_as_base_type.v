@@ -13,4 +13,5 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "generics_new_type_idiom_as_base_type::main" main.
+Proof.
 Admitted.

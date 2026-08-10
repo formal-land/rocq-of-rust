@@ -402,6 +402,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_lt :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::lt" lt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque lt.
     
@@ -805,6 +806,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_gt :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::gt" gt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gt.
     
@@ -1279,6 +1281,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_clz :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::clz" clz.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clz.
     
@@ -1694,6 +1697,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_slt :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::slt" slt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slt.
     
@@ -2113,6 +2117,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_sgt :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::sgt" sgt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sgt.
     
@@ -2516,6 +2521,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_eq :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::eq" eq.
+    Proof.
     Admitted.
     Global Typeclasses Opaque eq.
     
@@ -2887,6 +2893,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_iszero :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::iszero" iszero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque iszero.
     
@@ -3266,6 +3273,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_bitand :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::bitand" bitand.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bitand.
     
@@ -3646,6 +3654,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_bitor :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::bitor" bitor.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bitor.
     
@@ -4026,6 +4035,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_bitxor :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::bitxor" bitxor.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bitxor.
     
@@ -4379,6 +4389,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_not :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::not" not.
+    Proof.
     Admitted.
     Global Typeclasses Opaque not.
     
@@ -5027,6 +5038,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_byte :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::byte" byte.
+    Proof.
     Admitted.
     Global Typeclasses Opaque byte.
     
@@ -5759,6 +5771,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_shl :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::shl" shl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shl.
     
@@ -6491,6 +6504,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_shr :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::shr" shr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shr.
     
@@ -7287,6 +7301,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_sar :
       M.IsFunction.C "revm_interpreter::instructions::bitwise::sar" sar.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sar.
   End bitwise.

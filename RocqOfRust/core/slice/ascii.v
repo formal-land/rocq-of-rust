@@ -30,6 +30,7 @@ Module slice.
       
       Global Instance AssociatedFunction_is_ascii :
         M.IsAssociatedFunction.C Self "is_ascii" is_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii.
       
@@ -145,6 +146,7 @@ Module slice.
       
       Global Instance AssociatedFunction_as_ascii :
         M.IsAssociatedFunction.C Self "as_ascii" as_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ascii.
       
@@ -204,6 +206,7 @@ Module slice.
       
       Global Instance AssociatedFunction_as_ascii_unchecked :
         M.IsAssociatedFunction.C Self "as_ascii_unchecked" as_ascii_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ascii_unchecked.
       
@@ -463,6 +466,7 @@ Module slice.
       
       Global Instance AssociatedFunction_eq_ignore_ascii_case :
         M.IsAssociatedFunction.C Self "eq_ignore_ascii_case" eq_ignore_ascii_case.
+      Proof.
       Admitted.
       Global Typeclasses Opaque eq_ignore_ascii_case.
       
@@ -583,6 +587,7 @@ Module slice.
       
       Global Instance AssociatedFunction_make_ascii_uppercase :
         M.IsAssociatedFunction.C Self "make_ascii_uppercase" make_ascii_uppercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque make_ascii_uppercase.
       
@@ -703,6 +708,7 @@ Module slice.
       
       Global Instance AssociatedFunction_make_ascii_lowercase :
         M.IsAssociatedFunction.C Self "make_ascii_lowercase" make_ascii_lowercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque make_ascii_lowercase.
       
@@ -767,6 +773,7 @@ Module slice.
       
       Global Instance AssociatedFunction_escape_ascii :
         M.IsAssociatedFunction.C Self "escape_ascii" escape_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque escape_ascii.
       
@@ -895,6 +902,7 @@ Module slice.
       
       Global Instance AssociatedFunction_trim_ascii_start :
         M.IsAssociatedFunction.C Self "trim_ascii_start" trim_ascii_start.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trim_ascii_start.
       
@@ -1026,6 +1034,7 @@ Module slice.
       
       Global Instance AssociatedFunction_trim_ascii_end :
         M.IsAssociatedFunction.C Self "trim_ascii_end" trim_ascii_end.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trim_ascii_end.
       
@@ -1082,6 +1091,7 @@ Module slice.
       
       Global Instance AssociatedFunction_trim_ascii :
         M.IsAssociatedFunction.C Self "trim_ascii" trim_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trim_ascii.
     End Impl_slice_u8.
@@ -3480,6 +3490,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_is_ascii_simple :
       M.IsFunction.C "core::slice::ascii::is_ascii_simple" is_ascii_simple.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ascii_simple.
     
@@ -3865,6 +3876,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_is_ascii :
       M.IsFunction.C "core::slice::ascii::is_ascii" is_ascii.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ascii.
     
@@ -3874,6 +3886,7 @@ Module slice.
       
       Global Instance Instance_IsConstant_value_CHUNK_SIZE :
         M.IsFunction.C "core::slice::ascii::is_ascii::CHUNK_SIZE" value_CHUNK_SIZE.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_CHUNK_SIZE.
     End is_ascii.

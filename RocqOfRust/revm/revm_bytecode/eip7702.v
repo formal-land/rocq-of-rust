@@ -36,6 +36,7 @@ Module eip7702.
   
   Global Instance Instance_IsConstant_value_EIP7702_MAGIC_HASH :
     M.IsFunction.C "revm_bytecode::eip7702::EIP7702_MAGIC_HASH" value_EIP7702_MAGIC_HASH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EIP7702_MAGIC_HASH.
   
@@ -44,6 +45,7 @@ Module eip7702.
   
   Global Instance Instance_IsConstant_value_EIP7702_MAGIC :
     M.IsFunction.C "revm_bytecode::eip7702::EIP7702_MAGIC" value_EIP7702_MAGIC.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EIP7702_MAGIC.
   
@@ -59,6 +61,7 @@ Module eip7702.
   
   Global Instance Instance_IsConstant_value_EIP7702_MAGIC_BYTES :
     M.IsFunction.C "revm_bytecode::eip7702::EIP7702_MAGIC_BYTES" value_EIP7702_MAGIC_BYTES.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EIP7702_MAGIC_BYTES.
   
@@ -67,6 +70,7 @@ Module eip7702.
   
   Global Instance Instance_IsConstant_value_EIP7702_VERSION :
     M.IsFunction.C "revm_bytecode::eip7702::EIP7702_VERSION" value_EIP7702_VERSION.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EIP7702_VERSION.
   
@@ -1600,6 +1604,7 @@ Module eip7702.
       end.
     
     Global Instance AssociatedFunction_new_raw : M.IsAssociatedFunction.C Self "new_raw" new_raw.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_raw.
     
@@ -1770,6 +1775,7 @@ Module eip7702.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1804,6 +1810,7 @@ Module eip7702.
       end.
     
     Global Instance AssociatedFunction_raw : M.IsAssociatedFunction.C Self "raw" raw.
+    Proof.
     Admitted.
     Global Typeclasses Opaque raw.
     
@@ -1832,6 +1839,7 @@ Module eip7702.
       end.
     
     Global Instance AssociatedFunction_address : M.IsAssociatedFunction.C Self "address" address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address.
     
@@ -1860,6 +1868,7 @@ Module eip7702.
       end.
     
     Global Instance AssociatedFunction_version : M.IsAssociatedFunction.C Self "version" version.
+    Proof.
     Admitted.
     Global Typeclasses Opaque version.
   End Impl_revm_bytecode_eip7702_Eip7702Bytecode.

@@ -59,16 +59,19 @@ Parameter red : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_red :
   M.IsFunction.C "generics_bounds_test_case_empty_bounds::red" red.
+Proof.
 Admitted.
 
 Parameter blue : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_blue :
   M.IsFunction.C "generics_bounds_test_case_empty_bounds::blue" blue.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "generics_bounds_test_case_empty_bounds::main" main.
+Proof.
 Admitted.

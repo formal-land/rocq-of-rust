@@ -2316,6 +2316,7 @@ Module num.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2449,6 +2450,7 @@ Module num.
       Global Instance AssociatedFunction_new_unchecked :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new_unchecked" (new_unchecked T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -2556,6 +2558,7 @@ Module num.
       Global Instance AssociatedFunction_from_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "from_mut" (from_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -2727,6 +2730,7 @@ Module num.
       Global Instance AssociatedFunction_from_mut_unchecked :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "from_mut_unchecked" (from_mut_unchecked T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_unchecked.
       
@@ -2775,6 +2779,7 @@ Module num.
       Global Instance AssociatedFunction_get :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get" (get T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get.
     End Impl_core_num_nonzero_NonZero_T.
@@ -2794,6 +2799,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -2841,6 +2847,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -2888,6 +2895,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -2969,6 +2977,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -3035,6 +3044,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -3087,6 +3097,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -3119,6 +3130,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -3171,6 +3183,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -3229,6 +3242,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -3287,6 +3301,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -3343,6 +3358,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -3399,6 +3415,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -3454,6 +3471,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -3509,6 +3527,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -3564,6 +3583,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -3619,6 +3639,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -3658,6 +3679,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -3697,6 +3719,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -3796,6 +3819,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_add :
         M.IsAssociatedFunction.C Self "checked_add" checked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_add.
       
@@ -3854,6 +3878,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_add :
         M.IsAssociatedFunction.C Self "saturating_add" saturating_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_add.
       
@@ -3906,6 +3931,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_add :
         M.IsAssociatedFunction.C Self "unchecked_add" unchecked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_add.
       
@@ -4007,6 +4033,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_next_power_of_two :
         M.IsAssociatedFunction.C Self "checked_next_power_of_two" checked_next_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_next_power_of_two.
       
@@ -4058,6 +4085,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog2 : M.IsAssociatedFunction.C Self "ilog2" ilog2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog2.
       
@@ -4095,6 +4123,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog10 : M.IsAssociatedFunction.C Self "ilog10" ilog10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog10.
       
@@ -4163,6 +4192,7 @@ Module num.
       
       Global Instance AssociatedFunction_midpoint :
         M.IsAssociatedFunction.C Self "midpoint" midpoint.
+      Proof.
       Admitted.
       Global Typeclasses Opaque midpoint.
       
@@ -4213,6 +4243,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_power_of_two :
         M.IsAssociatedFunction.C Self "is_power_of_two" is_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_power_of_two.
       
@@ -4273,6 +4304,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_isqrt : M.IsAssociatedFunction.C Self "isqrt" isqrt.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isqrt.
       
@@ -4323,6 +4355,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_signed :
         M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_signed.
       
@@ -4381,6 +4414,7 @@ Module num.
       
       Global Instance AssociatedFunction_bit_width :
         M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_width.
       
@@ -4496,6 +4530,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -4568,6 +4603,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -4633,6 +4669,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -4732,6 +4769,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -4791,6 +4829,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
       (*
@@ -4861,6 +4900,7 @@ Module num.
       
       Global Instance AssociatedFunction_div_ceil :
         M.IsAssociatedFunction.C Self "div_ceil" div_ceil.
+      Proof.
       Admitted.
       Global Typeclasses Opaque div_ceil.
     End Impl_core_num_nonzero_NonZero_u8.
@@ -5318,6 +5358,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -5365,6 +5406,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -5412,6 +5454,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -5493,6 +5536,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -5559,6 +5603,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -5611,6 +5656,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -5643,6 +5689,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -5695,6 +5742,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -5753,6 +5801,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -5811,6 +5860,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -5867,6 +5917,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -5923,6 +5974,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -5978,6 +6030,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -6033,6 +6086,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -6088,6 +6142,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -6143,6 +6198,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -6182,6 +6238,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -6221,6 +6278,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -6320,6 +6378,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_add :
         M.IsAssociatedFunction.C Self "checked_add" checked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_add.
       
@@ -6378,6 +6437,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_add :
         M.IsAssociatedFunction.C Self "saturating_add" saturating_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_add.
       
@@ -6430,6 +6490,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_add :
         M.IsAssociatedFunction.C Self "unchecked_add" unchecked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_add.
       
@@ -6531,6 +6592,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_next_power_of_two :
         M.IsAssociatedFunction.C Self "checked_next_power_of_two" checked_next_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_next_power_of_two.
       
@@ -6582,6 +6644,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog2 : M.IsAssociatedFunction.C Self "ilog2" ilog2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog2.
       
@@ -6619,6 +6682,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog10 : M.IsAssociatedFunction.C Self "ilog10" ilog10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog10.
       
@@ -6687,6 +6751,7 @@ Module num.
       
       Global Instance AssociatedFunction_midpoint :
         M.IsAssociatedFunction.C Self "midpoint" midpoint.
+      Proof.
       Admitted.
       Global Typeclasses Opaque midpoint.
       
@@ -6737,6 +6802,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_power_of_two :
         M.IsAssociatedFunction.C Self "is_power_of_two" is_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_power_of_two.
       
@@ -6797,6 +6863,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_isqrt : M.IsAssociatedFunction.C Self "isqrt" isqrt.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isqrt.
       
@@ -6847,6 +6914,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_signed :
         M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_signed.
       
@@ -6905,6 +6973,7 @@ Module num.
       
       Global Instance AssociatedFunction_bit_width :
         M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_width.
       
@@ -7020,6 +7089,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -7092,6 +7162,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -7157,6 +7228,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -7256,6 +7328,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -7315,6 +7388,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
       (*
@@ -7385,6 +7459,7 @@ Module num.
       
       Global Instance AssociatedFunction_div_ceil :
         M.IsAssociatedFunction.C Self "div_ceil" div_ceil.
+      Proof.
       Admitted.
       Global Typeclasses Opaque div_ceil.
     End Impl_core_num_nonzero_NonZero_u16.
@@ -7842,6 +7917,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -7889,6 +7965,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -7936,6 +8013,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -8017,6 +8095,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -8083,6 +8162,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -8135,6 +8215,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -8167,6 +8248,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -8219,6 +8301,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -8277,6 +8360,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -8335,6 +8419,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -8391,6 +8476,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -8447,6 +8533,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -8502,6 +8589,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -8557,6 +8645,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -8612,6 +8701,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -8667,6 +8757,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -8706,6 +8797,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -8745,6 +8837,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -8844,6 +8937,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_add :
         M.IsAssociatedFunction.C Self "checked_add" checked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_add.
       
@@ -8902,6 +8996,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_add :
         M.IsAssociatedFunction.C Self "saturating_add" saturating_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_add.
       
@@ -8954,6 +9049,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_add :
         M.IsAssociatedFunction.C Self "unchecked_add" unchecked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_add.
       
@@ -9055,6 +9151,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_next_power_of_two :
         M.IsAssociatedFunction.C Self "checked_next_power_of_two" checked_next_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_next_power_of_two.
       
@@ -9106,6 +9203,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog2 : M.IsAssociatedFunction.C Self "ilog2" ilog2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog2.
       
@@ -9143,6 +9241,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog10 : M.IsAssociatedFunction.C Self "ilog10" ilog10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog10.
       
@@ -9211,6 +9310,7 @@ Module num.
       
       Global Instance AssociatedFunction_midpoint :
         M.IsAssociatedFunction.C Self "midpoint" midpoint.
+      Proof.
       Admitted.
       Global Typeclasses Opaque midpoint.
       
@@ -9261,6 +9361,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_power_of_two :
         M.IsAssociatedFunction.C Self "is_power_of_two" is_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_power_of_two.
       
@@ -9321,6 +9422,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_isqrt : M.IsAssociatedFunction.C Self "isqrt" isqrt.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isqrt.
       
@@ -9371,6 +9473,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_signed :
         M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_signed.
       
@@ -9429,6 +9532,7 @@ Module num.
       
       Global Instance AssociatedFunction_bit_width :
         M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_width.
       
@@ -9544,6 +9648,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -9616,6 +9721,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -9681,6 +9787,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -9780,6 +9887,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -9839,6 +9947,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
       (*
@@ -9909,6 +10018,7 @@ Module num.
       
       Global Instance AssociatedFunction_div_ceil :
         M.IsAssociatedFunction.C Self "div_ceil" div_ceil.
+      Proof.
       Admitted.
       Global Typeclasses Opaque div_ceil.
     End Impl_core_num_nonzero_NonZero_u32.
@@ -10366,6 +10476,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -10413,6 +10524,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -10460,6 +10572,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -10541,6 +10654,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -10607,6 +10721,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -10659,6 +10774,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -10691,6 +10807,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -10743,6 +10860,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -10801,6 +10919,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -10859,6 +10978,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -10915,6 +11035,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -10971,6 +11092,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -11026,6 +11148,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -11081,6 +11204,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -11136,6 +11260,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -11191,6 +11316,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -11230,6 +11356,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -11269,6 +11396,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -11368,6 +11496,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_add :
         M.IsAssociatedFunction.C Self "checked_add" checked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_add.
       
@@ -11426,6 +11555,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_add :
         M.IsAssociatedFunction.C Self "saturating_add" saturating_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_add.
       
@@ -11478,6 +11608,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_add :
         M.IsAssociatedFunction.C Self "unchecked_add" unchecked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_add.
       
@@ -11579,6 +11710,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_next_power_of_two :
         M.IsAssociatedFunction.C Self "checked_next_power_of_two" checked_next_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_next_power_of_two.
       
@@ -11630,6 +11762,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog2 : M.IsAssociatedFunction.C Self "ilog2" ilog2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog2.
       
@@ -11667,6 +11800,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog10 : M.IsAssociatedFunction.C Self "ilog10" ilog10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog10.
       
@@ -11735,6 +11869,7 @@ Module num.
       
       Global Instance AssociatedFunction_midpoint :
         M.IsAssociatedFunction.C Self "midpoint" midpoint.
+      Proof.
       Admitted.
       Global Typeclasses Opaque midpoint.
       
@@ -11785,6 +11920,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_power_of_two :
         M.IsAssociatedFunction.C Self "is_power_of_two" is_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_power_of_two.
       
@@ -11845,6 +11981,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_isqrt : M.IsAssociatedFunction.C Self "isqrt" isqrt.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isqrt.
       
@@ -11895,6 +12032,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_signed :
         M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_signed.
       
@@ -11953,6 +12091,7 @@ Module num.
       
       Global Instance AssociatedFunction_bit_width :
         M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_width.
       
@@ -12068,6 +12207,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -12140,6 +12280,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -12205,6 +12346,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -12304,6 +12446,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -12363,6 +12506,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
       (*
@@ -12433,6 +12577,7 @@ Module num.
       
       Global Instance AssociatedFunction_div_ceil :
         M.IsAssociatedFunction.C Self "div_ceil" div_ceil.
+      Proof.
       Admitted.
       Global Typeclasses Opaque div_ceil.
     End Impl_core_num_nonzero_NonZero_u64.
@@ -12890,6 +13035,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -12937,6 +13083,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -12984,6 +13131,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -13065,6 +13213,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -13131,6 +13280,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -13183,6 +13333,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -13215,6 +13366,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -13267,6 +13419,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -13325,6 +13478,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -13383,6 +13537,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -13439,6 +13594,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -13495,6 +13651,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -13550,6 +13707,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -13605,6 +13763,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -13660,6 +13819,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -13715,6 +13875,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -13754,6 +13915,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -13794,6 +13956,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -13893,6 +14056,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_add :
         M.IsAssociatedFunction.C Self "checked_add" checked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_add.
       
@@ -13951,6 +14115,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_add :
         M.IsAssociatedFunction.C Self "saturating_add" saturating_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_add.
       
@@ -14003,6 +14168,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_add :
         M.IsAssociatedFunction.C Self "unchecked_add" unchecked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_add.
       
@@ -14104,6 +14270,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_next_power_of_two :
         M.IsAssociatedFunction.C Self "checked_next_power_of_two" checked_next_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_next_power_of_two.
       
@@ -14155,6 +14322,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog2 : M.IsAssociatedFunction.C Self "ilog2" ilog2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog2.
       
@@ -14192,6 +14360,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog10 : M.IsAssociatedFunction.C Self "ilog10" ilog10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog10.
       
@@ -14260,6 +14429,7 @@ Module num.
       
       Global Instance AssociatedFunction_midpoint :
         M.IsAssociatedFunction.C Self "midpoint" midpoint.
+      Proof.
       Admitted.
       Global Typeclasses Opaque midpoint.
       
@@ -14310,6 +14480,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_power_of_two :
         M.IsAssociatedFunction.C Self "is_power_of_two" is_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_power_of_two.
       
@@ -14370,6 +14541,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_isqrt : M.IsAssociatedFunction.C Self "isqrt" isqrt.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isqrt.
       
@@ -14420,6 +14592,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_signed :
         M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_signed.
       
@@ -14478,6 +14651,7 @@ Module num.
       
       Global Instance AssociatedFunction_bit_width :
         M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_width.
       
@@ -14593,6 +14767,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -14665,6 +14840,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -14730,6 +14906,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -14829,6 +15006,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -14888,6 +15066,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
       (*
@@ -14958,6 +15137,7 @@ Module num.
       
       Global Instance AssociatedFunction_div_ceil :
         M.IsAssociatedFunction.C Self "div_ceil" div_ceil.
+      Proof.
       Admitted.
       Global Typeclasses Opaque div_ceil.
     End Impl_core_num_nonzero_NonZero_u128.
@@ -15415,6 +15595,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -15462,6 +15643,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -15509,6 +15691,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -15590,6 +15773,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -15656,6 +15840,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -15708,6 +15893,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -15740,6 +15926,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -15792,6 +15979,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -15850,6 +16038,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -15908,6 +16097,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -15964,6 +16154,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -16020,6 +16211,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -16075,6 +16267,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -16130,6 +16323,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -16185,6 +16379,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -16240,6 +16435,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -16279,6 +16475,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -16322,6 +16519,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -16421,6 +16619,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_add :
         M.IsAssociatedFunction.C Self "checked_add" checked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_add.
       
@@ -16479,6 +16678,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_add :
         M.IsAssociatedFunction.C Self "saturating_add" saturating_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_add.
       
@@ -16531,6 +16731,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_add :
         M.IsAssociatedFunction.C Self "unchecked_add" unchecked_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_add.
       
@@ -16632,6 +16833,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_next_power_of_two :
         M.IsAssociatedFunction.C Self "checked_next_power_of_two" checked_next_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_next_power_of_two.
       
@@ -16683,6 +16885,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog2 : M.IsAssociatedFunction.C Self "ilog2" ilog2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog2.
       
@@ -16720,6 +16923,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_ilog10 : M.IsAssociatedFunction.C Self "ilog10" ilog10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ilog10.
       
@@ -16788,6 +16992,7 @@ Module num.
       
       Global Instance AssociatedFunction_midpoint :
         M.IsAssociatedFunction.C Self "midpoint" midpoint.
+      Proof.
       Admitted.
       Global Typeclasses Opaque midpoint.
       
@@ -16838,6 +17043,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_power_of_two :
         M.IsAssociatedFunction.C Self "is_power_of_two" is_power_of_two.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_power_of_two.
       
@@ -16898,6 +17104,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_isqrt : M.IsAssociatedFunction.C Self "isqrt" isqrt.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isqrt.
       
@@ -16948,6 +17155,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_signed :
         M.IsAssociatedFunction.C Self "cast_signed" cast_signed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_signed.
       
@@ -17006,6 +17214,7 @@ Module num.
       
       Global Instance AssociatedFunction_bit_width :
         M.IsAssociatedFunction.C Self "bit_width" bit_width.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_width.
       
@@ -17121,6 +17330,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -17193,6 +17403,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -17258,6 +17469,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -17357,6 +17569,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -17416,6 +17629,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
       (*
@@ -17486,6 +17700,7 @@ Module num.
       
       Global Instance AssociatedFunction_div_ceil :
         M.IsAssociatedFunction.C Self "div_ceil" div_ceil.
+      Proof.
       Admitted.
       Global Typeclasses Opaque div_ceil.
     End Impl_core_num_nonzero_NonZero_usize.
@@ -17943,6 +18158,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -17986,6 +18202,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -18029,6 +18246,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -18110,6 +18328,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -18176,6 +18395,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -18228,6 +18448,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -18260,6 +18481,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -18312,6 +18534,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -18370,6 +18593,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -18428,6 +18652,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -18484,6 +18709,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -18540,6 +18766,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -18595,6 +18822,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -18650,6 +18878,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -18705,6 +18934,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -18760,6 +18990,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -18799,6 +19030,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -18838,6 +19070,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -18887,6 +19120,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_abs : M.IsAssociatedFunction.C Self "abs" abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque abs.
       
@@ -18978,6 +19212,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_abs :
         M.IsAssociatedFunction.C Self "checked_abs" checked_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_abs.
       
@@ -19053,6 +19288,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_abs :
         M.IsAssociatedFunction.C Self "overflowing_abs" overflowing_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_abs.
       
@@ -19103,6 +19339,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_abs :
         M.IsAssociatedFunction.C Self "saturating_abs" saturating_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_abs.
       
@@ -19153,6 +19390,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_abs :
         M.IsAssociatedFunction.C Self "wrapping_abs" wrapping_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_abs.
       
@@ -19203,6 +19441,7 @@ Module num.
       
       Global Instance AssociatedFunction_unsigned_abs :
         M.IsAssociatedFunction.C Self "unsigned_abs" unsigned_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsigned_abs.
       
@@ -19241,6 +19480,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_positive :
         M.IsAssociatedFunction.C Self "is_positive" is_positive.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_positive.
       
@@ -19279,6 +19519,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_negative :
         M.IsAssociatedFunction.C Self "is_negative" is_negative.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_negative.
       
@@ -19403,6 +19644,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_neg :
         M.IsAssociatedFunction.C Self "checked_neg" checked_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_neg.
       
@@ -19475,6 +19717,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_neg :
         M.IsAssociatedFunction.C Self "overflowing_neg" overflowing_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_neg.
       
@@ -19568,6 +19811,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_neg :
         M.IsAssociatedFunction.C Self "saturating_neg" saturating_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_neg.
       
@@ -19624,6 +19868,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_neg :
         M.IsAssociatedFunction.C Self "wrapping_neg" wrapping_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_neg.
       
@@ -19674,6 +19919,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_unsigned :
         M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_unsigned.
       
@@ -19789,6 +20035,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -19861,6 +20108,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -19926,6 +20174,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -20025,6 +20274,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -20084,6 +20334,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
     End Impl_core_num_nonzero_NonZero_i8.
@@ -20401,6 +20652,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -20444,6 +20696,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -20487,6 +20740,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -20568,6 +20822,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -20634,6 +20889,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -20686,6 +20942,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -20718,6 +20975,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -20770,6 +21028,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -20828,6 +21087,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -20886,6 +21146,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -20942,6 +21203,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -20998,6 +21260,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -21053,6 +21316,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -21108,6 +21372,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -21163,6 +21428,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -21218,6 +21484,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -21257,6 +21524,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -21296,6 +21564,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -21345,6 +21614,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_abs : M.IsAssociatedFunction.C Self "abs" abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque abs.
       
@@ -21436,6 +21706,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_abs :
         M.IsAssociatedFunction.C Self "checked_abs" checked_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_abs.
       
@@ -21511,6 +21782,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_abs :
         M.IsAssociatedFunction.C Self "overflowing_abs" overflowing_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_abs.
       
@@ -21561,6 +21833,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_abs :
         M.IsAssociatedFunction.C Self "saturating_abs" saturating_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_abs.
       
@@ -21611,6 +21884,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_abs :
         M.IsAssociatedFunction.C Self "wrapping_abs" wrapping_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_abs.
       
@@ -21661,6 +21935,7 @@ Module num.
       
       Global Instance AssociatedFunction_unsigned_abs :
         M.IsAssociatedFunction.C Self "unsigned_abs" unsigned_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsigned_abs.
       
@@ -21699,6 +21974,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_positive :
         M.IsAssociatedFunction.C Self "is_positive" is_positive.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_positive.
       
@@ -21737,6 +22013,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_negative :
         M.IsAssociatedFunction.C Self "is_negative" is_negative.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_negative.
       
@@ -21861,6 +22138,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_neg :
         M.IsAssociatedFunction.C Self "checked_neg" checked_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_neg.
       
@@ -21933,6 +22211,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_neg :
         M.IsAssociatedFunction.C Self "overflowing_neg" overflowing_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_neg.
       
@@ -22027,6 +22306,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_neg :
         M.IsAssociatedFunction.C Self "saturating_neg" saturating_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_neg.
       
@@ -22083,6 +22363,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_neg :
         M.IsAssociatedFunction.C Self "wrapping_neg" wrapping_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_neg.
       
@@ -22133,6 +22414,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_unsigned :
         M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_unsigned.
       
@@ -22248,6 +22530,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -22320,6 +22603,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -22385,6 +22669,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -22484,6 +22769,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -22543,6 +22829,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
     End Impl_core_num_nonzero_NonZero_i16.
@@ -22860,6 +23147,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -22903,6 +23191,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -22946,6 +23235,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -23027,6 +23317,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -23093,6 +23384,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -23145,6 +23437,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -23177,6 +23470,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -23229,6 +23523,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -23287,6 +23582,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -23345,6 +23641,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -23401,6 +23698,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -23457,6 +23755,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -23512,6 +23811,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -23567,6 +23867,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -23622,6 +23923,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -23677,6 +23979,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -23716,6 +24019,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -23755,6 +24059,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -23804,6 +24109,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_abs : M.IsAssociatedFunction.C Self "abs" abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque abs.
       
@@ -23895,6 +24201,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_abs :
         M.IsAssociatedFunction.C Self "checked_abs" checked_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_abs.
       
@@ -23970,6 +24277,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_abs :
         M.IsAssociatedFunction.C Self "overflowing_abs" overflowing_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_abs.
       
@@ -24020,6 +24328,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_abs :
         M.IsAssociatedFunction.C Self "saturating_abs" saturating_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_abs.
       
@@ -24070,6 +24379,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_abs :
         M.IsAssociatedFunction.C Self "wrapping_abs" wrapping_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_abs.
       
@@ -24120,6 +24430,7 @@ Module num.
       
       Global Instance AssociatedFunction_unsigned_abs :
         M.IsAssociatedFunction.C Self "unsigned_abs" unsigned_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsigned_abs.
       
@@ -24158,6 +24469,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_positive :
         M.IsAssociatedFunction.C Self "is_positive" is_positive.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_positive.
       
@@ -24196,6 +24508,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_negative :
         M.IsAssociatedFunction.C Self "is_negative" is_negative.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_negative.
       
@@ -24320,6 +24633,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_neg :
         M.IsAssociatedFunction.C Self "checked_neg" checked_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_neg.
       
@@ -24392,6 +24706,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_neg :
         M.IsAssociatedFunction.C Self "overflowing_neg" overflowing_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_neg.
       
@@ -24486,6 +24801,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_neg :
         M.IsAssociatedFunction.C Self "saturating_neg" saturating_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_neg.
       
@@ -24542,6 +24858,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_neg :
         M.IsAssociatedFunction.C Self "wrapping_neg" wrapping_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_neg.
       
@@ -24592,6 +24909,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_unsigned :
         M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_unsigned.
       
@@ -24707,6 +25025,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -24779,6 +25098,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -24844,6 +25164,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -24943,6 +25264,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -25002,6 +25324,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
     End Impl_core_num_nonzero_NonZero_i32.
@@ -25319,6 +25642,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -25362,6 +25686,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -25405,6 +25730,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -25486,6 +25812,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -25552,6 +25879,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -25604,6 +25932,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -25636,6 +25965,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -25688,6 +26018,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -25746,6 +26077,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -25804,6 +26136,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -25860,6 +26193,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -25916,6 +26250,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -25971,6 +26306,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -26026,6 +26362,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -26081,6 +26418,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -26136,6 +26474,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -26175,6 +26514,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -26214,6 +26554,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -26263,6 +26604,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_abs : M.IsAssociatedFunction.C Self "abs" abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque abs.
       
@@ -26354,6 +26696,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_abs :
         M.IsAssociatedFunction.C Self "checked_abs" checked_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_abs.
       
@@ -26429,6 +26772,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_abs :
         M.IsAssociatedFunction.C Self "overflowing_abs" overflowing_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_abs.
       
@@ -26479,6 +26823,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_abs :
         M.IsAssociatedFunction.C Self "saturating_abs" saturating_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_abs.
       
@@ -26529,6 +26874,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_abs :
         M.IsAssociatedFunction.C Self "wrapping_abs" wrapping_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_abs.
       
@@ -26579,6 +26925,7 @@ Module num.
       
       Global Instance AssociatedFunction_unsigned_abs :
         M.IsAssociatedFunction.C Self "unsigned_abs" unsigned_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsigned_abs.
       
@@ -26617,6 +26964,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_positive :
         M.IsAssociatedFunction.C Self "is_positive" is_positive.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_positive.
       
@@ -26655,6 +27003,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_negative :
         M.IsAssociatedFunction.C Self "is_negative" is_negative.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_negative.
       
@@ -26779,6 +27128,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_neg :
         M.IsAssociatedFunction.C Self "checked_neg" checked_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_neg.
       
@@ -26851,6 +27201,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_neg :
         M.IsAssociatedFunction.C Self "overflowing_neg" overflowing_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_neg.
       
@@ -26945,6 +27296,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_neg :
         M.IsAssociatedFunction.C Self "saturating_neg" saturating_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_neg.
       
@@ -27001,6 +27353,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_neg :
         M.IsAssociatedFunction.C Self "wrapping_neg" wrapping_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_neg.
       
@@ -27051,6 +27404,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_unsigned :
         M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_unsigned.
       
@@ -27166,6 +27520,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -27238,6 +27593,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -27303,6 +27659,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -27402,6 +27759,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -27461,6 +27819,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
     End Impl_core_num_nonzero_NonZero_i64.
@@ -27778,6 +28137,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -27821,6 +28181,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -27864,6 +28225,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -27945,6 +28307,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -28011,6 +28374,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -28063,6 +28427,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -28095,6 +28460,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -28147,6 +28513,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -28205,6 +28572,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -28263,6 +28631,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -28319,6 +28688,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -28375,6 +28745,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -28430,6 +28801,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -28485,6 +28857,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -28540,6 +28913,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -28595,6 +28969,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -28635,6 +29010,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -28675,6 +29051,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -28724,6 +29101,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_abs : M.IsAssociatedFunction.C Self "abs" abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque abs.
       
@@ -28815,6 +29193,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_abs :
         M.IsAssociatedFunction.C Self "checked_abs" checked_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_abs.
       
@@ -28890,6 +29269,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_abs :
         M.IsAssociatedFunction.C Self "overflowing_abs" overflowing_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_abs.
       
@@ -28940,6 +29320,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_abs :
         M.IsAssociatedFunction.C Self "saturating_abs" saturating_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_abs.
       
@@ -28990,6 +29371,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_abs :
         M.IsAssociatedFunction.C Self "wrapping_abs" wrapping_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_abs.
       
@@ -29040,6 +29422,7 @@ Module num.
       
       Global Instance AssociatedFunction_unsigned_abs :
         M.IsAssociatedFunction.C Self "unsigned_abs" unsigned_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsigned_abs.
       
@@ -29078,6 +29461,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_positive :
         M.IsAssociatedFunction.C Self "is_positive" is_positive.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_positive.
       
@@ -29116,6 +29500,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_negative :
         M.IsAssociatedFunction.C Self "is_negative" is_negative.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_negative.
       
@@ -29240,6 +29625,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_neg :
         M.IsAssociatedFunction.C Self "checked_neg" checked_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_neg.
       
@@ -29312,6 +29698,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_neg :
         M.IsAssociatedFunction.C Self "overflowing_neg" overflowing_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_neg.
       
@@ -29406,6 +29793,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_neg :
         M.IsAssociatedFunction.C Self "saturating_neg" saturating_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_neg.
       
@@ -29462,6 +29850,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_neg :
         M.IsAssociatedFunction.C Self "wrapping_neg" wrapping_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_neg.
       
@@ -29512,6 +29901,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_unsigned :
         M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_unsigned.
       
@@ -29627,6 +30017,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -29699,6 +30090,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -29764,6 +30156,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -29863,6 +30256,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -29922,6 +30316,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
     End Impl_core_num_nonzero_NonZero_i128.
@@ -30239,6 +30634,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -30282,6 +30678,7 @@ Module num.
       
       Global Instance AssociatedFunction_leading_zeros :
         M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque leading_zeros.
       
@@ -30325,6 +30722,7 @@ Module num.
       
       Global Instance AssociatedFunction_trailing_zeros :
         M.IsAssociatedFunction.C Self "trailing_zeros" trailing_zeros.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trailing_zeros.
       
@@ -30406,6 +30804,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_highest_one :
         M.IsAssociatedFunction.C Self "isolate_highest_one" isolate_highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_highest_one.
       
@@ -30472,6 +30871,7 @@ Module num.
       
       Global Instance AssociatedFunction_isolate_lowest_one :
         M.IsAssociatedFunction.C Self "isolate_lowest_one" isolate_lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque isolate_lowest_one.
       
@@ -30524,6 +30924,7 @@ Module num.
       
       Global Instance AssociatedFunction_highest_one :
         M.IsAssociatedFunction.C Self "highest_one" highest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque highest_one.
       
@@ -30556,6 +30957,7 @@ Module num.
       
       Global Instance AssociatedFunction_lowest_one :
         M.IsAssociatedFunction.C Self "lowest_one" lowest_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lowest_one.
       
@@ -30608,6 +31010,7 @@ Module num.
       
       Global Instance AssociatedFunction_count_ones :
         M.IsAssociatedFunction.C Self "count_ones" count_ones.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_ones.
       
@@ -30666,6 +31069,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_left :
         M.IsAssociatedFunction.C Self "rotate_left" rotate_left.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -30724,6 +31128,7 @@ Module num.
       
       Global Instance AssociatedFunction_rotate_right :
         M.IsAssociatedFunction.C Self "rotate_right" rotate_right.
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -30780,6 +31185,7 @@ Module num.
       
       Global Instance AssociatedFunction_swap_bytes :
         M.IsAssociatedFunction.C Self "swap_bytes" swap_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_bytes.
       
@@ -30836,6 +31242,7 @@ Module num.
       
       Global Instance AssociatedFunction_reverse_bits :
         M.IsAssociatedFunction.C Self "reverse_bits" reverse_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_bits.
       
@@ -30891,6 +31298,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_be : M.IsAssociatedFunction.C Self "from_be" from_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_be.
       
@@ -30946,6 +31354,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_from_le : M.IsAssociatedFunction.C Self "from_le" from_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_le.
       
@@ -31001,6 +31410,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_be : M.IsAssociatedFunction.C Self "to_be" to_be.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_be.
       
@@ -31056,6 +31466,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_to_le : M.IsAssociatedFunction.C Self "to_le" to_le.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_le.
       
@@ -31099,6 +31510,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -31142,6 +31554,7 @@ Module num.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -31191,6 +31604,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_abs : M.IsAssociatedFunction.C Self "abs" abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque abs.
       
@@ -31282,6 +31696,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_abs :
         M.IsAssociatedFunction.C Self "checked_abs" checked_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_abs.
       
@@ -31357,6 +31772,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_abs :
         M.IsAssociatedFunction.C Self "overflowing_abs" overflowing_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_abs.
       
@@ -31407,6 +31823,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_abs :
         M.IsAssociatedFunction.C Self "saturating_abs" saturating_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_abs.
       
@@ -31457,6 +31874,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_abs :
         M.IsAssociatedFunction.C Self "wrapping_abs" wrapping_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_abs.
       
@@ -31507,6 +31925,7 @@ Module num.
       
       Global Instance AssociatedFunction_unsigned_abs :
         M.IsAssociatedFunction.C Self "unsigned_abs" unsigned_abs.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsigned_abs.
       
@@ -31545,6 +31964,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_positive :
         M.IsAssociatedFunction.C Self "is_positive" is_positive.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_positive.
       
@@ -31583,6 +32003,7 @@ Module num.
       
       Global Instance AssociatedFunction_is_negative :
         M.IsAssociatedFunction.C Self "is_negative" is_negative.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_negative.
       
@@ -31707,6 +32128,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_neg :
         M.IsAssociatedFunction.C Self "checked_neg" checked_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_neg.
       
@@ -31779,6 +32201,7 @@ Module num.
       
       Global Instance AssociatedFunction_overflowing_neg :
         M.IsAssociatedFunction.C Self "overflowing_neg" overflowing_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque overflowing_neg.
       
@@ -31873,6 +32296,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_neg :
         M.IsAssociatedFunction.C Self "saturating_neg" saturating_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_neg.
       
@@ -31929,6 +32353,7 @@ Module num.
       
       Global Instance AssociatedFunction_wrapping_neg :
         M.IsAssociatedFunction.C Self "wrapping_neg" wrapping_neg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrapping_neg.
       
@@ -31979,6 +32404,7 @@ Module num.
       
       Global Instance AssociatedFunction_cast_unsigned :
         M.IsAssociatedFunction.C Self "cast_unsigned" cast_unsigned.
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast_unsigned.
       
@@ -32094,6 +32520,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_mul :
         M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_mul.
       
@@ -32166,6 +32593,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_mul :
         M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_mul.
       
@@ -32231,6 +32659,7 @@ Module num.
       
       Global Instance AssociatedFunction_unchecked_mul :
         M.IsAssociatedFunction.C Self "unchecked_mul" unchecked_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unchecked_mul.
       
@@ -32330,6 +32759,7 @@ Module num.
       
       Global Instance AssociatedFunction_checked_pow :
         M.IsAssociatedFunction.C Self "checked_pow" checked_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque checked_pow.
       
@@ -32389,6 +32819,7 @@ Module num.
       
       Global Instance AssociatedFunction_saturating_pow :
         M.IsAssociatedFunction.C Self "saturating_pow" saturating_pow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque saturating_pow.
     End Impl_core_num_nonzero_NonZero_isize.

@@ -445,5 +445,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "for_and_range_inclusive_to_exclusive::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

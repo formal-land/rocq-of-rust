@@ -12,6 +12,7 @@ Module char.
         ltac:(M.monadic (M.alloc (| Ty.path "char", Value.UnicodeChar 0 |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -21,6 +22,7 @@ Module char.
         ltac:(M.monadic (M.alloc (| Ty.path "char", Value.UnicodeChar 1114111 |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -31,6 +33,7 @@ Module char.
       
       Global Instance AssociatedConstant_value_MAX_LEN_UTF8 :
         M.IsAssociatedFunction.C Self "MAX_LEN_UTF8" value_MAX_LEN_UTF8.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX_LEN_UTF8.
       
@@ -41,6 +44,7 @@ Module char.
       
       Global Instance AssociatedConstant_value_MAX_LEN_UTF16 :
         M.IsAssociatedFunction.C Self "MAX_LEN_UTF16" value_MAX_LEN_UTF16.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX_LEN_UTF16.
       
@@ -55,6 +59,7 @@ Module char.
       
       Global Instance AssociatedConstant_value_REPLACEMENT_CHARACTER :
         M.IsAssociatedFunction.C Self "REPLACEMENT_CHARACTER" value_REPLACEMENT_CHARACTER.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_REPLACEMENT_CHARACTER.
       
@@ -69,6 +74,7 @@ Module char.
       
       Global Instance AssociatedConstant_value_UNICODE_VERSION :
         M.IsAssociatedFunction.C Self "UNICODE_VERSION" value_UNICODE_VERSION.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_UNICODE_VERSION.
       
@@ -102,6 +108,7 @@ Module char.
       
       Global Instance AssociatedFunction_decode_utf16 :
         M.IsAssociatedFunction.C Self "decode_utf16" decode_utf16.
+      Proof.
       Admitted.
       Global Typeclasses Opaque decode_utf16.
       
@@ -125,6 +132,7 @@ Module char.
       
       Global Instance AssociatedFunction_from_u32 :
         M.IsAssociatedFunction.C Self "from_u32" from_u32.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_u32.
       
@@ -149,6 +157,7 @@ Module char.
       
       Global Instance AssociatedFunction_from_u32_unchecked :
         M.IsAssociatedFunction.C Self "from_u32_unchecked" from_u32_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_u32_unchecked.
       
@@ -173,6 +182,7 @@ Module char.
       
       Global Instance AssociatedFunction_from_digit :
         M.IsAssociatedFunction.C Self "from_digit" from_digit.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_digit.
       
@@ -214,6 +224,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_digit :
         M.IsAssociatedFunction.C Self "is_digit" is_digit.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_digit.
       
@@ -411,6 +422,7 @@ Module char.
       
       Global Instance AssociatedFunction_to_digit :
         M.IsAssociatedFunction.C Self "to_digit" to_digit.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_digit.
       
@@ -434,6 +446,7 @@ Module char.
       
       Global Instance AssociatedFunction_escape_unicode :
         M.IsAssociatedFunction.C Self "escape_unicode" escape_unicode.
+      Proof.
       Admitted.
       Global Typeclasses Opaque escape_unicode.
       
@@ -666,6 +679,7 @@ Module char.
       
       Global Instance AssociatedFunction_escape_debug_ext :
         M.IsAssociatedFunction.C Self "escape_debug_ext" escape_debug_ext.
+      Proof.
       Admitted.
       Global Typeclasses Opaque escape_debug_ext.
       
@@ -698,6 +712,7 @@ Module char.
       
       Global Instance AssociatedFunction_escape_debug :
         M.IsAssociatedFunction.C Self "escape_debug" escape_debug.
+      Proof.
       Admitted.
       Global Typeclasses Opaque escape_debug.
       
@@ -895,6 +910,7 @@ Module char.
       
       Global Instance AssociatedFunction_escape_default :
         M.IsAssociatedFunction.C Self "escape_default" escape_default.
+      Proof.
       Admitted.
       Global Typeclasses Opaque escape_default.
       
@@ -918,6 +934,7 @@ Module char.
       
       Global Instance AssociatedFunction_len_utf8 :
         M.IsAssociatedFunction.C Self "len_utf8" len_utf8.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len_utf8.
       
@@ -941,6 +958,7 @@ Module char.
       
       Global Instance AssociatedFunction_len_utf16 :
         M.IsAssociatedFunction.C Self "len_utf16" len_utf16.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len_utf16.
       
@@ -1013,6 +1031,7 @@ Module char.
       
       Global Instance AssociatedFunction_encode_utf8 :
         M.IsAssociatedFunction.C Self "encode_utf8" encode_utf8.
+      Proof.
       Admitted.
       Global Typeclasses Opaque encode_utf8.
       
@@ -1057,6 +1076,7 @@ Module char.
       
       Global Instance AssociatedFunction_encode_utf16 :
         M.IsAssociatedFunction.C Self "encode_utf16" encode_utf16.
+      Proof.
       Admitted.
       Global Typeclasses Opaque encode_utf16.
       
@@ -1119,6 +1139,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_alphabetic :
         M.IsAssociatedFunction.C Self "is_alphabetic" is_alphabetic.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_alphabetic.
       
@@ -1167,6 +1188,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_lowercase :
         M.IsAssociatedFunction.C Self "is_lowercase" is_lowercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_lowercase.
       
@@ -1215,6 +1237,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_uppercase :
         M.IsAssociatedFunction.C Self "is_uppercase" is_uppercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_uppercase.
       
@@ -1284,6 +1307,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_whitespace :
         M.IsAssociatedFunction.C Self "is_whitespace" is_whitespace.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_whitespace.
       
@@ -1353,6 +1377,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_alphanumeric :
         M.IsAssociatedFunction.C Self "is_alphanumeric" is_alphanumeric.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_alphanumeric.
       
@@ -1397,6 +1422,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_control :
         M.IsAssociatedFunction.C Self "is_control" is_control.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_control.
       
@@ -1438,6 +1464,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_grapheme_extended :
         M.IsAssociatedFunction.C Self "is_grapheme_extended" is_grapheme_extended.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_grapheme_extended.
       
@@ -1486,6 +1513,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_cased :
         M.IsAssociatedFunction.C Self "is_cased" is_cased.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_cased.
       
@@ -1597,6 +1625,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_case_ignorable :
         M.IsAssociatedFunction.C Self "is_case_ignorable" is_case_ignorable.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_case_ignorable.
       
@@ -1641,6 +1670,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_numeric :
         M.IsAssociatedFunction.C Self "is_numeric" is_numeric.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_numeric.
       
@@ -1688,6 +1718,7 @@ Module char.
       
       Global Instance AssociatedFunction_to_lowercase :
         M.IsAssociatedFunction.C Self "to_lowercase" to_lowercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_lowercase.
       
@@ -1735,6 +1766,7 @@ Module char.
       
       Global Instance AssociatedFunction_to_uppercase :
         M.IsAssociatedFunction.C Self "to_uppercase" to_uppercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_uppercase.
       
@@ -1761,6 +1793,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii :
         M.IsAssociatedFunction.C Self "is_ascii" is_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii.
       
@@ -1828,6 +1861,7 @@ Module char.
       
       Global Instance AssociatedFunction_as_ascii :
         M.IsAssociatedFunction.C Self "as_ascii" as_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ascii.
       
@@ -1902,6 +1936,7 @@ Module char.
       
       Global Instance AssociatedFunction_as_ascii_unchecked :
         M.IsAssociatedFunction.C Self "as_ascii_unchecked" as_ascii_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ascii_unchecked.
       
@@ -1968,6 +2003,7 @@ Module char.
       
       Global Instance AssociatedFunction_to_ascii_uppercase :
         M.IsAssociatedFunction.C Self "to_ascii_uppercase" to_ascii_uppercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_ascii_uppercase.
       
@@ -2034,6 +2070,7 @@ Module char.
       
       Global Instance AssociatedFunction_to_ascii_lowercase :
         M.IsAssociatedFunction.C Self "to_ascii_lowercase" to_ascii_lowercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_ascii_lowercase.
       
@@ -2069,6 +2106,7 @@ Module char.
       
       Global Instance AssociatedFunction_eq_ignore_ascii_case :
         M.IsAssociatedFunction.C Self "eq_ignore_ascii_case" eq_ignore_ascii_case.
+      Proof.
       Admitted.
       Global Typeclasses Opaque eq_ignore_ascii_case.
       
@@ -2099,6 +2137,7 @@ Module char.
       
       Global Instance AssociatedFunction_make_ascii_uppercase :
         M.IsAssociatedFunction.C Self "make_ascii_uppercase" make_ascii_uppercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque make_ascii_uppercase.
       
@@ -2129,6 +2168,7 @@ Module char.
       
       Global Instance AssociatedFunction_make_ascii_lowercase :
         M.IsAssociatedFunction.C Self "make_ascii_lowercase" make_ascii_lowercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque make_ascii_lowercase.
       
@@ -2169,6 +2209,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_alphabetic :
         M.IsAssociatedFunction.C Self "is_ascii_alphabetic" is_ascii_alphabetic.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_alphabetic.
       
@@ -2195,6 +2236,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_uppercase :
         M.IsAssociatedFunction.C Self "is_ascii_uppercase" is_ascii_uppercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_uppercase.
       
@@ -2221,6 +2263,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_lowercase :
         M.IsAssociatedFunction.C Self "is_ascii_lowercase" is_ascii_lowercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_lowercase.
       
@@ -2275,6 +2318,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_alphanumeric :
         M.IsAssociatedFunction.C Self "is_ascii_alphanumeric" is_ascii_alphanumeric.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_alphanumeric.
       
@@ -2301,6 +2345,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_digit :
         M.IsAssociatedFunction.C Self "is_ascii_digit" is_ascii_digit.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_digit.
       
@@ -2327,6 +2372,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_octdigit :
         M.IsAssociatedFunction.C Self "is_ascii_octdigit" is_ascii_octdigit.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_octdigit.
       
@@ -2381,6 +2427,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_hexdigit :
         M.IsAssociatedFunction.C Self "is_ascii_hexdigit" is_ascii_hexdigit.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_hexdigit.
       
@@ -2452,6 +2499,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_punctuation :
         M.IsAssociatedFunction.C Self "is_ascii_punctuation" is_ascii_punctuation.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_punctuation.
       
@@ -2478,6 +2526,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_graphic :
         M.IsAssociatedFunction.C Self "is_ascii_graphic" is_ascii_graphic.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_graphic.
       
@@ -2556,6 +2605,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_whitespace :
         M.IsAssociatedFunction.C Self "is_ascii_whitespace" is_ascii_whitespace.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_whitespace.
       
@@ -2603,6 +2653,7 @@ Module char.
       
       Global Instance AssociatedFunction_is_ascii_control :
         M.IsAssociatedFunction.C Self "is_ascii_control" is_ascii_control.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii_control.
     End Impl_char.
@@ -2648,6 +2699,7 @@ Module char.
       
       Global Instance AssociatedConstant_value_ESCAPE_ALL :
         M.IsAssociatedFunction.C Self "ESCAPE_ALL" value_ESCAPE_ALL.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ESCAPE_ALL.
     End Impl_core_char_methods_EscapeDebugExtArgs.
@@ -2715,6 +2767,7 @@ Module char.
     
     Global Instance Instance_IsFunction_len_utf8 :
       M.IsFunction.C "core::char::methods::len_utf8" len_utf8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len_utf8.
     
@@ -2760,6 +2813,7 @@ Module char.
     
     Global Instance Instance_IsFunction_len_utf16 :
       M.IsFunction.C "core::char::methods::len_utf16" len_utf16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len_utf16.
     
@@ -2930,6 +2984,7 @@ Module char.
     
     Global Instance Instance_IsFunction_encode_utf8_raw :
       M.IsFunction.C "core::char::methods::encode_utf8_raw" encode_utf8_raw.
+    Proof.
     Admitted.
     Global Typeclasses Opaque encode_utf8_raw.
     
@@ -3293,6 +3348,7 @@ Module char.
     
     Global Instance Instance_IsFunction_encode_utf8_raw_unchecked :
       M.IsFunction.C "core::char::methods::encode_utf8_raw_unchecked" encode_utf8_raw_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque encode_utf8_raw_unchecked.
     
@@ -3524,6 +3580,7 @@ Module char.
     
     Global Instance Instance_IsFunction_encode_utf16_raw :
       M.IsFunction.C "core::char::methods::encode_utf16_raw" encode_utf16_raw.
+    Proof.
     Admitted.
     Global Typeclasses Opaque encode_utf16_raw.
   End methods.

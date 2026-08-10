@@ -223,6 +223,7 @@ Definition cat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_cat : M.IsFunction.C "filesystem_operations::cat" cat.
+Proof.
 Admitted.
 Global Typeclasses Opaque cat.
 
@@ -406,6 +407,7 @@ Definition echo (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_echo : M.IsFunction.C "filesystem_operations::echo" echo.
+Proof.
 Admitted.
 Global Typeclasses Opaque echo.
 
@@ -519,6 +521,7 @@ Definition touch (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_touch : M.IsFunction.C "filesystem_operations::touch" touch.
+Proof.
 Admitted.
 Global Typeclasses Opaque touch.
 
@@ -2525,5 +2528,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "filesystem_operations::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

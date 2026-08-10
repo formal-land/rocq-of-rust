@@ -254,6 +254,7 @@ Module bls12_381.
   
   Global Instance Instance_IsFunction_precompiles :
     M.IsFunction.C "revm_precompile::bls12_381::precompiles" precompiles.
+  Proof.
   Admitted.
   Global Typeclasses Opaque precompiles.
 End bls12_381.

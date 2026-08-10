@@ -589,5 +589,6 @@ Global Instance Instance_IsFunction_main :
   M.IsFunction.C
     "functions_closures_example_searching_through_iterators_Iterator_position::main"
     main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

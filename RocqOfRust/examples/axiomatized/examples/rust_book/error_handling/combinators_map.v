@@ -111,29 +111,35 @@ End Impl_core_fmt_Debug_for_combinators_map_Cooked.
 Parameter peel : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_peel : M.IsFunction.C "combinators_map::peel" peel.
+Proof.
 Admitted.
 
 Parameter chop : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_chop : M.IsFunction.C "combinators_map::chop" chop.
+Proof.
 Admitted.
 
 Parameter cook : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_cook : M.IsFunction.C "combinators_map::cook" cook.
+Proof.
 Admitted.
 
 Parameter process : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_process : M.IsFunction.C "combinators_map::process" process.
+Proof.
 Admitted.
 
 Parameter eat : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_eat : M.IsFunction.C "combinators_map::eat" eat.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "combinators_map::main" main.
+Proof.
 Admitted.

@@ -80,6 +80,7 @@ Export (hints) Vec.
 
 Module Impl_Clone_for_Vec.
   Instance method_clone {T A : Set} `{Link T} `{Link A} : Clone.Method_clone (Vec.t T A).
+  Proof.
   Admitted.
 
   Instance run {T A : Set} `{Link T} `{Link A} : Clone.Run (Vec.t T A) := {}.
@@ -88,6 +89,7 @@ Export (hints) Impl_Clone_for_Vec.
 
 Module Impl_Default_for_Vec.
   Instance method_default {T A : Set} `{Link T} `{Link A} : Default.Method_default (Vec.t T A).
+  Proof.
   Admitted.
 
   Instance run {T A : Set} `{Link T} `{Link A} : Default.Run (Vec.t T A) := {}.
@@ -96,6 +98,7 @@ Export (hints) Impl_Default_for_Vec.
 
 Module Impl_Deref_for_Vec.
   Instance method_deref {T A : Set} `{Link T} `{Link A} : Deref.Method_deref (Vec.t T A) (list T).
+  Proof.
   Admitted.
 
   Instance run {T A : Set} `{Link T} `{Link A} : Deref.Run (Vec.t T A) (list T) := {}.
@@ -151,6 +154,7 @@ Module Impl_Vec_T.
     Run.Trait
       (vec.Impl_alloc_vec_Vec_T_alloc_alloc_Global.with_capacity (Φ T)) [] [] [φ capacity]
       (Self T).
+  Proof.
   Admitted.
   Global Opaque run_with_capacity.
 End Impl_Vec_T.
@@ -165,24 +169,28 @@ Module Impl_Vec_T_A.
   *)
   Instance run_len {T A : Set} `{Link T} `{Link A} (self : '& (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.len (Φ T) (Φ A)) [] [] [φ self] usize.
+  Proof.
   Admitted.
   Global Opaque run_len.
 
   (* pub const fn is_empty(&self) -> bool *)
   Instance run_is_empty {T A : Set} `{Link T} `{Link A} (self : '& (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.is_empty (Φ T) (Φ A)) [] [] [φ self] bool.
+  Proof.
   Admitted.
   Global Opaque run_is_empty.
 
   (* pub fn pop(&mut self) -> Option<T> *)
   Instance run_pop {T A : Set} `{Link T} `{Link A} (self : '&mut (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.pop (Φ T) (Φ A)) [] [] [φ self] (option T).
+  Proof.
   Admitted.
   Global Opaque run_pop.
 
   (* pub const fn capacity(&self) -> usize *)
   Instance run_capacity {T A : Set} `{Link T} `{Link A} (self : '& (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.capacity (Φ T) (Φ A)) [] [] [φ self] usize.
+  Proof.
   Admitted.
   Global Opaque run_capacity.
 
@@ -191,6 +199,7 @@ Module Impl_Vec_T_A.
       (self : '&mut (Self T A))
       (value : T) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.push (Φ T) (Φ A)) [] [] [φ self; φ value] unit.
+  Proof.
   Admitted.
   Global Opaque run_push.
 End Impl_Vec_T_A.
@@ -201,6 +210,7 @@ Module Impl_Index_for_Vec_T_A.
 
   Instance run (T I A Output : Set) `{Link T} `{Link I} `{Link A} `{Link Output} :
     index.Index.Run (Self T A) I Output.
+  Proof.
   Admitted.
 End Impl_Index_for_Vec_T_A.
 Export (hints) Impl_Index_for_Vec_T_A.

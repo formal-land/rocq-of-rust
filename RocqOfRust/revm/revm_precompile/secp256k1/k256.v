@@ -869,6 +869,7 @@ Module secp256k1.
     
     Global Instance Instance_IsFunction_ecrecover :
       M.IsFunction.C "revm_precompile::secp256k1::k256::ecrecover" ecrecover.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ecrecover.
   End k256.

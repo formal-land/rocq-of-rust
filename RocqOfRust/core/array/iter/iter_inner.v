@@ -278,6 +278,7 @@ Module array.
         Global Instance AssociatedFunction_len :
           forall (DATA : Ty.t),
           M.IsAssociatedFunction.C (Self DATA) "len" (len DATA).
+        Proof.
         Admitted.
         Global Typeclasses Opaque len.
       End Impl_core_array_iter_iter_inner_PolymorphicIter_DATA.
@@ -434,6 +435,7 @@ Module array.
         Global Instance AssociatedFunction_empty :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "empty" (empty N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque empty.
         
@@ -478,6 +480,7 @@ Module array.
         Global Instance AssociatedFunction_new_unchecked :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "new_unchecked" (new_unchecked N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new_unchecked.
       End Impl_core_array_iter_iter_inner_PolymorphicIter_array_N_core_mem_maybe_uninit_MaybeUninit_T.
@@ -871,6 +874,7 @@ Module array.
         Global Instance AssociatedFunction_as_slice :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "as_slice" (as_slice T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_slice.
         
@@ -1036,6 +1040,7 @@ Module array.
         Global Instance AssociatedFunction_as_mut_slice :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "as_mut_slice" (as_mut_slice T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_mut_slice.
         (*
@@ -1191,6 +1196,7 @@ Module array.
         Global Instance AssociatedFunction_next :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "next" (next T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next.
         
@@ -1266,6 +1272,7 @@ Module array.
         Global Instance AssociatedFunction_size_hint :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "size_hint" (size_hint T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque size_hint.
         
@@ -1499,6 +1506,7 @@ Module array.
         Global Instance AssociatedFunction_advance_by :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "advance_by" (advance_by T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque advance_by.
         
@@ -1582,6 +1590,7 @@ Module array.
         Global Instance AssociatedFunction_fold :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "fold" (fold T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fold.
         
@@ -1784,6 +1793,7 @@ Module array.
         Global Instance AssociatedFunction_try_fold :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "try_fold" (try_fold T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque try_fold.
         
@@ -1940,6 +1950,7 @@ Module array.
         Global Instance AssociatedFunction_next_back :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "next_back" (next_back T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_back.
         
@@ -2173,6 +2184,7 @@ Module array.
         Global Instance AssociatedFunction_advance_back_by :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "advance_back_by" (advance_back_by T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque advance_back_by.
         
@@ -2256,6 +2268,7 @@ Module array.
         Global Instance AssociatedFunction_rfold :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "rfold" (rfold T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque rfold.
         
@@ -2458,6 +2471,7 @@ Module array.
         Global Instance AssociatedFunction_try_rfold :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "try_rfold" (try_rfold T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque try_rfold.
       End Impl_core_array_iter_iter_inner_PolymorphicIter_slice_core_mem_maybe_uninit_MaybeUninit_T.

@@ -233,6 +233,7 @@ Module locals_safety.
   
   Global Instance Instance_IsFunction_verify :
     M.IsFunction.C "move_bytecode_verifier::locals_safety::verify" verify.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify.
   
@@ -2640,6 +2641,7 @@ Module locals_safety.
   
   Global Instance Instance_IsFunction_execute_inner :
     M.IsFunction.C "move_bytecode_verifier::locals_safety::execute_inner" execute_inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque execute_inner.
   

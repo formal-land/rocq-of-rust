@@ -245,6 +245,7 @@ Module Impl_derive_Inches.
   
   Global Instance AssociatedFunction_to_centimeters :
     M.IsAssociatedFunction.C Self "to_centimeters" to_centimeters.
+  Proof.
   Admitted.
   Global Typeclasses Opaque to_centimeters.
 End Impl_derive_Inches.
@@ -546,5 +547,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "derive::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

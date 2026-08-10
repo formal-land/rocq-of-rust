@@ -63,6 +63,7 @@ Module secp256k1.
   
   Global Instance Instance_IsConstant_value_ECRECOVER :
     M.IsFunction.C "revm_precompile::secp256k1::ECRECOVER" value_ECRECOVER.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ECRECOVER.
   
@@ -1122,6 +1123,7 @@ Module secp256k1.
   
   Global Instance Instance_IsFunction_ec_recover_run :
     M.IsFunction.C "revm_precompile::secp256k1::ec_recover_run" ec_recover_run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ec_recover_run.
   
@@ -1133,6 +1135,7 @@ Module secp256k1.
       M.IsFunction.C
         "revm_precompile::secp256k1::ec_recover_run::ECRECOVER_BASE"
         value_ECRECOVER_BASE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ECRECOVER_BASE.
   End ec_recover_run.
@@ -1356,6 +1359,7 @@ Module secp256k1.
   
   Global Instance Instance_IsFunction_ecrecover_bytes :
     M.IsFunction.C "revm_precompile::secp256k1::ecrecover_bytes" ecrecover_bytes.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ecrecover_bytes.
 End secp256k1.

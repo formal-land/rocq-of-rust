@@ -4,9 +4,11 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter division : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_division : M.IsFunction.C "panic::division" division.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "panic::main" main.
+Proof.
 Admitted.

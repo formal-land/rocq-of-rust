@@ -2510,6 +2510,7 @@ Module collections.
       
       Global Instance Instance_IsFunction_prepend :
         M.IsFunction.C "alloc::collections::vec_deque::spec_extend::prepend" prepend.
+      Proof.
       Admitted.
       Global Typeclasses Opaque prepend.
       
@@ -2659,6 +2660,7 @@ Module collections.
         M.IsFunction.C
           "alloc::collections::vec_deque::spec_extend::prepend_reversed"
           prepend_reversed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque prepend_reversed.
     End spec_extend.

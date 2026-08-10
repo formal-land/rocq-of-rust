@@ -408,6 +408,7 @@ Module evm.
     Global Instance AssociatedFunction_new :
       forall (CTX I P F : Ty.t),
       M.IsAssociatedFunction.C (Self CTX I P F) "new" (new CTX I P F).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_revm_context_evm_Evm_CTX_Tuple__I_P_F.
@@ -471,6 +472,7 @@ Module evm.
         (Self CTX I INSP P F)
         "new_with_inspector"
         (new_with_inspector CTX I INSP P F).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_with_inspector.
     (*
@@ -545,6 +547,7 @@ Module evm.
         (Self CTX INSP I P F)
         "with_inspector"
         (with_inspector CTX INSP I P F).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_inspector.
     
@@ -619,6 +622,7 @@ Module evm.
         (Self CTX INSP I P F)
         "with_precompiles"
         (with_precompiles CTX INSP I P F).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_precompiles.
     
@@ -654,6 +658,7 @@ Module evm.
         (Self CTX INSP I P F)
         "into_inspector"
         (into_inspector CTX INSP I P F).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inspector.
   End Impl_revm_context_evm_Evm_CTX_INSP_I_P_F.

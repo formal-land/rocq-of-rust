@@ -60,6 +60,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Fixpoint bytes_to_value_aux (bytes : list u8) (acc : Z) : Z :=
@@ -86,6 +87,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition try_from_be_slice (bytes : list u8) : option Self :=
@@ -108,5 +110,6 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Uint.

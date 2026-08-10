@@ -1005,6 +1005,7 @@ Module interpreter.
     Global Instance AssociatedFunction_new :
       forall (EXT : Ty.t),
       M.IsAssociatedFunction.C (Self EXT) "new" (new EXT).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1071,6 +1072,7 @@ Module interpreter.
     Global Instance AssociatedFunction_default_ext :
       forall (EXT : Ty.t),
       M.IsAssociatedFunction.C (Self EXT) "default_ext" (default_ext EXT).
+    Proof.
     Admitted.
     Global Typeclasses Opaque default_ext.
     
@@ -1137,6 +1139,7 @@ Module interpreter.
     Global Instance AssociatedFunction_invalid :
       forall (EXT : Ty.t),
       M.IsAssociatedFunction.C (Self EXT) "invalid" (invalid EXT).
+    Proof.
     Admitted.
     Global Typeclasses Opaque invalid.
     
@@ -1241,6 +1244,7 @@ Module interpreter.
     Global Instance AssociatedFunction_do_default :
       forall (EXT : Ty.t),
       M.IsAssociatedFunction.C (Self EXT) "do_default" (do_default EXT).
+    Proof.
     Admitted.
     Global Typeclasses Opaque do_default.
     
@@ -1346,6 +1350,7 @@ Module interpreter.
     Global Instance AssociatedFunction_new_inner :
       forall (EXT : Ty.t),
       M.IsAssociatedFunction.C (Self EXT) "new_inner" (new_inner EXT).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_inner.
     
@@ -1755,6 +1760,7 @@ Module interpreter.
     Global Instance AssociatedFunction_clear :
       forall (EXT : Ty.t),
       M.IsAssociatedFunction.C (Self EXT) "clear" (clear EXT).
+    Proof.
     Admitted.
     Global Typeclasses Opaque clear.
     
@@ -1815,6 +1821,7 @@ Module interpreter.
     Global Instance AssociatedFunction_with_bytecode :
       forall (EXT : Ty.t),
       M.IsAssociatedFunction.C (Self EXT) "with_bytecode" (with_bytecode EXT).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_bytecode.
     
@@ -1870,6 +1877,7 @@ Module interpreter.
     Global Instance AssociatedFunction_set_spec_id :
       forall (EXT : Ty.t),
       M.IsAssociatedFunction.C (Self EXT) "set_spec_id" (set_spec_id EXT).
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_spec_id.
   End Impl_revm_interpreter_interpreter_Interpreter_revm_interpreter_interpreter_EthInterpreter_EXT_revm_interpreter_interpreter_shared_memory_SharedMemory.
@@ -2191,6 +2199,7 @@ Module interpreter.
     Global Instance AssociatedFunction_resize_memory :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "resize_memory" (resize_memory IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque resize_memory.
     
@@ -2337,6 +2346,7 @@ Module interpreter.
     Global Instance AssociatedFunction_take_next_action :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "take_next_action" (take_next_action IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque take_next_action.
     
@@ -2420,6 +2430,7 @@ Module interpreter.
     Global Instance AssociatedFunction_halt :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "halt" (halt IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque halt.
     
@@ -2504,6 +2515,7 @@ Module interpreter.
     Global Instance AssociatedFunction_halt_fatal :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "halt_fatal" (halt_fatal IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque halt_fatal.
     
@@ -2573,6 +2585,7 @@ Module interpreter.
     Global Instance AssociatedFunction_halt_oog :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "halt_oog" (halt_oog IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque halt_oog.
     
@@ -2626,6 +2639,7 @@ Module interpreter.
     Global Instance AssociatedFunction_halt_memory_oog :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "halt_memory_oog" (halt_memory_oog IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque halt_memory_oog.
     
@@ -2679,6 +2693,7 @@ Module interpreter.
     Global Instance AssociatedFunction_halt_memory_limit_oog :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "halt_memory_limit_oog" (halt_memory_limit_oog IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque halt_memory_limit_oog.
     
@@ -2732,6 +2747,7 @@ Module interpreter.
     Global Instance AssociatedFunction_halt_overflow :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "halt_overflow" (halt_overflow IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque halt_overflow.
     
@@ -2785,6 +2801,7 @@ Module interpreter.
     Global Instance AssociatedFunction_halt_underflow :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "halt_underflow" (halt_underflow IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque halt_underflow.
     
@@ -2838,6 +2855,7 @@ Module interpreter.
     Global Instance AssociatedFunction_halt_not_activated :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "halt_not_activated" (halt_not_activated IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque halt_not_activated.
     
@@ -2930,6 +2948,7 @@ Module interpreter.
     Global Instance AssociatedFunction_return_with_output :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "return_with_output" (return_with_output IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque return_with_output.
     
@@ -3248,6 +3267,7 @@ Module interpreter.
     Global Instance AssociatedFunction_step :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "step" (step IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque step.
     
@@ -3322,6 +3342,7 @@ Module interpreter.
     Global Instance AssociatedFunction_step_dummy :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "step_dummy" (step_dummy IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque step_dummy.
     
@@ -3476,6 +3497,7 @@ Module interpreter.
     Global Instance AssociatedFunction_run_plain :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "run_plain" (run_plain IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque run_plain.
     (*
@@ -3544,6 +3566,7 @@ Module interpreter.
         (Self IW)
         "take_next_action_as_output"
         (take_next_action_as_output IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque take_next_action_as_output.
     
@@ -3633,6 +3656,7 @@ Module interpreter.
     Global Instance AssociatedFunction_run_plain_as_output :
       forall (IW : Ty.t),
       M.IsAssociatedFunction.C (Self IW) "run_plain_as_output" (run_plain_as_output IW).
+    Proof.
     Admitted.
     Global Typeclasses Opaque run_plain_as_output.
   End Impl_revm_interpreter_interpreter_Interpreter_IW.
@@ -4129,6 +4153,7 @@ Module interpreter.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -4171,6 +4196,7 @@ Module interpreter.
       end.
     
     Global Instance AssociatedFunction_is_ok : M.IsAssociatedFunction.C Self "is_ok" is_ok.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ok.
     
@@ -4214,6 +4240,7 @@ Module interpreter.
     
     Global Instance AssociatedFunction_is_revert :
       M.IsAssociatedFunction.C Self "is_revert" is_revert.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_revert.
     
@@ -4256,6 +4283,7 @@ Module interpreter.
       end.
     
     Global Instance AssociatedFunction_is_error : M.IsAssociatedFunction.C Self "is_error" is_error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_error.
   End Impl_revm_interpreter_interpreter_InterpreterResult.

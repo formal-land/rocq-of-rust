@@ -32538,6 +32538,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_normalized_Constant.
@@ -35856,6 +35857,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -35918,6 +35920,7 @@ Module normalized.
     
     Global Instance AssociatedFunction_module_id :
       M.IsAssociatedFunction.C Self "module_id" module_id.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_id.
   End Impl_move_binary_format_normalized_Module.
@@ -37093,6 +37096,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -37476,6 +37480,7 @@ Module normalized.
     
     Global Instance AssociatedFunction_is_closed :
       M.IsAssociatedFunction.C Self "is_closed" is_closed.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_closed.
     
@@ -38143,6 +38148,7 @@ Module normalized.
     
     Global Instance AssociatedFunction_into_type_tag :
       M.IsAssociatedFunction.C Self "into_type_tag" into_type_tag.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_type_tag.
     
@@ -38329,6 +38335,7 @@ Module normalized.
     
     Global Instance AssociatedFunction_into_struct_tag :
       M.IsAssociatedFunction.C Self "into_struct_tag" into_struct_tag.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_struct_tag.
     
@@ -39085,6 +39092,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_subst : M.IsAssociatedFunction.C Self "subst" subst.
+    Proof.
     Admitted.
     Global Typeclasses Opaque subst.
   End Impl_move_binary_format_normalized_Type.
@@ -39202,6 +39210,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_normalized_Field.
@@ -39668,6 +39677,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -39737,6 +39747,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_from_idx : M.IsAssociatedFunction.C Self "from_idx" from_idx.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_idx.
     
@@ -39910,6 +39921,7 @@ Module normalized.
     
     Global Instance AssociatedFunction_type_param_constraints :
       M.IsAssociatedFunction.C Self "type_param_constraints" type_param_constraints.
+    Proof.
     Admitted.
     Global Typeclasses Opaque type_param_constraints.
   End Impl_move_binary_format_normalized_Struct.
@@ -40979,6 +40991,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -41381,6 +41394,7 @@ Module normalized.
     
     Global Instance AssociatedFunction_new_from_name :
       M.IsAssociatedFunction.C Self "new_from_name" new_from_name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_from_name.
   End Impl_move_binary_format_normalized_Function.
@@ -41840,6 +41854,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -41905,6 +41920,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_from_idx : M.IsAssociatedFunction.C Self "from_idx" from_idx.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_idx.
   End Impl_move_binary_format_normalized_FieldRef.
@@ -42032,6 +42048,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -42097,6 +42114,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_from_idx : M.IsAssociatedFunction.C Self "from_idx" from_idx.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_idx.
   End Impl_move_binary_format_normalized_FunctionRef.
@@ -44358,6 +44376,7 @@ Module normalized.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_normalized_Bytecode.
@@ -47225,6 +47244,7 @@ Module normalized.
   
   Global Instance Instance_IsFunction_struct_instantiation :
     M.IsFunction.C "move_binary_format::normalized::struct_instantiation" struct_instantiation.
+  Proof.
   Admitted.
   Global Typeclasses Opaque struct_instantiation.
   
@@ -47619,6 +47639,7 @@ Module normalized.
   
   Global Instance Instance_IsFunction_field_instantiation :
     M.IsFunction.C "move_binary_format::normalized::field_instantiation" field_instantiation.
+  Proof.
   Admitted.
   Global Typeclasses Opaque field_instantiation.
   
@@ -47719,6 +47740,7 @@ Module normalized.
     M.IsFunction.C
       "move_binary_format::normalized::signature_to_single_type"
       signature_to_single_type.
+  Proof.
   Admitted.
   Global Typeclasses Opaque signature_to_single_type.
 End normalized.

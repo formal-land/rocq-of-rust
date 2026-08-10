@@ -239,6 +239,7 @@ Module mem.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -263,6 +264,7 @@ Module mem.
       Global Instance AssociatedFunction_uninit :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "uninit" (uninit T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque uninit.
       
@@ -323,6 +325,7 @@ Module mem.
       Global Instance AssociatedFunction_zeroed :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "zeroed" (zeroed T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque zeroed.
       
@@ -398,6 +401,7 @@ Module mem.
       Global Instance AssociatedFunction_write :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "write" (write T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque write.
       
@@ -438,6 +442,7 @@ Module mem.
       Global Instance AssociatedFunction_as_ptr :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_ptr" (as_ptr T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
       
@@ -478,6 +483,7 @@ Module mem.
       Global Instance AssociatedFunction_as_mut_ptr :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_mut_ptr" (as_mut_ptr T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut_ptr.
       
@@ -553,6 +559,7 @@ Module mem.
       Global Instance AssociatedFunction_assume_init :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "assume_init" (assume_init T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque assume_init.
       
@@ -622,6 +629,7 @@ Module mem.
       Global Instance AssociatedFunction_assume_init_read :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "assume_init_read" (assume_init_read T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque assume_init_read.
       
@@ -676,6 +684,7 @@ Module mem.
       Global Instance AssociatedFunction_assume_init_drop :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "assume_init_drop" (assume_init_drop T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque assume_init_drop.
       
@@ -744,6 +753,7 @@ Module mem.
       Global Instance AssociatedFunction_assume_init_ref :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "assume_init_ref" (assume_init_ref T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque assume_init_ref.
       
@@ -830,6 +840,7 @@ Module mem.
       Global Instance AssociatedFunction_assume_init_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "assume_init_mut" (assume_init_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque assume_init_mut.
       
@@ -900,6 +911,7 @@ Module mem.
       Global Instance AssociatedFunction_array_assume_init :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "array_assume_init" (array_assume_init T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque array_assume_init.
       
@@ -998,6 +1010,7 @@ Module mem.
       Global Instance AssociatedFunction_as_bytes :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_bytes" (as_bytes T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_bytes.
       
@@ -1126,6 +1139,7 @@ Module mem.
       Global Instance AssociatedFunction_as_bytes_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_bytes_mut" (as_bytes_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_bytes_mut.
     End Impl_core_mem_maybe_uninit_MaybeUninit_T.
@@ -1280,6 +1294,7 @@ Module mem.
       Global Instance AssociatedFunction_write_copy_of_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "write_copy_of_slice" (write_copy_of_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque write_copy_of_slice.
       
@@ -1790,6 +1805,7 @@ Module mem.
       Global Instance AssociatedFunction_write_clone_of_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "write_clone_of_slice" (write_clone_of_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque write_clone_of_slice.
       
@@ -1892,6 +1908,7 @@ Module mem.
       Global Instance AssociatedFunction_write_filled :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "write_filled" (write_filled T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque write_filled.
       
@@ -2336,6 +2353,7 @@ Module mem.
       Global Instance AssociatedFunction_write_with :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "write_with" (write_with T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque write_with.
       
@@ -2978,6 +2996,7 @@ Module mem.
       Global Instance AssociatedFunction_write_iter :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "write_iter" (write_iter T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque write_iter.
       
@@ -3100,6 +3119,7 @@ Module mem.
       Global Instance AssociatedFunction_as_bytes :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_bytes" (as_bytes T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_bytes.
       
@@ -3246,6 +3266,7 @@ Module mem.
       Global Instance AssociatedFunction_as_bytes_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_bytes_mut" (as_bytes_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_bytes_mut.
       
@@ -3364,6 +3385,7 @@ Module mem.
       Global Instance AssociatedFunction_assume_init_drop :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "assume_init_drop" (assume_init_drop T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque assume_init_drop.
       
@@ -3440,6 +3462,7 @@ Module mem.
       Global Instance AssociatedFunction_assume_init_ref :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "assume_init_ref" (assume_init_ref T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque assume_init_ref.
       
@@ -3524,6 +3547,7 @@ Module mem.
       Global Instance AssociatedFunction_assume_init_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "assume_init_mut" (assume_init_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque assume_init_mut.
     End Impl_slice_core_mem_maybe_uninit_MaybeUninit_T.
@@ -3587,6 +3611,7 @@ Module mem.
       Global Instance AssociatedFunction_transpose :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "transpose" (transpose N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque transpose.
     End Impl_core_mem_maybe_uninit_MaybeUninit_array_N_T.
@@ -3650,6 +3675,7 @@ Module mem.
       Global Instance AssociatedFunction_transpose :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "transpose" (transpose N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque transpose.
     End Impl_array_N_core_mem_maybe_uninit_MaybeUninit_T.

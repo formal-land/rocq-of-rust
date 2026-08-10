@@ -50,6 +50,7 @@ Module Impl_trait_flipper_Flipper.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
 End Impl_trait_flipper_Flipper.

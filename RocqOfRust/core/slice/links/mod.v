@@ -22,6 +22,7 @@ Module Impl_Slice.
       (index : I) :
     Run.Trait (slice.Impl_slice_T.get (Φ T)) [] [Φ I] [φ self; φ index]
       (option ('& Output)).
+  Proof.
   Admitted.
   Global Opaque run_get.
 
@@ -39,6 +40,7 @@ Module Impl_Slice.
       (index : I) :
     Run.Trait (slice.Impl_slice_T.get_unchecked_mut (Φ T)) [] [Φ I] [φ self; φ index]
       ('&mut Output).
+  Proof.
   Admitted.
   Global Opaque run_get_unchecked_mut.
 
@@ -48,6 +50,7 @@ Module Impl_Slice.
       (self : '& (Self T)) :
     Run.Trait (slice.Impl_slice_T.len (Φ T)) [] [] [φ self]
       usize.
+  Proof.
   Admitted.
   Global Opaque run_len.
 
@@ -69,6 +72,7 @@ Module Impl_Slice.
       (self : '& (Self T)) :
     Run.Trait (slice.Impl_slice_T.iter (Φ T)) [] [] [φ self]
       (Iter.t T).
+  Proof.
   Admitted.
   Global Opaque run_iter.
 
@@ -78,6 +82,7 @@ Module Impl_Slice.
       (self : '&mut (Self T)) :
     Run.Trait (slice.Impl_slice_T.iter_mut (Φ T)) [] [] [φ self]
       (IterMut.t T).
+  Proof.
   Admitted.
   Global Opaque run_iter_mut.
 
@@ -87,6 +92,7 @@ Module Impl_Slice.
       (self : '&mut (Self T)) :
     Run.Trait (slice.Impl_slice_T.last_mut (Φ T)) [] [] [φ self]
       (option ('&mut T)).
+  Proof.
   Admitted.
   Global Opaque run_last_mut.
 
@@ -96,6 +102,7 @@ Module Impl_Slice.
       (self : '& (Self T)) :
     Run.Trait (slice.Impl_slice_T.as_ptr (Φ T)) [] [] [φ self]
       ('*const T).
+  Proof.
   Admitted.
   Global Opaque run_as_ptr.
 
@@ -105,6 +112,7 @@ Module Impl_Slice.
       (self : '&mut (Self T)) :
     Run.Trait (slice.Impl_slice_T.as_mut_ptr (Φ T)) [] [] [φ self]
       ('*mut T).
+  Proof.
   Admitted.
   Global Opaque run_as_mut_ptr.
 
@@ -115,6 +123,7 @@ Module Impl_Slice.
       (chunk_size : usize) :
     Run.Trait (slice.Impl_slice_T.chunks_exact (Φ T)) [] [] [φ self; φ chunk_size]
       (ChunksExact.t T).
+  Proof.
   Admitted.
   Global Opaque run_chunks_exact.
 
@@ -125,6 +134,7 @@ Module Impl_Slice.
       (chunk_size : usize) :
     Run.Trait (slice.Impl_slice_T.rchunks_exact (Φ T)) [] [] [φ self; φ chunk_size]
       (RChunksExact.t T).
+  Proof.
   Admitted.
   Global Opaque run_rchunks_exact.
 
@@ -139,6 +149,7 @@ Module Impl_Slice.
       (src : '& (Self T)) :
     Run.Trait (slice.Impl_slice_T.copy_from_slice (Φ T)) [] [] [φ self; φ src]
       unit.
+  Proof.
   Admitted.
   Global Opaque run_copy_from_slice.
 End Impl_Slice.

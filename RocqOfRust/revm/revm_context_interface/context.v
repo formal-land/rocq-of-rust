@@ -7725,6 +7725,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_new_eq_present :
       M.IsAssociatedFunction.C Self "is_new_eq_present" is_new_eq_present.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_new_eq_present.
     
@@ -7782,6 +7783,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_original_eq_present :
       M.IsAssociatedFunction.C Self "is_original_eq_present" is_original_eq_present.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_original_eq_present.
     
@@ -7839,6 +7841,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_original_eq_new :
       M.IsAssociatedFunction.C Self "is_original_eq_new" is_original_eq_new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_original_eq_new.
     
@@ -7883,6 +7886,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_original_zero :
       M.IsAssociatedFunction.C Self "is_original_zero" is_original_zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_original_zero.
     
@@ -7927,6 +7931,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_present_zero :
       M.IsAssociatedFunction.C Self "is_present_zero" is_present_zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_present_zero.
     
@@ -7971,6 +7976,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_new_zero :
       M.IsAssociatedFunction.C Self "is_new_zero" is_new_zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_new_zero.
   End Impl_revm_context_interface_context_SStoreResult.

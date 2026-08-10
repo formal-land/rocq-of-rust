@@ -144,6 +144,7 @@ Definition eat_box_i32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_eat_box_i32 :
   M.IsFunction.C "scoping_rules_borrowing::eat_box_i32" eat_box_i32.
+Proof.
 Admitted.
 Global Typeclasses Opaque eat_box_i32.
 
@@ -258,6 +259,7 @@ Definition borrow_i32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
 
 Global Instance Instance_IsFunction_borrow_i32 :
   M.IsFunction.C "scoping_rules_borrowing::borrow_i32" borrow_i32.
+Proof.
 Admitted.
 Global Typeclasses Opaque borrow_i32.
 
@@ -366,5 +368,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "scoping_rules_borrowing::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

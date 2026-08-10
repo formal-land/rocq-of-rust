@@ -122,6 +122,7 @@ Module bits.
     Global Instance AssociatedFunction_bit :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "bit" (bit BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque bit.
     
@@ -299,6 +300,7 @@ Module bits.
     Global Instance AssociatedFunction_set_bit :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "set_bit" (set_bit BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_bit.
     
@@ -355,6 +357,7 @@ Module bits.
     Global Instance AssociatedFunction_byte :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "byte" (byte BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque byte.
     
@@ -611,6 +614,7 @@ Module bits.
     Global Instance AssociatedFunction_reverse_bits :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "reverse_bits" (reverse_bits BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque reverse_bits.
     
@@ -899,6 +903,7 @@ Module bits.
     Global Instance AssociatedFunction_leading_zeros :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "leading_zeros" (leading_zeros BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque leading_zeros.
     
@@ -961,6 +966,7 @@ Module bits.
     Global Instance AssociatedFunction_leading_ones :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "leading_ones" (leading_ones BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque leading_ones.
     
@@ -1176,6 +1182,7 @@ Module bits.
     Global Instance AssociatedFunction_trailing_zeros :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "trailing_zeros" (trailing_zeros BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque trailing_zeros.
     
@@ -1400,6 +1407,7 @@ Module bits.
     Global Instance AssociatedFunction_trailing_ones :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "trailing_ones" (trailing_ones BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque trailing_ones.
     
@@ -1552,6 +1560,7 @@ Module bits.
     Global Instance AssociatedFunction_count_ones :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "count_ones" (count_ones BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque count_ones.
     
@@ -1598,6 +1607,7 @@ Module bits.
     Global Instance AssociatedFunction_count_zeros :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "count_zeros" (count_zeros BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque count_zeros.
     
@@ -1644,6 +1654,7 @@ Module bits.
     Global Instance AssociatedFunction_bit_len :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "bit_len" (bit_len BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque bit_len.
     
@@ -1697,6 +1708,7 @@ Module bits.
     Global Instance AssociatedFunction_byte_len :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "byte_len" (byte_len BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque byte_len.
     
@@ -2102,6 +2114,7 @@ Module bits.
         (Self BITS LIMBS)
         "most_significant_bits"
         (most_significant_bits BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque most_significant_bits.
     
@@ -2171,6 +2184,7 @@ Module bits.
     Global Instance AssociatedFunction_checked_shl :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_shl" (checked_shl BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_shl.
     
@@ -2235,6 +2249,7 @@ Module bits.
     Global Instance AssociatedFunction_saturating_shl :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "saturating_shl" (saturating_shl BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_shl.
     
@@ -4020,6 +4035,7 @@ Module bits.
     Global Instance AssociatedFunction_overflowing_shl :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "overflowing_shl" (overflowing_shl BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque overflowing_shl.
     
@@ -4064,6 +4080,7 @@ Module bits.
     Global Instance AssociatedFunction_wrapping_shl :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_shl" (wrapping_shl BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_shl.
     
@@ -4133,6 +4150,7 @@ Module bits.
     Global Instance AssociatedFunction_checked_shr :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_shr" (checked_shr BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_shr.
     
@@ -5295,6 +5313,7 @@ Module bits.
     Global Instance AssociatedFunction_overflowing_shr :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "overflowing_shr" (overflowing_shr BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque overflowing_shr.
     
@@ -5339,6 +5358,7 @@ Module bits.
     Global Instance AssociatedFunction_wrapping_shr :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_shr" (wrapping_shr BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_shr.
     
@@ -5508,6 +5528,7 @@ Module bits.
     Global Instance AssociatedFunction_arithmetic_shr :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "arithmetic_shr" (arithmetic_shr BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque arithmetic_shr.
     
@@ -5633,6 +5654,7 @@ Module bits.
     Global Instance AssociatedFunction_rotate_left :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "rotate_left" (rotate_left BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rotate_left.
     
@@ -5728,6 +5750,7 @@ Module bits.
     Global Instance AssociatedFunction_rotate_right :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "rotate_right" (rotate_right BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rotate_right.
   End Impl_ruint_Uint_BITS_LIMBS.

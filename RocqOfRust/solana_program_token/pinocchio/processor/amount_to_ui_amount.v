@@ -1055,6 +1055,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::amount_to_ui_amount::process_amount_to_ui_amount"
         process_amount_to_ui_amount.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_amount_to_ui_amount.
   End amount_to_ui_amount.

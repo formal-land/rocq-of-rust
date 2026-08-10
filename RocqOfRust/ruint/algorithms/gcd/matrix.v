@@ -454,6 +454,7 @@ Module algorithms.
         
         Global Instance AssociatedConstant_value_IDENTITY :
           M.IsAssociatedFunction.C Self "IDENTITY" value_IDENTITY.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_IDENTITY.
         
@@ -695,6 +696,7 @@ Module algorithms.
         
         Global Instance AssociatedFunction_compose :
           M.IsAssociatedFunction.C Self "compose" compose.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compose.
         
@@ -1199,6 +1201,7 @@ Module algorithms.
           end.
         
         Global Instance AssociatedFunction_apply : M.IsAssociatedFunction.C Self "apply" apply.
+        Proof.
         Admitted.
         Global Typeclasses Opaque apply.
         
@@ -1458,6 +1461,7 @@ Module algorithms.
         
         Global Instance AssociatedFunction_apply_u128 :
           M.IsAssociatedFunction.C Self "apply_u128" apply_u128.
+        Proof.
         Admitted.
         Global Typeclasses Opaque apply_u128.
         
@@ -1935,6 +1939,7 @@ Module algorithms.
           end.
         
         Global Instance AssociatedFunction_from : M.IsAssociatedFunction.C Self "from" from.
+        Proof.
         Admitted.
         Global Typeclasses Opaque from.
         
@@ -2283,6 +2288,7 @@ Module algorithms.
         
         Global Instance AssociatedFunction_from_u64 :
           M.IsAssociatedFunction.C Self "from_u64" from_u64.
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_u64.
         
@@ -3835,6 +3841,7 @@ Module algorithms.
         
         Global Instance AssociatedFunction_from_u64_prefix :
           M.IsAssociatedFunction.C Self "from_u64_prefix" from_u64_prefix.
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_u64_prefix.
         
@@ -4019,6 +4026,7 @@ Module algorithms.
         
         Global Instance AssociatedFunction_from_u128_prefix :
           M.IsAssociatedFunction.C Self "from_u128_prefix" from_u128_prefix.
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_u128_prefix.
       End Impl_ruint_algorithms_gcd_matrix_Matrix.

@@ -187,6 +187,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_sort :
         M.IsFunction.C "core::slice::sort::unstable::sort" sort.
+      Proof.
       Admitted.
       Global Typeclasses Opaque sort.
       
@@ -202,6 +203,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::unstable::sort::MAX_LEN_ALWAYS_INSERTION_SORT"
             value_MAX_LEN_ALWAYS_INSERTION_SORT.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_LEN_ALWAYS_INSERTION_SORT.
       End sort.
@@ -421,6 +423,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_ipnsort :
         M.IsFunction.C "core::slice::sort::unstable::ipnsort" ipnsort.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ipnsort.
     End unstable.

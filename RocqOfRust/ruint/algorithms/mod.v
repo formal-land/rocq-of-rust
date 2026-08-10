@@ -869,6 +869,7 @@ Module algorithms.
     end.
   
   Global Instance Instance_IsFunction_cmp : M.IsFunction.C "ruint::algorithms::cmp" cmp.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cmp.
 End algorithms.

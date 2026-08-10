@@ -52,14 +52,17 @@ Parameter print_debug : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_print_debug :
   M.IsFunction.C "generics_bounds::print_debug" print_debug.
+Proof.
 Admitted.
 
 Parameter area : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_area : M.IsFunction.C "generics_bounds::area" area.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "generics_bounds::main" main.
+Proof.
 Admitted.

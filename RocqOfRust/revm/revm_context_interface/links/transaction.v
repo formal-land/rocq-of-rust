@@ -199,6 +199,7 @@ Module Impl_Transaction_for_Ref_Transaction.
     (types : Transaction.Types.t) `{Transaction.Types.AreLinks types}
     (run_Transaction_for_Self : Transaction.Run Self types) :
     Transaction.Run ('& Self) types.
+  Proof.
   Admitted.
 End Impl_Transaction_for_Ref_Transaction.
 

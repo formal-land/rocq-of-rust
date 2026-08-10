@@ -189,6 +189,7 @@ Module bits.
       
       Global Instance AssociatedFunction_from_word :
         M.IsAssociatedFunction.C Self "from_word" from_word.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_word.
       
@@ -328,6 +329,7 @@ Module bits.
       
       Global Instance AssociatedFunction_into_word :
         M.IsAssociatedFunction.C Self "into_word" into_word.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_word.
       
@@ -577,6 +579,7 @@ Module bits.
       
       Global Instance AssociatedFunction_from_address_and_selector :
         M.IsAssociatedFunction.C Self "from_address_and_selector" from_address_and_selector.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_address_and_selector.
       
@@ -872,6 +875,7 @@ Module bits.
       
       Global Instance AssociatedFunction_as_address_and_selector :
         M.IsAssociatedFunction.C Self "as_address_and_selector" as_address_and_selector.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_address_and_selector.
       
@@ -984,6 +988,7 @@ Module bits.
       
       Global Instance AssociatedFunction_to_address_and_selector :
         M.IsAssociatedFunction.C Self "to_address_and_selector" to_address_and_selector.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_address_and_selector.
     End Impl_alloy_primitives_bits_function_Function.

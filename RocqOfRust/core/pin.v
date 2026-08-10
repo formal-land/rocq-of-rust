@@ -877,6 +877,7 @@ Module pin.
     Global Instance AssociatedFunction_new :
       forall (Ptr : Ty.t),
       M.IsAssociatedFunction.C (Self Ptr) "new" (new Ptr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -898,6 +899,7 @@ Module pin.
     Global Instance AssociatedFunction_into_inner :
       forall (Ptr : Ty.t),
       M.IsAssociatedFunction.C (Self Ptr) "into_inner" (into_inner Ptr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inner.
     (*
@@ -923,6 +925,7 @@ Module pin.
     Global Instance AssociatedFunction_new_unchecked :
       forall (Ptr : Ty.t),
       M.IsAssociatedFunction.C (Self Ptr) "new_unchecked" (new_unchecked Ptr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_unchecked.
     
@@ -1013,6 +1016,7 @@ Module pin.
     Global Instance AssociatedFunction_as_ref :
       forall (Ptr : Ty.t),
       M.IsAssociatedFunction.C (Self Ptr) "as_ref" (as_ref Ptr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ref.
     (*
@@ -1102,6 +1106,7 @@ Module pin.
     Global Instance AssociatedFunction_as_mut :
       forall (Ptr : Ty.t),
       M.IsAssociatedFunction.C (Self Ptr) "as_mut" (as_mut Ptr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut.
     
@@ -1203,6 +1208,7 @@ Module pin.
     Global Instance AssociatedFunction_as_deref_mut :
       forall (Ptr : Ty.t),
       M.IsAssociatedFunction.C (Self Ptr) "as_deref_mut" (as_deref_mut Ptr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_deref_mut.
     
@@ -1269,6 +1275,7 @@ Module pin.
     Global Instance AssociatedFunction_set :
       forall (Ptr : Ty.t),
       M.IsAssociatedFunction.C (Self Ptr) "set" (set Ptr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque set.
     (*
@@ -1294,6 +1301,7 @@ Module pin.
     Global Instance AssociatedFunction_into_inner_unchecked :
       forall (Ptr : Ty.t),
       M.IsAssociatedFunction.C (Self Ptr) "into_inner_unchecked" (into_inner_unchecked Ptr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inner_unchecked.
   End Impl_core_pin_Pin_Ptr.
@@ -1378,6 +1386,7 @@ Module pin.
     Global Instance AssociatedFunction_map_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map_unchecked" (map_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_unchecked.
     
@@ -1405,6 +1414,7 @@ Module pin.
     Global Instance AssociatedFunction_get_ref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_ref" (get_ref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_ref.
     (*
@@ -1436,6 +1446,7 @@ Module pin.
     Global Instance AssociatedFunction_static_ref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "static_ref" (static_ref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque static_ref.
   End Impl_core_pin_Pin_ref__T.
@@ -1480,6 +1491,7 @@ Module pin.
     Global Instance AssociatedFunction_into_ref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "into_ref" (into_ref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_ref.
     
@@ -1520,6 +1532,7 @@ Module pin.
     Global Instance AssociatedFunction_get_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_mut" (get_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_mut.
     
@@ -1562,6 +1575,7 @@ Module pin.
     Global Instance AssociatedFunction_get_unchecked_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_unchecked_mut" (get_unchecked_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_unchecked_mut.
     
@@ -1651,6 +1665,7 @@ Module pin.
     Global Instance AssociatedFunction_map_unchecked_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map_unchecked_mut" (map_unchecked_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_unchecked_mut.
     (*
@@ -1682,6 +1697,7 @@ Module pin.
     Global Instance AssociatedFunction_static_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "static_mut" (static_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque static_mut.
   End Impl_core_pin_Pin_ref_mut_T.

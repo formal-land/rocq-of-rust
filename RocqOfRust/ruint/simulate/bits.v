@@ -18,6 +18,7 @@ Module Impl_Not_for_Uint.
 
   Module Eq.
     Instance I {BITS LIMBS : usize} : Not.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -38,6 +39,7 @@ Module Impl_BitAnd_for_Uint.
 
   Module Eq.
     Instance I {BITS LIMBS : usize} : BitAnd.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -58,6 +60,7 @@ Module Impl_BitOr_for_Uint.
 
   Module Eq.
     Instance I {BITS LIMBS : usize} : BitOr.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -78,6 +81,7 @@ Module Impl_BitXor_for_Uint.
 
   Module Eq.
     Instance I {BITS LIMBS : usize} : BitXor.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -98,6 +102,7 @@ Module Impl_Shl_for_Uint.
 
   Module Eq.
     Instance I {BITS LIMBS : usize} : Shl.Eq.C (Self BITS LIMBS) usize (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -118,6 +123,7 @@ Module Impl_Shr_for_Uint.
 
   Module Eq.
     Instance I {BITS LIMBS : usize} : Shr.Eq.C (Self BITS LIMBS) usize (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -144,6 +150,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   (* Get byte at index (little-endian, so index 0 is the least significant byte) *)
@@ -163,6 +170,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition leading_zeros {BITS LIMBS : usize} (self : Self BITS LIMBS) : usize :=
@@ -188,6 +196,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   (* Arithmetic (sign-extending) right shift *)
@@ -214,5 +223,6 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Uint.

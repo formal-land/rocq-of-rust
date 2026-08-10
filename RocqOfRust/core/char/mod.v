@@ -7,6 +7,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_TAG_CONT :
     M.IsFunction.C "core::char::TAG_CONT" value_TAG_CONT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TAG_CONT.
   
@@ -15,6 +16,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_TAG_TWO_B :
     M.IsFunction.C "core::char::TAG_TWO_B" value_TAG_TWO_B.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TAG_TWO_B.
   
@@ -23,6 +25,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_TAG_THREE_B :
     M.IsFunction.C "core::char::TAG_THREE_B" value_TAG_THREE_B.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TAG_THREE_B.
   
@@ -31,6 +34,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_TAG_FOUR_B :
     M.IsFunction.C "core::char::TAG_FOUR_B" value_TAG_FOUR_B.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TAG_FOUR_B.
   
@@ -39,6 +43,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_MAX_ONE_B :
     M.IsFunction.C "core::char::MAX_ONE_B" value_MAX_ONE_B.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_ONE_B.
   
@@ -47,6 +52,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_MAX_TWO_B :
     M.IsFunction.C "core::char::MAX_TWO_B" value_MAX_TWO_B.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_TWO_B.
   
@@ -55,6 +61,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_MAX_THREE_B :
     M.IsFunction.C "core::char::MAX_THREE_B" value_MAX_THREE_B.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_THREE_B.
   
@@ -62,6 +69,7 @@ Module char.
     ltac:(M.monadic (get_associated_constant (| Ty.path "char", "MAX", Ty.path "char" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::char::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
   
@@ -71,6 +79,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_MAX_LEN_UTF8 :
     M.IsFunction.C "core::char::MAX_LEN_UTF8" value_MAX_LEN_UTF8.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_LEN_UTF8.
   
@@ -80,6 +89,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_MAX_LEN_UTF16 :
     M.IsFunction.C "core::char::MAX_LEN_UTF16" value_MAX_LEN_UTF16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_LEN_UTF16.
   
@@ -93,6 +103,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_REPLACEMENT_CHARACTER :
     M.IsFunction.C "core::char::REPLACEMENT_CHARACTER" value_REPLACEMENT_CHARACTER.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_REPLACEMENT_CHARACTER.
   
@@ -106,6 +117,7 @@ Module char.
   
   Global Instance Instance_IsConstant_value_UNICODE_VERSION :
     M.IsFunction.C "core::char::UNICODE_VERSION" value_UNICODE_VERSION.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_UNICODE_VERSION.
   
@@ -133,6 +145,7 @@ Module char.
   
   Global Instance Instance_IsFunction_decode_utf16 :
     M.IsFunction.C "core::char::decode_utf16" decode_utf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque decode_utf16.
   
@@ -155,6 +168,7 @@ Module char.
     end.
   
   Global Instance Instance_IsFunction_from_u32 : M.IsFunction.C "core::char::from_u32" from_u32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_u32.
   
@@ -179,6 +193,7 @@ Module char.
   
   Global Instance Instance_IsFunction_from_u32_unchecked :
     M.IsFunction.C "core::char::from_u32_unchecked" from_u32_unchecked.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_u32_unchecked.
   
@@ -203,6 +218,7 @@ Module char.
   
   Global Instance Instance_IsFunction_from_digit :
     M.IsFunction.C "core::char::from_digit" from_digit.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_digit.
   
@@ -409,6 +425,7 @@ Module char.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_core_char_EscapeUnicode.
@@ -1013,6 +1030,7 @@ Module char.
     
     Global Instance AssociatedFunction_printable :
       M.IsAssociatedFunction.C Self "printable" printable.
+    Proof.
     Admitted.
     Global Typeclasses Opaque printable.
     
@@ -1053,6 +1071,7 @@ Module char.
     
     Global Instance AssociatedFunction_backslash :
       M.IsAssociatedFunction.C Self "backslash" backslash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque backslash.
     
@@ -1092,6 +1111,7 @@ Module char.
       end.
     
     Global Instance AssociatedFunction_unicode : M.IsAssociatedFunction.C Self "unicode" unicode.
+    Proof.
     Admitted.
     Global Typeclasses Opaque unicode.
   End Impl_core_char_EscapeDefault.
@@ -1685,6 +1705,7 @@ Module char.
     
     Global Instance AssociatedFunction_printable :
       M.IsAssociatedFunction.C Self "printable" printable.
+    Proof.
     Admitted.
     Global Typeclasses Opaque printable.
     
@@ -1725,6 +1746,7 @@ Module char.
     
     Global Instance AssociatedFunction_backslash :
       M.IsAssociatedFunction.C Self "backslash" backslash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque backslash.
     
@@ -1764,6 +1786,7 @@ Module char.
       end.
     
     Global Instance AssociatedFunction_unicode : M.IsAssociatedFunction.C Self "unicode" unicode.
+    Proof.
     Admitted.
     Global Typeclasses Opaque unicode.
   End Impl_core_char_EscapeDebug.
@@ -3878,6 +3901,7 @@ Module char.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_core_char_CaseMappingIter.

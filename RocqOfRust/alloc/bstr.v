@@ -126,6 +126,7 @@ Module bstr.
       end.
     
     Global Instance AssociatedFunction_as_bytes : M.IsAssociatedFunction.C Self "as_bytes" as_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes.
     
@@ -179,6 +180,7 @@ Module bstr.
     
     Global Instance AssociatedFunction_as_bytestr :
       M.IsAssociatedFunction.C Self "as_bytestr" as_bytestr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytestr.
     
@@ -260,6 +262,7 @@ Module bstr.
     
     Global Instance AssociatedFunction_as_mut_bytestr :
       M.IsAssociatedFunction.C Self "as_mut_bytestr" as_mut_bytestr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_bytestr.
   End Impl_alloc_bstr_ByteString.

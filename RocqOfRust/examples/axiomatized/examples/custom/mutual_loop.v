@@ -15,12 +15,14 @@ Module Impl_mutual_loop_LoopA.
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter start_loop : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_start_loop :
     M.IsAssociatedFunction.C Self "start_loop" start_loop.
+  Proof.
   Admitted.
 End Impl_mutual_loop_LoopA.
 
@@ -48,6 +50,7 @@ Module Impl_mutual_loop_LoopB.
   
   Global Instance AssociatedFunction_start_loop :
     M.IsAssociatedFunction.C Self "start_loop" start_loop.
+  Proof.
   Admitted.
 End Impl_mutual_loop_LoopB.
 
@@ -55,4 +58,5 @@ Parameter start_loop : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_start_loop :
   M.IsFunction.C "mutual_loop::start_loop" start_loop.
+Proof.
 Admitted.

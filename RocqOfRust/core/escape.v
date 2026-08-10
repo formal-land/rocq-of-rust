@@ -73,6 +73,7 @@ Module escape.
   
   Global Instance Instance_IsConstant_value_HEX_DIGITS :
     M.IsFunction.C "core::escape::HEX_DIGITS" value_HEX_DIGITS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_HEX_DIGITS.
   
@@ -137,6 +138,7 @@ Module escape.
   
   Global Instance Instance_IsFunction_backslash :
     M.IsFunction.C "core::escape::backslash" backslash.
+  Proof.
   Admitted.
   Global Typeclasses Opaque backslash.
   
@@ -254,6 +256,7 @@ Module escape.
   
   Global Instance Instance_IsFunction_hex_escape :
     M.IsFunction.C "core::escape::hex_escape" hex_escape.
+  Proof.
   Admitted.
   Global Typeclasses Opaque hex_escape.
   
@@ -311,6 +314,7 @@ Module escape.
     end.
   
   Global Instance Instance_IsFunction_verbatim : M.IsFunction.C "core::escape::verbatim" verbatim.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verbatim.
   
@@ -545,6 +549,7 @@ Module escape.
   
   Global Instance Instance_IsFunction_escape_ascii :
     M.IsFunction.C "core::escape::escape_ascii" escape_ascii.
+  Proof.
   Admitted.
   Global Typeclasses Opaque escape_ascii.
   
@@ -793,6 +798,7 @@ Module escape.
     
     Global Instance Instance_IsConstant_value_LOOKUP :
       M.IsFunction.C "core::escape::escape_ascii::LOOKUP" value_LOOKUP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOOKUP.
   End escape_ascii.
@@ -1107,6 +1113,7 @@ Module escape.
   
   Global Instance Instance_IsFunction_escape_unicode :
     M.IsFunction.C "core::escape::escape_unicode" escape_unicode.
+  Proof.
   Admitted.
   Global Typeclasses Opaque escape_unicode.
   
@@ -1454,6 +1461,7 @@ Module escape.
         (Self N ESCAPING)
         "LITERAL_ESCAPE_START"
         (value_LITERAL_ESCAPE_START N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LITERAL_ESCAPE_START.
     
@@ -1575,6 +1583,7 @@ Module escape.
     Global Instance AssociatedFunction_new :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "new" (new N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1661,6 +1670,7 @@ Module escape.
     Global Instance AssociatedFunction_backslash :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "backslash" (backslash N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque backslash.
     
@@ -1747,6 +1757,7 @@ Module escape.
     Global Instance AssociatedFunction_ascii :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "ascii" (ascii N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ascii.
     
@@ -1833,6 +1844,7 @@ Module escape.
     Global Instance AssociatedFunction_unicode :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "unicode" (unicode N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unicode.
     
@@ -1889,6 +1901,7 @@ Module escape.
     Global Instance AssociatedFunction_empty :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "empty" (empty N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque empty.
     
@@ -1964,6 +1977,7 @@ Module escape.
     Global Instance AssociatedFunction_len :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "len" (len N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -2025,6 +2039,7 @@ Module escape.
     Global Instance AssociatedFunction_advance_by :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "advance_by" (advance_by N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque advance_by.
     
@@ -2086,6 +2101,7 @@ Module escape.
     Global Instance AssociatedFunction_advance_back_by :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "advance_back_by" (advance_back_by N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque advance_back_by.
     
@@ -2200,6 +2216,7 @@ Module escape.
     Global Instance AssociatedFunction_to_char :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "to_char" (to_char N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_char.
     
@@ -2476,6 +2493,7 @@ Module escape.
     Global Instance AssociatedFunction_to_str_unchecked :
       forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsAssociatedFunction.C (Self N ESCAPING) "to_str_unchecked" (to_str_unchecked N ESCAPING).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_str_unchecked.
   End Impl_core_escape_EscapeIterInner_N_ESCAPING.
@@ -2739,6 +2757,7 @@ Module escape.
     Global Instance AssociatedFunction_next :
       forall (N : Value.t),
       M.IsAssociatedFunction.C (Self N) "next" (next N).
+    Proof.
     Admitted.
     Global Typeclasses Opaque next.
     
@@ -2994,6 +3013,7 @@ Module escape.
     Global Instance AssociatedFunction_next_back :
       forall (N : Value.t),
       M.IsAssociatedFunction.C (Self N) "next_back" (next_back N).
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_back.
   End Impl_core_escape_EscapeIterInner_N_core_escape_AlwaysEscaped.
@@ -3082,6 +3102,7 @@ Module escape.
     Global Instance AssociatedFunction_printable :
       forall (N : Value.t),
       M.IsAssociatedFunction.C (Self N) "printable" (printable N).
+    Proof.
     Admitted.
     Global Typeclasses Opaque printable.
     
@@ -3399,6 +3420,7 @@ Module escape.
     Global Instance AssociatedFunction_next :
       forall (N : Value.t),
       M.IsAssociatedFunction.C (Self N) "next" (next N).
+    Proof.
     Admitted.
     Global Typeclasses Opaque next.
   End Impl_core_escape_EscapeIterInner_N_core_escape_MaybeEscaped.

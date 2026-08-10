@@ -37,6 +37,7 @@ Module Impl_Clone_for_Bytes.
     Run.Trait
       bytes_.Impl_core_clone_Clone_for_alloy_primitives_bytes__Bytes.clone
       [] [] [φ self] Self.
+  Proof.
   Admitted.
   Global Opaque run_clone.
 
@@ -63,6 +64,7 @@ Module Impl_Default_for_Bytes.
     Run.Trait
       bytes_.Impl_core_default_Default_for_alloy_primitives_bytes__Bytes.default
       [] [] [] Self.
+  Proof.
   Admitted.
   Global Opaque run_default.
 
@@ -87,6 +89,7 @@ Module Impl_Deref_for_Bytes.
     Bytes.t.
 
   Instance run : Deref.Run Self bytes.Bytes.t.
+  Proof.
   Admitted.
 End Impl_Deref_for_Bytes.
 Export (hints) Impl_Deref_for_Bytes.
@@ -97,6 +100,7 @@ Module Impl_DerefMut_for_Bytes.
     Bytes.t.
 
   Instance run : DerefMut.Run Self bytes.Bytes.t.
+  Proof.
   Admitted.
 End Impl_DerefMut_for_Bytes.
 Export (hints) Impl_DerefMut_for_Bytes.
@@ -109,6 +113,7 @@ Module Impl_AsRef_slice_u8_for_Bytes.
     Run.Trait
       bytes_.Impl_core_convert_AsRef_slice_u8_for_alloy_primitives_bytes__Bytes.as_ref
       [] [] [φ self] ('& (list u8)).
+  Proof.
   Admitted.
   Global Opaque run_as_ref.
 
@@ -156,6 +161,7 @@ Module Impl_From_Vec_u8_for_Bytes.
     Bytes.t.
 
   Instance run : From.Run Self (Vec.t u8 Global.t).
+  Proof.
   Admitted.
 End Impl_From_Vec_u8_for_Bytes.
 Export (hints) Impl_From_Vec_u8_for_Bytes.

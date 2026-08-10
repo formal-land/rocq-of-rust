@@ -6,6 +6,7 @@ Module i128.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i128", "MIN", Ty.path "i128" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::i128::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -13,6 +14,7 @@ Module i128.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i128", "MAX", Ty.path "i128" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::i128::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End i128.
@@ -22,6 +24,7 @@ Module i16.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i16", "MIN", Ty.path "i16" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::i16::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -29,6 +32,7 @@ Module i16.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::i16::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End i16.
@@ -38,6 +42,7 @@ Module i32.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i32", "MIN", Ty.path "i32" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::i32::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -45,6 +50,7 @@ Module i32.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::i32::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End i32.
@@ -54,6 +60,7 @@ Module i64.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i64", "MIN", Ty.path "i64" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::i64::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -61,6 +68,7 @@ Module i64.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i64", "MAX", Ty.path "i64" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::i64::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End i64.
@@ -70,6 +78,7 @@ Module i8.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i8", "MIN", Ty.path "i8" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::i8::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -77,6 +86,7 @@ Module i8.
     ltac:(M.monadic (get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::i8::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End i8.
@@ -86,6 +96,7 @@ Module isize.
     ltac:(M.monadic (get_associated_constant (| Ty.path "isize", "MIN", Ty.path "isize" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::isize::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -93,6 +104,7 @@ Module isize.
     ltac:(M.monadic (get_associated_constant (| Ty.path "isize", "MAX", Ty.path "isize" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::isize::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End isize.
@@ -102,6 +114,7 @@ Module u128.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u128", "MIN", Ty.path "u128" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::u128::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -109,6 +122,7 @@ Module u128.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u128", "MAX", Ty.path "u128" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::u128::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End u128.
@@ -118,6 +132,7 @@ Module u16.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u16", "MIN", Ty.path "u16" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::u16::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -125,6 +140,7 @@ Module u16.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::u16::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End u16.
@@ -134,6 +150,7 @@ Module u32.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u32", "MIN", Ty.path "u32" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::u32::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -141,6 +158,7 @@ Module u32.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u32", "MAX", Ty.path "u32" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::u32::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End u32.
@@ -150,6 +168,7 @@ Module u64.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u64", "MIN", Ty.path "u64" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::u64::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -157,6 +176,7 @@ Module u64.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::u64::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End u64.
@@ -166,6 +186,7 @@ Module u8.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u8", "MIN", Ty.path "u8" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::u8::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -173,6 +194,7 @@ Module u8.
     ltac:(M.monadic (get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::u8::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End u8.
@@ -182,6 +204,7 @@ Module usize.
     ltac:(M.monadic (get_associated_constant (| Ty.path "usize", "MIN", Ty.path "usize" |))).
   
   Global Instance Instance_IsConstant_value_MIN : M.IsFunction.C "core::usize::MIN" value_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -189,6 +212,7 @@ Module usize.
     ltac:(M.monadic (get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |))).
   
   Global Instance Instance_IsConstant_value_MAX : M.IsFunction.C "core::usize::MAX" value_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
 End usize.

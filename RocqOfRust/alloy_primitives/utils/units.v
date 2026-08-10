@@ -8,6 +8,7 @@ Module utils.
     
     Global Instance Instance_IsConstant_value_MAX_U64_EXPONENT :
       M.IsFunction.C "alloy_primitives::utils::units::MAX_U64_EXPONENT" value_MAX_U64_EXPONENT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX_U64_EXPONENT.
     
@@ -102,6 +103,7 @@ Module utils.
     
     Global Instance Instance_IsFunction_parse_ether :
       M.IsFunction.C "alloy_primitives::utils::units::parse_ether" parse_ether.
+    Proof.
     Admitted.
     Global Typeclasses Opaque parse_ether.
     
@@ -275,6 +277,7 @@ Module utils.
     
     Global Instance Instance_IsFunction_parse_units :
       M.IsFunction.C "alloy_primitives::utils::units::parse_units" parse_units.
+    Proof.
     Admitted.
     Global Typeclasses Opaque parse_units.
     
@@ -330,6 +333,7 @@ Module utils.
     
     Global Instance Instance_IsFunction_format_ether :
       M.IsFunction.C "alloy_primitives::utils::units::format_ether" format_ether.
+    Proof.
     Admitted.
     Global Typeclasses Opaque format_ether.
     
@@ -473,6 +477,7 @@ Module utils.
     
     Global Instance Instance_IsFunction_format_units :
       M.IsFunction.C "alloy_primitives::utils::units::format_units" format_units.
+    Proof.
     Admitted.
     Global Typeclasses Opaque format_units.
     
@@ -6136,6 +6141,7 @@ Module utils.
       
       Global Instance AssociatedFunction_parse_units :
         M.IsAssociatedFunction.C Self "parse_units" parse_units.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_units.
       
@@ -7034,6 +7040,7 @@ Module utils.
       
       Global Instance AssociatedFunction_format_units :
         M.IsAssociatedFunction.C Self "format_units" format_units.
+      Proof.
       Admitted.
       Global Typeclasses Opaque format_units.
       
@@ -7073,6 +7080,7 @@ Module utils.
       
       Global Instance AssociatedFunction_is_signed :
         M.IsAssociatedFunction.C Self "is_signed" is_signed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_signed.
       
@@ -7112,6 +7120,7 @@ Module utils.
       
       Global Instance AssociatedFunction_is_unsigned :
         M.IsAssociatedFunction.C Self "is_unsigned" is_unsigned.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_unsigned.
       
@@ -7191,6 +7200,7 @@ Module utils.
       
       Global Instance AssociatedFunction_is_negative :
         M.IsAssociatedFunction.C Self "is_negative" is_negative.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_negative.
       
@@ -7270,6 +7280,7 @@ Module utils.
       
       Global Instance AssociatedFunction_is_positive :
         M.IsAssociatedFunction.C Self "is_positive" is_positive.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_positive.
       
@@ -7376,6 +7387,7 @@ Module utils.
         end.
       
       Global Instance AssociatedFunction_is_zero : M.IsAssociatedFunction.C Self "is_zero" is_zero.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_zero.
       
@@ -7455,6 +7467,7 @@ Module utils.
       
       Global Instance AssociatedFunction_get_absolute :
         M.IsAssociatedFunction.C Self "get_absolute" get_absolute.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_absolute.
       
@@ -7534,6 +7547,7 @@ Module utils.
       
       Global Instance AssociatedFunction_get_signed :
         M.IsAssociatedFunction.C Self "get_signed" get_signed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_signed.
     End Impl_alloy_primitives_utils_units_ParseUnits.
@@ -8904,6 +8918,7 @@ Module utils.
           |))).
       
       Global Instance AssociatedConstant_value_WEI : M.IsAssociatedFunction.C Self "WEI" value_WEI.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_WEI.
       
@@ -8918,6 +8933,7 @@ Module utils.
           |))).
       
       Global Instance AssociatedConstant_value_Wei : M.IsAssociatedFunction.C Self "Wei" value_Wei.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_Wei.
       
@@ -8941,6 +8957,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_KWEI :
         M.IsAssociatedFunction.C Self "KWEI" value_KWEI.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_KWEI.
       
@@ -8956,6 +8973,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_Kwei :
         M.IsAssociatedFunction.C Self "Kwei" value_Kwei.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_Kwei.
       
@@ -8979,6 +8997,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_MWEI :
         M.IsAssociatedFunction.C Self "MWEI" value_MWEI.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MWEI.
       
@@ -8994,6 +9013,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_Mwei :
         M.IsAssociatedFunction.C Self "Mwei" value_Mwei.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_Mwei.
       
@@ -9017,6 +9037,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_GWEI :
         M.IsAssociatedFunction.C Self "GWEI" value_GWEI.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_GWEI.
       
@@ -9032,6 +9053,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_Gwei :
         M.IsAssociatedFunction.C Self "Gwei" value_Gwei.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_Gwei.
       
@@ -9055,6 +9077,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_TWEI :
         M.IsAssociatedFunction.C Self "TWEI" value_TWEI.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_TWEI.
       
@@ -9070,6 +9093,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_Twei :
         M.IsAssociatedFunction.C Self "Twei" value_Twei.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_Twei.
       
@@ -9093,6 +9117,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_PWEI :
         M.IsAssociatedFunction.C Self "PWEI" value_PWEI.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_PWEI.
       
@@ -9108,6 +9133,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_Pwei :
         M.IsAssociatedFunction.C Self "Pwei" value_Pwei.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_Pwei.
       
@@ -9131,6 +9157,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_ETHER :
         M.IsAssociatedFunction.C Self "ETHER" value_ETHER.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ETHER.
       
@@ -9146,6 +9173,7 @@ Module utils.
       
       Global Instance AssociatedConstant_value_Ether :
         M.IsAssociatedFunction.C Self "Ether" value_Ether.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_Ether.
       
@@ -9160,6 +9188,7 @@ Module utils.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -9182,6 +9211,7 @@ Module utils.
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX.
       
@@ -9268,6 +9298,7 @@ Module utils.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -9287,6 +9318,7 @@ Module utils.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -9429,6 +9461,7 @@ Module utils.
         end.
       
       Global Instance AssociatedFunction_wei : M.IsAssociatedFunction.C Self "wei" wei.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wei.
       
@@ -9555,6 +9588,7 @@ Module utils.
       
       Global Instance AssociatedFunction_wei_const :
         M.IsAssociatedFunction.C Self "wei_const" wei_const.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wei_const.
       
@@ -9579,6 +9613,7 @@ Module utils.
         end.
       
       Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get.
       
@@ -9610,6 +9645,7 @@ Module utils.
         end.
       
       Global Instance AssociatedFunction_as_num : M.IsAssociatedFunction.C Self "as_num" as_num.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_num.
     End Impl_alloy_primitives_utils_units_Unit.

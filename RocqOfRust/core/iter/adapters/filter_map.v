@@ -117,6 +117,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I F : Ty.t),
           M.IsAssociatedFunction.C (Self I F) "new" (new I F).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_core_iter_adapters_filter_map_FilterMap_I_F.
@@ -347,6 +348,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_filter_map_fold :
         M.IsFunction.C "core::iter::adapters::filter_map::filter_map_fold" filter_map_fold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque filter_map_fold.
       
@@ -473,6 +475,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_filter_map_try_fold :
         M.IsFunction.C "core::iter::adapters::filter_map::filter_map_try_fold" filter_map_try_fold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque filter_map_try_fold.
       

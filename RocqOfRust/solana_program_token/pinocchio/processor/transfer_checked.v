@@ -220,6 +220,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::transfer_checked::process_transfer_checked"
         process_transfer_checked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_transfer_checked.
   End transfer_checked.

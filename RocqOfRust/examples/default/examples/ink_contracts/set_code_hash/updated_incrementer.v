@@ -151,6 +151,7 @@ Module Impl_updated_incrementer_Env.
   
   Global Instance AssociatedFunction_set_code_hash :
     M.IsAssociatedFunction.C Self "set_code_hash" set_code_hash.
+  Proof.
   Admitted.
   Global Typeclasses Opaque set_code_hash.
 End Impl_updated_incrementer_Env.
@@ -186,6 +187,7 @@ Module Impl_updated_incrementer_Incrementer.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -217,6 +219,7 @@ Module Impl_updated_incrementer_Incrementer.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -259,6 +262,7 @@ Module Impl_updated_incrementer_Incrementer.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -461,6 +465,7 @@ Module Impl_updated_incrementer_Incrementer.
     end.
   
   Global Instance AssociatedFunction_inc : M.IsAssociatedFunction.C Self "inc" inc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque inc.
   
@@ -489,6 +494,7 @@ Module Impl_updated_incrementer_Incrementer.
     end.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
   
@@ -721,6 +727,7 @@ Module Impl_updated_incrementer_Incrementer.
     end.
   
   Global Instance AssociatedFunction_set_code : M.IsAssociatedFunction.C Self "set_code" set_code.
+  Proof.
   Admitted.
   Global Typeclasses Opaque set_code.
 End Impl_updated_incrementer_Incrementer.

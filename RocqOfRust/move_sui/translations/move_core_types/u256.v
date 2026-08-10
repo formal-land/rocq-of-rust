@@ -7,6 +7,7 @@ Module u256.
   
   Global Instance Instance_IsConstant_value_NUM_BITS_PER_BYTE :
     M.IsFunction.C "move_core_types::u256::NUM_BITS_PER_BYTE" value_NUM_BITS_PER_BYTE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NUM_BITS_PER_BYTE.
   
@@ -15,6 +16,7 @@ Module u256.
   
   Global Instance Instance_IsConstant_value_U256_NUM_BITS :
     M.IsFunction.C "move_core_types::u256::U256_NUM_BITS" value_U256_NUM_BITS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_U256_NUM_BITS.
   
@@ -36,6 +38,7 @@ Module u256.
   
   Global Instance Instance_IsConstant_value_U256_NUM_BYTES :
     M.IsFunction.C "move_core_types::u256::U256_NUM_BYTES" value_U256_NUM_BYTES.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_U256_NUM_BYTES.
   
@@ -628,6 +631,7 @@ Module u256.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_core_types_u256_U256CastError.
@@ -3150,6 +3154,7 @@ Module u256.
       end.
     
     Global Instance AssociatedFunction_zero : M.IsAssociatedFunction.C Self "zero" zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque zero.
     
@@ -3177,6 +3182,7 @@ Module u256.
       end.
     
     Global Instance AssociatedFunction_one : M.IsAssociatedFunction.C Self "one" one.
+    Proof.
     Admitted.
     Global Typeclasses Opaque one.
     
@@ -3210,6 +3216,7 @@ Module u256.
     
     Global Instance AssociatedFunction_max_value :
       M.IsAssociatedFunction.C Self "max_value" max_value.
+    Proof.
     Admitted.
     Global Typeclasses Opaque max_value.
     
@@ -3313,6 +3320,7 @@ Module u256.
     
     Global Instance AssociatedFunction_from_str_radix :
       M.IsAssociatedFunction.C Self "from_str_radix" from_str_radix.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_str_radix.
     
@@ -3382,6 +3390,7 @@ Module u256.
     
     Global Instance AssociatedFunction_from_le_bytes :
       M.IsAssociatedFunction.C Self "from_le_bytes" from_le_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_le_bytes.
     
@@ -3451,6 +3460,7 @@ Module u256.
     
     Global Instance AssociatedFunction_to_le_bytes :
       M.IsAssociatedFunction.C Self "to_le_bytes" to_le_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_le_bytes.
     
@@ -3492,6 +3502,7 @@ Module u256.
     
     Global Instance AssociatedFunction_leading_zeros :
       M.IsAssociatedFunction.C Self "leading_zeros" leading_zeros.
+    Proof.
     Admitted.
     Global Typeclasses Opaque leading_zeros.
     
@@ -3530,6 +3541,7 @@ Module u256.
     
     Global Instance AssociatedFunction_unchecked_as_u8 :
       M.IsAssociatedFunction.C Self "unchecked_as_u8" unchecked_as_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque unchecked_as_u8.
     
@@ -3568,6 +3580,7 @@ Module u256.
     
     Global Instance AssociatedFunction_unchecked_as_u16 :
       M.IsAssociatedFunction.C Self "unchecked_as_u16" unchecked_as_u16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque unchecked_as_u16.
     
@@ -3606,6 +3619,7 @@ Module u256.
     
     Global Instance AssociatedFunction_unchecked_as_u32 :
       M.IsAssociatedFunction.C Self "unchecked_as_u32" unchecked_as_u32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque unchecked_as_u32.
     
@@ -3644,6 +3658,7 @@ Module u256.
     
     Global Instance AssociatedFunction_unchecked_as_u64 :
       M.IsAssociatedFunction.C Self "unchecked_as_u64" unchecked_as_u64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque unchecked_as_u64.
     
@@ -3680,6 +3695,7 @@ Module u256.
     
     Global Instance AssociatedFunction_unchecked_as_u128 :
       M.IsAssociatedFunction.C Self "unchecked_as_u128" unchecked_as_u128.
+    Proof.
     Admitted.
     Global Typeclasses Opaque unchecked_as_u128.
     
@@ -3733,6 +3749,7 @@ Module u256.
     
     Global Instance AssociatedFunction_checked_add :
       M.IsAssociatedFunction.C Self "checked_add" checked_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_add.
     
@@ -3786,6 +3803,7 @@ Module u256.
     
     Global Instance AssociatedFunction_checked_sub :
       M.IsAssociatedFunction.C Self "checked_sub" checked_sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_sub.
     
@@ -3839,6 +3857,7 @@ Module u256.
     
     Global Instance AssociatedFunction_checked_mul :
       M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_mul.
     
@@ -3892,6 +3911,7 @@ Module u256.
     
     Global Instance AssociatedFunction_checked_div :
       M.IsAssociatedFunction.C Self "checked_div" checked_div.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_div.
     
@@ -3945,6 +3965,7 @@ Module u256.
     
     Global Instance AssociatedFunction_checked_rem :
       M.IsAssociatedFunction.C Self "checked_rem" checked_rem.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_rem.
     
@@ -4058,6 +4079,7 @@ Module u256.
     
     Global Instance AssociatedFunction_checked_shl :
       M.IsAssociatedFunction.C Self "checked_shl" checked_shl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_shl.
     
@@ -4171,6 +4193,7 @@ Module u256.
     
     Global Instance AssociatedFunction_checked_shr :
       M.IsAssociatedFunction.C Self "checked_shr" checked_shr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_shr.
     
@@ -4369,6 +4392,7 @@ Module u256.
     
     Global Instance AssociatedFunction_down_cast_lossy :
       M.IsAssociatedFunction.C Self "down_cast_lossy" down_cast_lossy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque down_cast_lossy.
     
@@ -4427,6 +4451,7 @@ Module u256.
     
     Global Instance AssociatedFunction_wrapping_add :
       M.IsAssociatedFunction.C Self "wrapping_add" wrapping_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_add.
     
@@ -4485,6 +4510,7 @@ Module u256.
     
     Global Instance AssociatedFunction_wrapping_sub :
       M.IsAssociatedFunction.C Self "wrapping_sub" wrapping_sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_sub.
     
@@ -4543,6 +4569,7 @@ Module u256.
     
     Global Instance AssociatedFunction_wrapping_mul :
       M.IsAssociatedFunction.C Self "wrapping_mul" wrapping_mul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_mul.
     
@@ -4999,6 +5026,7 @@ Module u256.
       end.
     
     Global Instance AssociatedFunction_wmul : M.IsAssociatedFunction.C Self "wmul" wmul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wmul.
   End Impl_move_core_types_u256_U256.

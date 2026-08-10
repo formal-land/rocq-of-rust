@@ -3875,6 +3875,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::set_authority::process_set_authority"
         process_set_authority.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_set_authority.
   End set_authority.

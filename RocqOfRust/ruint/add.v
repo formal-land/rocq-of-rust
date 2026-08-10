@@ -84,6 +84,7 @@ Module add.
     Global Instance AssociatedFunction_abs_diff :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "abs_diff" (abs_diff BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque abs_diff.
     
@@ -153,6 +154,7 @@ Module add.
     Global Instance AssociatedFunction_checked_add :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_add" (checked_add BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_add.
     
@@ -221,6 +223,7 @@ Module add.
     Global Instance AssociatedFunction_checked_neg :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_neg" (checked_neg BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_neg.
     
@@ -290,6 +293,7 @@ Module add.
     Global Instance AssociatedFunction_checked_sub :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_sub" (checked_sub BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_sub.
     
@@ -563,6 +567,7 @@ Module add.
     Global Instance AssociatedFunction_overflowing_add :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "overflowing_add" (overflowing_add BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque overflowing_add.
     
@@ -607,6 +612,7 @@ Module add.
     Global Instance AssociatedFunction_overflowing_neg :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "overflowing_neg" (overflowing_neg BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque overflowing_neg.
     
@@ -880,6 +886,7 @@ Module add.
     Global Instance AssociatedFunction_overflowing_sub :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "overflowing_sub" (overflowing_sub BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque overflowing_sub.
     
@@ -944,6 +951,7 @@ Module add.
     Global Instance AssociatedFunction_saturating_add :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "saturating_add" (saturating_add BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_add.
     
@@ -1008,6 +1016,7 @@ Module add.
     Global Instance AssociatedFunction_saturating_sub :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "saturating_sub" (saturating_sub BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_sub.
     
@@ -1052,6 +1061,7 @@ Module add.
     Global Instance AssociatedFunction_wrapping_add :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_add" (wrapping_add BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_add.
     
@@ -1095,6 +1105,7 @@ Module add.
     Global Instance AssociatedFunction_wrapping_neg :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_neg" (wrapping_neg BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_neg.
     
@@ -1139,6 +1150,7 @@ Module add.
     Global Instance AssociatedFunction_wrapping_sub :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_sub" (wrapping_sub BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_sub.
   End Impl_ruint_Uint_BITS_LIMBS.

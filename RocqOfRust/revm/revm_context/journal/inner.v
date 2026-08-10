@@ -1625,6 +1625,7 @@ Module journal.
       Global Instance AssociatedFunction_new :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "new" (new ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1700,6 +1701,7 @@ Module journal.
       Global Instance AssociatedFunction_take_logs :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "take_logs" (take_logs ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque take_logs.
       
@@ -2051,6 +2053,7 @@ Module journal.
       Global Instance AssociatedFunction_commit_tx :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "commit_tx" (commit_tx ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque commit_tx.
       
@@ -2532,6 +2535,7 @@ Module journal.
       Global Instance AssociatedFunction_discard_tx :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "discard_tx" (discard_tx ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque discard_tx.
       
@@ -2923,6 +2927,7 @@ Module journal.
       Global Instance AssociatedFunction_finalize :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "finalize" (finalize ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque finalize.
       
@@ -2968,6 +2973,7 @@ Module journal.
       Global Instance AssociatedFunction_state :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "state" (state ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque state.
       
@@ -3013,6 +3019,7 @@ Module journal.
       Global Instance AssociatedFunction_set_spec_id :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "set_spec_id" (set_spec_id ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_spec_id.
       
@@ -3137,6 +3144,7 @@ Module journal.
       Global Instance AssociatedFunction_touch :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "touch" (touch ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque touch.
       
@@ -3258,6 +3266,7 @@ Module journal.
       Global Instance AssociatedFunction_touch_account :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "touch_account" (touch_account ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque touch_account.
       
@@ -3345,6 +3354,7 @@ Module journal.
       Global Instance AssociatedFunction_account :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "account" (account ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque account.
       
@@ -3538,6 +3548,7 @@ Module journal.
       Global Instance AssociatedFunction_set_code_with_hash :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "set_code_with_hash" (set_code_with_hash ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_code_with_hash.
       
@@ -3794,6 +3805,7 @@ Module journal.
       Global Instance AssociatedFunction_set_code :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "set_code" (set_code ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_code.
       
@@ -3981,6 +3993,7 @@ Module journal.
           (Self ENTRY)
           "caller_accounting_journal_entry"
           (caller_accounting_journal_entry ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque caller_accounting_journal_entry.
       
@@ -4349,6 +4362,7 @@ Module journal.
       Global Instance AssociatedFunction_balance_incr :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "balance_incr" (balance_incr ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque balance_incr.
       
@@ -4425,6 +4439,7 @@ Module journal.
           (Self ENTRY)
           "nonce_bump_journal_entry"
           (nonce_bump_journal_entry ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque nonce_bump_journal_entry.
       
@@ -5351,6 +5366,7 @@ Module journal.
       Global Instance AssociatedFunction_transfer_loaded :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "transfer_loaded" (transfer_loaded ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque transfer_loaded.
       
@@ -5906,6 +5922,7 @@ Module journal.
       Global Instance AssociatedFunction_transfer :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "transfer" (transfer ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque transfer.
       
@@ -6660,6 +6677,7 @@ Module journal.
           (Self ENTRY)
           "create_account_checkpoint"
           (create_account_checkpoint ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque create_account_checkpoint.
       
@@ -6775,6 +6793,7 @@ Module journal.
       Global Instance AssociatedFunction_checkpoint :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "checkpoint" (checkpoint ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque checkpoint.
       
@@ -6832,6 +6851,7 @@ Module journal.
       Global Instance AssociatedFunction_checkpoint_commit :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "checkpoint_commit" (checkpoint_commit ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque checkpoint_commit.
       
@@ -7262,6 +7282,7 @@ Module journal.
       Global Instance AssociatedFunction_checkpoint_revert :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "checkpoint_revert" (checkpoint_revert ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque checkpoint_revert.
       
@@ -8524,6 +8545,7 @@ Module journal.
       Global Instance AssociatedFunction_selfdestruct :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "selfdestruct" (selfdestruct ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque selfdestruct.
       
@@ -8658,6 +8680,7 @@ Module journal.
       Global Instance AssociatedFunction_load_account :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "load_account" (load_account ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque load_account.
       
@@ -9705,6 +9728,7 @@ Module journal.
           (Self ENTRY)
           "load_account_delegated"
           (load_account_delegated ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque load_account_delegated.
       
@@ -9839,6 +9863,7 @@ Module journal.
       Global Instance AssociatedFunction_load_code :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "load_code" (load_code ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque load_code.
       
@@ -10349,6 +10374,7 @@ Module journal.
       Global Instance AssociatedFunction_load_account_optional :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "load_account_optional" (load_account_optional ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque load_account_optional.
       
@@ -10501,6 +10527,7 @@ Module journal.
       Global Instance AssociatedFunction_load_account_mut :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "load_account_mut" (load_account_mut ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque load_account_mut.
       
@@ -12076,6 +12103,7 @@ Module journal.
           (Self ENTRY)
           "load_account_mut_optional_code"
           (load_account_mut_optional_code ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque load_account_mut_optional_code.
       
@@ -13279,6 +13307,7 @@ Module journal.
       Global Instance AssociatedFunction_sload :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "sload" (sload ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque sload.
       
@@ -14127,6 +14156,7 @@ Module journal.
       Global Instance AssociatedFunction_sstore :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "sstore" (sstore ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque sstore.
       
@@ -14316,6 +14346,7 @@ Module journal.
       Global Instance AssociatedFunction_tload :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "tload" (tload ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque tload.
       
@@ -14786,6 +14817,7 @@ Module journal.
       Global Instance AssociatedFunction_tstore :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "tstore" (tstore ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque tstore.
       
@@ -14854,6 +14886,7 @@ Module journal.
       Global Instance AssociatedFunction_log :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "log" (log ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque log.
     End Impl_revm_context_journal_inner_JournalInner_ENTRY.

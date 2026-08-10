@@ -146,6 +146,7 @@ Definition create_fn (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
 
 Global Instance Instance_IsFunction_create_fn :
   M.IsFunction.C "functions_closures_as_output_parameters::create_fn" create_fn.
+Proof.
 Admitted.
 Global Typeclasses Opaque create_fn.
 
@@ -294,6 +295,7 @@ Definition create_fnmut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_create_fnmut :
   M.IsFunction.C "functions_closures_as_output_parameters::create_fnmut" create_fnmut.
+Proof.
 Admitted.
 Global Typeclasses Opaque create_fnmut.
 
@@ -442,6 +444,7 @@ Definition create_fnonce (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_create_fnonce :
   M.IsFunction.C "functions_closures_as_output_parameters::create_fnonce" create_fnonce.
+Proof.
 Admitted.
 Global Typeclasses Opaque create_fnonce.
 
@@ -528,5 +531,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "functions_closures_as_output_parameters::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

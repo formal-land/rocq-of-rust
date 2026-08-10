@@ -39,10 +39,12 @@ Parameter difference : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_difference :
   M.IsFunction.C "generics_associated_types_problem::difference" difference.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "generics_associated_types_problem::main" main.
+Proof.
 Admitted.

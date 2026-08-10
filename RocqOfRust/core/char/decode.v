@@ -487,6 +487,7 @@ Module char.
     
     Global Instance Instance_IsFunction_decode_utf16 :
       M.IsFunction.C "core::char::decode::decode_utf16" decode_utf16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque decode_utf16.
     
@@ -1543,6 +1544,7 @@ Module char.
       
       Global Instance AssociatedFunction_unpaired_surrogate :
         M.IsAssociatedFunction.C Self "unpaired_surrogate" unpaired_surrogate.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unpaired_surrogate.
     End Impl_core_char_decode_DecodeUtf16Error.

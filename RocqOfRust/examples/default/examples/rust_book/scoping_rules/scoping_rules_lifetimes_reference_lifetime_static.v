@@ -7,6 +7,7 @@ Definition value_NUM (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
 
 Global Instance Instance_IsConstant_value_NUM :
   M.IsFunction.C "scoping_rules_lifetimes_reference_lifetime_static::NUM" value_NUM.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_NUM.
 
@@ -49,6 +50,7 @@ Definition coerce_static (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_coerce_static :
   M.IsFunction.C "scoping_rules_lifetimes_reference_lifetime_static::coerce_static" coerce_static.
+Proof.
 Admitted.
 Global Typeclasses Opaque coerce_static.
 
@@ -417,5 +419,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_lifetimes_reference_lifetime_static::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

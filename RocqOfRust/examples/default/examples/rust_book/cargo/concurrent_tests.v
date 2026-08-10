@@ -74,6 +74,7 @@ Definition foo (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_foo : M.IsFunction.C "concurrent_tests::foo" foo.
+Proof.
 Admitted.
 Global Typeclasses Opaque foo.
 
@@ -349,6 +350,7 @@ Module tests.
   
   Global Instance Instance_IsFunction_test_file_1 :
     M.IsFunction.C "concurrent_tests::tests::test_file'1" test_file_1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque test_file_1.
   
@@ -623,6 +625,7 @@ Module tests.
   
   Global Instance Instance_IsFunction_test_file_also_1 :
     M.IsFunction.C "concurrent_tests::tests::test_file_also'1" test_file_also_1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque test_file_also_1.
 End tests.

@@ -7,6 +7,7 @@ Module time.
   
   Global Instance Instance_IsConstant_value_NANOS_PER_SEC :
     M.IsFunction.C "core::time::NANOS_PER_SEC" value_NANOS_PER_SEC.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NANOS_PER_SEC.
   
@@ -15,6 +16,7 @@ Module time.
   
   Global Instance Instance_IsConstant_value_NANOS_PER_MILLI :
     M.IsFunction.C "core::time::NANOS_PER_MILLI" value_NANOS_PER_MILLI.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NANOS_PER_MILLI.
   
@@ -23,6 +25,7 @@ Module time.
   
   Global Instance Instance_IsConstant_value_NANOS_PER_MICRO :
     M.IsFunction.C "core::time::NANOS_PER_MICRO" value_NANOS_PER_MICRO.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NANOS_PER_MICRO.
   
@@ -31,6 +34,7 @@ Module time.
   
   Global Instance Instance_IsConstant_value_MILLIS_PER_SEC :
     M.IsFunction.C "core::time::MILLIS_PER_SEC" value_MILLIS_PER_SEC.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MILLIS_PER_SEC.
   
@@ -39,6 +43,7 @@ Module time.
   
   Global Instance Instance_IsConstant_value_MICROS_PER_SEC :
     M.IsFunction.C "core::time::MICROS_PER_SEC" value_MICROS_PER_SEC.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MICROS_PER_SEC.
   
@@ -47,6 +52,7 @@ Module time.
   
   Global Instance Instance_IsConstant_value_SECS_PER_MINUTE :
     M.IsFunction.C "core::time::SECS_PER_MINUTE" value_SECS_PER_MINUTE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SECS_PER_MINUTE.
   
@@ -55,6 +61,7 @@ Module time.
   
   Global Instance Instance_IsConstant_value_MINS_PER_HOUR :
     M.IsFunction.C "core::time::MINS_PER_HOUR" value_MINS_PER_HOUR.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MINS_PER_HOUR.
   
@@ -63,6 +70,7 @@ Module time.
   
   Global Instance Instance_IsConstant_value_HOURS_PER_DAY :
     M.IsFunction.C "core::time::HOURS_PER_DAY" value_HOURS_PER_DAY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_HOURS_PER_DAY.
   
@@ -71,6 +79,7 @@ Module time.
   
   Global Instance Instance_IsConstant_value_DAYS_PER_WEEK :
     M.IsFunction.C "core::time::DAYS_PER_WEEK" value_DAYS_PER_WEEK.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DAYS_PER_WEEK.
   
@@ -667,6 +676,7 @@ Module time.
     
     Global Instance AssociatedConstant_value_SECOND :
       M.IsAssociatedFunction.C Self "SECOND" value_SECOND.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SECOND.
     
@@ -685,6 +695,7 @@ Module time.
     
     Global Instance AssociatedConstant_value_MILLISECOND :
       M.IsAssociatedFunction.C Self "MILLISECOND" value_MILLISECOND.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MILLISECOND.
     
@@ -703,6 +714,7 @@ Module time.
     
     Global Instance AssociatedConstant_value_MICROSECOND :
       M.IsAssociatedFunction.C Self "MICROSECOND" value_MICROSECOND.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MICROSECOND.
     
@@ -721,6 +733,7 @@ Module time.
     
     Global Instance AssociatedConstant_value_NANOSECOND :
       M.IsAssociatedFunction.C Self "NANOSECOND" value_NANOSECOND.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NANOSECOND.
     
@@ -738,6 +751,7 @@ Module time.
         |))).
     
     Global Instance AssociatedConstant_value_ZERO : M.IsAssociatedFunction.C Self "ZERO" value_ZERO.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ZERO.
     
@@ -765,6 +779,7 @@ Module time.
         |))).
     
     Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
     
@@ -901,6 +916,7 @@ Module time.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -934,6 +950,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_secs :
       M.IsAssociatedFunction.C Self "from_secs" from_secs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_secs.
     
@@ -1008,6 +1025,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_millis :
       M.IsAssociatedFunction.C Self "from_millis" from_millis.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_millis.
     
@@ -1082,6 +1100,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_micros :
       M.IsAssociatedFunction.C Self "from_micros" from_micros.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_micros.
     
@@ -1151,6 +1170,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_nanos :
       M.IsAssociatedFunction.C Self "from_nanos" from_nanos.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_nanos.
     
@@ -1278,6 +1298,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_nanos_u128 :
       M.IsAssociatedFunction.C Self "from_nanos_u128" from_nanos_u128.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_nanos_u128.
     
@@ -1439,6 +1460,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_weeks :
       M.IsAssociatedFunction.C Self "from_weeks" from_weeks.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_weeks.
     
@@ -1581,6 +1603,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_days :
       M.IsAssociatedFunction.C Self "from_days" from_days.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_days.
     
@@ -1700,6 +1723,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_hours :
       M.IsAssociatedFunction.C Self "from_hours" from_hours.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_hours.
     
@@ -1797,6 +1821,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_mins :
       M.IsAssociatedFunction.C Self "from_mins" from_mins.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_mins.
     
@@ -1857,6 +1882,7 @@ Module time.
       end.
     
     Global Instance AssociatedFunction_is_zero : M.IsAssociatedFunction.C Self "is_zero" is_zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_zero.
     
@@ -1882,6 +1908,7 @@ Module time.
       end.
     
     Global Instance AssociatedFunction_as_secs : M.IsAssociatedFunction.C Self "as_secs" as_secs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_secs.
     
@@ -1926,6 +1953,7 @@ Module time.
     
     Global Instance AssociatedFunction_subsec_millis :
       M.IsAssociatedFunction.C Self "subsec_millis" subsec_millis.
+    Proof.
     Admitted.
     Global Typeclasses Opaque subsec_millis.
     
@@ -1970,6 +1998,7 @@ Module time.
     
     Global Instance AssociatedFunction_subsec_micros :
       M.IsAssociatedFunction.C Self "subsec_micros" subsec_micros.
+    Proof.
     Admitted.
     Global Typeclasses Opaque subsec_micros.
     
@@ -2007,6 +2036,7 @@ Module time.
     
     Global Instance AssociatedFunction_subsec_nanos :
       M.IsAssociatedFunction.C Self "subsec_nanos" subsec_nanos.
+    Proof.
     Admitted.
     Global Typeclasses Opaque subsec_nanos.
     
@@ -2078,6 +2108,7 @@ Module time.
     
     Global Instance AssociatedFunction_as_millis :
       M.IsAssociatedFunction.C Self "as_millis" as_millis.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_millis.
     
@@ -2149,6 +2180,7 @@ Module time.
     
     Global Instance AssociatedFunction_as_micros :
       M.IsAssociatedFunction.C Self "as_micros" as_micros.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_micros.
     
@@ -2211,6 +2243,7 @@ Module time.
       end.
     
     Global Instance AssociatedFunction_as_nanos : M.IsAssociatedFunction.C Self "as_nanos" as_nanos.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_nanos.
     
@@ -2290,6 +2323,7 @@ Module time.
       end.
     
     Global Instance AssociatedFunction_abs_diff : M.IsAssociatedFunction.C Self "abs_diff" abs_diff.
+    Proof.
     Admitted.
     Global Typeclasses Opaque abs_diff.
     
@@ -2623,6 +2657,7 @@ Module time.
     
     Global Instance AssociatedFunction_checked_add :
       M.IsAssociatedFunction.C Self "checked_add" checked_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_add.
     
@@ -2679,6 +2714,7 @@ Module time.
     
     Global Instance AssociatedFunction_saturating_add :
       M.IsAssociatedFunction.C Self "saturating_add" saturating_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_add.
     
@@ -3072,6 +3108,7 @@ Module time.
     
     Global Instance AssociatedFunction_checked_sub :
       M.IsAssociatedFunction.C Self "checked_sub" checked_sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_sub.
     
@@ -3128,6 +3165,7 @@ Module time.
     
     Global Instance AssociatedFunction_saturating_sub :
       M.IsAssociatedFunction.C Self "saturating_sub" saturating_sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_sub.
     
@@ -3397,6 +3435,7 @@ Module time.
     
     Global Instance AssociatedFunction_checked_mul :
       M.IsAssociatedFunction.C Self "checked_mul" checked_mul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_mul.
     
@@ -3453,6 +3492,7 @@ Module time.
     
     Global Instance AssociatedFunction_saturating_mul :
       M.IsAssociatedFunction.C Self "saturating_mul" saturating_mul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_mul.
     
@@ -3764,6 +3804,7 @@ Module time.
     
     Global Instance AssociatedFunction_checked_div :
       M.IsAssociatedFunction.C Self "checked_div" checked_div.
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_div.
     
@@ -3827,6 +3868,7 @@ Module time.
     
     Global Instance AssociatedFunction_as_secs_f64 :
       M.IsAssociatedFunction.C Self "as_secs_f64" as_secs_f64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_secs_f64.
     
@@ -3890,6 +3932,7 @@ Module time.
     
     Global Instance AssociatedFunction_as_secs_f32 :
       M.IsAssociatedFunction.C Self "as_secs_f32" as_secs_f32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_secs_f32.
     
@@ -3963,6 +4006,7 @@ Module time.
     
     Global Instance AssociatedFunction_as_millis_f64 :
       M.IsAssociatedFunction.C Self "as_millis_f64" as_millis_f64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_millis_f64.
     
@@ -4036,6 +4080,7 @@ Module time.
     
     Global Instance AssociatedFunction_as_millis_f32 :
       M.IsAssociatedFunction.C Self "as_millis_f32" as_millis_f32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_millis_f32.
     
@@ -4161,6 +4206,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_secs_f64 :
       M.IsAssociatedFunction.C Self "from_secs_f64" from_secs_f64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_secs_f64.
     
@@ -4286,6 +4332,7 @@ Module time.
     
     Global Instance AssociatedFunction_from_secs_f32 :
       M.IsAssociatedFunction.C Self "from_secs_f32" from_secs_f32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_secs_f32.
     
@@ -4327,6 +4374,7 @@ Module time.
       end.
     
     Global Instance AssociatedFunction_mul_f64 : M.IsAssociatedFunction.C Self "mul_f64" mul_f64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mul_f64.
     
@@ -4368,6 +4416,7 @@ Module time.
       end.
     
     Global Instance AssociatedFunction_mul_f32 : M.IsAssociatedFunction.C Self "mul_f32" mul_f32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mul_f32.
     
@@ -4409,6 +4458,7 @@ Module time.
       end.
     
     Global Instance AssociatedFunction_div_f64 : M.IsAssociatedFunction.C Self "div_f64" div_f64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque div_f64.
     
@@ -4450,6 +4500,7 @@ Module time.
       end.
     
     Global Instance AssociatedFunction_div_f32 : M.IsAssociatedFunction.C Self "div_f32" div_f32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque div_f32.
     
@@ -4572,6 +4623,7 @@ Module time.
     
     Global Instance AssociatedFunction_div_duration_f64 :
       M.IsAssociatedFunction.C Self "div_duration_f64" div_duration_f64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque div_duration_f64.
     
@@ -4694,6 +4746,7 @@ Module time.
     
     Global Instance AssociatedFunction_div_duration_f32 :
       M.IsAssociatedFunction.C Self "div_duration_f32" div_duration_f32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque div_duration_f32.
     (*
@@ -5562,6 +5615,7 @@ Module time.
     
     Global Instance AssociatedFunction_try_from_secs_f32 :
       M.IsAssociatedFunction.C Self "try_from_secs_f32" try_from_secs_f32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_from_secs_f32.
     
@@ -6431,6 +6485,7 @@ Module time.
     
     Global Instance AssociatedFunction_try_from_secs_f64 :
       M.IsAssociatedFunction.C Self "try_from_secs_f64" try_from_secs_f64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_from_secs_f64.
   End Impl_core_time_Duration.

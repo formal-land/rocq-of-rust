@@ -126,6 +126,7 @@ Module Impl_unpacking_options_via_question_mark_Person.
   
   Global Instance AssociatedFunction_work_phone_area_code :
     M.IsAssociatedFunction.C Self "work_phone_area_code" work_phone_area_code.
+  Proof.
   Admitted.
 End Impl_unpacking_options_via_question_mark_Person.
 
@@ -133,4 +134,5 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "unpacking_options_via_question_mark::main" main.
+Proof.
 Admitted.

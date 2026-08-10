@@ -225,6 +225,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "new" (new I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_core_iter_adapters_skip_Skip_I.

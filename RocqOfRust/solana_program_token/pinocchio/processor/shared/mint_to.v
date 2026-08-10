@@ -1913,6 +1913,7 @@ Module processor.
         M.IsFunction.C
           "pinocchio_token_program::processor::shared::mint_to::process_mint_to"
           process_mint_to.
+      Proof.
       Admitted.
       Global Typeclasses Opaque process_mint_to.
     End mint_to.

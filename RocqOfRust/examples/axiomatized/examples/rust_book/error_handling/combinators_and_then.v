@@ -87,32 +87,38 @@ Parameter have_ingredients : (list Value.t) -> (list Ty.t) -> (list Value.t) -> 
 
 Global Instance Instance_IsFunction_have_ingredients :
   M.IsFunction.C "combinators_and_then::have_ingredients" have_ingredients.
+Proof.
 Admitted.
 
 Parameter have_recipe : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_have_recipe :
   M.IsFunction.C "combinators_and_then::have_recipe" have_recipe.
+Proof.
 Admitted.
 
 Parameter cookable_v1 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_cookable_v1 :
   M.IsFunction.C "combinators_and_then::cookable_v1" cookable_v1.
+Proof.
 Admitted.
 
 Parameter cookable_v2 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_cookable_v2 :
   M.IsFunction.C "combinators_and_then::cookable_v2" cookable_v2.
+Proof.
 Admitted.
 
 Parameter eat : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_eat : M.IsFunction.C "combinators_and_then::eat" eat.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "combinators_and_then::main" main.
+Proof.
 Admitted.

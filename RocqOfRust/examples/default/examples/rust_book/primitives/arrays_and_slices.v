@@ -247,6 +247,7 @@ Definition analyze_slice (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_analyze_slice :
   M.IsFunction.C "arrays_and_slices::analyze_slice" analyze_slice.
+Proof.
 Admitted.
 Global Typeclasses Opaque analyze_slice.
 
@@ -1843,5 +1844,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "arrays_and_slices::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

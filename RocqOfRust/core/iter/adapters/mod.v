@@ -145,6 +145,7 @@ Module iter.
     
     Global Instance Instance_IsFunction_try_process :
       M.IsFunction.C "core::iter::adapters::try_process" try_process.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_process.
     

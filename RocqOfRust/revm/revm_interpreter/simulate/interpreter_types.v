@@ -599,6 +599,7 @@ Module StackTrait.
     (i[IStackTrait.(len) stack] <? 1 + i[N]) = false ->
     exists arr top stack',
       IStackTrait.(popn_top) N stack = (Some (arr, top), stack').
+  Proof.
   Admitted.
 
   Module Eq.

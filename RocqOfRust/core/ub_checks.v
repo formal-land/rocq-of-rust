@@ -67,6 +67,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::hint::unreachable_unchecked::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End unreachable_unchecked.
@@ -137,6 +138,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::hint::assert_unchecked::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End assert_unchecked.
@@ -293,6 +295,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::ptr::copy_nonoverlapping::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End copy_nonoverlapping.
@@ -403,6 +406,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::ptr::copy::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End copy.
@@ -489,6 +493,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::ptr::write_bytes::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End write_bytes.
@@ -661,6 +666,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::ptr::swap_nonoverlapping::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End swap_nonoverlapping.
@@ -747,6 +753,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::ptr::replace::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End replace.
@@ -833,6 +840,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::ptr::read::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End read.
@@ -930,6 +938,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::ptr::write::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End write.
@@ -1011,6 +1020,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::ptr::read_volatile::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End read_volatile.
@@ -1102,6 +1112,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
     
     Global Instance Instance_IsFunction_precondition_check :
       M.IsFunction.C "core::ptr::write_volatile::precondition_check" precondition_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precondition_check.
   End write_volatile.
@@ -1159,6 +1170,7 @@ Module ub_checks.
   
   Global Instance Instance_IsFunction_check_language_ub :
     M.IsFunction.C "core::ub_checks::check_language_ub" check_language_ub.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_language_ub.
   
@@ -1216,6 +1228,7 @@ Module ub_checks.
   
   Global Instance Instance_IsFunction_maybe_is_aligned_and_not_null :
     M.IsFunction.C "core::ub_checks::maybe_is_aligned_and_not_null" maybe_is_aligned_and_not_null.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maybe_is_aligned_and_not_null.
   
@@ -1265,6 +1278,7 @@ Module ub_checks.
   
   Global Instance Instance_IsFunction_maybe_is_aligned :
     M.IsFunction.C "core::ub_checks::maybe_is_aligned" maybe_is_aligned.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maybe_is_aligned.
   
@@ -1331,6 +1345,7 @@ Module ub_checks.
   
   Global Instance Instance_IsFunction_is_valid_allocation_size :
     M.IsFunction.C "core::ub_checks::is_valid_allocation_size" is_valid_allocation_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_valid_allocation_size.
   
@@ -1414,6 +1429,7 @@ Module ub_checks.
   
   Global Instance Instance_IsFunction_maybe_is_nonoverlapping :
     M.IsFunction.C "core::ub_checks::maybe_is_nonoverlapping" maybe_is_nonoverlapping.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maybe_is_nonoverlapping.
 End ub_checks.
@@ -1535,6 +1551,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
         M.IsFunction.C
           "core::char::convert::from_u32_unchecked::precondition_check"
           precondition_check.
+      Proof.
       Admitted.
       Global Typeclasses Opaque precondition_check.
     End from_u32_unchecked.
@@ -1649,6 +1666,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
       
       Global Instance Instance_IsFunction_precondition_check :
         M.IsFunction.C "core::slice::raw::from_raw_parts::precondition_check" precondition_check.
+      Proof.
       Admitted.
       Global Typeclasses Opaque precondition_check.
     End from_raw_parts.
@@ -1761,6 +1779,7 @@ This indicates a bug in the program. This Undefined Behavior check is optional, 
         M.IsFunction.C
           "core::slice::raw::from_raw_parts_mut::precondition_check"
           precondition_check.
+      Proof.
       Admitted.
       Global Typeclasses Opaque precondition_check.
     End from_raw_parts_mut.

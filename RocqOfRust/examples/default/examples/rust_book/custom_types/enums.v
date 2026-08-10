@@ -424,6 +424,7 @@ Definition inspect (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
   end.
 
 Global Instance Instance_IsFunction_inspect : M.IsFunction.C "enums::inspect" inspect.
+Proof.
 Admitted.
 Global Typeclasses Opaque inspect.
 
@@ -516,5 +517,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "enums::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

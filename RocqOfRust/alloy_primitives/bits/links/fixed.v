@@ -103,6 +103,7 @@ Module Impl_From_Array_u8_N_for_FixedBytes_N.
     FixedBytes.t N.
 
   Instance run (N : usize) : From.Run (Self N) (array.t u8 N).
+  Proof.
   Admitted.
 End Impl_From_Array_u8_N_for_FixedBytes_N.
 Export (hints) Impl_From_Array_u8_N_for_FixedBytes_N.
@@ -113,6 +114,7 @@ Module Impl_Borrow_Array_u8_N_for_FixedBytes_N.
     FixedBytes.t N.
 
   Instance run (N : usize) : Borrow.Run (Self N) (array.t u8 N).
+  Proof.
   Admitted.
 End Impl_Borrow_Array_u8_N_for_FixedBytes_N.
 Export (hints) Impl_Borrow_Array_u8_N_for_FixedBytes_N.
@@ -126,6 +128,7 @@ Module Impl_DerefMut_for_FixedBytes_N.
     array.t u8 N.
 
   Instance run (N : usize) : DerefMut.Run (Self N) (Target N).
+  Proof.
   Admitted.
 End Impl_DerefMut_for_FixedBytes_N.
 Export (hints) Impl_DerefMut_for_FixedBytes_N.
@@ -139,6 +142,7 @@ Module Impl_Index_for_FixedBytes_N.
     list u8.
 
   Instance run (N : usize) (__IdxT : Set) `{Link __IdxT} : Index.Run (Self N) __IdxT Output.
+  Proof.
   Admitted.
 End Impl_Index_for_FixedBytes_N.
 Export (hints) Impl_Index_for_FixedBytes_N.

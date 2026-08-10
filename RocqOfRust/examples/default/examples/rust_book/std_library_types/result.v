@@ -176,6 +176,7 @@ Module checked.
     end.
   
   Global Instance Instance_IsFunction_div : M.IsFunction.C "result::checked::div" div.
+  Proof.
   Admitted.
   Global Typeclasses Opaque div.
   
@@ -236,6 +237,7 @@ Module checked.
     end.
   
   Global Instance Instance_IsFunction_sqrt : M.IsFunction.C "result::checked::sqrt" sqrt.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sqrt.
   
@@ -297,6 +299,7 @@ Module checked.
     end.
   
   Global Instance Instance_IsFunction_ln : M.IsFunction.C "result::checked::ln" ln.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ln.
 End checked.
@@ -633,6 +636,7 @@ Definition op (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_op : M.IsFunction.C "result::op" op.
+Proof.
 Admitted.
 Global Typeclasses Opaque op.
 
@@ -728,5 +732,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "result::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

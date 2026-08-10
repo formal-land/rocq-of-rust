@@ -181,6 +181,7 @@ Definition give_adult (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
 
 Global Instance Instance_IsFunction_give_adult :
   M.IsFunction.C "option_and_unwrap::give_adult" give_adult.
+Proof.
 Admitted.
 Global Typeclasses Opaque give_adult.
 
@@ -368,6 +369,7 @@ Definition drink (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_drink : M.IsFunction.C "option_and_unwrap::drink" drink.
+Proof.
 Admitted.
 Global Typeclasses Opaque drink.
 
@@ -479,5 +481,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "option_and_unwrap::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

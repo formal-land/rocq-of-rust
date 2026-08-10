@@ -22,6 +22,7 @@ Module type_safety.
   
   Global Instance Instance_IsConstant_value_TYPE_NODE_COST :
     M.IsFunction.C "move_bytecode_verifier::type_safety::TYPE_NODE_COST" value_TYPE_NODE_COST.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TYPE_NODE_COST.
   
@@ -74,6 +75,7 @@ Module type_safety.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -255,6 +257,7 @@ Module type_safety.
       end.
     
     Global Instance AssociatedFunction_local_at : M.IsAssociatedFunction.C Self "local_at" local_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque local_at.
   End Impl_move_bytecode_verifier_type_safety_Locals.
@@ -412,6 +415,7 @@ Module type_safety.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -465,6 +469,7 @@ Module type_safety.
       end.
     
     Global Instance AssociatedFunction_local_at : M.IsAssociatedFunction.C Self "local_at" local_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque local_at.
     
@@ -565,6 +570,7 @@ Module type_safety.
     
     Global Instance AssociatedFunction_abilities :
       M.IsAssociatedFunction.C Self "abilities" abilities.
+    Proof.
     Admitted.
     Global Typeclasses Opaque abilities.
     
@@ -663,6 +669,7 @@ Module type_safety.
       end.
     
     Global Instance AssociatedFunction_error : M.IsAssociatedFunction.C Self "error" error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque error.
     
@@ -1208,6 +1215,7 @@ Module type_safety.
       end.
     
     Global Instance AssociatedFunction_push : M.IsAssociatedFunction.C Self "push" push.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push.
     
@@ -1757,6 +1765,7 @@ Module type_safety.
       end.
     
     Global Instance AssociatedFunction_push_n : M.IsAssociatedFunction.C Self "push_n" push_n.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push_n.
     
@@ -1814,6 +1823,7 @@ Module type_safety.
     
     Global Instance AssociatedFunction_charge_ty :
       M.IsAssociatedFunction.C Self "charge_ty" charge_ty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque charge_ty.
     
@@ -1917,6 +1927,7 @@ Module type_safety.
     
     Global Instance AssociatedFunction_charge_ty_ :
       M.IsAssociatedFunction.C Self "charge_ty_" charge_ty_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque charge_ty_.
     
@@ -2288,6 +2299,7 @@ Module type_safety.
     
     Global Instance AssociatedFunction_charge_tys :
       M.IsAssociatedFunction.C Self "charge_tys" charge_tys.
+    Proof.
     Admitted.
     Global Typeclasses Opaque charge_tys.
   End Impl_move_bytecode_verifier_type_safety_TypeSafetyChecker.
@@ -3049,6 +3061,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_verify :
     M.IsFunction.C "move_bytecode_verifier::type_safety::verify" verify.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify.
   
@@ -4161,6 +4174,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_borrow_field :
     M.IsFunction.C "move_bytecode_verifier::type_safety::borrow_field" borrow_field.
+  Proof.
   Admitted.
   Global Typeclasses Opaque borrow_field.
   
@@ -4537,6 +4551,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_borrow_loc :
     M.IsFunction.C "move_bytecode_verifier::type_safety::borrow_loc" borrow_loc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque borrow_loc.
   
@@ -5563,6 +5578,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_borrow_global :
     M.IsFunction.C "move_bytecode_verifier::type_safety::borrow_global" borrow_global.
+  Proof.
   Admitted.
   Global Typeclasses Opaque borrow_global.
   
@@ -6984,6 +7000,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_call :
     M.IsFunction.C "move_bytecode_verifier::type_safety::call" call.
+  Proof.
   Admitted.
   Global Typeclasses Opaque call.
   
@@ -7443,6 +7460,7 @@ Module type_safety.
     M.IsFunction.C
       "move_bytecode_verifier::type_safety::type_fields_signature"
       type_fields_signature.
+  Proof.
   Admitted.
   Global Typeclasses Opaque type_fields_signature.
   
@@ -8647,6 +8665,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_pack :
     M.IsFunction.C "move_bytecode_verifier::type_safety::pack" pack.
+  Proof.
   Admitted.
   Global Typeclasses Opaque pack.
   
@@ -9612,6 +9631,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_unpack :
     M.IsFunction.C "move_bytecode_verifier::type_safety::unpack" unpack.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unpack.
   
@@ -10517,6 +10537,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_exists_ :
     M.IsFunction.C "move_bytecode_verifier::type_safety::exists" exists_.
+  Proof.
   Admitted.
   Global Typeclasses Opaque exists_.
   
@@ -11431,6 +11452,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_move_from :
     M.IsFunction.C "move_bytecode_verifier::type_safety::move_from" move_from.
+  Proof.
   Admitted.
   Global Typeclasses Opaque move_from.
   
@@ -12670,6 +12692,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_move_to :
     M.IsFunction.C "move_bytecode_verifier::type_safety::move_to" move_to.
+  Proof.
   Admitted.
   Global Typeclasses Opaque move_to.
   
@@ -13863,6 +13886,7 @@ Module type_safety.
     M.IsFunction.C
       "move_bytecode_verifier::type_safety::borrow_vector_element"
       borrow_vector_element.
+  Proof.
   Admitted.
   Global Typeclasses Opaque borrow_vector_element.
   
@@ -46699,6 +46723,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_verify_instr :
     M.IsFunction.C "move_bytecode_verifier::type_safety::verify_instr" verify_instr.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_instr.
   
@@ -46847,6 +46872,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_materialize_type :
     M.IsFunction.C "move_bytecode_verifier::type_safety::materialize_type" materialize_type.
+  Proof.
   Admitted.
   Global Typeclasses Opaque materialize_type.
   
@@ -47886,6 +47912,7 @@ Module type_safety.
   
   Global Instance Instance_IsFunction_instantiate :
     M.IsFunction.C "move_bytecode_verifier::type_safety::instantiate" instantiate.
+  Proof.
   Admitted.
   Global Typeclasses Opaque instantiate.
   
@@ -48086,6 +48113,7 @@ Module type_safety.
     M.IsFunction.C
       "move_bytecode_verifier::type_safety::get_vector_element_type"
       get_vector_element_type.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_vector_element_type.
 End type_safety.

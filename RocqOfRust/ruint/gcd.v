@@ -34,6 +34,7 @@ Module gcd.
     Global Instance AssociatedFunction_gcd :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "gcd" (gcd BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque gcd.
     
@@ -122,6 +123,7 @@ Module gcd.
     Global Instance AssociatedFunction_lcm :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "lcm" (lcm BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque lcm.
     
@@ -159,6 +161,7 @@ Module gcd.
     Global Instance AssociatedFunction_gcd_extended :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "gcd_extended" (gcd_extended BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque gcd_extended.
   End Impl_ruint_Uint_BITS_LIMBS.

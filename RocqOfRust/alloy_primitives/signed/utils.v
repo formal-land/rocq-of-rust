@@ -122,6 +122,7 @@ Module signed.
     
     Global Instance Instance_IsFunction_handle_overflow :
       M.IsFunction.C "alloy_primitives::signed::utils::handle_overflow" handle_overflow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque handle_overflow.
     
@@ -214,6 +215,7 @@ Module signed.
     
     Global Instance Instance_IsFunction_twos_complement :
       M.IsFunction.C "alloy_primitives::signed::utils::twos_complement" twos_complement.
+    Proof.
     Admitted.
     Global Typeclasses Opaque twos_complement.
     
@@ -440,6 +442,7 @@ Module signed.
     
     Global Instance Instance_IsFunction_const_eq :
       M.IsFunction.C "alloy_primitives::signed::utils::const_eq" const_eq.
+    Proof.
     Admitted.
     Global Typeclasses Opaque const_eq.
     
@@ -599,6 +602,7 @@ Module signed.
     
     Global Instance Instance_IsFunction_max :
       M.IsFunction.C "alloy_primitives::signed::utils::max" max.
+    Proof.
     Admitted.
     Global Typeclasses Opaque max.
     
@@ -709,6 +713,7 @@ Module signed.
     
     Global Instance Instance_IsFunction_min :
       M.IsFunction.C "alloy_primitives::signed::utils::min" min.
+    Proof.
     Admitted.
     Global Typeclasses Opaque min.
     
@@ -750,6 +755,7 @@ Module signed.
     
     Global Instance Instance_IsFunction_zero :
       M.IsFunction.C "alloy_primitives::signed::utils::zero" zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque zero.
     
@@ -844,6 +850,7 @@ Module signed.
     
     Global Instance Instance_IsFunction_one :
       M.IsFunction.C "alloy_primitives::signed::utils::one" one.
+    Proof.
     Admitted.
     Global Typeclasses Opaque one.
     
@@ -946,6 +953,7 @@ Module signed.
     
     Global Instance Instance_IsFunction_sign_bit :
       M.IsFunction.C "alloy_primitives::signed::utils::sign_bit" sign_bit.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sign_bit.
   End utils.

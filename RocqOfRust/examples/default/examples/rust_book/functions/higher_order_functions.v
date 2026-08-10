@@ -27,6 +27,7 @@ Definition is_odd (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :
   end.
 
 Global Instance Instance_IsFunction_is_odd : M.IsFunction.C "higher_order_functions::is_odd" is_odd.
+Proof.
 Admitted.
 Global Typeclasses Opaque is_odd.
 
@@ -660,5 +661,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "higher_order_functions::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

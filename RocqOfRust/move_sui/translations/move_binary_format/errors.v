@@ -1301,6 +1301,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1336,6 +1337,7 @@ Module errors.
     
     Global Instance AssociatedFunction_stack_trace :
       M.IsAssociatedFunction.C Self "stack_trace" stack_trace.
+    Proof.
     Admitted.
     Global Typeclasses Opaque stack_trace.
   End Impl_move_binary_format_errors_ExecutionState.
@@ -3494,6 +3496,7 @@ Module errors.
     
     Global Instance AssociatedFunction_major_status :
       M.IsAssociatedFunction.C Self "major_status" major_status.
+    Proof.
     Admitted.
     Global Typeclasses Opaque major_status.
     
@@ -3531,6 +3534,7 @@ Module errors.
     
     Global Instance AssociatedFunction_sub_status :
       M.IsAssociatedFunction.C Self "sub_status" sub_status.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sub_status.
     
@@ -3582,6 +3586,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_message : M.IsAssociatedFunction.C Self "message" message.
+    Proof.
     Admitted.
     Global Typeclasses Opaque message.
     
@@ -3638,6 +3643,7 @@ Module errors.
     
     Global Instance AssociatedFunction_exec_state :
       M.IsAssociatedFunction.C Self "exec_state" exec_state.
+    Proof.
     Admitted.
     Global Typeclasses Opaque exec_state.
     
@@ -3684,6 +3690,7 @@ Module errors.
     
     Global Instance AssociatedFunction_remove_exec_state :
       M.IsAssociatedFunction.C Self "remove_exec_state" remove_exec_state.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remove_exec_state.
     
@@ -3726,6 +3733,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_location : M.IsAssociatedFunction.C Self "location" location.
+    Proof.
     Admitted.
     Global Typeclasses Opaque location.
     
@@ -3768,6 +3776,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_indices : M.IsAssociatedFunction.C Self "indices" indices.
+    Proof.
     Admitted.
     Global Typeclasses Opaque indices.
     
@@ -3810,6 +3819,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_offsets : M.IsAssociatedFunction.C Self "offsets" offsets.
+    Proof.
     Admitted.
     Global Typeclasses Opaque offsets.
     
@@ -3858,6 +3868,7 @@ Module errors.
     
     Global Instance AssociatedFunction_status_type :
       M.IsAssociatedFunction.C Self "status_type" status_type.
+    Proof.
     Admitted.
     Global Typeclasses Opaque status_type.
     
@@ -4049,6 +4060,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_all_data : M.IsAssociatedFunction.C Self "all_data" all_data.
+    Proof.
     Admitted.
     Global Typeclasses Opaque all_data.
     
@@ -4225,6 +4237,7 @@ Module errors.
     
     Global Instance AssociatedFunction_to_partial :
       M.IsAssociatedFunction.C Self "to_partial" to_partial.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_partial.
   End Impl_move_binary_format_errors_VMError.
@@ -5519,6 +5532,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_all_data : M.IsAssociatedFunction.C Self "all_data" all_data.
+    Proof.
     Admitted.
     Global Typeclasses Opaque all_data.
     
@@ -5696,6 +5710,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_finish : M.IsAssociatedFunction.C Self "finish" finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque finish.
     
@@ -5827,6 +5842,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -5864,6 +5880,7 @@ Module errors.
     
     Global Instance AssociatedFunction_major_status :
       M.IsAssociatedFunction.C Self "major_status" major_status.
+    Proof.
     Admitted.
     Global Typeclasses Opaque major_status.
     
@@ -5987,6 +6004,7 @@ Module errors.
     
     Global Instance AssociatedFunction_with_sub_status :
       M.IsAssociatedFunction.C Self "with_sub_status" with_sub_status.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_sub_status.
     
@@ -6109,6 +6127,7 @@ Module errors.
     
     Global Instance AssociatedFunction_with_message :
       M.IsAssociatedFunction.C Self "with_message" with_message.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_message.
     
@@ -6236,6 +6255,7 @@ Module errors.
     
     Global Instance AssociatedFunction_with_exec_state :
       M.IsAssociatedFunction.C Self "with_exec_state" with_exec_state.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_exec_state.
     
@@ -6294,6 +6314,7 @@ Module errors.
       end.
     
     Global Instance AssociatedFunction_at_index : M.IsAssociatedFunction.C Self "at_index" at_index.
+    Proof.
     Admitted.
     Global Typeclasses Opaque at_index.
     
@@ -6373,6 +6394,7 @@ Module errors.
     
     Global Instance AssociatedFunction_at_indices :
       M.IsAssociatedFunction.C Self "at_indices" at_indices.
+    Proof.
     Admitted.
     Global Typeclasses Opaque at_indices.
     
@@ -6440,6 +6462,7 @@ Module errors.
     
     Global Instance AssociatedFunction_at_code_offset :
       M.IsAssociatedFunction.C Self "at_code_offset" at_code_offset.
+    Proof.
     Admitted.
     Global Typeclasses Opaque at_code_offset.
     
@@ -6540,6 +6563,7 @@ Module errors.
     
     Global Instance AssociatedFunction_at_code_offsets :
       M.IsAssociatedFunction.C Self "at_code_offsets" at_code_offsets.
+    Proof.
     Admitted.
     Global Typeclasses Opaque at_code_offsets.
     
@@ -6763,6 +6787,7 @@ Module errors.
     
     Global Instance AssociatedFunction_append_message_with_separator :
       M.IsAssociatedFunction.C Self "append_message_with_separator" append_message_with_separator.
+    Proof.
     Admitted.
     Global Typeclasses Opaque append_message_with_separator.
   End Impl_move_binary_format_errors_PartialVMError.
@@ -10416,6 +10441,7 @@ Module errors.
   
   Global Instance Instance_IsFunction_offset_out_of_bounds :
     M.IsFunction.C "move_binary_format::errors::offset_out_of_bounds" offset_out_of_bounds.
+  Proof.
   Admitted.
   Global Typeclasses Opaque offset_out_of_bounds.
   
@@ -10651,6 +10677,7 @@ Module errors.
   
   Global Instance Instance_IsFunction_bounds_error :
     M.IsFunction.C "move_binary_format::errors::bounds_error" bounds_error.
+  Proof.
   Admitted.
   Global Typeclasses Opaque bounds_error.
   
@@ -10694,6 +10721,7 @@ Module errors.
   
   Global Instance Instance_IsFunction_verification_error :
     M.IsFunction.C "move_binary_format::errors::verification_error" verification_error.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verification_error.
   

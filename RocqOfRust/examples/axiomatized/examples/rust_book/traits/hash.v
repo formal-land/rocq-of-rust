@@ -29,9 +29,11 @@ Parameter calculate_hash : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_calculate_hash :
   M.IsFunction.C "hash::calculate_hash" calculate_hash.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "hash::main" main.
+Proof.
 Admitted.

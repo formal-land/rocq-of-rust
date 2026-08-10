@@ -545,6 +545,7 @@ Module num.
         
         Global Instance AssociatedConstant_value_MAX_DIGITS :
           M.IsAssociatedFunction.C Self "MAX_DIGITS" value_MAX_DIGITS.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_DIGITS.
         
@@ -562,6 +563,7 @@ Module num.
             Self
             "MAX_DIGITS_WITHOUT_OVERFLOW"
             value_MAX_DIGITS_WITHOUT_OVERFLOW.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_DIGITS_WITHOUT_OVERFLOW.
         
@@ -576,6 +578,7 @@ Module num.
         
         Global Instance AssociatedConstant_value_DECIMAL_POINT_RANGE :
           M.IsAssociatedFunction.C Self "DECIMAL_POINT_RANGE" value_DECIMAL_POINT_RANGE.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_DECIMAL_POINT_RANGE.
         
@@ -680,6 +683,7 @@ Module num.
         
         Global Instance AssociatedFunction_try_add_digit :
           M.IsAssociatedFunction.C Self "try_add_digit" try_add_digit.
+        Proof.
         Admitted.
         Global Typeclasses Opaque try_add_digit.
         
@@ -887,6 +891,7 @@ Module num.
           end.
         
         Global Instance AssociatedFunction_trim : M.IsAssociatedFunction.C Self "trim" trim.
+        Proof.
         Admitted.
         Global Typeclasses Opaque trim.
         
@@ -1462,6 +1467,7 @@ Module num.
           end.
         
         Global Instance AssociatedFunction_round : M.IsAssociatedFunction.C Self "round" round.
+        Proof.
         Admitted.
         Global Typeclasses Opaque round.
         
@@ -2084,6 +2090,7 @@ Module num.
         
         Global Instance AssociatedFunction_left_shift :
           M.IsAssociatedFunction.C Self "left_shift" left_shift.
+        Proof.
         Admitted.
         Global Typeclasses Opaque left_shift.
         
@@ -2868,6 +2875,7 @@ Module num.
         
         Global Instance AssociatedFunction_right_shift :
           M.IsAssociatedFunction.C Self "right_shift" right_shift.
+        Proof.
         Admitted.
         Global Typeclasses Opaque right_shift.
       End Impl_core_num_dec2flt_decimal_seq_DecimalSeq.
@@ -4891,6 +4899,7 @@ Module num.
       
       Global Instance Instance_IsFunction_parse_decimal_seq :
         M.IsFunction.C "core::num::dec2flt::decimal_seq::parse_decimal_seq" parse_decimal_seq.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_decimal_seq.
       
@@ -5540,6 +5549,7 @@ Module num.
         M.IsFunction.C
           "core::num::dec2flt::decimal_seq::number_of_digits_decimal_left_shift"
           number_of_digits_decimal_left_shift.
+      Proof.
       Admitted.
       Global Typeclasses Opaque number_of_digits_decimal_left_shift.
       
@@ -5622,6 +5632,7 @@ Module num.
           M.IsFunction.C
             "core::num::dec2flt::decimal_seq::number_of_digits_decimal_left_shift::TABLE"
             value_TABLE.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_TABLE.
         
@@ -6946,6 +6957,7 @@ Module num.
           M.IsFunction.C
             "core::num::dec2flt::decimal_seq::number_of_digits_decimal_left_shift::TABLE_POW5"
             value_TABLE_POW5.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_TABLE_POW5.
       End number_of_digits_decimal_left_shift.

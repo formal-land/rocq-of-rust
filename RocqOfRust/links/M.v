@@ -1692,6 +1692,7 @@ Axiom is_discriminant_record_eq :
 Instance run_pointer_coercion_intrinsic_reify_fn_pointer (F : Set) `{Link F} (f : F) :
   Run.Trait (pointer_coercion_intrinsic PointerCoercion.ReifyFnPointer)
     [] [ Φ F; Φ F ] [ φ f ] F.
+Proof.
 Admitted.
 
 Module Function1.

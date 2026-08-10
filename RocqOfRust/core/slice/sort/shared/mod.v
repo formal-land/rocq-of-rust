@@ -479,6 +479,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_find_existing_run :
         M.IsFunction.C "core::slice::sort::shared::find_existing_run" find_existing_run.
+      Proof.
       Admitted.
       Global Typeclasses Opaque find_existing_run.
     End shared.

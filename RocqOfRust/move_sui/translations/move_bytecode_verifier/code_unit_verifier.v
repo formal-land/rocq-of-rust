@@ -164,6 +164,7 @@ Module code_unit_verifier.
     
     Global Instance AssociatedFunction_verify_module :
       M.IsAssociatedFunction.C Self "verify_module" verify_module.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module.
     
@@ -1298,6 +1299,7 @@ Module code_unit_verifier.
     
     Global Instance AssociatedFunction_verify_module_impl :
       M.IsAssociatedFunction.C Self "verify_module_impl" verify_module_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module_impl.
     
@@ -2486,6 +2488,7 @@ Module code_unit_verifier.
     
     Global Instance AssociatedFunction_verify_function :
       M.IsAssociatedFunction.C Self "verify_function" verify_function.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_function.
     
@@ -3073,6 +3076,7 @@ Module code_unit_verifier.
     
     Global Instance AssociatedFunction_verify_common :
       M.IsAssociatedFunction.C Self "verify_common" verify_common.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_common.
   End Impl_move_bytecode_verifier_code_unit_verifier_CodeUnitVerifier.

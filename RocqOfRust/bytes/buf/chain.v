@@ -139,6 +139,7 @@ Module buf.
       Global Instance AssociatedFunction_new :
         forall (T U : Ty.t),
         M.IsAssociatedFunction.C (Self T U) "new" (new T U).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -179,6 +180,7 @@ Module buf.
       Global Instance AssociatedFunction_first_ref :
         forall (T U : Ty.t),
         M.IsAssociatedFunction.C (Self T U) "first_ref" (first_ref T U).
+      Proof.
       Admitted.
       Global Typeclasses Opaque first_ref.
       
@@ -224,6 +226,7 @@ Module buf.
       Global Instance AssociatedFunction_first_mut :
         forall (T U : Ty.t),
         M.IsAssociatedFunction.C (Self T U) "first_mut" (first_mut T U).
+      Proof.
       Admitted.
       Global Typeclasses Opaque first_mut.
       
@@ -264,6 +267,7 @@ Module buf.
       Global Instance AssociatedFunction_last_ref :
         forall (T U : Ty.t),
         M.IsAssociatedFunction.C (Self T U) "last_ref" (last_ref T U).
+      Proof.
       Admitted.
       Global Typeclasses Opaque last_ref.
       
@@ -309,6 +313,7 @@ Module buf.
       Global Instance AssociatedFunction_last_mut :
         forall (T U : Ty.t),
         M.IsAssociatedFunction.C (Self T U) "last_mut" (last_mut T U).
+      Proof.
       Admitted.
       Global Typeclasses Opaque last_mut.
       
@@ -344,6 +349,7 @@ Module buf.
       Global Instance AssociatedFunction_into_inner :
         forall (T U : Ty.t),
         M.IsAssociatedFunction.C (Self T U) "into_inner" (into_inner T U).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
     End Impl_bytes_buf_chain_Chain_T_U.

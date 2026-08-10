@@ -217,6 +217,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::mint_to_checked::process_mint_to_checked"
         process_mint_to_checked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_mint_to_checked.
   End mint_to_checked.

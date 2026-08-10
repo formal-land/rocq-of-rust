@@ -633,6 +633,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::initialize_immutable_owner::process_initialize_immutable_owner"
         process_initialize_immutable_owner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_immutable_owner.
   End initialize_immutable_owner.

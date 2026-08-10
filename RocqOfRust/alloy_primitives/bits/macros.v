@@ -5859,6 +5859,7 @@ Module bits.
       
       Global Instance AssociatedConstant_value_ZERO :
         M.IsAssociatedFunction.C Self "ZERO" value_ZERO.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ZERO.
       
@@ -5891,6 +5892,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -5931,6 +5933,7 @@ Module bits.
       
       Global Instance AssociatedFunction_with_last_byte :
         M.IsAssociatedFunction.C Self "with_last_byte" with_last_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_last_byte.
       
@@ -5971,6 +5974,7 @@ Module bits.
       
       Global Instance AssociatedFunction_repeat_byte :
         M.IsAssociatedFunction.C Self "repeat_byte" repeat_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque repeat_byte.
       
@@ -5987,6 +5991,7 @@ Module bits.
       
       Global Instance AssociatedFunction_len_bytes :
         M.IsAssociatedFunction.C Self "len_bytes" len_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len_bytes.
       
@@ -6196,6 +6201,7 @@ Module bits.
       
       Global Instance AssociatedFunction_from_slice :
         M.IsAssociatedFunction.C Self "from_slice" from_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_slice.
       
@@ -6240,6 +6246,7 @@ Module bits.
       
       Global Instance AssociatedFunction_left_padding_from :
         M.IsAssociatedFunction.C Self "left_padding_from" left_padding_from.
+      Proof.
       Admitted.
       Global Typeclasses Opaque left_padding_from.
       
@@ -6284,6 +6291,7 @@ Module bits.
       
       Global Instance AssociatedFunction_right_padding_from :
         M.IsAssociatedFunction.C Self "right_padding_from" right_padding_from.
+      Proof.
       Admitted.
       Global Typeclasses Opaque right_padding_from.
       
@@ -6313,6 +6321,7 @@ Module bits.
       
       Global Instance AssociatedFunction_into_array :
         M.IsAssociatedFunction.C Self "into_array" into_array.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_array.
       
@@ -6386,6 +6395,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_covers : M.IsAssociatedFunction.C Self "covers" covers.
+      Proof.
       Admitted.
       Global Typeclasses Opaque covers.
       
@@ -6448,6 +6458,7 @@ Module bits.
       
       Global Instance AssociatedFunction_const_eq :
         M.IsAssociatedFunction.C Self "const_eq" const_eq.
+      Proof.
       Admitted.
       Global Typeclasses Opaque const_eq.
       
@@ -6503,6 +6514,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_bit_and : M.IsAssociatedFunction.C Self "bit_and" bit_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_and.
       
@@ -6558,6 +6570,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_bit_or : M.IsAssociatedFunction.C Self "bit_or" bit_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_or.
       
@@ -6613,6 +6626,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_bit_xor : M.IsAssociatedFunction.C Self "bit_xor" bit_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_xor.
     End Impl_alloy_primitives_bits_address_Address.
@@ -12530,6 +12544,7 @@ Module bits.
       
       Global Instance AssociatedConstant_value_ZERO :
         M.IsAssociatedFunction.C Self "ZERO" value_ZERO.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ZERO.
       
@@ -12562,6 +12577,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -12602,6 +12618,7 @@ Module bits.
       
       Global Instance AssociatedFunction_with_last_byte :
         M.IsAssociatedFunction.C Self "with_last_byte" with_last_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_last_byte.
       
@@ -12642,6 +12659,7 @@ Module bits.
       
       Global Instance AssociatedFunction_repeat_byte :
         M.IsAssociatedFunction.C Self "repeat_byte" repeat_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque repeat_byte.
       
@@ -12658,6 +12676,7 @@ Module bits.
       
       Global Instance AssociatedFunction_len_bytes :
         M.IsAssociatedFunction.C Self "len_bytes" len_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len_bytes.
       
@@ -12864,6 +12883,7 @@ Module bits.
       
       Global Instance AssociatedFunction_from_slice :
         M.IsAssociatedFunction.C Self "from_slice" from_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_slice.
       
@@ -12908,6 +12928,7 @@ Module bits.
       
       Global Instance AssociatedFunction_left_padding_from :
         M.IsAssociatedFunction.C Self "left_padding_from" left_padding_from.
+      Proof.
       Admitted.
       Global Typeclasses Opaque left_padding_from.
       
@@ -12952,6 +12973,7 @@ Module bits.
       
       Global Instance AssociatedFunction_right_padding_from :
         M.IsAssociatedFunction.C Self "right_padding_from" right_padding_from.
+      Proof.
       Admitted.
       Global Typeclasses Opaque right_padding_from.
       
@@ -12981,6 +13003,7 @@ Module bits.
       
       Global Instance AssociatedFunction_into_array :
         M.IsAssociatedFunction.C Self "into_array" into_array.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_array.
       
@@ -13050,6 +13073,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_covers : M.IsAssociatedFunction.C Self "covers" covers.
+      Proof.
       Admitted.
       Global Typeclasses Opaque covers.
       
@@ -13112,6 +13136,7 @@ Module bits.
       
       Global Instance AssociatedFunction_const_eq :
         M.IsAssociatedFunction.C Self "const_eq" const_eq.
+      Proof.
       Admitted.
       Global Typeclasses Opaque const_eq.
       
@@ -13167,6 +13192,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_bit_and : M.IsAssociatedFunction.C Self "bit_and" bit_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_and.
       
@@ -13222,6 +13248,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_bit_or : M.IsAssociatedFunction.C Self "bit_or" bit_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_or.
       
@@ -13277,6 +13304,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_bit_xor : M.IsAssociatedFunction.C Self "bit_xor" bit_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_xor.
     End Impl_alloy_primitives_bits_bloom_Bloom.
@@ -22034,6 +22062,7 @@ Module bits.
       
       Global Instance AssociatedConstant_value_ZERO :
         M.IsAssociatedFunction.C Self "ZERO" value_ZERO.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ZERO.
       
@@ -22066,6 +22095,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -22106,6 +22136,7 @@ Module bits.
       
       Global Instance AssociatedFunction_with_last_byte :
         M.IsAssociatedFunction.C Self "with_last_byte" with_last_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_last_byte.
       
@@ -22146,6 +22177,7 @@ Module bits.
       
       Global Instance AssociatedFunction_repeat_byte :
         M.IsAssociatedFunction.C Self "repeat_byte" repeat_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque repeat_byte.
       
@@ -22162,6 +22194,7 @@ Module bits.
       
       Global Instance AssociatedFunction_len_bytes :
         M.IsAssociatedFunction.C Self "len_bytes" len_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len_bytes.
       
@@ -22372,6 +22405,7 @@ Module bits.
       
       Global Instance AssociatedFunction_from_slice :
         M.IsAssociatedFunction.C Self "from_slice" from_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_slice.
       
@@ -22416,6 +22450,7 @@ Module bits.
       
       Global Instance AssociatedFunction_left_padding_from :
         M.IsAssociatedFunction.C Self "left_padding_from" left_padding_from.
+      Proof.
       Admitted.
       Global Typeclasses Opaque left_padding_from.
       
@@ -22460,6 +22495,7 @@ Module bits.
       
       Global Instance AssociatedFunction_right_padding_from :
         M.IsAssociatedFunction.C Self "right_padding_from" right_padding_from.
+      Proof.
       Admitted.
       Global Typeclasses Opaque right_padding_from.
       
@@ -22489,6 +22525,7 @@ Module bits.
       
       Global Instance AssociatedFunction_into_array :
         M.IsAssociatedFunction.C Self "into_array" into_array.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_array.
       
@@ -22562,6 +22599,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_covers : M.IsAssociatedFunction.C Self "covers" covers.
+      Proof.
       Admitted.
       Global Typeclasses Opaque covers.
       
@@ -22624,6 +22662,7 @@ Module bits.
       
       Global Instance AssociatedFunction_const_eq :
         M.IsAssociatedFunction.C Self "const_eq" const_eq.
+      Proof.
       Admitted.
       Global Typeclasses Opaque const_eq.
       
@@ -22679,6 +22718,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_bit_and : M.IsAssociatedFunction.C Self "bit_and" bit_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_and.
       
@@ -22734,6 +22774,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_bit_or : M.IsAssociatedFunction.C Self "bit_or" bit_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_or.
       
@@ -22789,6 +22830,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_bit_xor : M.IsAssociatedFunction.C Self "bit_xor" bit_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_xor.
     End Impl_alloy_primitives_bits_function_Function.

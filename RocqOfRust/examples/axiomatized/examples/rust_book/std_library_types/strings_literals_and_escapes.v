@@ -4,4 +4,5 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "strings_literals_and_escapes::main" main.
+Proof.
 Admitted.

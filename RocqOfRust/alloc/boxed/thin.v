@@ -101,6 +101,7 @@ Module boxed.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -222,6 +223,7 @@ Module boxed.
       Global Instance AssociatedFunction_try_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "try_new" (try_new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_new.
       (*
@@ -301,6 +303,7 @@ Module boxed.
       Global Instance AssociatedFunction_meta :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "meta" (meta T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque meta.
       
@@ -372,6 +375,7 @@ Module boxed.
       Global Instance AssociatedFunction_data :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "data" (data T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque data.
       
@@ -435,6 +439,7 @@ Module boxed.
       Global Instance AssociatedFunction_with_header :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "with_header" (with_header T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_header.
     End Impl_alloc_boxed_thin_ThinBox_T.
@@ -600,6 +605,7 @@ Module boxed.
       Global Instance AssociatedFunction_new_unsize :
         forall (Dyn : Ty.t),
         M.IsAssociatedFunction.C (Self Dyn) "new_unsize" (new_unsize Dyn).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unsize.
     End Impl_alloc_boxed_thin_ThinBox_Dyn.
@@ -1095,6 +1101,7 @@ Module boxed.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1159,6 +1166,7 @@ Module boxed.
       
       Global Instance AssociatedFunction_new_unsize_zst :
         M.IsAssociatedFunction.C Self "new_unsize_zst" new_unsize_zst.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unsize_zst.
       
@@ -1256,6 +1264,7 @@ Module boxed.
         end.
       
       Global Instance AssociatedFunction_try_new : M.IsAssociatedFunction.C Self "try_new" try_new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_new.
     End Impl_alloc_boxed_thin_WithOpaqueHeader.
@@ -1696,6 +1705,7 @@ Module boxed.
       Global Instance AssociatedFunction_new :
         forall (H : Ty.t),
         M.IsAssociatedFunction.C (Self H) "new" (new H).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2210,6 +2220,7 @@ Module boxed.
       Global Instance AssociatedFunction_try_new :
         forall (H : Ty.t),
         M.IsAssociatedFunction.C (Self H) "try_new" (try_new H).
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_new.
       
@@ -2486,6 +2497,7 @@ Module boxed.
       Global Instance AssociatedFunction_new_unsize_zst :
         forall (H : Ty.t),
         M.IsAssociatedFunction.C (Self H) "new_unsize_zst" (new_unsize_zst H).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unsize_zst.
       
@@ -2595,6 +2607,7 @@ Module boxed.
       Global Instance AssociatedFunction_drop :
         forall (H : Ty.t),
         M.IsAssociatedFunction.C (Self H) "drop" (drop H).
+      Proof.
       Admitted.
       Global Typeclasses Opaque drop.
       
@@ -2733,6 +2746,7 @@ Module boxed.
       Global Instance AssociatedFunction_header :
         forall (H : Ty.t),
         M.IsAssociatedFunction.C (Self H) "header" (header H).
+      Proof.
       Admitted.
       Global Typeclasses Opaque header.
       
@@ -2778,6 +2792,7 @@ Module boxed.
       Global Instance AssociatedFunction_value :
         forall (H : Ty.t),
         M.IsAssociatedFunction.C (Self H) "value" (value H).
+      Proof.
       Admitted.
       Global Typeclasses Opaque value.
       
@@ -2802,6 +2817,7 @@ Module boxed.
       Global Instance AssociatedFunction_header_size :
         forall (H : Ty.t),
         M.IsAssociatedFunction.C (Self H) "header_size" (header_size H).
+      Proof.
       Admitted.
       Global Typeclasses Opaque header_size.
       
@@ -2862,6 +2878,7 @@ Module boxed.
       Global Instance AssociatedFunction_alloc_layout :
         forall (H : Ty.t),
         M.IsAssociatedFunction.C (Self H) "alloc_layout" (alloc_layout H).
+      Proof.
       Admitted.
       Global Typeclasses Opaque alloc_layout.
     End Impl_alloc_boxed_thin_WithHeader_H.

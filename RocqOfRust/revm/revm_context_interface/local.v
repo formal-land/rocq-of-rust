@@ -447,6 +447,7 @@ Module local.
     Global Instance AssociatedFunction_new_prealloc :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_prealloc" (new_prealloc T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_prealloc.
     (*
@@ -487,6 +488,7 @@ Module local.
     Global Instance AssociatedFunction_new :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -609,6 +611,7 @@ Module local.
     Global Instance AssociatedFunction_start_init :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "start_init" (start_init T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque start_init.
     
@@ -732,6 +735,7 @@ Module local.
     Global Instance AssociatedFunction_end_init :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "end_init" (end_init T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque end_init.
     
@@ -766,6 +770,7 @@ Module local.
     Global Instance AssociatedFunction_index :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "index" (index T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque index.
     
@@ -1053,6 +1058,7 @@ Module local.
     Global Instance AssociatedFunction_push :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "push" (push T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque push.
     
@@ -1092,6 +1098,7 @@ Module local.
     Global Instance AssociatedFunction_clear :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "clear" (clear T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque clear.
     
@@ -1156,6 +1163,7 @@ Module local.
     Global Instance AssociatedFunction_pop :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "pop" (pop T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque pop.
     
@@ -1378,6 +1386,7 @@ Module local.
     Global Instance AssociatedFunction_get :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get" (get T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get.
     
@@ -1549,6 +1558,7 @@ Module local.
     Global Instance AssociatedFunction_get_next :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_next" (get_next T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_next.
     
@@ -1642,6 +1652,7 @@ Module local.
     Global Instance AssociatedFunction_out_frame_at :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "out_frame_at" (out_frame_at T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque out_frame_at.
   End Impl_revm_context_interface_local_FrameStack_T.
@@ -1698,6 +1709,7 @@ Module local.
     Global Instance AssociatedFunction_new_init :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_init" (new_init T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_init.
     
@@ -1747,6 +1759,7 @@ Module local.
     Global Instance AssociatedFunction_new_uninit :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_uninit" (new_uninit T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_uninit.
     
@@ -1805,6 +1818,7 @@ Module local.
     Global Instance AssociatedFunction_new_maybe_uninit :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_maybe_uninit" (new_maybe_uninit T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_maybe_uninit.
     
@@ -1920,6 +1934,7 @@ Module local.
     Global Instance AssociatedFunction_get :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get" (get T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get.
     
@@ -1990,6 +2005,7 @@ Module local.
     Global Instance AssociatedFunction_do_init :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "do_init" (do_init T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque do_init.
     
@@ -2120,6 +2136,7 @@ Module local.
     Global Instance AssociatedFunction_get_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_unchecked" (get_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_unchecked.
     
@@ -2157,6 +2174,7 @@ Module local.
     Global Instance AssociatedFunction_consume :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "consume" (consume T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque consume.
   End Impl_revm_context_interface_local_OutFrame_T.
@@ -2235,6 +2253,7 @@ Module local.
       end.
     
     Global Instance AssociatedFunction_assert : M.IsAssociatedFunction.C Self "assert" assert.
+    Proof.
     Admitted.
     Global Typeclasses Opaque assert.
   End Impl_revm_context_interface_local_FrameToken.

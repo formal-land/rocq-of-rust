@@ -224,6 +224,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_verify_module :
       M.IsAssociatedFunction.C Self "verify_module" verify_module.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module.
     
@@ -1861,6 +1862,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_verify_impl :
       M.IsAssociatedFunction.C Self "verify_impl" verify_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_impl.
     
@@ -2240,6 +2242,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_signatures :
       M.IsAssociatedFunction.C Self "check_signatures" check_signatures.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_signatures.
     
@@ -2619,6 +2622,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_constants :
       M.IsAssociatedFunction.C Self "check_constants" check_constants.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_constants.
     
@@ -3000,6 +3004,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_module_handles :
       M.IsAssociatedFunction.C Self "check_module_handles" check_module_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_module_handles.
     
@@ -3381,6 +3386,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_struct_handles :
       M.IsAssociatedFunction.C Self "check_struct_handles" check_struct_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_struct_handles.
     
@@ -3764,6 +3770,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_function_handles :
       M.IsAssociatedFunction.C Self "check_function_handles" check_function_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_function_handles.
     
@@ -4145,6 +4152,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_field_handles :
       M.IsAssociatedFunction.C Self "check_field_handles" check_field_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_field_handles.
     
@@ -4524,6 +4532,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_friend_decls :
       M.IsAssociatedFunction.C Self "check_friend_decls" check_friend_decls.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_friend_decls.
     
@@ -4919,6 +4928,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_struct_instantiations :
       M.IsAssociatedFunction.C Self "check_struct_instantiations" check_struct_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_struct_instantiations.
     
@@ -5314,6 +5324,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_function_instantiations :
       M.IsAssociatedFunction.C Self "check_function_instantiations" check_function_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_function_instantiations.
     
@@ -5708,6 +5719,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_field_instantiations :
       M.IsAssociatedFunction.C Self "check_field_instantiations" check_field_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_field_instantiations.
     
@@ -6092,6 +6104,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_struct_defs :
       M.IsAssociatedFunction.C Self "check_struct_defs" check_struct_defs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_struct_defs.
     
@@ -6579,6 +6592,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_function_defs :
       M.IsAssociatedFunction.C Self "check_function_defs" check_function_defs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_function_defs.
     
@@ -6864,6 +6878,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_module_handle :
       M.IsAssociatedFunction.C Self "check_module_handle" check_module_handle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_module_handle.
     
@@ -6964,6 +6979,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_self_module_handle :
       M.IsAssociatedFunction.C Self "check_self_module_handle" check_self_module_handle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_self_module_handle.
     
@@ -7247,6 +7263,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_struct_handle :
       M.IsAssociatedFunction.C Self "check_struct_handle" check_struct_handle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_struct_handle.
     
@@ -8945,6 +8962,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_function_handle :
       M.IsAssociatedFunction.C Self "check_function_handle" check_function_handle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_function_handle.
     
@@ -9517,6 +9535,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_field_handle :
       M.IsAssociatedFunction.C Self "check_field_handle" check_field_handle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_field_handle.
     
@@ -9815,6 +9834,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_struct_instantiation :
       M.IsAssociatedFunction.C Self "check_struct_instantiation" check_struct_instantiation.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_struct_instantiation.
     
@@ -10116,6 +10136,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_function_instantiation :
       M.IsAssociatedFunction.C Self "check_function_instantiation" check_function_instantiation.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_function_instantiation.
     
@@ -10411,6 +10432,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_field_instantiation :
       M.IsAssociatedFunction.C Self "check_field_instantiation" check_field_instantiation.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_field_instantiation.
     
@@ -10776,6 +10798,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_signature :
       M.IsAssociatedFunction.C Self "check_signature" check_signature.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_signature.
     
@@ -10834,6 +10857,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_constant :
       M.IsAssociatedFunction.C Self "check_constant" check_constant.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_constant.
     
@@ -12074,6 +12098,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_struct_def :
       M.IsAssociatedFunction.C Self "check_struct_def" check_struct_def.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_struct_def.
     
@@ -13254,6 +13279,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_function_def :
       M.IsAssociatedFunction.C Self "check_function_def" check_function_def.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_function_def.
     
@@ -20770,6 +20796,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_code :
       M.IsAssociatedFunction.C Self "check_code" check_code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_code.
     
@@ -22776,6 +22803,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_type :
       M.IsAssociatedFunction.C Self "check_type" check_type.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_type.
     
@@ -23264,6 +23292,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_type_parameter :
       M.IsAssociatedFunction.C Self "check_type_parameter" check_type_parameter.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_type_parameter.
     
@@ -23405,6 +23434,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_check_code_unit_bounds_impl :
       M.IsAssociatedFunction.C Self "check_code_unit_bounds_impl" check_code_unit_bounds_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_code_unit_bounds_impl.
     
@@ -23728,6 +23758,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_get_locals :
       M.IsAssociatedFunction.C Self "get_locals" get_locals.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_locals.
     
@@ -24020,6 +24051,7 @@ Module check_bounds.
     
     Global Instance AssociatedFunction_offset_out_of_bounds :
       M.IsAssociatedFunction.C Self "offset_out_of_bounds" offset_out_of_bounds.
+    Proof.
     Admitted.
     Global Typeclasses Opaque offset_out_of_bounds.
   End Impl_move_binary_format_check_bounds_BoundsChecker.
@@ -24136,6 +24168,7 @@ Module check_bounds.
   
   Global Instance Instance_IsFunction_check_bounds_impl :
     M.IsFunction.C "move_binary_format::check_bounds::check_bounds_impl" check_bounds_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_bounds_impl.
 End check_bounds.

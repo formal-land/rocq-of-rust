@@ -40,6 +40,7 @@ Module Impl_Iterator_for_IntoIter.
 
   Instance run (T A : Set) `{Link T} `{Link A} :
     Iterator.Run (Self T A) T.
+  Proof.
   Admitted.
 End Impl_Iterator_for_IntoIter.
 Export (hints) Impl_Iterator_for_IntoIter.

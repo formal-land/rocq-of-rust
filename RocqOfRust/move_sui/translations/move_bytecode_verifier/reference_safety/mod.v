@@ -132,6 +132,7 @@ Module reference_safety.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -548,6 +549,7 @@ Module reference_safety.
       end.
     
     Global Instance AssociatedFunction_push : M.IsAssociatedFunction.C Self "push" push.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push.
     
@@ -966,6 +968,7 @@ Module reference_safety.
       end.
     
     Global Instance AssociatedFunction_push_n : M.IsAssociatedFunction.C Self "push_n" push_n.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push_n.
   End Impl_move_bytecode_verifier_reference_safety_ReferenceSafetyAnalysis.
@@ -1078,6 +1081,7 @@ Module reference_safety.
   
   Global Instance Instance_IsFunction_verify :
     M.IsFunction.C "move_bytecode_verifier::reference_safety::verify" verify.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify.
   
@@ -2465,6 +2469,7 @@ Module reference_safety.
   
   Global Instance Instance_IsFunction_call :
     M.IsFunction.C "move_bytecode_verifier::reference_safety::call" call.
+  Proof.
   Admitted.
   Global Typeclasses Opaque call.
   
@@ -2562,6 +2567,7 @@ Module reference_safety.
   
   Global Instance Instance_IsFunction_num_fields :
     M.IsFunction.C "move_bytecode_verifier::reference_safety::num_fields" num_fields.
+  Proof.
   Admitted.
   Global Typeclasses Opaque num_fields.
   
@@ -3654,6 +3660,7 @@ Module reference_safety.
   
   Global Instance Instance_IsFunction_pack :
     M.IsFunction.C "move_bytecode_verifier::reference_safety::pack" pack.
+  Proof.
   Admitted.
   Global Typeclasses Opaque pack.
   
@@ -4543,6 +4550,7 @@ Module reference_safety.
   
   Global Instance Instance_IsFunction_unpack :
     M.IsFunction.C "move_bytecode_verifier::reference_safety::unpack" unpack.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unpack.
   
@@ -4752,6 +4760,7 @@ Module reference_safety.
   
   Global Instance Instance_IsFunction_vec_element_type :
     M.IsFunction.C "move_bytecode_verifier::reference_safety::vec_element_type" vec_element_type.
+  Proof.
   Admitted.
   Global Typeclasses Opaque vec_element_type.
   
@@ -41154,6 +41163,7 @@ Module reference_safety.
   
   Global Instance Instance_IsFunction_execute_inner :
     M.IsFunction.C "move_bytecode_verifier::reference_safety::execute_inner" execute_inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque execute_inner.
   

@@ -18,6 +18,7 @@ Module Impl_polymorphic_associated_function_Foo_A.
   Global Instance AssociatedFunction_convert :
     forall (A : Ty.t),
     M.IsAssociatedFunction.C (Self A) "convert" (convert A).
+  Proof.
   Admitted.
 End Impl_polymorphic_associated_function_Foo_A.
 
@@ -25,4 +26,5 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "polymorphic_associated_function::main" main.
+Proof.
 Admitted.

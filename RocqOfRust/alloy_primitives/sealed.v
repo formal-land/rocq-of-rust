@@ -649,6 +649,7 @@ Module sealed.
     Global Instance AssociatedFunction_new :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -710,6 +711,7 @@ Module sealed.
     Global Instance AssociatedFunction_new_ref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_ref" (new_ref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_ref.
     
@@ -781,6 +783,7 @@ Module sealed.
     Global Instance AssociatedFunction_new_with :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_with" (new_with T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_with.
     
@@ -858,6 +861,7 @@ Module sealed.
     Global Instance AssociatedFunction_new_ref_with :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_ref_with" (new_ref_with T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_ref_with.
     
@@ -891,6 +895,7 @@ Module sealed.
     Global Instance AssociatedFunction_new_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_unchecked" (new_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_unchecked.
     
@@ -929,6 +934,7 @@ Module sealed.
     Global Instance AssociatedFunction_into_parts :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "into_parts" (into_parts T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_parts.
     
@@ -967,6 +973,7 @@ Module sealed.
     Global Instance AssociatedFunction_split :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split" (split T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split.
     
@@ -1007,6 +1014,7 @@ Module sealed.
     Global Instance AssociatedFunction_inner :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "inner" (inner T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque inner.
     
@@ -1041,6 +1049,7 @@ Module sealed.
     Global Instance AssociatedFunction_seal :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "seal" (seal T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque seal.
     
@@ -1075,6 +1084,7 @@ Module sealed.
     Global Instance AssociatedFunction_hash :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "hash" (hash T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque hash.
     
@@ -1103,6 +1113,7 @@ Module sealed.
     Global Instance AssociatedFunction_into_inner :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inner.
     
@@ -1134,6 +1145,7 @@ Module sealed.
     Global Instance AssociatedFunction_unseal :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "unseal" (unseal T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unseal.
   End Impl_alloy_primitives_sealed_Sealed_T.

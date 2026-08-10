@@ -1301,6 +1301,7 @@ Module num.
       
       Global Instance Instance_IsFunction_decode :
         M.IsFunction.C "core::num::flt2dec::decoder::decode" decode.
+      Proof.
       Admitted.
       Global Typeclasses Opaque decode.
     End decoder.

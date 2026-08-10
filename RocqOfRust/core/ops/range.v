@@ -1093,6 +1093,7 @@ Module ops.
       Global Instance AssociatedFunction_contains :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "contains" (contains Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains.
       
@@ -1151,6 +1152,7 @@ Module ops.
       Global Instance AssociatedFunction_is_empty :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "is_empty" (is_empty Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_empty.
     End Impl_core_ops_range_Range_Idx.
@@ -1758,6 +1760,7 @@ Module ops.
       Global Instance AssociatedFunction_contains :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "contains" (contains Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains.
     End Impl_core_ops_range_RangeFrom_Idx.
@@ -2379,6 +2382,7 @@ Module ops.
       Global Instance AssociatedFunction_contains :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "contains" (contains Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains.
     End Impl_core_ops_range_RangeTo_Idx.
@@ -2809,6 +2813,7 @@ Module ops.
       Global Instance AssociatedFunction_new :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "new" (new Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2849,6 +2854,7 @@ Module ops.
       Global Instance AssociatedFunction_start :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "start" (start Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque start.
       
@@ -2889,6 +2895,7 @@ Module ops.
       Global Instance AssociatedFunction_end_ :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "end" (end_ Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque end_.
       
@@ -2935,6 +2942,7 @@ Module ops.
       Global Instance AssociatedFunction_into_inner :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "into_inner" (into_inner Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       (*
@@ -2982,6 +2990,7 @@ Module ops.
       Global Instance AssociatedFunction_contains :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "contains" (contains Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains.
       
@@ -3058,6 +3067,7 @@ Module ops.
       Global Instance AssociatedFunction_is_empty :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "is_empty" (is_empty Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_empty.
     End Impl_core_ops_range_RangeInclusive_Idx.
@@ -3141,6 +3151,7 @@ Module ops.
       
       Global Instance AssociatedFunction_into_slice_range :
         M.IsAssociatedFunction.C Self "into_slice_range" into_slice_range.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_slice_range.
     End Impl_core_ops_range_RangeInclusive_usize.
@@ -4376,6 +4387,7 @@ Module ops.
       Global Instance AssociatedFunction_contains :
         forall (Idx : Ty.t),
         M.IsAssociatedFunction.C (Self Idx) "contains" (contains Idx).
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains.
     End Impl_core_ops_range_RangeToInclusive_Idx.
@@ -5042,6 +5054,7 @@ Module ops.
       Global Instance AssociatedFunction_as_ref :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_ref" (as_ref T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ref.
       
@@ -5118,6 +5131,7 @@ Module ops.
       Global Instance AssociatedFunction_as_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_mut" (as_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut.
       
@@ -5210,6 +5224,7 @@ Module ops.
       Global Instance AssociatedFunction_map :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "map" (map T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map.
     End Impl_core_ops_range_Bound_T.
@@ -5281,6 +5296,7 @@ Module ops.
       Global Instance AssociatedFunction_copied :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "copied" (copied T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque copied.
       (*
@@ -5361,6 +5377,7 @@ Module ops.
       Global Instance AssociatedFunction_cloned :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "cloned" (cloned T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque cloned.
     End Impl_core_ops_range_Bound_ref__T.

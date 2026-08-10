@@ -293,6 +293,7 @@ Module Impl_custom_environment_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -320,6 +321,7 @@ Module Impl_custom_environment_Env.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   Global Typeclasses Opaque emit_event.
 End Impl_custom_environment_Env.
@@ -347,6 +349,7 @@ Module Impl_custom_environment_Topics.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -370,6 +373,7 @@ Module Impl_custom_environment_Topics.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -399,6 +403,7 @@ Module Impl_custom_environment_Topics.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -471,6 +476,7 @@ Module Impl_custom_environment_Topics.
     end.
   
   Global Instance AssociatedFunction_trigger : M.IsAssociatedFunction.C Self "trigger" trigger.
+  Proof.
   Admitted.
   Global Typeclasses Opaque trigger.
 End Impl_custom_environment_Topics.

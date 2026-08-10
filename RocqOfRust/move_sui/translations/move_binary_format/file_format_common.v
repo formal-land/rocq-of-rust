@@ -22,6 +22,7 @@ Module file_format_common.
     
     Global Instance AssociatedConstant_value_MOVE_MAGIC_SIZE :
       M.IsAssociatedFunction.C Self "MOVE_MAGIC_SIZE" value_MOVE_MAGIC_SIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MOVE_MAGIC_SIZE.
     
@@ -48,6 +49,7 @@ Module file_format_common.
     
     Global Instance AssociatedConstant_value_MOVE_MAGIC :
       M.IsAssociatedFunction.C Self "MOVE_MAGIC" value_MOVE_MAGIC.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MOVE_MAGIC.
     
@@ -75,6 +77,7 @@ Module file_format_common.
     
     Global Instance AssociatedConstant_value_HEADER_SIZE :
       M.IsAssociatedFunction.C Self "HEADER_SIZE" value_HEADER_SIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_HEADER_SIZE.
     
@@ -109,6 +112,7 @@ Module file_format_common.
     
     Global Instance AssociatedConstant_value_TABLE_HEADER_SIZE :
       M.IsAssociatedFunction.C Self "TABLE_HEADER_SIZE" value_TABLE_HEADER_SIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TABLE_HEADER_SIZE.
   End Impl_move_binary_format_file_format_common_BinaryConstants.
@@ -118,6 +122,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_TABLE_COUNT_MAX :
     M.IsFunction.C "move_binary_format::file_format_common::TABLE_COUNT_MAX" value_TABLE_COUNT_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TABLE_COUNT_MAX.
   
@@ -128,6 +133,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::TABLE_OFFSET_MAX"
       value_TABLE_OFFSET_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TABLE_OFFSET_MAX.
   
@@ -136,6 +142,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_TABLE_SIZE_MAX :
     M.IsFunction.C "move_binary_format::file_format_common::TABLE_SIZE_MAX" value_TABLE_SIZE_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TABLE_SIZE_MAX.
   
@@ -150,6 +157,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::TABLE_CONTENT_SIZE_MAX"
       value_TABLE_CONTENT_SIZE_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TABLE_CONTENT_SIZE_MAX.
   
@@ -158,6 +166,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_TABLE_INDEX_MAX :
     M.IsFunction.C "move_binary_format::file_format_common::TABLE_INDEX_MAX" value_TABLE_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TABLE_INDEX_MAX.
   
@@ -172,6 +181,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::SIGNATURE_INDEX_MAX"
       value_SIGNATURE_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SIGNATURE_INDEX_MAX.
   
@@ -186,6 +196,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::ADDRESS_INDEX_MAX"
       value_ADDRESS_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ADDRESS_INDEX_MAX.
   
@@ -200,6 +211,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::IDENTIFIER_INDEX_MAX"
       value_IDENTIFIER_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_IDENTIFIER_INDEX_MAX.
   
@@ -218,6 +230,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::MODULE_HANDLE_INDEX_MAX"
       value_MODULE_HANDLE_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MODULE_HANDLE_INDEX_MAX.
   
@@ -236,6 +249,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::STRUCT_HANDLE_INDEX_MAX"
       value_STRUCT_HANDLE_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_STRUCT_HANDLE_INDEX_MAX.
   
@@ -250,6 +264,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::STRUCT_DEF_INDEX_MAX"
       value_STRUCT_DEF_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_STRUCT_DEF_INDEX_MAX.
   
@@ -268,6 +283,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::FUNCTION_HANDLE_INDEX_MAX"
       value_FUNCTION_HANDLE_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FUNCTION_HANDLE_INDEX_MAX.
   
@@ -286,6 +302,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::FUNCTION_INST_INDEX_MAX"
       value_FUNCTION_INST_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FUNCTION_INST_INDEX_MAX.
   
@@ -304,6 +321,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::FIELD_HANDLE_INDEX_MAX"
       value_FIELD_HANDLE_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FIELD_HANDLE_INDEX_MAX.
   
@@ -318,6 +336,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::FIELD_INST_INDEX_MAX"
       value_FIELD_INST_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FIELD_INST_INDEX_MAX.
   
@@ -336,6 +355,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::STRUCT_DEF_INST_INDEX_MAX"
       value_STRUCT_DEF_INST_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_STRUCT_DEF_INST_INDEX_MAX.
   
@@ -350,6 +370,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::CONSTANT_INDEX_MAX"
       value_CONSTANT_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CONSTANT_INDEX_MAX.
   
@@ -360,6 +381,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::BYTECODE_COUNT_MAX"
       value_BYTECODE_COUNT_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BYTECODE_COUNT_MAX.
   
@@ -370,6 +392,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::BYTECODE_INDEX_MAX"
       value_BYTECODE_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BYTECODE_INDEX_MAX.
   
@@ -378,6 +401,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_LOCAL_INDEX_MAX :
     M.IsFunction.C "move_binary_format::file_format_common::LOCAL_INDEX_MAX" value_LOCAL_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_LOCAL_INDEX_MAX.
   
@@ -388,6 +412,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::IDENTIFIER_SIZE_MAX"
       value_IDENTIFIER_SIZE_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_IDENTIFIER_SIZE_MAX.
   
@@ -398,6 +423,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::CONSTANT_SIZE_MAX"
       value_CONSTANT_SIZE_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CONSTANT_SIZE_MAX.
   
@@ -412,6 +438,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::METADATA_KEY_SIZE_MAX"
       value_METADATA_KEY_SIZE_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_METADATA_KEY_SIZE_MAX.
   
@@ -426,6 +453,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::METADATA_VALUE_SIZE_MAX"
       value_METADATA_VALUE_SIZE_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_METADATA_VALUE_SIZE_MAX.
   
@@ -436,6 +464,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::SIGNATURE_SIZE_MAX"
       value_SIGNATURE_SIZE_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SIGNATURE_SIZE_MAX.
   
@@ -446,6 +475,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::ACQUIRES_COUNT_MAX"
       value_ACQUIRES_COUNT_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ACQUIRES_COUNT_MAX.
   
@@ -454,6 +484,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_FIELD_COUNT_MAX :
     M.IsFunction.C "move_binary_format::file_format_common::FIELD_COUNT_MAX" value_FIELD_COUNT_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FIELD_COUNT_MAX.
   
@@ -464,6 +495,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::FIELD_OFFSET_MAX"
       value_FIELD_OFFSET_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FIELD_OFFSET_MAX.
   
@@ -478,6 +510,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::TYPE_PARAMETER_COUNT_MAX"
       value_TYPE_PARAMETER_COUNT_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TYPE_PARAMETER_COUNT_MAX.
   
@@ -492,6 +525,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::TYPE_PARAMETER_INDEX_MAX"
       value_TYPE_PARAMETER_INDEX_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TYPE_PARAMETER_INDEX_MAX.
   
@@ -506,6 +540,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::SIGNATURE_TOKEN_DEPTH_MAX"
       value_SIGNATURE_TOKEN_DEPTH_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SIGNATURE_TOKEN_DEPTH_MAX.
   
@@ -2877,6 +2912,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::BINARY_SIZE_LIMIT"
       value_BINARY_SIZE_LIMIT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BINARY_SIZE_LIMIT.
   
@@ -3078,6 +3114,7 @@ Module file_format_common.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -3137,6 +3174,7 @@ Module file_format_common.
       end.
     
     Global Instance AssociatedFunction_as_inner : M.IsAssociatedFunction.C Self "as_inner" as_inner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_inner.
     
@@ -3163,6 +3201,7 @@ Module file_format_common.
     
     Global Instance AssociatedFunction_into_inner :
       M.IsAssociatedFunction.C Self "into_inner" into_inner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inner.
     
@@ -3530,6 +3569,7 @@ Module file_format_common.
       end.
     
     Global Instance AssociatedFunction_push : M.IsAssociatedFunction.C Self "push" push.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push.
     
@@ -3973,6 +4013,7 @@ Module file_format_common.
       end.
     
     Global Instance AssociatedFunction_extend : M.IsAssociatedFunction.C Self "extend" extend.
+    Proof.
     Admitted.
     Global Typeclasses Opaque extend.
     
@@ -4019,6 +4060,7 @@ Module file_format_common.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -4065,6 +4107,7 @@ Module file_format_common.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -4115,6 +4158,7 @@ Module file_format_common.
       end.
     
     Global Instance AssociatedFunction_clear : M.IsAssociatedFunction.C Self "clear" clear.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clear.
   End Impl_move_binary_format_file_format_common_BinaryData.
@@ -4540,6 +4584,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::write_u64_as_uleb128"
       write_u64_as_uleb128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_u64_as_uleb128.
   
@@ -4617,6 +4662,7 @@ Module file_format_common.
   
   Global Instance Instance_IsFunction_write_u16 :
     M.IsFunction.C "move_binary_format::file_format_common::write_u16" write_u16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_u16.
   
@@ -4694,6 +4740,7 @@ Module file_format_common.
   
   Global Instance Instance_IsFunction_write_u32 :
     M.IsFunction.C "move_binary_format::file_format_common::write_u32" write_u32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_u32.
   
@@ -4771,6 +4818,7 @@ Module file_format_common.
   
   Global Instance Instance_IsFunction_write_u64 :
     M.IsFunction.C "move_binary_format::file_format_common::write_u64" write_u64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_u64.
   
@@ -4848,6 +4896,7 @@ Module file_format_common.
   
   Global Instance Instance_IsFunction_write_u128 :
     M.IsFunction.C "move_binary_format::file_format_common::write_u128" write_u128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_u128.
   
@@ -4933,6 +4982,7 @@ Module file_format_common.
   
   Global Instance Instance_IsFunction_write_u256 :
     M.IsFunction.C "move_binary_format::file_format_common::write_u256" write_u256.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_u256.
   
@@ -5156,6 +5206,7 @@ Module file_format_common.
   
   Global Instance Instance_IsFunction_read_u8 :
     M.IsFunction.C "move_binary_format::file_format_common::read_u8" read_u8.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_u8.
   
@@ -5381,6 +5432,7 @@ Module file_format_common.
   
   Global Instance Instance_IsFunction_read_u32 :
     M.IsFunction.C "move_binary_format::file_format_common::read_u32" read_u32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_u32.
   
@@ -5820,6 +5872,7 @@ Module file_format_common.
     M.IsFunction.C
       "move_binary_format::file_format_common::read_uleb128_as_u64"
       read_uleb128_as_u64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_uleb128_as_u64.
   
@@ -5828,6 +5881,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_VERSION_1 :
     M.IsFunction.C "move_binary_format::file_format_common::VERSION_1" value_VERSION_1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSION_1.
   
@@ -5836,6 +5890,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_VERSION_2 :
     M.IsFunction.C "move_binary_format::file_format_common::VERSION_2" value_VERSION_2.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSION_2.
   
@@ -5844,6 +5899,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_VERSION_3 :
     M.IsFunction.C "move_binary_format::file_format_common::VERSION_3" value_VERSION_3.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSION_3.
   
@@ -5852,6 +5908,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_VERSION_4 :
     M.IsFunction.C "move_binary_format::file_format_common::VERSION_4" value_VERSION_4.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSION_4.
   
@@ -5860,6 +5917,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_VERSION_5 :
     M.IsFunction.C "move_binary_format::file_format_common::VERSION_5" value_VERSION_5.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSION_5.
   
@@ -5868,6 +5926,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_VERSION_6 :
     M.IsFunction.C "move_binary_format::file_format_common::VERSION_6" value_VERSION_6.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSION_6.
   
@@ -5877,6 +5936,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_VERSION_MAX :
     M.IsFunction.C "move_binary_format::file_format_common::VERSION_MAX" value_VERSION_MAX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSION_MAX.
   
@@ -5886,6 +5946,7 @@ Module file_format_common.
   
   Global Instance Instance_IsConstant_value_VERSION_MIN :
     M.IsFunction.C "move_binary_format::file_format_common::VERSION_MIN" value_VERSION_MIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSION_MIN.
   
@@ -6981,6 +7042,7 @@ Module file_format_common.
   
   Global Instance Instance_IsFunction_instruction_key :
     M.IsFunction.C "move_binary_format::file_format_common::instruction_key" instruction_key.
+  Proof.
   Admitted.
   Global Typeclasses Opaque instruction_key.
 End file_format_common.

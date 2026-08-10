@@ -1138,6 +1138,7 @@ Module binary_config.
       end.
     
     Global Instance AssociatedFunction_legacy : M.IsAssociatedFunction.C Self "legacy" legacy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque legacy.
   End Impl_move_binary_format_binary_config_TableConfig.
@@ -1450,6 +1451,7 @@ Module binary_config.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1493,6 +1495,7 @@ Module binary_config.
       end.
     
     Global Instance AssociatedFunction_legacy : M.IsAssociatedFunction.C Self "legacy" legacy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque legacy.
     
@@ -1545,6 +1548,7 @@ Module binary_config.
     
     Global Instance AssociatedFunction_with_extraneous_bytes_check :
       M.IsAssociatedFunction.C Self "with_extraneous_bytes_check" with_extraneous_bytes_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_extraneous_bytes_check.
     
@@ -1590,6 +1594,7 @@ Module binary_config.
       end.
     
     Global Instance AssociatedFunction_standard : M.IsAssociatedFunction.C Self "standard" standard.
+    Proof.
     Admitted.
     Global Typeclasses Opaque standard.
   End Impl_move_binary_format_binary_config_BinaryConfig.

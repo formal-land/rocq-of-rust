@@ -770,6 +770,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_default_extend :
         M.IsFunction.C "core::iter::traits::collect::default_extend" default_extend.
+      Proof.
       Admitted.
       Global Typeclasses Opaque default_extend.
       
@@ -832,6 +833,7 @@ Module iter.
         
         Global Instance Instance_IsFunction_extender :
           M.IsFunction.C "core::iter::traits::collect::default_extend::extender" extender.
+        Proof.
         Admitted.
         Global Typeclasses Opaque extender.
         
@@ -896,6 +898,7 @@ Module iter.
           M.IsFunction.C
             "core::iter::traits::collect::default_extend::unchecked_extender"
             unchecked_extender.
+        Proof.
         Admitted.
         Global Typeclasses Opaque unchecked_extender.
         

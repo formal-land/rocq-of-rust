@@ -354,6 +354,7 @@ Global Instance Instance_IsFunction_double_first :
   M.IsFunction.C
     "pulling_results_out_of_options_with_stop_error_processing::double_first"
     double_first.
+Proof.
 Admitted.
 Global Typeclasses Opaque double_first.
 
@@ -1020,5 +1021,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "pulling_results_out_of_options_with_stop_error_processing::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

@@ -15,6 +15,7 @@ Module Impl_Uint.
     Run.Trait
       (modular.Impl_ruint_Uint_BITS_LIMBS.add_mod (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2; φ x3 ]
       (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_add_mod.
 
@@ -25,6 +26,7 @@ Module Impl_Uint.
     Run.Trait
       (modular.Impl_ruint_Uint_BITS_LIMBS.mul_mod (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2; φ x3 ]
       (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_mul_mod.
 
@@ -35,6 +37,7 @@ Module Impl_Uint.
     Run.Trait
       (modular.Impl_ruint_Uint_BITS_LIMBS.pow_mod (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2; φ x3 ]
       (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_pow_mod.
 End Impl_Uint.

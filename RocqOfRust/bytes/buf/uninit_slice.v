@@ -91,6 +91,7 @@ Module buf.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -173,6 +174,7 @@ Module buf.
         end.
       
       Global Instance AssociatedFunction_uninit : M.IsAssociatedFunction.C Self "uninit" uninit.
+      Proof.
       Admitted.
       Global Typeclasses Opaque uninit.
       
@@ -246,6 +248,7 @@ Module buf.
       
       Global Instance AssociatedFunction_uninit_ref :
         M.IsAssociatedFunction.C Self "uninit_ref" uninit_ref.
+      Proof.
       Admitted.
       Global Typeclasses Opaque uninit_ref.
       
@@ -363,6 +366,7 @@ Module buf.
       
       Global Instance AssociatedFunction_from_raw_parts_mut :
         M.IsAssociatedFunction.C Self "from_raw_parts_mut" from_raw_parts_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_raw_parts_mut.
       
@@ -500,6 +504,7 @@ Module buf.
       
       Global Instance AssociatedFunction_write_byte :
         M.IsAssociatedFunction.C Self "write_byte" write_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque write_byte.
       
@@ -708,6 +713,7 @@ Module buf.
       
       Global Instance AssociatedFunction_copy_from_slice :
         M.IsAssociatedFunction.C Self "copy_from_slice" copy_from_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque copy_from_slice.
       
@@ -758,6 +764,7 @@ Module buf.
       
       Global Instance AssociatedFunction_as_mut_ptr :
         M.IsAssociatedFunction.C Self "as_mut_ptr" as_mut_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut_ptr.
       
@@ -798,6 +805,7 @@ Module buf.
       
       Global Instance AssociatedFunction_as_uninit_slice_mut :
         M.IsAssociatedFunction.C Self "as_uninit_slice_mut" as_uninit_slice_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_uninit_slice_mut.
       
@@ -841,6 +849,7 @@ Module buf.
         end.
       
       Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
     End Impl_bytes_buf_uninit_slice_UninitSlice.

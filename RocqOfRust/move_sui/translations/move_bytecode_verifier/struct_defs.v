@@ -130,6 +130,7 @@ Module struct_defs.
     
     Global Instance AssociatedFunction_verify_module :
       M.IsAssociatedFunction.C Self "verify_module" verify_module.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module.
     
@@ -590,6 +591,7 @@ Module struct_defs.
     
     Global Instance AssociatedFunction_verify_module_impl :
       M.IsAssociatedFunction.C Self "verify_module_impl" verify_module_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module_impl.
   End Impl_move_bytecode_verifier_struct_defs_RecursiveStructDefChecker.
@@ -1003,6 +1005,7 @@ Module struct_defs.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2092,6 +2095,7 @@ Module struct_defs.
       end.
     
     Global Instance AssociatedFunction_build : M.IsAssociatedFunction.C Self "build" build.
+    Proof.
     Admitted.
     Global Typeclasses Opaque build.
     
@@ -2735,6 +2739,7 @@ Module struct_defs.
     
     Global Instance AssociatedFunction_add_struct_defs :
       M.IsAssociatedFunction.C Self "add_struct_defs" add_struct_defs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_struct_defs.
     
@@ -4134,6 +4139,7 @@ Module struct_defs.
     
     Global Instance AssociatedFunction_add_signature_token :
       M.IsAssociatedFunction.C Self "add_signature_token" add_signature_token.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_signature_token.
   End Impl_move_bytecode_verifier_struct_defs_StructDefGraphBuilder.

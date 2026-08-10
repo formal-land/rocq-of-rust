@@ -40,6 +40,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_repeat_n :
         M.IsFunction.C "core::iter::sources::repeat_n::repeat_n" repeat_n.
+      Proof.
       Admitted.
       Global Typeclasses Opaque repeat_n.
       
@@ -356,6 +357,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "new" (new T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_core_iter_sources_repeat_n_RepeatNInner_T.
@@ -567,6 +569,7 @@ Module iter.
         Global Instance AssociatedFunction_take_element :
           forall (A : Ty.t),
           M.IsAssociatedFunction.C (Self A) "take_element" (take_element A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque take_element.
       End Impl_core_iter_sources_repeat_n_RepeatN_A.

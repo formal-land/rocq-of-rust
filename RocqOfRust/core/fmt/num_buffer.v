@@ -656,6 +656,7 @@ Module fmt.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -753,6 +754,7 @@ Module fmt.
       Global Instance AssociatedFunction_capacity :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "capacity" (capacity T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque capacity.
     End Impl_core_fmt_num_buffer_NumBuffer_T.

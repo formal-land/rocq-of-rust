@@ -251,6 +251,7 @@ Module vec.
       Global Instance AssociatedFunction_as_slice :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "as_slice" (as_slice T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_slice.
       
@@ -314,6 +315,7 @@ Module vec.
       Global Instance AssociatedFunction_as_mut_slice :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "as_mut_slice" (as_mut_slice T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut_slice.
       
@@ -373,6 +375,7 @@ Module vec.
       Global Instance AssociatedFunction_allocator :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "allocator" (allocator T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque allocator.
       
@@ -445,6 +448,7 @@ Module vec.
       Global Instance AssociatedFunction_as_raw_mut_slice :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "as_raw_mut_slice" (as_raw_mut_slice T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_raw_mut_slice.
       
@@ -625,6 +629,7 @@ Module vec.
           (Self T A)
           "forget_allocation_drop_remaining"
           (forget_allocation_drop_remaining T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque forget_allocation_drop_remaining.
       
@@ -700,6 +705,7 @@ Module vec.
           (Self T A)
           "forget_remaining_elements"
           (forget_remaining_elements T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque forget_remaining_elements.
       
@@ -1129,6 +1135,7 @@ Module vec.
       Global Instance AssociatedFunction_into_vecdeque :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "into_vecdeque" (into_vecdeque T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_vecdeque.
     End Impl_alloc_vec_into_iter_IntoIter_T_A.

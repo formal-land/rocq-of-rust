@@ -56,16 +56,19 @@ Parameter borrow_book : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_borrow_book :
   M.IsFunction.C "scoping_rules_borrowing_mutablity::borrow_book" borrow_book.
+Proof.
 Admitted.
 
 Parameter new_edition : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_new_edition :
   M.IsFunction.C "scoping_rules_borrowing_mutablity::new_edition" new_edition.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_borrowing_mutablity::main" main.
+Proof.
 Admitted.

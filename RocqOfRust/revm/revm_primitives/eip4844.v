@@ -13,6 +13,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::VERSIONED_HASH_VERSION_KZG"
       value_VERSIONED_HASH_VERSION_KZG.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSIONED_HASH_VERSION_KZG.
   
@@ -29,6 +30,7 @@ Module eip4844.
   
   Global Instance Instance_IsConstant_value_GAS_PER_BLOB :
     M.IsFunction.C "revm_primitives::eip4844::GAS_PER_BLOB" value_GAS_PER_BLOB.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_GAS_PER_BLOB.
   
@@ -37,6 +39,7 @@ Module eip4844.
   
   Global Instance Instance_IsConstant_value_MIN_BLOB_GASPRICE :
     M.IsFunction.C "revm_primitives::eip4844::MIN_BLOB_GASPRICE" value_MIN_BLOB_GASPRICE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN_BLOB_GASPRICE.
   
@@ -51,6 +54,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::TARGET_BLOB_NUMBER_PER_BLOCK_CANCUN"
       value_TARGET_BLOB_NUMBER_PER_BLOCK_CANCUN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TARGET_BLOB_NUMBER_PER_BLOCK_CANCUN.
   
@@ -81,6 +85,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::MAX_BLOB_NUMBER_PER_BLOCK_CANCUN"
       value_MAX_BLOB_NUMBER_PER_BLOCK_CANCUN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_BLOB_NUMBER_PER_BLOCK_CANCUN.
   
@@ -111,6 +116,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::MAX_BLOB_GAS_PER_BLOCK_CANCUN"
       value_MAX_BLOB_GAS_PER_BLOCK_CANCUN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_BLOB_GAS_PER_BLOCK_CANCUN.
   
@@ -141,6 +147,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::TARGET_BLOB_GAS_PER_BLOCK_CANCUN"
       value_TARGET_BLOB_GAS_PER_BLOCK_CANCUN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TARGET_BLOB_GAS_PER_BLOCK_CANCUN.
   
@@ -155,6 +162,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::BLOB_BASE_FEE_UPDATE_FRACTION_CANCUN"
       value_BLOB_BASE_FEE_UPDATE_FRACTION_CANCUN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BLOB_BASE_FEE_UPDATE_FRACTION_CANCUN.
   
@@ -169,6 +177,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::TARGET_BLOB_NUMBER_PER_BLOCK_PRAGUE"
       value_TARGET_BLOB_NUMBER_PER_BLOCK_PRAGUE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TARGET_BLOB_NUMBER_PER_BLOCK_PRAGUE.
   
@@ -183,6 +192,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::MAX_BLOB_NUMBER_PER_BLOCK_PRAGUE"
       value_MAX_BLOB_NUMBER_PER_BLOCK_PRAGUE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_BLOB_NUMBER_PER_BLOCK_PRAGUE.
   
@@ -213,6 +223,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::MAX_BLOB_GAS_PER_BLOCK_PRAGUE"
       value_MAX_BLOB_GAS_PER_BLOCK_PRAGUE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_BLOB_GAS_PER_BLOCK_PRAGUE.
   
@@ -243,6 +254,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::TARGET_BLOB_GAS_PER_BLOCK_PRAGUE"
       value_TARGET_BLOB_GAS_PER_BLOCK_PRAGUE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TARGET_BLOB_GAS_PER_BLOCK_PRAGUE.
   
@@ -257,6 +269,7 @@ Module eip4844.
     M.IsFunction.C
       "revm_primitives::eip4844::BLOB_BASE_FEE_UPDATE_FRACTION_PRAGUE"
       value_BLOB_BASE_FEE_UPDATE_FRACTION_PRAGUE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BLOB_BASE_FEE_UPDATE_FRACTION_PRAGUE.
 End eip4844.

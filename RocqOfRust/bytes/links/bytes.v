@@ -38,6 +38,7 @@ Module Impl_Bytes.
     Run.Trait
       bytes.Impl_bytes_bytes_Bytes.len [] [] [ φ self ]
       usize.
+  Proof.
   Admitted.
   Global Opaque run_len.
 
@@ -61,6 +62,7 @@ Module Impl_Deref_for_Bytes.
     Bytes.t.
 
   Instance run : Deref.Run Self (list u8).
+  Proof.
   Admitted.
 End Impl_Deref_for_Bytes.
 Export (hints) Impl_Deref_for_Bytes.

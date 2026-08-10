@@ -738,6 +738,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_sstore_refund :
       M.IsFunction.C "revm_interpreter::gas::calc::sstore_refund" sstore_refund.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sstore_refund.
     
@@ -813,6 +814,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_create2_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::create2_cost" create2_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque create2_cost.
     
@@ -1084,6 +1086,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_log2floor :
       M.IsFunction.C "revm_interpreter::gas::calc::log2floor" log2floor.
+    Proof.
     Admitted.
     Global Typeclasses Opaque log2floor.
     
@@ -1701,6 +1704,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_exp_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::exp_cost" exp_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque exp_cost.
     
@@ -1729,6 +1733,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_copy_cost_verylow :
       M.IsFunction.C "revm_interpreter::gas::calc::copy_cost_verylow" copy_cost_verylow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque copy_cost_verylow.
     
@@ -1833,6 +1838,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_extcodecopy_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::extcodecopy_cost" extcodecopy_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque extcodecopy_cost.
     
@@ -1907,6 +1913,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_copy_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::copy_cost" copy_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque copy_cost.
     
@@ -2043,6 +2050,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_log_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::log_cost" log_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque log_cost.
     
@@ -2118,6 +2126,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_keccak256_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::keccak256_cost" keccak256_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque keccak256_cost.
     
@@ -2155,6 +2164,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_cost_per_word :
       M.IsFunction.C "revm_interpreter::gas::calc::cost_per_word" cost_per_word.
+    Proof.
     Admitted.
     Global Typeclasses Opaque cost_per_word.
     
@@ -2221,6 +2231,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_initcode_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::initcode_cost" initcode_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque initcode_cost.
     
@@ -2382,6 +2393,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_sload_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::sload_cost" sload_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sload_cost.
     
@@ -2485,6 +2497,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_sstore_cost_static :
       M.IsFunction.C "revm_interpreter::gas::calc::sstore_cost_static" sstore_cost_static.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sstore_cost_static.
     
@@ -2529,6 +2542,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_sstore_cost_dynamic :
       M.IsFunction.C "revm_interpreter::gas::calc::sstore_cost_dynamic" sstore_cost_dynamic.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sstore_cost_dynamic.
     
@@ -2632,6 +2646,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_static_sstore_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::static_sstore_cost" static_sstore_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque static_sstore_cost.
     
@@ -2676,6 +2691,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_dyn_sstore_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::dyn_sstore_cost" dyn_sstore_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque dyn_sstore_cost.
     
@@ -2843,6 +2859,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_sstore_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::sstore_cost" sstore_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sstore_cost.
     
@@ -2983,6 +3000,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_istanbul_sstore_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::istanbul_sstore_cost" istanbul_sstore_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque istanbul_sstore_cost.
     
@@ -3064,6 +3082,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_frontier_sstore_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::frontier_sstore_cost" frontier_sstore_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque frontier_sstore_cost.
     
@@ -3117,6 +3136,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::calc::static_selfdestruct_cost"
         static_selfdestruct_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque static_selfdestruct_cost.
     
@@ -3338,6 +3358,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_dyn_selfdestruct_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::dyn_selfdestruct_cost" dyn_selfdestruct_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque dyn_selfdestruct_cost.
     
@@ -3399,6 +3420,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::calc::selfdestruct_cold_beneficiary_cost"
         selfdestruct_cold_beneficiary_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque selfdestruct_cold_beneficiary_cost.
     
@@ -3451,6 +3473,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_selfdestruct_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::selfdestruct_cost" selfdestruct_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque selfdestruct_cost.
     
@@ -3589,6 +3612,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_calc_call_static_gas :
       M.IsFunction.C "revm_interpreter::gas::calc::calc_call_static_gas" calc_call_static_gas.
+    Proof.
     Admitted.
     Global Typeclasses Opaque calc_call_static_gas.
     
@@ -3635,6 +3659,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_warm_cold_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::warm_cold_cost" warm_cold_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque warm_cold_cost.
     
@@ -3738,6 +3763,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::calc::warm_cold_cost_with_delegation"
         warm_cold_cost_with_delegation.
+    Proof.
     Admitted.
     Global Typeclasses Opaque warm_cold_cost_with_delegation.
     
@@ -3793,6 +3819,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_memory_gas :
       M.IsFunction.C "revm_interpreter::gas::calc::memory_gas" memory_gas.
+    Proof.
     Admitted.
     Global Typeclasses Opaque memory_gas.
     
@@ -4169,6 +4196,7 @@ Module gas.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_revm_interpreter_gas_calc_InitialAndFloorGas.
@@ -4598,6 +4626,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::calc::calculate_initial_tx_gas"
         calculate_initial_tx_gas.
+    Proof.
     Admitted.
     Global Typeclasses Opaque calculate_initial_tx_gas.
     
@@ -5206,6 +5235,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::calc::calculate_initial_tx_gas_for_tx"
         calculate_initial_tx_gas_for_tx.
+    Proof.
     Admitted.
     Global Typeclasses Opaque calculate_initial_tx_gas_for_tx.
     
@@ -5413,6 +5443,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_get_tokens_in_calldata :
       M.IsFunction.C "revm_interpreter::gas::calc::get_tokens_in_calldata" get_tokens_in_calldata.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_tokens_in_calldata.
     
@@ -5451,6 +5482,7 @@ Module gas.
     
     Global Instance Instance_IsFunction_calc_tx_floor_cost :
       M.IsFunction.C "revm_interpreter::gas::calc::calc_tx_floor_cost" calc_tx_floor_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque calc_tx_floor_cost.
   End calc.

@@ -10,6 +10,7 @@ Definition value_LANGUAGE (ε : list Value.t) (τ : list Ty.t) (α : list Value.
 
 Global Instance Instance_IsConstant_value_LANGUAGE :
   M.IsFunction.C "constants::LANGUAGE" value_LANGUAGE.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_LANGUAGE.
 
@@ -18,6 +19,7 @@ Definition value_THRESHOLD (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsConstant_value_THRESHOLD :
   M.IsFunction.C "constants::THRESHOLD" value_THRESHOLD.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_THRESHOLD.
 
@@ -41,6 +43,7 @@ Definition is_big (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :
   end.
 
 Global Instance Instance_IsFunction_is_big : M.IsFunction.C "constants::is_big" is_big.
+Proof.
 Admitted.
 Global Typeclasses Opaque is_big.
 
@@ -381,5 +384,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "constants::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

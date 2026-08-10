@@ -41,6 +41,7 @@ Module my_mod.
   
   Global Instance Instance_IsFunction_private_function :
     M.IsFunction.C "visibility::my_mod::private_function" private_function.
+  Proof.
   Admitted.
   Global Typeclasses Opaque private_function.
   
@@ -83,6 +84,7 @@ Module my_mod.
   
   Global Instance Instance_IsFunction_function :
     M.IsFunction.C "visibility::my_mod::function" function.
+  Proof.
   Admitted.
   Global Typeclasses Opaque function.
   
@@ -132,6 +134,7 @@ Module my_mod.
   
   Global Instance Instance_IsFunction_indirect_access :
     M.IsFunction.C "visibility::my_mod::indirect_access" indirect_access.
+  Proof.
   Admitted.
   Global Typeclasses Opaque indirect_access.
   
@@ -175,6 +178,7 @@ Module my_mod.
     
     Global Instance Instance_IsFunction_function :
       M.IsFunction.C "visibility::my_mod::nested::function" function.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function.
     
@@ -217,6 +221,7 @@ Module my_mod.
     
     Global Instance Instance_IsFunction_private_function :
       M.IsFunction.C "visibility::my_mod::nested::private_function" private_function.
+    Proof.
     Admitted.
     Global Typeclasses Opaque private_function.
     
@@ -280,6 +285,7 @@ Module my_mod.
       M.IsFunction.C
         "visibility::my_mod::nested::public_function_in_my_mod"
         public_function_in_my_mod.
+    Proof.
     Admitted.
     Global Typeclasses Opaque public_function_in_my_mod.
     
@@ -328,6 +334,7 @@ Module my_mod.
       M.IsFunction.C
         "visibility::my_mod::nested::public_function_in_nested"
         public_function_in_nested.
+    Proof.
     Admitted.
     Global Typeclasses Opaque public_function_in_nested.
     
@@ -376,6 +383,7 @@ Module my_mod.
       M.IsFunction.C
         "visibility::my_mod::nested::public_function_in_super_mod"
         public_function_in_super_mod.
+    Proof.
     Admitted.
     Global Typeclasses Opaque public_function_in_super_mod.
   End nested.
@@ -465,6 +473,7 @@ Module my_mod.
     M.IsFunction.C
       "visibility::my_mod::call_public_function_in_my_mod"
       call_public_function_in_my_mod.
+  Proof.
   Admitted.
   Global Typeclasses Opaque call_public_function_in_my_mod.
   
@@ -507,6 +516,7 @@ Module my_mod.
   
   Global Instance Instance_IsFunction_public_function_in_crate :
     M.IsFunction.C "visibility::my_mod::public_function_in_crate" public_function_in_crate.
+  Proof.
   Admitted.
   Global Typeclasses Opaque public_function_in_crate.
   
@@ -550,6 +560,7 @@ Module my_mod.
     
     Global Instance Instance_IsFunction_function :
       M.IsFunction.C "visibility::my_mod::private_nested::function" function.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function.
     
@@ -592,6 +603,7 @@ Module my_mod.
     
     Global Instance Instance_IsFunction_restricted_function :
       M.IsFunction.C "visibility::my_mod::private_nested::restricted_function" restricted_function.
+    Proof.
     Admitted.
     Global Typeclasses Opaque restricted_function.
   End private_nested.
@@ -635,6 +647,7 @@ Definition function (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
   end.
 
 Global Instance Instance_IsFunction_function : M.IsFunction.C "visibility::function" function.
+Proof.
 Admitted.
 Global Typeclasses Opaque function.
 
@@ -725,5 +738,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "visibility::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

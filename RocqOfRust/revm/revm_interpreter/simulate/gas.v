@@ -154,6 +154,7 @@ Module Impl_Gas.
       SimulateM.eval_f (Impl_Gas.run_memory ref_self) (interpreter :: stack)%stack 🌲
       (Output.Success (RefStub.apply ref_self memory), interpreter :: stack)%stack
     }}.
+  Proof.
   Admitted.
 
   Lemma memory_interpreter_eq

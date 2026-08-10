@@ -7,16 +7,19 @@ Module foo.
     
     Global Instance Instance_IsFunction_f_foo_gre :
       M.IsFunction.C "module_duplicate::foo::gre::f_foo_gre" f_foo_gre.
+    Proof.
     Admitted.
   End gre.
   
   Parameter f_foo : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_f_foo : M.IsFunction.C "module_duplicate::foo::f_foo" f_foo.
+  Proof.
   Admitted.
 End foo.
 
 Parameter f : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_f : M.IsFunction.C "module_duplicate::f" f.
+Proof.
 Admitted.

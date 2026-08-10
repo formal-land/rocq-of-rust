@@ -22,20 +22,24 @@ Module Impl_custom_allocator_CustomAllocator.
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter default : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_default : M.IsAssociatedFunction.C Self "default" default.
+  Proof.
   Admitted.
   
   Parameter flip : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_flip : M.IsAssociatedFunction.C Self "flip" flip.
+  Proof.
   Admitted.
   
   Parameter get : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
 End Impl_custom_allocator_CustomAllocator.

@@ -137,6 +137,7 @@ Module collections.
             (Self K V)
             "append_from_sorted_iters"
             (append_from_sorted_iters K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque append_from_sorted_iters.
         
@@ -1533,6 +1534,7 @@ Module collections.
         Global Instance AssociatedFunction_bulk_push :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "bulk_push" (bulk_push K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque bulk_push.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Owned_K_V_alloc_collections_btree_node_marker_LeafOrInternal.

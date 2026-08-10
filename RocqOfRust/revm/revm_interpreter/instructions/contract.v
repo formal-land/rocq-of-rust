@@ -2238,6 +2238,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_create :
       M.IsFunction.C "revm_interpreter::instructions::contract::create" create.
+    Proof.
     Admitted.
     Global Typeclasses Opaque create.
     
@@ -3034,6 +3035,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_call :
       M.IsFunction.C "revm_interpreter::instructions::contract::call" call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque call.
     
@@ -3782,6 +3784,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_call_code :
       M.IsFunction.C "revm_interpreter::instructions::contract::call_code" call_code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque call_code.
     
@@ -4669,6 +4672,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_delegate_call :
       M.IsFunction.C "revm_interpreter::instructions::contract::delegate_call" delegate_call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque delegate_call.
     
@@ -5470,6 +5474,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_static_call :
       M.IsFunction.C "revm_interpreter::instructions::contract::static_call" static_call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque static_call.
   End contract.

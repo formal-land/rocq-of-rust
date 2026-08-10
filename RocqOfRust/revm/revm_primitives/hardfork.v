@@ -1336,6 +1336,7 @@ Module hardfork.
     
     Global Instance AssociatedFunction_try_from_u8 :
       M.IsAssociatedFunction.C Self "try_from_u8" try_from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_from_u8.
     
@@ -1361,6 +1362,7 @@ Module hardfork.
     
     Global Instance AssociatedFunction_is_enabled_in :
       M.IsAssociatedFunction.C Self "is_enabled_in" is_enabled_in.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_enabled_in.
   End Impl_revm_primitives_hardfork_SpecId.
@@ -1372,6 +1374,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_FRONTIER :
       M.IsFunction.C "revm_primitives::hardfork::name::FRONTIER" value_FRONTIER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRONTIER.
     
@@ -1384,6 +1387,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_FRONTIER_THAWING :
       M.IsFunction.C "revm_primitives::hardfork::name::FRONTIER_THAWING" value_FRONTIER_THAWING.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRONTIER_THAWING.
     
@@ -1393,6 +1397,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_HOMESTEAD :
       M.IsFunction.C "revm_primitives::hardfork::name::HOMESTEAD" value_HOMESTEAD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_HOMESTEAD.
     
@@ -1402,6 +1407,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_DAO_FORK :
       M.IsFunction.C "revm_primitives::hardfork::name::DAO_FORK" value_DAO_FORK.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DAO_FORK.
     
@@ -1411,6 +1417,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_TANGERINE :
       M.IsFunction.C "revm_primitives::hardfork::name::TANGERINE" value_TANGERINE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TANGERINE.
     
@@ -1420,6 +1427,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_SPURIOUS_DRAGON :
       M.IsFunction.C "revm_primitives::hardfork::name::SPURIOUS_DRAGON" value_SPURIOUS_DRAGON.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SPURIOUS_DRAGON.
     
@@ -1429,6 +1437,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_BYZANTIUM :
       M.IsFunction.C "revm_primitives::hardfork::name::BYZANTIUM" value_BYZANTIUM.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYZANTIUM.
     
@@ -1438,6 +1447,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_CONSTANTINOPLE :
       M.IsFunction.C "revm_primitives::hardfork::name::CONSTANTINOPLE" value_CONSTANTINOPLE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CONSTANTINOPLE.
     
@@ -1447,6 +1457,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_PETERSBURG :
       M.IsFunction.C "revm_primitives::hardfork::name::PETERSBURG" value_PETERSBURG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PETERSBURG.
     
@@ -1456,6 +1467,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_ISTANBUL :
       M.IsFunction.C "revm_primitives::hardfork::name::ISTANBUL" value_ISTANBUL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISTANBUL.
     
@@ -1465,6 +1477,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_MUIR_GLACIER :
       M.IsFunction.C "revm_primitives::hardfork::name::MUIR_GLACIER" value_MUIR_GLACIER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MUIR_GLACIER.
     
@@ -1474,6 +1487,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_BERLIN :
       M.IsFunction.C "revm_primitives::hardfork::name::BERLIN" value_BERLIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BERLIN.
     
@@ -1483,6 +1497,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_LONDON :
       M.IsFunction.C "revm_primitives::hardfork::name::LONDON" value_LONDON.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LONDON.
     
@@ -1492,6 +1507,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_ARROW_GLACIER :
       M.IsFunction.C "revm_primitives::hardfork::name::ARROW_GLACIER" value_ARROW_GLACIER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ARROW_GLACIER.
     
@@ -1501,6 +1517,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_GRAY_GLACIER :
       M.IsFunction.C "revm_primitives::hardfork::name::GRAY_GLACIER" value_GRAY_GLACIER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_GRAY_GLACIER.
     
@@ -1510,6 +1527,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_MERGE :
       M.IsFunction.C "revm_primitives::hardfork::name::MERGE" value_MERGE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MERGE.
     
@@ -1519,6 +1537,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_SHANGHAI :
       M.IsFunction.C "revm_primitives::hardfork::name::SHANGHAI" value_SHANGHAI.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SHANGHAI.
     
@@ -1528,6 +1547,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_CANCUN :
       M.IsFunction.C "revm_primitives::hardfork::name::CANCUN" value_CANCUN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CANCUN.
     
@@ -1537,6 +1557,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_PRAGUE :
       M.IsFunction.C "revm_primitives::hardfork::name::PRAGUE" value_PRAGUE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PRAGUE.
     
@@ -1546,6 +1567,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_OSAKA :
       M.IsFunction.C "revm_primitives::hardfork::name::OSAKA" value_OSAKA.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_OSAKA.
     
@@ -1555,6 +1577,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_AMSTERDAM :
       M.IsFunction.C "revm_primitives::hardfork::name::AMSTERDAM" value_AMSTERDAM.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_AMSTERDAM.
     
@@ -1564,6 +1587,7 @@ Module hardfork.
     
     Global Instance Instance_IsConstant_value_LATEST :
       M.IsFunction.C "revm_primitives::hardfork::name::LATEST" value_LATEST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LATEST.
   End name.

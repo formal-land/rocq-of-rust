@@ -4,14 +4,17 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter id : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_id : M.IsFunction.C "example01::id" id.
+Proof.
 Admitted.
 
 Parameter tri : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_tri : M.IsFunction.C "example01::tri" tri.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "example01::main" main.
+Proof.
 Admitted.

@@ -31,6 +31,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_INT_POW10 :
         M.IsFunction.C "core::num::dec2flt::number::INT_POW10" value_INT_POW10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_INT_POW10.
       
@@ -618,6 +619,7 @@ Module num.
         
         Global Instance AssociatedFunction_is_fast_path :
           M.IsAssociatedFunction.C Self "is_fast_path" is_fast_path.
+        Proof.
         Admitted.
         Global Typeclasses Opaque is_fast_path.
         
@@ -1221,6 +1223,7 @@ Module num.
         
         Global Instance AssociatedFunction_try_fast_path :
           M.IsAssociatedFunction.C Self "try_fast_path" try_fast_path.
+        Proof.
         Admitted.
         Global Typeclasses Opaque try_fast_path.
       End Impl_core_num_dec2flt_number_Number.

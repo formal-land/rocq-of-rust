@@ -20,10 +20,12 @@ Module Impl_polymorphic_constants_Foo_N_A.
   Global Instance AssociatedFunction_convert :
     forall (N : Value.t) (A : Ty.t),
     M.IsAssociatedFunction.C (Self N A) "convert" (convert N A).
+  Proof.
   Admitted.
 End Impl_polymorphic_constants_Foo_N_A.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "polymorphic_constants::main" main.
+Proof.
 Admitted.

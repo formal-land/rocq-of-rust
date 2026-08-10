@@ -23,6 +23,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_empty :
         M.IsFunction.C "core::iter::sources::empty::empty" empty.
+      Proof.
       Admitted.
       Global Typeclasses Opaque empty.
       

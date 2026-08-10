@@ -67,6 +67,7 @@ Module interface.
   
   Global Instance Instance_IsConstant_value_CRYPTO :
     M.IsFunction.C "revm_precompile::interface::CRYPTO" value_CRYPTO.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CRYPTO.
   
@@ -228,6 +229,7 @@ Module interface.
   
   Global Instance Instance_IsFunction_install_crypto :
     M.IsFunction.C "revm_precompile::interface::install_crypto" install_crypto.
+  Proof.
   Admitted.
   Global Typeclasses Opaque install_crypto.
   
@@ -488,6 +490,7 @@ Module interface.
   
   Global Instance Instance_IsFunction_crypto :
     M.IsFunction.C "revm_precompile::interface::crypto" crypto.
+  Proof.
   Admitted.
   Global Typeclasses Opaque crypto.
   
@@ -1178,6 +1181,7 @@ Module interface.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1212,6 +1216,7 @@ Module interface.
     
     Global Instance AssociatedFunction_new_reverted :
       M.IsAssociatedFunction.C Self "new_reverted" new_reverted.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_reverted.
     
@@ -1242,6 +1247,7 @@ Module interface.
       end.
     
     Global Instance AssociatedFunction_reverted : M.IsAssociatedFunction.C Self "reverted" reverted.
+    Proof.
     Admitted.
     Global Typeclasses Opaque reverted.
   End Impl_revm_precompile_interface_PrecompileOutput.
@@ -4946,6 +4952,7 @@ Module interface.
       end.
     
     Global Instance AssociatedFunction_other : M.IsAssociatedFunction.C Self "other" other.
+    Proof.
     Admitted.
     Global Typeclasses Opaque other.
     
@@ -4975,6 +4982,7 @@ Module interface.
     
     Global Instance AssociatedFunction_other_static :
       M.IsAssociatedFunction.C Self "other_static" other_static.
+    Proof.
     Admitted.
     Global Typeclasses Opaque other_static.
     
@@ -5012,6 +5020,7 @@ Module interface.
       end.
     
     Global Instance AssociatedFunction_is_oog : M.IsAssociatedFunction.C Self "is_oog" is_oog.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_oog.
   End Impl_revm_precompile_interface_PrecompileError.

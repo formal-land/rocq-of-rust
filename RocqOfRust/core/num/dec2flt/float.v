@@ -686,6 +686,7 @@ Module num.
       
       Global Instance Instance_IsFunction_pow2_to_pow10 :
         M.IsFunction.C "core::num::dec2flt::float::pow2_to_pow10" pow2_to_pow10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque pow2_to_pow10.
       

@@ -5,20 +5,24 @@ Parameter value_LANGUAGE : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_LANGUAGE :
   M.IsFunction.C "constants::LANGUAGE" value_LANGUAGE.
+Proof.
 Admitted.
 
 Parameter value_THRESHOLD : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_THRESHOLD :
   M.IsFunction.C "constants::THRESHOLD" value_THRESHOLD.
+Proof.
 Admitted.
 
 Parameter is_big : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_is_big : M.IsFunction.C "constants::is_big" is_big.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "constants::main" main.
+Proof.
 Admitted.

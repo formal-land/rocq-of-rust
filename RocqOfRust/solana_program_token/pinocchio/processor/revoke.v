@@ -818,6 +818,7 @@ Module processor.
     
     Global Instance Instance_IsFunction_process_revoke :
       M.IsFunction.C "pinocchio_token_program::processor::revoke::process_revoke" process_revoke.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_revoke.
   End revoke.

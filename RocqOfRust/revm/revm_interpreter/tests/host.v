@@ -23,6 +23,7 @@ Module TestHost.
   Inductive t : Set := Make.
 
   Instance IsLink : Link t.
+  Proof.
   Admitted.
 
   Definition cfg : RefStub.t t t := {|
@@ -341,6 +342,7 @@ Module TestHostWithAccount.
   Inductive t : Set := Make.
 
   Instance IsLink : Link t.
+  Proof.
   Admitted.
 
   Definition cfg : RefStub.t t t := {|

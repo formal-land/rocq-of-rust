@@ -27,6 +27,7 @@ Module system_call.
   
   Global Instance Instance_IsConstant_value_SYSTEM_ADDRESS :
     M.IsFunction.C "revm_handler::system_call::SYSTEM_ADDRESS" value_SYSTEM_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SYSTEM_ADDRESS.
   

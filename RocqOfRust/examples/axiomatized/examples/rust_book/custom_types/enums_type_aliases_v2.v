@@ -31,5 +31,6 @@ Module Impl_enums_type_aliases_v2_VeryVerboseEnumOfThingsToDoWithNumbers.
   Parameter run : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_run : M.IsAssociatedFunction.C Self "run" run.
+  Proof.
   Admitted.
 End Impl_enums_type_aliases_v2_VeryVerboseEnumOfThingsToDoWithNumbers.

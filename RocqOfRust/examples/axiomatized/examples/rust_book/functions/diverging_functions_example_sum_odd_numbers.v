@@ -5,6 +5,7 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "diverging_functions_example_sum_odd_numbers::main" main.
+Proof.
 Admitted.
 
 Module main.
@@ -14,5 +15,6 @@ Module main.
     M.IsFunction.C
       "diverging_functions_example_sum_odd_numbers::main::sum_odd_numbers"
       sum_odd_numbers.
+  Proof.
   Admitted.
 End main.

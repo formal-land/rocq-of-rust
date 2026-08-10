@@ -210,6 +210,7 @@ Module vec.
       Global Instance AssociatedFunction_as_slice :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "as_slice" (as_slice T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_slice.
       
@@ -283,6 +284,7 @@ Module vec.
       Global Instance AssociatedFunction_allocator :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "allocator" (allocator T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque allocator.
       
@@ -840,6 +842,7 @@ Module vec.
       Global Instance AssociatedFunction_keep_rest :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "keep_rest" (keep_rest T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque keep_rest.
     End Impl_alloc_vec_drain_Drain_T_A.

@@ -4,9 +4,11 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter gen_range : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_gen_range : M.IsFunction.C "guessing_game::gen_range" gen_range.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "guessing_game::main" main.
+Proof.
 Admitted.

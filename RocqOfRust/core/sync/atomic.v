@@ -374,6 +374,7 @@ Module sync.
     
     Global Instance Instance_IsConstant_value_EMULATE_ATOMIC_BOOL :
       M.IsFunction.C "core::sync::atomic::EMULATE_ATOMIC_BOOL" value_EMULATE_ATOMIC_BOOL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EMULATE_ATOMIC_BOOL.
     
@@ -855,6 +856,7 @@ Module sync.
     
     Global Instance Instance_IsConstant_value_ATOMIC_BOOL_INIT :
       M.IsFunction.C "core::sync::atomic::ATOMIC_BOOL_INIT" value_ATOMIC_BOOL_INIT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ATOMIC_BOOL_INIT.
     
@@ -892,6 +894,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -931,6 +934,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -994,6 +998,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -1049,6 +1054,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -1118,6 +1124,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -1185,6 +1192,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -1228,6 +1236,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -1294,6 +1303,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -1352,6 +1362,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -1475,6 +1486,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -1543,6 +1555,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -1998,6 +2011,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -2181,6 +2195,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -2244,6 +2259,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -2320,6 +2336,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -2383,6 +2400,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -2446,6 +2464,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -2483,6 +2502,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_not :
         M.IsAssociatedFunction.C Self "fetch_not" fetch_not.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_not.
       
@@ -2534,6 +2554,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
       
@@ -2724,6 +2745,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -2771,6 +2793,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -2894,6 +2917,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
     End Impl_core_sync_atomic_AtomicBool.
@@ -2942,6 +2966,7 @@ Module sync.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2990,6 +3015,7 @@ Module sync.
       Global Instance AssociatedFunction_from_ptr :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "from_ptr" (from_ptr T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -3049,6 +3075,7 @@ Module sync.
       Global Instance AssociatedFunction_get_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut" (get_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -3138,6 +3165,7 @@ Module sync.
       Global Instance AssociatedFunction_from_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "from_mut" (from_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -3229,6 +3257,7 @@ Module sync.
       Global Instance AssociatedFunction_get_mut_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut_slice" (get_mut_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -3313,6 +3342,7 @@ Module sync.
       Global Instance AssociatedFunction_from_mut_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "from_mut_slice" (from_mut_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -3355,6 +3385,7 @@ Module sync.
       Global Instance AssociatedFunction_into_inner :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -3426,6 +3457,7 @@ Module sync.
       Global Instance AssociatedFunction_load :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "load" (load T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -3496,6 +3528,7 @@ Module sync.
       Global Instance AssociatedFunction_store :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "store" (store T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -3560,6 +3593,7 @@ Module sync.
       Global Instance AssociatedFunction_swap :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "swap" (swap T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -3644,6 +3678,7 @@ Module sync.
       Global Instance AssociatedFunction_compare_and_swap :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "compare_and_swap" (compare_and_swap T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -3726,6 +3761,7 @@ Module sync.
       Global Instance AssociatedFunction_compare_exchange :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "compare_exchange" (compare_exchange T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -3811,6 +3847,7 @@ Module sync.
       Global Instance AssociatedFunction_compare_exchange_weak :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "compare_exchange_weak" (compare_exchange_weak T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -4034,6 +4071,7 @@ Module sync.
       Global Instance AssociatedFunction_fetch_update :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "fetch_update" (fetch_update T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -4089,6 +4127,7 @@ Module sync.
       Global Instance AssociatedFunction_try_update :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "try_update" (try_update T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -4221,6 +4260,7 @@ Module sync.
       Global Instance AssociatedFunction_update :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "update" (update T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -4280,6 +4320,7 @@ Module sync.
       Global Instance AssociatedFunction_fetch_ptr_add :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "fetch_ptr_add" (fetch_ptr_add T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_ptr_add.
       
@@ -4339,6 +4380,7 @@ Module sync.
       Global Instance AssociatedFunction_fetch_ptr_sub :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "fetch_ptr_sub" (fetch_ptr_sub T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_ptr_sub.
       
@@ -4414,6 +4456,7 @@ Module sync.
       Global Instance AssociatedFunction_fetch_byte_add :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "fetch_byte_add" (fetch_byte_add T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_byte_add.
       
@@ -4489,6 +4532,7 @@ Module sync.
       Global Instance AssociatedFunction_fetch_byte_sub :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "fetch_byte_sub" (fetch_byte_sub T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_byte_sub.
       
@@ -4559,6 +4603,7 @@ Module sync.
       Global Instance AssociatedFunction_fetch_or :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "fetch_or" (fetch_or T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -4629,6 +4674,7 @@ Module sync.
       Global Instance AssociatedFunction_fetch_and :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "fetch_and" (fetch_and T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -4699,6 +4745,7 @@ Module sync.
       Global Instance AssociatedFunction_fetch_xor :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "fetch_xor" (fetch_xor T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -4748,6 +4795,7 @@ Module sync.
       Global Instance AssociatedFunction_as_ptr :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_ptr" (as_ptr T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicPtr_T.
@@ -5013,6 +5061,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -5052,6 +5101,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -5102,6 +5152,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -5174,6 +5225,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -5243,6 +5295,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -5330,6 +5383,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -5366,6 +5420,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -5424,6 +5479,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -5479,6 +5535,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -5530,6 +5587,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -5604,6 +5662,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -5668,6 +5727,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -5734,6 +5794,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -5790,6 +5851,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -5846,6 +5908,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -5902,6 +5965,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -5958,6 +6022,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -6014,6 +6079,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -6070,6 +6136,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -6256,6 +6323,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -6303,6 +6371,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -6423,6 +6492,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -6475,6 +6545,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -6527,6 +6598,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -6567,6 +6639,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicI8.
@@ -6759,6 +6832,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -6798,6 +6872,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -6848,6 +6923,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -6920,6 +6996,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -6989,6 +7066,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -7076,6 +7154,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -7112,6 +7191,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -7170,6 +7250,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -7225,6 +7306,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -7276,6 +7358,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -7350,6 +7433,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -7414,6 +7498,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -7480,6 +7565,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -7536,6 +7622,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -7592,6 +7679,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -7648,6 +7736,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -7704,6 +7793,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -7760,6 +7850,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -7816,6 +7907,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -8002,6 +8094,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -8049,6 +8142,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -8169,6 +8263,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -8221,6 +8316,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -8273,6 +8369,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -8313,6 +8410,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicU8.
@@ -8515,6 +8613,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -8554,6 +8653,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -8604,6 +8704,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -8676,6 +8777,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -8745,6 +8847,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -8832,6 +8935,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -8868,6 +8972,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -8926,6 +9031,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -8981,6 +9087,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -9032,6 +9139,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -9106,6 +9214,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -9170,6 +9279,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -9236,6 +9346,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -9292,6 +9403,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -9348,6 +9460,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -9404,6 +9517,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -9460,6 +9574,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -9516,6 +9631,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -9572,6 +9688,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -9758,6 +9875,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -9805,6 +9923,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -9928,6 +10047,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -9980,6 +10100,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -10032,6 +10153,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -10072,6 +10194,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicI16.
@@ -10274,6 +10397,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -10313,6 +10437,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -10363,6 +10488,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -10435,6 +10561,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -10504,6 +10631,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -10591,6 +10719,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -10627,6 +10756,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -10685,6 +10815,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -10740,6 +10871,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -10791,6 +10923,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -10865,6 +10998,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -10929,6 +11063,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -10995,6 +11130,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -11051,6 +11187,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -11107,6 +11244,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -11163,6 +11301,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -11219,6 +11358,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -11275,6 +11415,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -11331,6 +11472,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -11517,6 +11659,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -11564,6 +11707,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -11687,6 +11831,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -11739,6 +11884,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -11791,6 +11937,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -11831,6 +11978,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicU16.
@@ -12033,6 +12181,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -12072,6 +12221,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -12122,6 +12272,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -12194,6 +12345,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -12263,6 +12415,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -12350,6 +12503,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -12386,6 +12540,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -12444,6 +12599,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -12499,6 +12655,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -12550,6 +12707,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -12624,6 +12782,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -12688,6 +12847,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -12754,6 +12914,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -12810,6 +12971,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -12866,6 +13028,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -12922,6 +13085,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -12978,6 +13142,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -13034,6 +13199,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -13090,6 +13256,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -13276,6 +13443,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -13323,6 +13491,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -13446,6 +13615,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -13498,6 +13668,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -13550,6 +13721,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -13590,6 +13762,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicI32.
@@ -13792,6 +13965,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -13831,6 +14005,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -13881,6 +14056,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -13953,6 +14129,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -14022,6 +14199,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -14109,6 +14287,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -14145,6 +14324,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -14203,6 +14383,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -14258,6 +14439,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -14309,6 +14491,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -14383,6 +14566,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -14447,6 +14631,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -14513,6 +14698,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -14569,6 +14755,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -14625,6 +14812,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -14681,6 +14869,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -14737,6 +14926,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -14793,6 +14983,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -14849,6 +15040,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -15035,6 +15227,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -15082,6 +15275,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -15205,6 +15399,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -15257,6 +15452,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -15309,6 +15505,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -15349,6 +15546,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicU32.
@@ -15551,6 +15749,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -15590,6 +15789,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -15640,6 +15840,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -15712,6 +15913,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -15781,6 +15983,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -15868,6 +16071,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -15904,6 +16108,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -15962,6 +16167,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -16017,6 +16223,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -16068,6 +16275,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -16142,6 +16350,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -16206,6 +16415,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -16272,6 +16482,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -16328,6 +16539,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -16384,6 +16596,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -16440,6 +16653,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -16496,6 +16710,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -16552,6 +16767,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -16608,6 +16824,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -16794,6 +17011,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -16841,6 +17059,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -16964,6 +17183,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -17016,6 +17236,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -17068,6 +17289,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -17108,6 +17330,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicI64.
@@ -17310,6 +17533,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -17349,6 +17573,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -17399,6 +17624,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -17471,6 +17697,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -17540,6 +17767,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -17627,6 +17855,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -17663,6 +17892,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -17721,6 +17951,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -17776,6 +18007,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -17827,6 +18059,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -17901,6 +18134,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -17965,6 +18199,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -18031,6 +18266,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -18087,6 +18323,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -18143,6 +18380,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -18199,6 +18437,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -18255,6 +18494,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -18311,6 +18551,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -18367,6 +18608,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -18553,6 +18795,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -18600,6 +18843,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -18723,6 +18967,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -18775,6 +19020,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -18827,6 +19073,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -18867,6 +19114,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicU64.
@@ -19069,6 +19317,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -19108,6 +19357,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -19158,6 +19408,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -19230,6 +19481,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -19299,6 +19551,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -19386,6 +19639,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -19422,6 +19676,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -19480,6 +19735,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -19535,6 +19791,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -19586,6 +19843,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -19660,6 +19918,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -19724,6 +19983,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -19790,6 +20050,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -19846,6 +20107,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -19902,6 +20164,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -19958,6 +20221,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -20014,6 +20278,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -20070,6 +20335,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -20126,6 +20392,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -20315,6 +20582,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -20362,6 +20630,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -20485,6 +20754,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -20537,6 +20807,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -20589,6 +20860,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -20629,6 +20901,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicIsize.
@@ -20831,6 +21104,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -20870,6 +21144,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -20920,6 +21195,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -20992,6 +21268,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut :
         M.IsAssociatedFunction.C Self "from_mut" from_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -21061,6 +21338,7 @@ Module sync.
       
       Global Instance AssociatedFunction_get_mut_slice :
         M.IsAssociatedFunction.C Self "get_mut_slice" get_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_slice.
       
@@ -21148,6 +21426,7 @@ Module sync.
       
       Global Instance AssociatedFunction_from_mut_slice :
         M.IsAssociatedFunction.C Self "from_mut_slice" from_mut_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut_slice.
       
@@ -21184,6 +21463,7 @@ Module sync.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -21242,6 +21522,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_load : M.IsAssociatedFunction.C Self "load" load.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load.
       
@@ -21297,6 +21578,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_store : M.IsAssociatedFunction.C Self "store" store.
+      Proof.
       Admitted.
       Global Typeclasses Opaque store.
       
@@ -21348,6 +21630,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -21422,6 +21705,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_and_swap :
         M.IsAssociatedFunction.C Self "compare_and_swap" compare_and_swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_and_swap.
       
@@ -21486,6 +21770,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange :
         M.IsAssociatedFunction.C Self "compare_exchange" compare_exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange.
       
@@ -21552,6 +21837,7 @@ Module sync.
       
       Global Instance AssociatedFunction_compare_exchange_weak :
         M.IsAssociatedFunction.C Self "compare_exchange_weak" compare_exchange_weak.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compare_exchange_weak.
       
@@ -21608,6 +21894,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_add :
         M.IsAssociatedFunction.C Self "fetch_add" fetch_add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_add.
       
@@ -21664,6 +21951,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_sub :
         M.IsAssociatedFunction.C Self "fetch_sub" fetch_sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_sub.
       
@@ -21720,6 +22008,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_and :
         M.IsAssociatedFunction.C Self "fetch_and" fetch_and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_and.
       
@@ -21776,6 +22065,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_nand :
         M.IsAssociatedFunction.C Self "fetch_nand" fetch_nand.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_nand.
       
@@ -21832,6 +22122,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_or :
         M.IsAssociatedFunction.C Self "fetch_or" fetch_or.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_or.
       
@@ -21888,6 +22179,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_xor :
         M.IsAssociatedFunction.C Self "fetch_xor" fetch_xor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_xor.
       
@@ -22077,6 +22369,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_update :
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_update.
       
@@ -22124,6 +22417,7 @@ Module sync.
       
       Global Instance AssociatedFunction_try_update :
         M.IsAssociatedFunction.C Self "try_update" try_update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_update.
       
@@ -22247,6 +22541,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
       
@@ -22299,6 +22594,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_max :
         M.IsAssociatedFunction.C Self "fetch_max" fetch_max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_max.
       
@@ -22351,6 +22647,7 @@ Module sync.
       
       Global Instance AssociatedFunction_fetch_min :
         M.IsAssociatedFunction.C Self "fetch_min" fetch_min.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fetch_min.
       
@@ -22391,6 +22688,7 @@ Module sync.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
     End Impl_core_sync_atomic_AtomicUsize.
@@ -22413,6 +22711,7 @@ Module sync.
     
     Global Instance Instance_IsConstant_value_ATOMIC_ISIZE_INIT :
       M.IsFunction.C "core::sync::atomic::ATOMIC_ISIZE_INIT" value_ATOMIC_ISIZE_INIT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ATOMIC_ISIZE_INIT.
     
@@ -22434,6 +22733,7 @@ Module sync.
     
     Global Instance Instance_IsConstant_value_ATOMIC_USIZE_INIT :
       M.IsFunction.C "core::sync::atomic::ATOMIC_USIZE_INIT" value_ATOMIC_USIZE_INIT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ATOMIC_USIZE_INIT.
     
@@ -22488,6 +22788,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_strongest_failure_ordering :
       M.IsFunction.C "core::sync::atomic::strongest_failure_ordering" strongest_failure_ordering.
+    Proof.
     Admitted.
     Global Typeclasses Opaque strongest_failure_ordering.
     
@@ -22601,6 +22902,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_store :
       M.IsFunction.C "core::sync::atomic::atomic_store" atomic_store.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_store.
     
@@ -22713,6 +23015,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_load :
       M.IsFunction.C "core::sync::atomic::atomic_load" atomic_load.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_load.
     
@@ -22808,6 +23111,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_swap :
       M.IsFunction.C "core::sync::atomic::atomic_swap" atomic_swap.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_swap.
     
@@ -22903,6 +23207,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_add :
       M.IsFunction.C "core::sync::atomic::atomic_add" atomic_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_add.
     
@@ -22998,6 +23303,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_sub :
       M.IsFunction.C "core::sync::atomic::atomic_sub" atomic_sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_sub.
     
@@ -23479,6 +23785,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_compare_exchange :
       M.IsFunction.C "core::sync::atomic::atomic_compare_exchange" atomic_compare_exchange.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_compare_exchange.
     
@@ -23966,6 +24273,7 @@ Module sync.
       M.IsFunction.C
         "core::sync::atomic::atomic_compare_exchange_weak"
         atomic_compare_exchange_weak.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_compare_exchange_weak.
     
@@ -24061,6 +24369,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_and :
       M.IsFunction.C "core::sync::atomic::atomic_and" atomic_and.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_and.
     
@@ -24156,6 +24465,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_nand :
       M.IsFunction.C "core::sync::atomic::atomic_nand" atomic_nand.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_nand.
     
@@ -24251,6 +24561,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_or :
       M.IsFunction.C "core::sync::atomic::atomic_or" atomic_or.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_or.
     
@@ -24346,6 +24657,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_xor :
       M.IsFunction.C "core::sync::atomic::atomic_xor" atomic_xor.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_xor.
     
@@ -24441,6 +24753,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_max :
       M.IsFunction.C "core::sync::atomic::atomic_max" atomic_max.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_max.
     
@@ -24536,6 +24849,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_min :
       M.IsFunction.C "core::sync::atomic::atomic_min" atomic_min.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_min.
     
@@ -24631,6 +24945,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_umax :
       M.IsFunction.C "core::sync::atomic::atomic_umax" atomic_umax.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_umax.
     
@@ -24726,6 +25041,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_atomic_umin :
       M.IsFunction.C "core::sync::atomic::atomic_umin" atomic_umin.
+    Proof.
     Admitted.
     Global Typeclasses Opaque atomic_umin.
     
@@ -24827,6 +25143,7 @@ Module sync.
       end.
     
     Global Instance Instance_IsFunction_fence : M.IsFunction.C "core::sync::atomic::fence" fence.
+    Proof.
     Admitted.
     Global Typeclasses Opaque fence.
     
@@ -24929,6 +25246,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_compiler_fence :
       M.IsFunction.C "core::sync::atomic::compiler_fence" compiler_fence.
+    Proof.
     Admitted.
     Global Typeclasses Opaque compiler_fence.
     
@@ -25174,6 +25492,7 @@ Module sync.
     
     Global Instance Instance_IsFunction_spin_loop_hint :
       M.IsFunction.C "core::sync::atomic::spin_loop_hint" spin_loop_hint.
+    Proof.
     Admitted.
     Global Typeclasses Opaque spin_loop_hint.
   End atomic.

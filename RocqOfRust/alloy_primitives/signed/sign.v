@@ -581,6 +581,7 @@ Module signed.
       
       Global Instance AssociatedFunction_const_eq :
         M.IsAssociatedFunction.C Self "const_eq" const_eq.
+      Proof.
       Admitted.
       Global Typeclasses Opaque const_eq.
       
@@ -616,6 +617,7 @@ Module signed.
       
       Global Instance AssociatedFunction_is_positive :
         M.IsAssociatedFunction.C Self "is_positive" is_positive.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_positive.
       
@@ -651,6 +653,7 @@ Module signed.
       
       Global Instance AssociatedFunction_is_negative :
         M.IsAssociatedFunction.C Self "is_negative" is_negative.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_negative.
       
@@ -693,6 +696,7 @@ Module signed.
         end.
       
       Global Instance AssociatedFunction_as_char : M.IsAssociatedFunction.C Self "as_char" as_char.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_char.
     End Impl_alloy_primitives_signed_sign_Sign.

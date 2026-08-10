@@ -111,37 +111,44 @@ Module Impl_contract_ref_FlipperRef.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter new_default : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new_default :
     M.IsAssociatedFunction.C Self "new_default" new_default.
+  Proof.
   Admitted.
   
   Parameter try_new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_try_new : M.IsAssociatedFunction.C Self "try_new" try_new.
+  Proof.
   Admitted.
   
   Parameter flip : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_flip : M.IsAssociatedFunction.C Self "flip" flip.
+  Proof.
   Admitted.
   
   Parameter get : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
 End Impl_contract_ref_FlipperRef.
 
@@ -159,20 +166,24 @@ Module Impl_contract_ref_ContractRef.
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter try_new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_try_new : M.IsAssociatedFunction.C Self "try_new" try_new.
+  Proof.
   Admitted.
   
   Parameter flip : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_flip : M.IsAssociatedFunction.C Self "flip" flip.
+  Proof.
   Admitted.
   
   Parameter get : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
 End Impl_contract_ref_ContractRef.

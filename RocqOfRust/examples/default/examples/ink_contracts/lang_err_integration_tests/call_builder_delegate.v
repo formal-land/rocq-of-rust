@@ -93,6 +93,7 @@ Module Impl_call_builder_delegate_CallBuilderDelegateTest.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -146,6 +147,7 @@ Module Impl_call_builder_delegate_CallBuilderDelegateTest.
     end.
   
   Global Instance AssociatedFunction_delegate : M.IsAssociatedFunction.C Self "delegate" delegate.
+  Proof.
   Admitted.
   Global Typeclasses Opaque delegate.
   
@@ -188,6 +190,7 @@ Module Impl_call_builder_delegate_CallBuilderDelegateTest.
     end.
   
   Global Instance AssociatedFunction_invoke : M.IsAssociatedFunction.C Self "invoke" invoke.
+  Proof.
   Admitted.
   Global Typeclasses Opaque invoke.
 End Impl_call_builder_delegate_CallBuilderDelegateTest.

@@ -499,6 +499,7 @@ Module instructions.
       M.IsFunction.C
         "revm_interpreter::instructions::i256::MAX_POSITIVE_VALUE"
         value_MAX_POSITIVE_VALUE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX_POSITIVE_VALUE.
     
@@ -539,6 +540,7 @@ Module instructions.
       M.IsFunction.C
         "revm_interpreter::instructions::i256::MIN_NEGATIVE_VALUE"
         value_MIN_NEGATIVE_VALUE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN_NEGATIVE_VALUE.
     
@@ -550,6 +552,7 @@ Module instructions.
       M.IsFunction.C
         "revm_interpreter::instructions::i256::FLIPH_BITMASK_U64"
         value_FLIPH_BITMASK_U64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FLIPH_BITMASK_U64.
     
@@ -669,6 +672,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_i256_sign :
       M.IsFunction.C "revm_interpreter::instructions::i256::i256_sign" i256_sign.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i256_sign.
     
@@ -766,6 +770,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_i256_sign_compl :
       M.IsFunction.C "revm_interpreter::instructions::i256::i256_sign_compl" i256_sign_compl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i256_sign_compl.
     
@@ -846,6 +851,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_u256_remove_sign :
       M.IsFunction.C "revm_interpreter::instructions::i256::u256_remove_sign" u256_remove_sign.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u256_remove_sign.
     
@@ -891,6 +897,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_two_compl_mut :
       M.IsFunction.C "revm_interpreter::instructions::i256::two_compl_mut" two_compl_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque two_compl_mut.
     
@@ -932,6 +939,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_two_compl :
       M.IsFunction.C "revm_interpreter::instructions::i256::two_compl" two_compl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque two_compl.
     
@@ -1053,6 +1061,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_i256_cmp :
       M.IsFunction.C "revm_interpreter::instructions::i256::i256_cmp" i256_cmp.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i256_cmp.
     
@@ -1573,6 +1582,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_i256_div :
       M.IsFunction.C "revm_interpreter::instructions::i256::i256_div" i256_div.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i256_div.
     
@@ -1907,6 +1917,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_i256_mod :
       M.IsFunction.C "revm_interpreter::instructions::i256::i256_mod" i256_mod.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i256_mod.
   End i256.

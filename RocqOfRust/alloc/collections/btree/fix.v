@@ -1187,6 +1187,7 @@ Module collections.
             (Self K V)
             "fix_node_through_parent"
             (fix_node_through_parent K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_node_through_parent.
         (*
@@ -1435,6 +1436,7 @@ Module collections.
             (Self K V)
             "fix_node_and_affected_ancestors"
             (fix_node_and_affected_ancestors K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_node_and_affected_ancestors.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_LeafOrInternal.
@@ -1632,6 +1634,7 @@ Module collections.
         Global Instance AssociatedFunction_fix_top :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "fix_top" (fix_top K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_top.
         
@@ -1894,6 +1897,7 @@ Module collections.
         Global Instance AssociatedFunction_fix_right_border :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "fix_right_border" (fix_right_border K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_right_border.
         
@@ -2156,6 +2160,7 @@ Module collections.
         Global Instance AssociatedFunction_fix_left_border :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "fix_left_border" (fix_left_border K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_left_border.
         
@@ -2644,6 +2649,7 @@ Module collections.
             (Self K V)
             "fix_right_border_of_plentiful"
             (fix_right_border_of_plentiful K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_right_border_of_plentiful.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Owned_K_V_alloc_collections_btree_node_marker_LeafOrInternal.
@@ -3171,6 +3177,7 @@ Module collections.
             (Self K V)
             "fix_left_border_of_left_edge"
             (fix_left_border_of_left_edge K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_left_border_of_left_edge.
         
@@ -3679,6 +3686,7 @@ Module collections.
             (Self K V)
             "fix_right_border_of_right_edge"
             (fix_right_border_of_right_edge K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_right_border_of_right_edge.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_LeafOrInternal_alloc_collections_btree_node_marker_KV.
@@ -4059,6 +4067,7 @@ Module collections.
         Global Instance AssociatedFunction_fix_left_child :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "fix_left_child" (fix_left_child K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_left_child.
         
@@ -4420,6 +4429,7 @@ Module collections.
         Global Instance AssociatedFunction_fix_right_child :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "fix_right_child" (fix_right_child K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque fix_right_child.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_Internal_alloc_collections_btree_node_marker_KV.

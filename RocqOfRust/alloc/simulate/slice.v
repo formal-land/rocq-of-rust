@@ -28,5 +28,6 @@ Module Impl_Slice.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Slice.

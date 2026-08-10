@@ -8,6 +8,7 @@ Module runtime_value.
   
   Global Instance Instance_IsConstant_value_MOVE_STRUCT_NAME :
     M.IsFunction.C "move_core_types::runtime_value::MOVE_STRUCT_NAME" value_MOVE_STRUCT_NAME.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MOVE_STRUCT_NAME.
   
@@ -17,6 +18,7 @@ Module runtime_value.
   
   Global Instance Instance_IsConstant_value_MOVE_STRUCT_TYPE :
     M.IsFunction.C "move_core_types::runtime_value::MOVE_STRUCT_TYPE" value_MOVE_STRUCT_TYPE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MOVE_STRUCT_TYPE.
   
@@ -26,6 +28,7 @@ Module runtime_value.
   
   Global Instance Instance_IsConstant_value_MOVE_STRUCT_FIELDS :
     M.IsFunction.C "move_core_types::runtime_value::MOVE_STRUCT_FIELDS" value_MOVE_STRUCT_FIELDS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MOVE_STRUCT_FIELDS.
   
@@ -3893,6 +3896,7 @@ Module runtime_value.
     
     Global Instance AssociatedFunction_simple_deserialize :
       M.IsAssociatedFunction.C Self "simple_deserialize" simple_deserialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simple_deserialize.
     
@@ -3961,6 +3965,7 @@ Module runtime_value.
     
     Global Instance AssociatedFunction_simple_serialize :
       M.IsAssociatedFunction.C Self "simple_serialize" simple_serialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simple_serialize.
     
@@ -4084,6 +4089,7 @@ Module runtime_value.
     
     Global Instance AssociatedFunction_vector_u8 :
       M.IsAssociatedFunction.C Self "vector_u8" vector_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque vector_u8.
     
@@ -4513,6 +4519,7 @@ Module runtime_value.
     
     Global Instance AssociatedFunction_vec_to_vec_u8 :
       M.IsAssociatedFunction.C Self "vec_to_vec_u8" vec_to_vec_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque vec_to_vec_u8.
     
@@ -4657,6 +4664,7 @@ Module runtime_value.
     
     Global Instance AssociatedFunction_vector_address :
       M.IsAssociatedFunction.C Self "vector_address" vector_address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque vector_address.
     
@@ -5128,6 +5136,7 @@ Module runtime_value.
       end.
     
     Global Instance AssociatedFunction_decorate : M.IsAssociatedFunction.C Self "decorate" decorate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque decorate.
   End Impl_move_core_types_runtime_value_MoveValue.
@@ -5366,6 +5375,7 @@ Module runtime_value.
   
   Global Instance Instance_IsFunction_serialize_values :
     M.IsFunction.C "move_core_types::runtime_value::serialize_values" serialize_values.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_values.
   
@@ -5401,6 +5411,7 @@ Module runtime_value.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -5583,6 +5594,7 @@ Module runtime_value.
     
     Global Instance AssociatedFunction_simple_deserialize :
       M.IsAssociatedFunction.C Self "simple_deserialize" simple_deserialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simple_deserialize.
     
@@ -6095,6 +6107,7 @@ Module runtime_value.
       end.
     
     Global Instance AssociatedFunction_decorate : M.IsAssociatedFunction.C Self "decorate" decorate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque decorate.
     
@@ -6162,6 +6175,7 @@ Module runtime_value.
       end.
     
     Global Instance AssociatedFunction_fields : M.IsAssociatedFunction.C Self "fields" fields.
+    Proof.
     Admitted.
     Global Typeclasses Opaque fields.
     
@@ -6187,6 +6201,7 @@ Module runtime_value.
     
     Global Instance AssociatedFunction_into_fields :
       M.IsAssociatedFunction.C Self "into_fields" into_fields.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_fields.
   End Impl_move_core_types_runtime_value_MoveStruct.
@@ -6223,6 +6238,7 @@ Module runtime_value.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -6293,6 +6309,7 @@ Module runtime_value.
       end.
     
     Global Instance AssociatedFunction_fields : M.IsAssociatedFunction.C Self "fields" fields.
+    Proof.
     Admitted.
     Global Typeclasses Opaque fields.
     
@@ -6319,6 +6336,7 @@ Module runtime_value.
     
     Global Instance AssociatedFunction_into_fields :
       M.IsAssociatedFunction.C Self "into_fields" into_fields.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_fields.
   End Impl_move_core_types_runtime_value_MoveStructLayout.

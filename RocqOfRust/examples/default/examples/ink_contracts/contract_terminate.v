@@ -135,6 +135,7 @@ Module Impl_contract_terminate_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -162,6 +163,7 @@ Module Impl_contract_terminate_Env.
   
   Global Instance AssociatedFunction_terminate_contract :
     M.IsAssociatedFunction.C Self "terminate_contract" terminate_contract.
+  Proof.
   Admitted.
   Global Typeclasses Opaque terminate_contract.
 End Impl_contract_terminate_Env.
@@ -197,6 +199,7 @@ Module Impl_contract_terminate_JustTerminate.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -228,6 +231,7 @@ Module Impl_contract_terminate_JustTerminate.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -244,6 +248,7 @@ Module Impl_contract_terminate_JustTerminate.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -324,6 +329,7 @@ Module Impl_contract_terminate_JustTerminate.
   
   Global Instance AssociatedFunction_terminate_me :
     M.IsAssociatedFunction.C Self "terminate_me" terminate_me.
+  Proof.
   Admitted.
   Global Typeclasses Opaque terminate_me.
 End Impl_contract_terminate_JustTerminate.

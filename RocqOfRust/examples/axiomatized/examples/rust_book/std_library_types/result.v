@@ -56,25 +56,30 @@ Module checked.
   Parameter div : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_div : M.IsFunction.C "result::checked::div" div.
+  Proof.
   Admitted.
   
   Parameter sqrt : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_sqrt : M.IsFunction.C "result::checked::sqrt" sqrt.
+  Proof.
   Admitted.
   
   Parameter ln : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_ln : M.IsFunction.C "result::checked::ln" ln.
+  Proof.
   Admitted.
 End checked.
 
 Parameter op : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_op : M.IsFunction.C "result::op" op.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "result::main" main.
+Proof.
 Admitted.

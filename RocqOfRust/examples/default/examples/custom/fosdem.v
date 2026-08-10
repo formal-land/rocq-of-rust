@@ -14,6 +14,7 @@ Definition value_MAX_VALUE (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsConstant_value_MAX_VALUE :
   M.IsFunction.C "fosdem::MAX_VALUE" value_MAX_VALUE.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_MAX_VALUE.
 
@@ -107,6 +108,7 @@ Module Impl_fosdem_Counter.
   
   Global Instance AssociatedFunction_increment :
     M.IsAssociatedFunction.C Self "increment" increment.
+  Proof.
   Admitted.
   Global Typeclasses Opaque increment.
 End Impl_fosdem_Counter.

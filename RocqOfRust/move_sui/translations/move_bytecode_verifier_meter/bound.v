@@ -748,6 +748,7 @@ Module bound.
       end.
     
     Global Instance AssociatedFunction_add : M.IsAssociatedFunction.C Self "add" add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add.
   End Impl_move_bytecode_verifier_meter_bound_Bounds.
@@ -881,6 +882,7 @@ Module bound.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1016,6 +1018,7 @@ Module bound.
     
     Global Instance AssociatedFunction_get_bounds_mut :
       M.IsAssociatedFunction.C Self "get_bounds_mut" get_bounds_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_bounds_mut.
     
@@ -1137,6 +1140,7 @@ Module bound.
     
     Global Instance AssociatedFunction_get_bounds :
       M.IsAssociatedFunction.C Self "get_bounds" get_bounds.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_bounds.
     
@@ -1187,6 +1191,7 @@ Module bound.
     
     Global Instance AssociatedFunction_get_usage :
       M.IsAssociatedFunction.C Self "get_usage" get_usage.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_usage.
     
@@ -1237,6 +1242,7 @@ Module bound.
     
     Global Instance AssociatedFunction_get_limit :
       M.IsAssociatedFunction.C Self "get_limit" get_limit.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_limit.
   End Impl_move_bytecode_verifier_meter_bound_BoundMeter.

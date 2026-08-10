@@ -7,6 +7,7 @@ Module language_storage.
   
   Global Instance Instance_IsConstant_value_CODE_TAG :
     M.IsFunction.C "move_core_types::language_storage::CODE_TAG" value_CODE_TAG.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CODE_TAG.
   
@@ -15,6 +16,7 @@ Module language_storage.
   
   Global Instance Instance_IsConstant_value_RESOURCE_TAG :
     M.IsFunction.C "move_core_types::language_storage::RESOURCE_TAG" value_RESOURCE_TAG.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_RESOURCE_TAG.
   
@@ -28,6 +30,7 @@ Module language_storage.
   
   Global Instance Instance_IsConstant_value_CORE_CODE_ADDRESS :
     M.IsFunction.C "move_core_types::language_storage::CORE_CODE_ADDRESS" value_CORE_CODE_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CORE_CODE_ADDRESS.
   
@@ -214,6 +217,7 @@ Module language_storage.
     M.IsFunction.C
       "move_core_types::language_storage::TYPETAG_ENUM_ABSTRACT_SIZE"
       value_TYPETAG_ENUM_ABSTRACT_SIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TYPETAG_ENUM_ABSTRACT_SIZE.
   
@@ -2479,6 +2483,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_to_canonical_string :
       M.IsAssociatedFunction.C Self "to_canonical_string" to_canonical_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_canonical_string.
     
@@ -2538,6 +2543,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_to_canonical_display :
       M.IsAssociatedFunction.C Self "to_canonical_display" to_canonical_display.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_canonical_display.
     
@@ -2883,6 +2889,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_abstract_size_for_gas_metering :
       M.IsAssociatedFunction.C Self "abstract_size_for_gas_metering" abstract_size_for_gas_metering.
+    Proof.
     Admitted.
     Global Typeclasses Opaque abstract_size_for_gas_metering.
   End Impl_move_core_types_language_storage_TypeTag.
@@ -5104,6 +5111,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_access_vector :
       M.IsAssociatedFunction.C Self "access_vector" access_vector.
+    Proof.
     Admitted.
     Global Typeclasses Opaque access_vector.
     
@@ -5287,6 +5295,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_is_ascii_string :
       M.IsAssociatedFunction.C Self "is_ascii_string" is_ascii_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ascii_string.
     
@@ -5470,6 +5479,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_is_std_string :
       M.IsAssociatedFunction.C Self "is_std_string" is_std_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_std_string.
     
@@ -5532,6 +5542,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_module_id :
       M.IsAssociatedFunction.C Self "module_id" module_id.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_id.
     
@@ -5588,6 +5599,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_to_canonical_string :
       M.IsAssociatedFunction.C Self "to_canonical_string" to_canonical_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_canonical_string.
     
@@ -5651,6 +5663,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_to_canonical_display :
       M.IsAssociatedFunction.C Self "to_canonical_display" to_canonical_display.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_canonical_display.
     
@@ -6111,6 +6124,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_abstract_size_for_gas_metering :
       M.IsAssociatedFunction.C Self "abstract_size_for_gas_metering" abstract_size_for_gas_metering.
+    Proof.
     Admitted.
     Global Typeclasses Opaque abstract_size_for_gas_metering.
   End Impl_move_core_types_language_storage_StructTag.
@@ -7393,6 +7407,7 @@ Module language_storage.
       end.
     
     Global Instance AssociatedFunction_address : M.IsAssociatedFunction.C Self "address" address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address.
     
@@ -7430,6 +7445,7 @@ Module language_storage.
       end.
     
     Global Instance AssociatedFunction_type_ : M.IsAssociatedFunction.C Self "type_" type_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque type_.
     (*
@@ -7454,6 +7470,7 @@ Module language_storage.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_core_types_language_storage_ResourceKey.
@@ -8708,6 +8725,7 @@ Module language_storage.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -8761,6 +8779,7 @@ Module language_storage.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -8795,6 +8814,7 @@ Module language_storage.
       end.
     
     Global Instance AssociatedFunction_address : M.IsAssociatedFunction.C Self "address" address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address.
     
@@ -8988,6 +9008,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_access_vector :
       M.IsAssociatedFunction.C Self "access_vector" access_vector.
+    Proof.
     Admitted.
     Global Typeclasses Opaque access_vector.
     
@@ -9044,6 +9065,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_to_canonical_string :
       M.IsAssociatedFunction.C Self "to_canonical_string" to_canonical_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_canonical_string.
     
@@ -9094,6 +9116,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_to_canonical_display :
       M.IsAssociatedFunction.C Self "to_canonical_display" to_canonical_display.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_canonical_display.
     (*
@@ -9238,6 +9261,7 @@ Module language_storage.
     
     Global Instance AssociatedFunction_short_str_lossless :
       M.IsAssociatedFunction.C Self "short_str_lossless" short_str_lossless.
+    Proof.
     Admitted.
     Global Typeclasses Opaque short_str_lossless.
   End Impl_move_core_types_language_storage_ModuleId.

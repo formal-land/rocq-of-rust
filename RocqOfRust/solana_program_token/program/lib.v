@@ -34,6 +34,7 @@ Definition ui_amount_to_amount (ε : list Value.t) (τ : list Ty.t) (α : list V
 
 Global Instance Instance_IsFunction_ui_amount_to_amount :
   M.IsFunction.C "spl_token::ui_amount_to_amount" ui_amount_to_amount.
+Proof.
 Admitted.
 Global Typeclasses Opaque ui_amount_to_amount.
 
@@ -67,6 +68,7 @@ Definition amount_to_ui_amount (ε : list Value.t) (τ : list Ty.t) (α : list V
 
 Global Instance Instance_IsFunction_amount_to_ui_amount :
   M.IsFunction.C "spl_token::amount_to_ui_amount" amount_to_ui_amount.
+Proof.
 Admitted.
 Global Typeclasses Opaque amount_to_ui_amount.
 
@@ -284,6 +286,7 @@ Definition amount_to_ui_amount_string (ε : list Value.t) (τ : list Ty.t) (α :
 
 Global Instance Instance_IsFunction_amount_to_ui_amount_string :
   M.IsFunction.C "spl_token::amount_to_ui_amount_string" amount_to_ui_amount_string.
+Proof.
 Admitted.
 Global Typeclasses Opaque amount_to_ui_amount_string.
 
@@ -414,6 +417,7 @@ Definition amount_to_ui_amount_string_trimmed
 
 Global Instance Instance_IsFunction_amount_to_ui_amount_string_trimmed :
   M.IsFunction.C "spl_token::amount_to_ui_amount_string_trimmed" amount_to_ui_amount_string_trimmed.
+Proof.
 Admitted.
 Global Typeclasses Opaque amount_to_ui_amount_string_trimmed.
 
@@ -943,5 +947,6 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
 
 Global Instance Instance_IsFunction_try_ui_amount_into_amount :
   M.IsFunction.C "spl_token::try_ui_amount_into_amount" try_ui_amount_into_amount.
+Proof.
 Admitted.
 Global Typeclasses Opaque try_ui_amount_into_amount.

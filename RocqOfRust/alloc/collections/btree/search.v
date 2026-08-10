@@ -113,6 +113,7 @@ Module collections.
         Global Instance AssociatedFunction_from_range :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "from_range" (from_range T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_range.
       End Impl_alloc_collections_btree_search_SearchBound_T.
@@ -661,6 +662,7 @@ Module collections.
         Global Instance AssociatedFunction_search_tree :
           forall (BorrowType K V : Ty.t),
           M.IsAssociatedFunction.C (Self BorrowType K V) "search_tree" (search_tree BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque search_tree.
         
@@ -2333,6 +2335,7 @@ Module collections.
             (Self BorrowType K V)
             "search_tree_for_bifurcation"
             (search_tree_for_bifurcation BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque search_tree_for_bifurcation.
         
@@ -2549,6 +2552,7 @@ Module collections.
             (Self BorrowType K V)
             "find_lower_bound_edge"
             (find_lower_bound_edge BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque find_lower_bound_edge.
         
@@ -2769,6 +2773,7 @@ Module collections.
             (Self BorrowType K V)
             "find_upper_bound_edge"
             (find_upper_bound_edge BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque find_upper_bound_edge.
       End Impl_alloc_collections_btree_node_NodeRef_BorrowType_K_V_alloc_collections_btree_node_marker_LeafOrInternal.
@@ -2937,6 +2942,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "search_node"
             (search_node BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque search_node.
         
@@ -3439,6 +3445,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "find_key_index"
             (find_key_index BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque find_key_index.
         
@@ -3704,6 +3711,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "find_lower_bound_index"
             (find_lower_bound_index BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque find_lower_bound_index.
         
@@ -3971,6 +3979,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "find_upper_bound_index"
             (find_upper_bound_index BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque find_upper_bound_index.
       End Impl_alloc_collections_btree_node_NodeRef_BorrowType_K_V_Type_.

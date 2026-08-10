@@ -935,6 +935,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_into_interpreter_result :
       M.IsAssociatedFunction.C Self "into_interpreter_result" into_interpreter_result.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_interpreter_result.
     
@@ -1076,6 +1077,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_output : M.IsAssociatedFunction.C Self "output" output.
+    Proof.
     Admitted.
     Global Typeclasses Opaque output.
     
@@ -1185,6 +1187,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_gas : M.IsAssociatedFunction.C Self "gas" gas.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas.
     
@@ -1299,6 +1302,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_gas_mut : M.IsAssociatedFunction.C Self "gas_mut" gas_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas_mut.
     
@@ -1404,6 +1408,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_interpreter_result :
       M.IsAssociatedFunction.C Self "interpreter_result" interpreter_result.
+    Proof.
     Admitted.
     Global Typeclasses Opaque interpreter_result.
     
@@ -1514,6 +1519,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_interpreter_result_mut :
       M.IsAssociatedFunction.C Self "interpreter_result_mut" interpreter_result_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque interpreter_result_mut.
     
@@ -1557,6 +1563,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_instruction_result :
       M.IsAssociatedFunction.C Self "instruction_result" instruction_result.
+    Proof.
     Admitted.
     Global Typeclasses Opaque instruction_result.
   End Impl_revm_handler_frame_data_FrameResult.
@@ -1591,6 +1598,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_new_create :
       M.IsAssociatedFunction.C Self "new_create" new_create.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_create.
     
@@ -1625,6 +1633,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_new_call : M.IsAssociatedFunction.C Self "new_call" new_call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_call.
     
@@ -1658,6 +1667,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_is_call : M.IsAssociatedFunction.C Self "is_call" is_call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_call.
     
@@ -1693,6 +1703,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_is_create :
       M.IsAssociatedFunction.C Self "is_create" is_create.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_create.
     
@@ -1761,6 +1772,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_created_address :
       M.IsAssociatedFunction.C Self "created_address" created_address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque created_address.
   End Impl_revm_handler_frame_data_FrameData.

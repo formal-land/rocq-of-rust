@@ -15,6 +15,7 @@ Parameter set_code_hash : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_set_code_hash :
   M.IsFunction.C "set_code_hash::set_code_hash" set_code_hash.
+Proof.
 Admitted.
 
 (* StructRecord
@@ -45,20 +46,24 @@ Module Impl_set_code_hash_Incrementer.
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter inc : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_inc : M.IsAssociatedFunction.C Self "inc" inc.
+  Proof.
   Admitted.
   
   Parameter get : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   
   Parameter set_code : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_set_code : M.IsAssociatedFunction.C Self "set_code" set_code.
+  Proof.
   Admitted.
 End Impl_set_code_hash_Incrementer.

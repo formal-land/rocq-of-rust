@@ -35,6 +35,7 @@ Module Impl_From_for_T.
   Instance run
     (T : Set) `{Link T} :
     From.Run T T.
+  Proof.
   Admitted.
 End Impl_From_for_T.
 Export (hints) Impl_From_for_T.
@@ -274,6 +275,7 @@ Module Impl_TryInto_for_TryFrom_T.
     (T U Error : Set) `{Link T} `{Link U} `{Link Error}
     {run_TryFrom_for_U : TryFrom.Run U T Error} :
     TryInto.Run T U Error.
+  Proof.
   Admitted.
 End Impl_TryInto_for_TryFrom_T.
 Export (hints) Impl_TryInto_for_TryFrom_T.

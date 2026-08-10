@@ -21,6 +21,7 @@ Module Impl_Bytes.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Bytes.
 Export (hints) Impl_Bytes.
@@ -41,6 +42,7 @@ Module Impl_Deref_for_Bytes.
 
   Module Eq.
     Instance I : Deref.Eq.t I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.

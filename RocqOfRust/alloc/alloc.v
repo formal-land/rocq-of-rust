@@ -6,24 +6,28 @@ Module alloc.
   
   Global Instance Instance_IsFunction___rust_alloc :
     M.IsFunction.C "alloc::alloc::__rust_alloc" __rust_alloc.
+  Proof.
   Admitted.
   
   Parameter __rust_dealloc : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction___rust_dealloc :
     M.IsFunction.C "alloc::alloc::__rust_dealloc" __rust_dealloc.
+  Proof.
   Admitted.
   
   Parameter __rust_realloc : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction___rust_realloc :
     M.IsFunction.C "alloc::alloc::__rust_realloc" __rust_realloc.
+  Proof.
   Admitted.
   
   Parameter __rust_alloc_zeroed : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction___rust_alloc_zeroed :
     M.IsFunction.C "alloc::alloc::__rust_alloc_zeroed" __rust_alloc_zeroed.
+  Proof.
   Admitted.
   
   Parameter __rust_no_alloc_shim_is_unstable_v2 :
@@ -33,6 +37,7 @@ Module alloc.
     M.IsFunction.C
       "alloc::alloc::__rust_no_alloc_shim_is_unstable_v2"
       __rust_no_alloc_shim_is_unstable_v2.
+  Proof.
   Admitted.
   
   (* StructTuple
@@ -201,6 +206,7 @@ Module alloc.
     end.
   
   Global Instance Instance_IsFunction_alloc : M.IsFunction.C "alloc::alloc::alloc" alloc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque alloc.
   
@@ -241,6 +247,7 @@ Module alloc.
     end.
   
   Global Instance Instance_IsFunction_dealloc : M.IsFunction.C "alloc::alloc::dealloc" dealloc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque dealloc.
   
@@ -283,6 +290,7 @@ Module alloc.
     end.
   
   Global Instance Instance_IsFunction_realloc : M.IsFunction.C "alloc::alloc::realloc" realloc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque realloc.
   
@@ -344,6 +352,7 @@ Module alloc.
   
   Global Instance Instance_IsFunction_alloc_zeroed :
     M.IsFunction.C "alloc::alloc::alloc_zeroed" alloc_zeroed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque alloc_zeroed.
   
@@ -733,6 +742,7 @@ Module alloc.
     
     Global Instance AssociatedFunction_alloc_impl :
       M.IsAssociatedFunction.C Self "alloc_impl" alloc_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque alloc_impl.
     
@@ -1636,6 +1646,7 @@ Module alloc.
     
     Global Instance AssociatedFunction_grow_impl :
       M.IsAssociatedFunction.C Self "grow_impl" grow_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque grow_impl.
   End Impl_alloc_alloc_Global.
@@ -2908,6 +2919,7 @@ Module alloc.
   
   Global Instance Instance_IsFunction_exchange_malloc :
     M.IsFunction.C "alloc::alloc::exchange_malloc" exchange_malloc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque exchange_malloc.
   
@@ -2915,6 +2927,7 @@ Module alloc.
   
   Global Instance Instance_IsFunction___rust_alloc_error_handler :
     M.IsFunction.C "alloc::alloc::__rust_alloc_error_handler" __rust_alloc_error_handler.
+  Proof.
   Admitted.
   
   (*
@@ -2967,6 +2980,7 @@ Module alloc.
   
   Global Instance Instance_IsFunction_handle_alloc_error :
     M.IsFunction.C "alloc::alloc::handle_alloc_error" handle_alloc_error.
+  Proof.
   Admitted.
   Global Typeclasses Opaque handle_alloc_error.
   
@@ -3010,6 +3024,7 @@ Module alloc.
     
     Global Instance Instance_IsFunction_ct_error :
       M.IsFunction.C "alloc::alloc::handle_alloc_error::ct_error" ct_error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ct_error.
     
@@ -3056,6 +3071,7 @@ Module alloc.
     
     Global Instance Instance_IsFunction_rt_error :
       M.IsFunction.C "alloc::alloc::handle_alloc_error::rt_error" rt_error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rt_error.
   End handle_alloc_error.
@@ -3335,6 +3351,7 @@ Module alloc.
       M.IsFunction.C
         "alloc::alloc::__alloc_error_handler::__rdl_alloc_error_handler"
         __rdl_alloc_error_handler.
+    Proof.
     Admitted.
     Global Typeclasses Opaque __rdl_alloc_error_handler.
     
@@ -3346,6 +3363,7 @@ Module alloc.
         M.IsFunction.C
           "alloc::alloc::__alloc_error_handler::__rdl_alloc_error_handler::__rust_alloc_error_handler_should_panic_v2"
           __rust_alloc_error_handler_should_panic_v2.
+      Proof.
       Admitted.
     End __rdl_alloc_error_handler.
   End __alloc_error_handler.

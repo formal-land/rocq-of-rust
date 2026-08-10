@@ -470,6 +470,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_read_fp :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::read_fp" read_fp.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_fp.
     
@@ -626,6 +627,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_encode_fp :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::encode_fp" encode_fp.
+    Proof.
     Admitted.
     Global Typeclasses Opaque encode_fp.
     
@@ -1258,6 +1260,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_read_fp2 :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::read_fp2" read_fp2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_fp2.
     
@@ -1549,6 +1552,7 @@ Module bls12_381.
       M.IsFunction.C
         "revm_precompile::bls12_381::arkworks::new_g1_point_no_subgroup_check"
         new_g1_point_no_subgroup_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_g1_point_no_subgroup_check.
     
@@ -1835,6 +1839,7 @@ Module bls12_381.
       M.IsFunction.C
         "revm_precompile::bls12_381::arkworks::new_g2_point_no_subgroup_check"
         new_g2_point_no_subgroup_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_g2_point_no_subgroup_check.
     
@@ -2165,6 +2170,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_read_g1 :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::read_g1" read_g1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_g1.
     
@@ -2747,6 +2753,7 @@ Module bls12_381.
       M.IsFunction.C
         "revm_precompile::bls12_381::arkworks::read_g1_no_subgroup_check"
         read_g1_no_subgroup_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_g1_no_subgroup_check.
     
@@ -3157,6 +3164,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_encode_g1_point :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::encode_g1_point" encode_g1_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque encode_g1_point.
     
@@ -3526,6 +3534,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_read_g2 :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::read_g2" read_g2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_g2.
     
@@ -4102,6 +4111,7 @@ Module bls12_381.
       M.IsFunction.C
         "revm_precompile::bls12_381::arkworks::read_g2_no_subgroup_check"
         read_g2_no_subgroup_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_g2_no_subgroup_check.
     
@@ -4817,6 +4827,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_encode_g2_point :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::encode_g2_point" encode_g2_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque encode_g2_point.
     
@@ -5000,6 +5011,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_read_scalar :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::read_scalar" read_scalar.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_scalar.
     
@@ -5149,6 +5161,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_p1_add_affine :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::p1_add_affine" p1_add_affine.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p1_add_affine.
     
@@ -5298,6 +5311,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_p2_add_affine :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::p2_add_affine" p2_add_affine.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p2_add_affine.
     
@@ -6031,6 +6045,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_p1_msm :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::p1_msm" p1_msm.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p1_msm.
     
@@ -6764,6 +6779,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_p2_msm :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::p2_msm" p2_msm.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p2_msm.
     
@@ -6887,6 +6903,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_map_fp_to_g1 :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::map_fp_to_g1" map_fp_to_g1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_fp_to_g1.
     
@@ -7010,6 +7027,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_map_fp2_to_g2 :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::map_fp2_to_g2" map_fp2_to_g2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_fp2_to_g2.
     
@@ -7512,6 +7530,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_pairing_check :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::pairing_check" pairing_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pairing_check.
     
@@ -10378,6 +10397,7 @@ Module bls12_381.
       M.IsFunction.C
         "revm_precompile::bls12_381::arkworks::pairing_check_bytes"
         pairing_check_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pairing_check_bytes.
     
@@ -10987,6 +11007,7 @@ Module bls12_381.
       M.IsFunction.C
         "revm_precompile::bls12_381::arkworks::p1_add_affine_bytes"
         p1_add_affine_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p1_add_affine_bytes.
     
@@ -11676,6 +11697,7 @@ Module bls12_381.
       M.IsFunction.C
         "revm_precompile::bls12_381::arkworks::p2_add_affine_bytes"
         p2_add_affine_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p2_add_affine_bytes.
     
@@ -12034,6 +12056,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_map_fp_to_g1_bytes :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::map_fp_to_g1_bytes" map_fp_to_g1_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_fp_to_g1_bytes.
     
@@ -12386,6 +12409,7 @@ Module bls12_381.
       M.IsFunction.C
         "revm_precompile::bls12_381::arkworks::map_fp2_to_g2_bytes"
         map_fp2_to_g2_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_fp2_to_g2_bytes.
     
@@ -14090,6 +14114,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_p1_msm_bytes :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::p1_msm_bytes" p1_msm_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p1_msm_bytes.
     
@@ -15954,6 +15979,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_p2_msm_bytes :
       M.IsFunction.C "revm_precompile::bls12_381::arkworks::p2_msm_bytes" p2_msm_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p2_msm_bytes.
   End arkworks.

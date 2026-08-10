@@ -24,6 +24,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_read_i16 :
     M.IsFunction.C "revm_bytecode::utils::read_i16" read_i16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_i16.
   
@@ -90,6 +91,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_read_u16 :
     M.IsFunction.C "revm_bytecode::utils::read_u16" read_u16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_u16.
 End utils.

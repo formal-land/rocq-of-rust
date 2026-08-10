@@ -2518,6 +2518,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2620,6 +2621,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_ip : M.IsAssociatedFunction.C Self "ip" ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ip.
       
@@ -2776,6 +2778,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_set_ip : M.IsAssociatedFunction.C Self "set_ip" set_ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_ip.
       
@@ -2858,6 +2861,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_port : M.IsAssociatedFunction.C Self "port" port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque port.
       
@@ -2948,6 +2952,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_port :
         M.IsAssociatedFunction.C Self "set_port" set_port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_port.
       
@@ -2985,6 +2990,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_is_ipv4 : M.IsAssociatedFunction.C Self "is_ipv4" is_ipv4.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ipv4.
       
@@ -3022,6 +3028,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_is_ipv6 : M.IsAssociatedFunction.C Self "is_ipv6" is_ipv6.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ipv6.
     End Impl_core_net_socket_addr_SocketAddr.
@@ -3049,6 +3056,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3083,6 +3091,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_ip : M.IsAssociatedFunction.C Self "ip" ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ip.
       
@@ -3117,6 +3126,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_set_ip : M.IsAssociatedFunction.C Self "set_ip" set_ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_ip.
       
@@ -3145,6 +3155,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_port : M.IsAssociatedFunction.C Self "port" port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque port.
       
@@ -3180,6 +3191,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_port :
         M.IsAssociatedFunction.C Self "set_port" set_port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_port.
     End Impl_core_net_socket_addr_SocketAddrV4.
@@ -3214,6 +3226,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3248,6 +3261,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_ip : M.IsAssociatedFunction.C Self "ip" ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ip.
       
@@ -3282,6 +3296,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_set_ip : M.IsAssociatedFunction.C Self "set_ip" set_ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_ip.
       
@@ -3310,6 +3325,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_port : M.IsAssociatedFunction.C Self "port" port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque port.
       
@@ -3345,6 +3361,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_port :
         M.IsAssociatedFunction.C Self "set_port" set_port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_port.
       
@@ -3374,6 +3391,7 @@ Module net.
       
       Global Instance AssociatedFunction_flowinfo :
         M.IsAssociatedFunction.C Self "flowinfo" flowinfo.
+      Proof.
       Admitted.
       Global Typeclasses Opaque flowinfo.
       
@@ -3409,6 +3427,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_flowinfo :
         M.IsAssociatedFunction.C Self "set_flowinfo" set_flowinfo.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_flowinfo.
       
@@ -3438,6 +3457,7 @@ Module net.
       
       Global Instance AssociatedFunction_scope_id :
         M.IsAssociatedFunction.C Self "scope_id" scope_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque scope_id.
       
@@ -3473,6 +3493,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_scope_id :
         M.IsAssociatedFunction.C Self "set_scope_id" set_scope_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_scope_id.
     End Impl_core_net_socket_addr_SocketAddrV6.

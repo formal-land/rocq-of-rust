@@ -146,6 +146,7 @@ Module num.
       
       Global Instance Instance_IsFunction_runtime :
         M.IsFunction.C "core::num::from_ascii_radix_panic::do_panic::runtime" runtime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque runtime.
       
@@ -191,6 +192,7 @@ Module num.
       
       Global Instance Instance_IsFunction_compiletime :
         M.IsFunction.C "core::num::from_ascii_radix_panic::do_panic::compiletime" compiletime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compiletime.
     End do_panic.
@@ -459,6 +461,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_cxchg :
     M.IsFunction.C "core::intrinsics::atomic_cxchg" atomic_cxchg.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_cxchg.
   
@@ -493,6 +496,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_cxchgweak :
     M.IsFunction.C "core::intrinsics::atomic_cxchgweak" atomic_cxchgweak.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_cxchgweak.
   
@@ -515,6 +519,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_load :
     M.IsFunction.C "core::intrinsics::atomic_load" atomic_load.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_load.
   
@@ -538,6 +543,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_store :
     M.IsFunction.C "core::intrinsics::atomic_store" atomic_store.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_store.
   
@@ -561,6 +567,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_xchg :
     M.IsFunction.C "core::intrinsics::atomic_xchg" atomic_xchg.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_xchg.
   
@@ -584,6 +591,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_xadd :
     M.IsFunction.C "core::intrinsics::atomic_xadd" atomic_xadd.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_xadd.
   
@@ -607,6 +615,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_xsub :
     M.IsFunction.C "core::intrinsics::atomic_xsub" atomic_xsub.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_xsub.
   
@@ -630,6 +639,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_and :
     M.IsFunction.C "core::intrinsics::atomic_and" atomic_and.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_and.
   
@@ -653,6 +663,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_nand :
     M.IsFunction.C "core::intrinsics::atomic_nand" atomic_nand.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_nand.
   
@@ -676,6 +687,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_or :
     M.IsFunction.C "core::intrinsics::atomic_or" atomic_or.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_or.
   
@@ -699,6 +711,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_xor :
     M.IsFunction.C "core::intrinsics::atomic_xor" atomic_xor.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_xor.
   
@@ -722,6 +735,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_max :
     M.IsFunction.C "core::intrinsics::atomic_max" atomic_max.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_max.
   
@@ -745,6 +759,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_min :
     M.IsFunction.C "core::intrinsics::atomic_min" atomic_min.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_min.
   
@@ -768,6 +783,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_umin :
     M.IsFunction.C "core::intrinsics::atomic_umin" atomic_umin.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_umin.
   
@@ -791,6 +807,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_umax :
     M.IsFunction.C "core::intrinsics::atomic_umax" atomic_umax.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_umax.
   
@@ -812,6 +829,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_fence :
     M.IsFunction.C "core::intrinsics::atomic_fence" atomic_fence.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_fence.
   
@@ -833,6 +851,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_atomic_singlethreadfence :
     M.IsFunction.C "core::intrinsics::atomic_singlethreadfence" atomic_singlethreadfence.
+  Proof.
   Admitted.
   Global Typeclasses Opaque atomic_singlethreadfence.
   
@@ -853,6 +872,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_prefetch_read_data :
     M.IsFunction.C "core::intrinsics::prefetch_read_data" prefetch_read_data.
+  Proof.
   Admitted.
   Global Typeclasses Opaque prefetch_read_data.
   
@@ -873,6 +893,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_prefetch_write_data :
     M.IsFunction.C "core::intrinsics::prefetch_write_data" prefetch_write_data.
+  Proof.
   Admitted.
   Global Typeclasses Opaque prefetch_write_data.
   
@@ -893,6 +914,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_prefetch_read_instruction :
     M.IsFunction.C "core::intrinsics::prefetch_read_instruction" prefetch_read_instruction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque prefetch_read_instruction.
   
@@ -913,6 +935,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_prefetch_write_instruction :
     M.IsFunction.C "core::intrinsics::prefetch_write_instruction" prefetch_write_instruction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque prefetch_write_instruction.
   
@@ -934,6 +957,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_breakpoint :
     M.IsFunction.C "core::intrinsics::breakpoint" breakpoint.
+  Proof.
   Admitted.
   Global Typeclasses Opaque breakpoint.
   
@@ -964,6 +988,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_rustc_peek :
     M.IsFunction.C "core::intrinsics::rustc_peek" rustc_peek.
+  Proof.
   Admitted.
   Global Typeclasses Opaque rustc_peek.
   
@@ -979,6 +1004,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_abort : M.IsFunction.C "core::intrinsics::abort" abort.
+  Proof.
   Admitted.
   Global Typeclasses Opaque abort.
   
@@ -995,6 +1021,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unreachable :
     M.IsFunction.C "core::intrinsics::unreachable" unreachable.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unreachable.
   
@@ -1037,6 +1064,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_assume : M.IsFunction.C "core::intrinsics::assume" assume.
+  Proof.
   Admitted.
   Global Typeclasses Opaque assume.
   
@@ -1049,6 +1077,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_cold_path :
     M.IsFunction.C "core::intrinsics::cold_path" cold_path.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cold_path.
   
@@ -1093,6 +1122,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_likely : M.IsFunction.C "core::intrinsics::likely" likely.
+  Proof.
   Admitted.
   Global Typeclasses Opaque likely.
   
@@ -1136,6 +1166,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unlikely :
     M.IsFunction.C "core::intrinsics::unlikely" unlikely.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unlikely.
   
@@ -1171,6 +1202,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_select_unpredictable :
     M.IsFunction.C "core::intrinsics::select_unpredictable" select_unpredictable.
+  Proof.
   Admitted.
   Global Typeclasses Opaque select_unpredictable.
   
@@ -1192,6 +1224,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_assert_inhabited :
     M.IsFunction.C "core::intrinsics::assert_inhabited" assert_inhabited.
+  Proof.
   Admitted.
   Global Typeclasses Opaque assert_inhabited.
   
@@ -1213,6 +1246,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_assert_zero_valid :
     M.IsFunction.C "core::intrinsics::assert_zero_valid" assert_zero_valid.
+  Proof.
   Admitted.
   Global Typeclasses Opaque assert_zero_valid.
   
@@ -1240,6 +1274,7 @@ Module intrinsics.
     M.IsFunction.C
       "core::intrinsics::assert_mem_uninitialized_valid"
       assert_mem_uninitialized_valid.
+  Proof.
   Admitted.
   Global Typeclasses Opaque assert_mem_uninitialized_valid.
   
@@ -1261,6 +1296,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_caller_location :
     M.IsFunction.C "core::intrinsics::caller_location" caller_location.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller_location.
   
@@ -1290,6 +1326,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_forget : M.IsFunction.C "core::intrinsics::forget" forget.
+  Proof.
   Admitted.
   Global Typeclasses Opaque forget.
   
@@ -1312,6 +1349,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_transmute :
     M.IsFunction.C "core::intrinsics::transmute" transmute.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transmute.
   
@@ -1334,6 +1372,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_transmute_unchecked :
     M.IsFunction.C "core::intrinsics::transmute_unchecked" transmute_unchecked.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transmute_unchecked.
   
@@ -1355,6 +1394,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_needs_drop :
     M.IsFunction.C "core::intrinsics::needs_drop" needs_drop.
+  Proof.
   Admitted.
   Global Typeclasses Opaque needs_drop.
   
@@ -1377,6 +1417,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_offset : M.IsFunction.C "core::intrinsics::offset" offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque offset.
   
@@ -1400,6 +1441,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_arith_offset :
     M.IsFunction.C "core::intrinsics::arith_offset" arith_offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque arith_offset.
   
@@ -1432,6 +1474,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_slice_get_unchecked :
     M.IsFunction.C "core::intrinsics::slice_get_unchecked" slice_get_unchecked.
+  Proof.
   Admitted.
   Global Typeclasses Opaque slice_get_unchecked.
   
@@ -1455,6 +1498,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_ptr_mask :
     M.IsFunction.C "core::intrinsics::ptr_mask" ptr_mask.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ptr_mask.
   
@@ -1485,6 +1529,7 @@ Module intrinsics.
     M.IsFunction.C
       "core::intrinsics::volatile_copy_nonoverlapping_memory"
       volatile_copy_nonoverlapping_memory.
+  Proof.
   Admitted.
   Global Typeclasses Opaque volatile_copy_nonoverlapping_memory.
   
@@ -1509,6 +1554,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_volatile_copy_memory :
     M.IsFunction.C "core::intrinsics::volatile_copy_memory" volatile_copy_memory.
+  Proof.
   Admitted.
   Global Typeclasses Opaque volatile_copy_memory.
   
@@ -1533,6 +1579,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_volatile_set_memory :
     M.IsFunction.C "core::intrinsics::volatile_set_memory" volatile_set_memory.
+  Proof.
   Admitted.
   Global Typeclasses Opaque volatile_set_memory.
   
@@ -1555,6 +1602,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_volatile_load :
     M.IsFunction.C "core::intrinsics::volatile_load" volatile_load.
+  Proof.
   Admitted.
   Global Typeclasses Opaque volatile_load.
   
@@ -1578,6 +1626,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_volatile_store :
     M.IsFunction.C "core::intrinsics::volatile_store" volatile_store.
+  Proof.
   Admitted.
   Global Typeclasses Opaque volatile_store.
   
@@ -1600,6 +1649,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unaligned_volatile_load :
     M.IsFunction.C "core::intrinsics::unaligned_volatile_load" unaligned_volatile_load.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unaligned_volatile_load.
   
@@ -1623,6 +1673,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unaligned_volatile_store :
     M.IsFunction.C "core::intrinsics::unaligned_volatile_store" unaligned_volatile_store.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unaligned_volatile_store.
   
@@ -1644,6 +1695,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_sqrtf16 : M.IsFunction.C "core::intrinsics::sqrtf16" sqrtf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sqrtf16.
   
@@ -1665,6 +1717,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_sqrtf32 : M.IsFunction.C "core::intrinsics::sqrtf32" sqrtf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sqrtf32.
   
@@ -1686,6 +1739,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_sqrtf64 : M.IsFunction.C "core::intrinsics::sqrtf64" sqrtf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sqrtf64.
   
@@ -1708,6 +1762,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_sqrtf128 :
     M.IsFunction.C "core::intrinsics::sqrtf128" sqrtf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sqrtf128.
   
@@ -1730,6 +1785,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_powif16 : M.IsFunction.C "core::intrinsics::powif16" powif16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque powif16.
   
@@ -1752,6 +1808,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_powif32 : M.IsFunction.C "core::intrinsics::powif32" powif32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque powif32.
   
@@ -1774,6 +1831,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_powif64 : M.IsFunction.C "core::intrinsics::powif64" powif64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque powif64.
   
@@ -1797,6 +1855,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_powif128 :
     M.IsFunction.C "core::intrinsics::powif128" powif128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque powif128.
   
@@ -1818,6 +1877,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_sinf16 : M.IsFunction.C "core::intrinsics::sinf16" sinf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sinf16.
   
@@ -1839,6 +1899,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_sinf32 : M.IsFunction.C "core::intrinsics::sinf32" sinf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sinf32.
   
@@ -1860,6 +1921,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_sinf64 : M.IsFunction.C "core::intrinsics::sinf64" sinf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sinf64.
   
@@ -1881,6 +1943,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_sinf128 : M.IsFunction.C "core::intrinsics::sinf128" sinf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sinf128.
   
@@ -1902,6 +1965,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_cosf16 : M.IsFunction.C "core::intrinsics::cosf16" cosf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cosf16.
   
@@ -1923,6 +1987,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_cosf32 : M.IsFunction.C "core::intrinsics::cosf32" cosf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cosf32.
   
@@ -1944,6 +2009,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_cosf64 : M.IsFunction.C "core::intrinsics::cosf64" cosf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cosf64.
   
@@ -1965,6 +2031,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_cosf128 : M.IsFunction.C "core::intrinsics::cosf128" cosf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cosf128.
   
@@ -1987,6 +2054,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_powf16 : M.IsFunction.C "core::intrinsics::powf16" powf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque powf16.
   
@@ -2009,6 +2077,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_powf32 : M.IsFunction.C "core::intrinsics::powf32" powf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque powf32.
   
@@ -2031,6 +2100,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_powf64 : M.IsFunction.C "core::intrinsics::powf64" powf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque powf64.
   
@@ -2053,6 +2123,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_powf128 : M.IsFunction.C "core::intrinsics::powf128" powf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque powf128.
   
@@ -2074,6 +2145,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_expf16 : M.IsFunction.C "core::intrinsics::expf16" expf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque expf16.
   
@@ -2095,6 +2167,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_expf32 : M.IsFunction.C "core::intrinsics::expf32" expf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque expf32.
   
@@ -2116,6 +2189,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_expf64 : M.IsFunction.C "core::intrinsics::expf64" expf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque expf64.
   
@@ -2137,6 +2211,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_expf128 : M.IsFunction.C "core::intrinsics::expf128" expf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque expf128.
   
@@ -2158,6 +2233,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_exp2f16 : M.IsFunction.C "core::intrinsics::exp2f16" exp2f16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque exp2f16.
   
@@ -2179,6 +2255,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_exp2f32 : M.IsFunction.C "core::intrinsics::exp2f32" exp2f32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque exp2f32.
   
@@ -2200,6 +2277,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_exp2f64 : M.IsFunction.C "core::intrinsics::exp2f64" exp2f64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque exp2f64.
   
@@ -2222,6 +2300,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_exp2f128 :
     M.IsFunction.C "core::intrinsics::exp2f128" exp2f128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque exp2f128.
   
@@ -2243,6 +2322,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_logf16 : M.IsFunction.C "core::intrinsics::logf16" logf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque logf16.
   
@@ -2264,6 +2344,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_logf32 : M.IsFunction.C "core::intrinsics::logf32" logf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque logf32.
   
@@ -2285,6 +2366,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_logf64 : M.IsFunction.C "core::intrinsics::logf64" logf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque logf64.
   
@@ -2306,6 +2388,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_logf128 : M.IsFunction.C "core::intrinsics::logf128" logf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque logf128.
   
@@ -2328,6 +2411,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_log10f16 :
     M.IsFunction.C "core::intrinsics::log10f16" log10f16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque log10f16.
   
@@ -2350,6 +2434,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_log10f32 :
     M.IsFunction.C "core::intrinsics::log10f32" log10f32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque log10f32.
   
@@ -2372,6 +2457,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_log10f64 :
     M.IsFunction.C "core::intrinsics::log10f64" log10f64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque log10f64.
   
@@ -2394,6 +2480,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_log10f128 :
     M.IsFunction.C "core::intrinsics::log10f128" log10f128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque log10f128.
   
@@ -2415,6 +2502,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_log2f16 : M.IsFunction.C "core::intrinsics::log2f16" log2f16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque log2f16.
   
@@ -2436,6 +2524,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_log2f32 : M.IsFunction.C "core::intrinsics::log2f32" log2f32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque log2f32.
   
@@ -2457,6 +2546,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_log2f64 : M.IsFunction.C "core::intrinsics::log2f64" log2f64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque log2f64.
   
@@ -2479,6 +2569,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_log2f128 :
     M.IsFunction.C "core::intrinsics::log2f128" log2f128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque log2f128.
   
@@ -2502,6 +2593,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_fmaf16 : M.IsFunction.C "core::intrinsics::fmaf16" fmaf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmaf16.
   
@@ -2525,6 +2617,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_fmaf32 : M.IsFunction.C "core::intrinsics::fmaf32" fmaf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmaf32.
   
@@ -2548,6 +2641,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_fmaf64 : M.IsFunction.C "core::intrinsics::fmaf64" fmaf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmaf64.
   
@@ -2571,6 +2665,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_fmaf128 : M.IsFunction.C "core::intrinsics::fmaf128" fmaf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmaf128.
   
@@ -2595,6 +2690,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fmuladdf16 :
     M.IsFunction.C "core::intrinsics::fmuladdf16" fmuladdf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmuladdf16.
   
@@ -2619,6 +2715,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fmuladdf32 :
     M.IsFunction.C "core::intrinsics::fmuladdf32" fmuladdf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmuladdf32.
   
@@ -2643,6 +2740,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fmuladdf64 :
     M.IsFunction.C "core::intrinsics::fmuladdf64" fmuladdf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmuladdf64.
   
@@ -2667,6 +2765,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fmuladdf128 :
     M.IsFunction.C "core::intrinsics::fmuladdf128" fmuladdf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmuladdf128.
   
@@ -2689,6 +2788,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_floorf16 :
     M.IsFunction.C "core::intrinsics::floorf16" floorf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque floorf16.
   
@@ -2711,6 +2811,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_floorf32 :
     M.IsFunction.C "core::intrinsics::floorf32" floorf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque floorf32.
   
@@ -2733,6 +2834,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_floorf64 :
     M.IsFunction.C "core::intrinsics::floorf64" floorf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque floorf64.
   
@@ -2755,6 +2857,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_floorf128 :
     M.IsFunction.C "core::intrinsics::floorf128" floorf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque floorf128.
   
@@ -2776,6 +2879,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_ceilf16 : M.IsFunction.C "core::intrinsics::ceilf16" ceilf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ceilf16.
   
@@ -2797,6 +2901,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_ceilf32 : M.IsFunction.C "core::intrinsics::ceilf32" ceilf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ceilf32.
   
@@ -2818,6 +2923,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_ceilf64 : M.IsFunction.C "core::intrinsics::ceilf64" ceilf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ceilf64.
   
@@ -2840,6 +2946,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_ceilf128 :
     M.IsFunction.C "core::intrinsics::ceilf128" ceilf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ceilf128.
   
@@ -2862,6 +2969,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_truncf16 :
     M.IsFunction.C "core::intrinsics::truncf16" truncf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque truncf16.
   
@@ -2884,6 +2992,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_truncf32 :
     M.IsFunction.C "core::intrinsics::truncf32" truncf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque truncf32.
   
@@ -2906,6 +3015,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_truncf64 :
     M.IsFunction.C "core::intrinsics::truncf64" truncf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque truncf64.
   
@@ -2928,6 +3038,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_truncf128 :
     M.IsFunction.C "core::intrinsics::truncf128" truncf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque truncf128.
   
@@ -2950,6 +3061,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_round_ties_even_f16 :
     M.IsFunction.C "core::intrinsics::round_ties_even_f16" round_ties_even_f16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque round_ties_even_f16.
   
@@ -2972,6 +3084,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_round_ties_even_f32 :
     M.IsFunction.C "core::intrinsics::round_ties_even_f32" round_ties_even_f32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque round_ties_even_f32.
   
@@ -2994,6 +3107,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_round_ties_even_f64 :
     M.IsFunction.C "core::intrinsics::round_ties_even_f64" round_ties_even_f64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque round_ties_even_f64.
   
@@ -3016,6 +3130,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_round_ties_even_f128 :
     M.IsFunction.C "core::intrinsics::round_ties_even_f128" round_ties_even_f128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque round_ties_even_f128.
   
@@ -3038,6 +3153,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_roundf16 :
     M.IsFunction.C "core::intrinsics::roundf16" roundf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque roundf16.
   
@@ -3060,6 +3176,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_roundf32 :
     M.IsFunction.C "core::intrinsics::roundf32" roundf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque roundf32.
   
@@ -3082,6 +3199,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_roundf64 :
     M.IsFunction.C "core::intrinsics::roundf64" roundf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque roundf64.
   
@@ -3104,6 +3222,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_roundf128 :
     M.IsFunction.C "core::intrinsics::roundf128" roundf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque roundf128.
   
@@ -3127,6 +3246,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fadd_fast :
     M.IsFunction.C "core::intrinsics::fadd_fast" fadd_fast.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fadd_fast.
   
@@ -3150,6 +3270,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fsub_fast :
     M.IsFunction.C "core::intrinsics::fsub_fast" fsub_fast.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fsub_fast.
   
@@ -3173,6 +3294,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fmul_fast :
     M.IsFunction.C "core::intrinsics::fmul_fast" fmul_fast.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmul_fast.
   
@@ -3196,6 +3318,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fdiv_fast :
     M.IsFunction.C "core::intrinsics::fdiv_fast" fdiv_fast.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fdiv_fast.
   
@@ -3219,6 +3342,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_frem_fast :
     M.IsFunction.C "core::intrinsics::frem_fast" frem_fast.
+  Proof.
   Admitted.
   Global Typeclasses Opaque frem_fast.
   
@@ -3241,6 +3365,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_float_to_int_unchecked :
     M.IsFunction.C "core::intrinsics::float_to_int_unchecked" float_to_int_unchecked.
+  Proof.
   Admitted.
   Global Typeclasses Opaque float_to_int_unchecked.
   
@@ -3264,6 +3389,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fadd_algebraic :
     M.IsFunction.C "core::intrinsics::fadd_algebraic" fadd_algebraic.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fadd_algebraic.
   
@@ -3287,6 +3413,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fsub_algebraic :
     M.IsFunction.C "core::intrinsics::fsub_algebraic" fsub_algebraic.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fsub_algebraic.
   
@@ -3310,6 +3437,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fmul_algebraic :
     M.IsFunction.C "core::intrinsics::fmul_algebraic" fmul_algebraic.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fmul_algebraic.
   
@@ -3333,6 +3461,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fdiv_algebraic :
     M.IsFunction.C "core::intrinsics::fdiv_algebraic" fdiv_algebraic.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fdiv_algebraic.
   
@@ -3356,6 +3485,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_frem_algebraic :
     M.IsFunction.C "core::intrinsics::frem_algebraic" frem_algebraic.
+  Proof.
   Admitted.
   Global Typeclasses Opaque frem_algebraic.
   
@@ -3377,6 +3507,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_ctpop : M.IsFunction.C "core::intrinsics::ctpop" ctpop.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ctpop.
   
@@ -3398,6 +3529,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_ctlz : M.IsFunction.C "core::intrinsics::ctlz" ctlz.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ctlz.
   
@@ -3420,6 +3552,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_ctlz_nonzero :
     M.IsFunction.C "core::intrinsics::ctlz_nonzero" ctlz_nonzero.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ctlz_nonzero.
   
@@ -3441,6 +3574,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_cttz : M.IsFunction.C "core::intrinsics::cttz" cttz.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cttz.
   
@@ -3463,6 +3597,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_cttz_nonzero :
     M.IsFunction.C "core::intrinsics::cttz_nonzero" cttz_nonzero.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cttz_nonzero.
   
@@ -3484,6 +3619,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_bswap : M.IsFunction.C "core::intrinsics::bswap" bswap.
+  Proof.
   Admitted.
   Global Typeclasses Opaque bswap.
   
@@ -3506,6 +3642,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_bitreverse :
     M.IsFunction.C "core::intrinsics::bitreverse" bitreverse.
+  Proof.
   Admitted.
   Global Typeclasses Opaque bitreverse.
   
@@ -3529,6 +3666,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_three_way_compare :
     M.IsFunction.C "core::intrinsics::three_way_compare" three_way_compare.
+  Proof.
   Admitted.
   Global Typeclasses Opaque three_way_compare.
   
@@ -3562,6 +3700,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_disjoint_bitor :
     M.IsFunction.C "core::intrinsics::disjoint_bitor" disjoint_bitor.
+  Proof.
   Admitted.
   Global Typeclasses Opaque disjoint_bitor.
   
@@ -3585,6 +3724,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_add_with_overflow :
     M.IsFunction.C "core::intrinsics::add_with_overflow" add_with_overflow.
+  Proof.
   Admitted.
   Global Typeclasses Opaque add_with_overflow.
   
@@ -3608,6 +3748,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_sub_with_overflow :
     M.IsFunction.C "core::intrinsics::sub_with_overflow" sub_with_overflow.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sub_with_overflow.
   
@@ -3631,6 +3772,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_mul_with_overflow :
     M.IsFunction.C "core::intrinsics::mul_with_overflow" mul_with_overflow.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mul_with_overflow.
   
@@ -3675,6 +3817,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_carrying_mul_add :
     M.IsFunction.C "core::intrinsics::carrying_mul_add" carrying_mul_add.
+  Proof.
   Admitted.
   Global Typeclasses Opaque carrying_mul_add.
   
@@ -3698,6 +3841,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_exact_div :
     M.IsFunction.C "core::intrinsics::exact_div" exact_div.
+  Proof.
   Admitted.
   Global Typeclasses Opaque exact_div.
   
@@ -3721,6 +3865,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unchecked_div :
     M.IsFunction.C "core::intrinsics::unchecked_div" unchecked_div.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unchecked_div.
   
@@ -3744,6 +3889,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unchecked_rem :
     M.IsFunction.C "core::intrinsics::unchecked_rem" unchecked_rem.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unchecked_rem.
   
@@ -3767,6 +3913,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unchecked_shl :
     M.IsFunction.C "core::intrinsics::unchecked_shl" unchecked_shl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unchecked_shl.
   
@@ -3790,6 +3937,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unchecked_shr :
     M.IsFunction.C "core::intrinsics::unchecked_shr" unchecked_shr.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unchecked_shr.
   
@@ -3813,6 +3961,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unchecked_add :
     M.IsFunction.C "core::intrinsics::unchecked_add" unchecked_add.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unchecked_add.
   
@@ -3836,6 +3985,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unchecked_sub :
     M.IsFunction.C "core::intrinsics::unchecked_sub" unchecked_sub.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unchecked_sub.
   
@@ -3859,6 +4009,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unchecked_mul :
     M.IsFunction.C "core::intrinsics::unchecked_mul" unchecked_mul.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unchecked_mul.
   
@@ -3910,6 +4061,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_rotate_left :
     M.IsFunction.C "core::intrinsics::rotate_left" rotate_left.
+  Proof.
   Admitted.
   Global Typeclasses Opaque rotate_left.
   
@@ -3961,6 +4113,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_rotate_right :
     M.IsFunction.C "core::intrinsics::rotate_right" rotate_right.
+  Proof.
   Admitted.
   Global Typeclasses Opaque rotate_right.
   
@@ -3984,6 +4137,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_wrapping_add :
     M.IsFunction.C "core::intrinsics::wrapping_add" wrapping_add.
+  Proof.
   Admitted.
   Global Typeclasses Opaque wrapping_add.
   
@@ -4007,6 +4161,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_wrapping_sub :
     M.IsFunction.C "core::intrinsics::wrapping_sub" wrapping_sub.
+  Proof.
   Admitted.
   Global Typeclasses Opaque wrapping_sub.
   
@@ -4030,6 +4185,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_wrapping_mul :
     M.IsFunction.C "core::intrinsics::wrapping_mul" wrapping_mul.
+  Proof.
   Admitted.
   Global Typeclasses Opaque wrapping_mul.
   
@@ -4053,6 +4209,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_saturating_add :
     M.IsFunction.C "core::intrinsics::saturating_add" saturating_add.
+  Proof.
   Admitted.
   Global Typeclasses Opaque saturating_add.
   
@@ -4076,6 +4233,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_saturating_sub :
     M.IsFunction.C "core::intrinsics::saturating_sub" saturating_sub.
+  Proof.
   Admitted.
   Global Typeclasses Opaque saturating_sub.
   
@@ -4114,6 +4272,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unchecked_funnel_shl :
     M.IsFunction.C "core::intrinsics::unchecked_funnel_shl" unchecked_funnel_shl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unchecked_funnel_shl.
   
@@ -4152,6 +4311,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_unchecked_funnel_shr :
     M.IsFunction.C "core::intrinsics::unchecked_funnel_shr" unchecked_funnel_shr.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unchecked_funnel_shr.
   
@@ -4174,6 +4334,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_read_via_copy :
     M.IsFunction.C "core::intrinsics::read_via_copy" read_via_copy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_via_copy.
   
@@ -4197,6 +4358,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_write_via_move :
     M.IsFunction.C "core::intrinsics::write_via_move" write_via_move.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_via_move.
   
@@ -4219,6 +4381,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_discriminant_value :
     M.IsFunction.C "core::intrinsics::discriminant_value" discriminant_value.
+  Proof.
   Admitted.
   Global Typeclasses Opaque discriminant_value.
   
@@ -4262,6 +4425,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_catch_unwind :
     M.IsFunction.C "core::intrinsics::catch_unwind" catch_unwind.
+  Proof.
   Admitted.
   Global Typeclasses Opaque catch_unwind.
   
@@ -4285,6 +4449,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_nontemporal_store :
     M.IsFunction.C "core::intrinsics::nontemporal_store" nontemporal_store.
+  Proof.
   Admitted.
   Global Typeclasses Opaque nontemporal_store.
   
@@ -4308,6 +4473,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_ptr_offset_from :
     M.IsFunction.C "core::intrinsics::ptr_offset_from" ptr_offset_from.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ptr_offset_from.
   
@@ -4331,6 +4497,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_ptr_offset_from_unsigned :
     M.IsFunction.C "core::intrinsics::ptr_offset_from_unsigned" ptr_offset_from_unsigned.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ptr_offset_from_unsigned.
   
@@ -4357,6 +4524,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_ptr_guaranteed_cmp :
     M.IsFunction.C "core::intrinsics::ptr_guaranteed_cmp" ptr_guaranteed_cmp.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ptr_guaranteed_cmp.
   
@@ -4379,6 +4547,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_raw_eq : M.IsFunction.C "core::intrinsics::raw_eq" raw_eq.
+  Proof.
   Admitted.
   Global Typeclasses Opaque raw_eq.
   
@@ -4403,6 +4572,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_compare_bytes :
     M.IsFunction.C "core::intrinsics::compare_bytes" compare_bytes.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compare_bytes.
   
@@ -4425,6 +4595,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_black_box :
     M.IsFunction.C "core::intrinsics::black_box" black_box.
+  Proof.
   Admitted.
   Global Typeclasses Opaque black_box.
   
@@ -4458,6 +4629,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_const_eval_select :
     M.IsFunction.C "core::intrinsics::const_eval_select" const_eval_select.
+  Proof.
   Admitted.
   Global Typeclasses Opaque const_eval_select.
   
@@ -4477,6 +4649,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_is_val_statically_known :
     M.IsFunction.C "core::intrinsics::is_val_statically_known" is_val_statically_known.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_val_statically_known.
   
@@ -4507,6 +4680,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_typed_swap_nonoverlapping :
     M.IsFunction.C "core::intrinsics::typed_swap_nonoverlapping" typed_swap_nonoverlapping.
+  Proof.
   Admitted.
   Global Typeclasses Opaque typed_swap_nonoverlapping.
   
@@ -4523,6 +4697,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_ub_checks :
     M.IsFunction.C "core::intrinsics::ub_checks" ub_checks.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ub_checks.
   
@@ -4539,6 +4714,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_overflow_checks :
     M.IsFunction.C "core::intrinsics::overflow_checks" overflow_checks.
+  Proof.
   Admitted.
   Global Typeclasses Opaque overflow_checks.
   
@@ -4565,6 +4741,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_const_allocate :
     M.IsFunction.C "core::intrinsics::const_allocate" const_allocate.
+  Proof.
   Admitted.
   Global Typeclasses Opaque const_allocate.
   
@@ -4586,6 +4763,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_const_deallocate :
     M.IsFunction.C "core::intrinsics::const_deallocate" const_deallocate.
+  Proof.
   Admitted.
   Global Typeclasses Opaque const_deallocate.
   
@@ -4613,6 +4791,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_const_make_global :
     M.IsFunction.C "core::intrinsics::const_make_global" const_make_global.
+  Proof.
   Admitted.
   Global Typeclasses Opaque const_make_global.
   
@@ -4659,6 +4838,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_contract_check_requires :
     M.IsFunction.C "core::intrinsics::contract_check_requires" contract_check_requires.
+  Proof.
   Admitted.
   Global Typeclasses Opaque contract_check_requires.
   
@@ -4718,6 +4898,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_runtime :
       M.IsFunction.C "core::intrinsics::contract_check_requires::runtime" runtime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque runtime.
     
@@ -4740,6 +4921,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_compiletime :
       M.IsFunction.C "core::intrinsics::contract_check_requires::compiletime" compiletime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque compiletime.
   End contract_check_requires.
@@ -4798,6 +4980,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_contract_check_ensures :
     M.IsFunction.C "core::intrinsics::contract_check_ensures" contract_check_ensures.
+  Proof.
   Admitted.
   Global Typeclasses Opaque contract_check_ensures.
   
@@ -4891,6 +5074,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_runtime :
       M.IsFunction.C "core::intrinsics::contract_check_ensures::runtime" runtime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque runtime.
     
@@ -4926,6 +5110,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_compiletime :
       M.IsFunction.C "core::intrinsics::contract_check_ensures::compiletime" compiletime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque compiletime.
   End contract_check_ensures.
@@ -4949,6 +5134,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_vtable_size :
     M.IsFunction.C "core::intrinsics::vtable_size" vtable_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque vtable_size.
   
@@ -4971,6 +5157,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_vtable_align :
     M.IsFunction.C "core::intrinsics::vtable_align" vtable_align.
+  Proof.
   Admitted.
   Global Typeclasses Opaque vtable_align.
   
@@ -4991,6 +5178,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_size_of : M.IsFunction.C "core::intrinsics::size_of" size_of.
+  Proof.
   Admitted.
   Global Typeclasses Opaque size_of.
   
@@ -5012,6 +5200,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_align_of :
     M.IsFunction.C "core::intrinsics::align_of" align_of.
+  Proof.
   Admitted.
   Global Typeclasses Opaque align_of.
   
@@ -5035,6 +5224,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_offset_of :
     M.IsFunction.C "core::intrinsics::offset_of" offset_of.
+  Proof.
   Admitted.
   Global Typeclasses Opaque offset_of.
   
@@ -5056,6 +5246,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_variant_count :
     M.IsFunction.C "core::intrinsics::variant_count" variant_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque variant_count.
   
@@ -5078,6 +5269,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_size_of_val :
     M.IsFunction.C "core::intrinsics::size_of_val" size_of_val.
+  Proof.
   Admitted.
   Global Typeclasses Opaque size_of_val.
   
@@ -5100,6 +5292,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_align_of_val :
     M.IsFunction.C "core::intrinsics::align_of_val" align_of_val.
+  Proof.
   Admitted.
   Global Typeclasses Opaque align_of_val.
   
@@ -5121,6 +5314,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_type_name :
     M.IsFunction.C "core::intrinsics::type_name" type_name.
+  Proof.
   Admitted.
   Global Typeclasses Opaque type_name.
   
@@ -5141,6 +5335,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_type_id : M.IsFunction.C "core::intrinsics::type_id" type_id.
+  Proof.
   Admitted.
   Global Typeclasses Opaque type_id.
   
@@ -5190,6 +5385,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_type_id_eq :
     M.IsFunction.C "core::intrinsics::type_id_eq" type_id_eq.
+  Proof.
   Admitted.
   Global Typeclasses Opaque type_id_eq.
   
@@ -5217,6 +5413,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_aggregate_raw_ptr :
     M.IsFunction.C "core::intrinsics::aggregate_raw_ptr" aggregate_raw_ptr.
+  Proof.
   Admitted.
   Global Typeclasses Opaque aggregate_raw_ptr.
   
@@ -5239,6 +5436,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_ptr_metadata :
     M.IsFunction.C "core::intrinsics::ptr_metadata" ptr_metadata.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ptr_metadata.
   
@@ -5263,6 +5461,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_copy_nonoverlapping :
     M.IsFunction.C "core::intrinsics::copy_nonoverlapping" copy_nonoverlapping.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copy_nonoverlapping.
   
@@ -5286,6 +5485,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_copy : M.IsFunction.C "core::intrinsics::copy" copy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copy.
   
@@ -5310,6 +5510,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_write_bytes :
     M.IsFunction.C "core::intrinsics::write_bytes" write_bytes.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_bytes.
   
@@ -5333,6 +5534,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_minnumf16 :
     M.IsFunction.C "core::intrinsics::minnumf16" minnumf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minnumf16.
   
@@ -5356,6 +5558,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_minnumf32 :
     M.IsFunction.C "core::intrinsics::minnumf32" minnumf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minnumf32.
   
@@ -5379,6 +5582,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_minnumf64 :
     M.IsFunction.C "core::intrinsics::minnumf64" minnumf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minnumf64.
   
@@ -5402,6 +5606,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_minnumf128 :
     M.IsFunction.C "core::intrinsics::minnumf128" minnumf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minnumf128.
   
@@ -5549,6 +5754,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_minimumf16 :
     M.IsFunction.C "core::intrinsics::minimumf16" minimumf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minimumf16.
   
@@ -5696,6 +5902,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_minimumf32 :
     M.IsFunction.C "core::intrinsics::minimumf32" minimumf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minimumf32.
   
@@ -5843,6 +6050,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_minimumf64 :
     M.IsFunction.C "core::intrinsics::minimumf64" minimumf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minimumf64.
   
@@ -5990,6 +6198,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_minimumf128 :
     M.IsFunction.C "core::intrinsics::minimumf128" minimumf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minimumf128.
   
@@ -6013,6 +6222,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_maxnumf16 :
     M.IsFunction.C "core::intrinsics::maxnumf16" maxnumf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maxnumf16.
   
@@ -6036,6 +6246,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_maxnumf32 :
     M.IsFunction.C "core::intrinsics::maxnumf32" maxnumf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maxnumf32.
   
@@ -6059,6 +6270,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_maxnumf64 :
     M.IsFunction.C "core::intrinsics::maxnumf64" maxnumf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maxnumf64.
   
@@ -6082,6 +6294,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_maxnumf128 :
     M.IsFunction.C "core::intrinsics::maxnumf128" maxnumf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maxnumf128.
   
@@ -6228,6 +6441,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_maximumf16 :
     M.IsFunction.C "core::intrinsics::maximumf16" maximumf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maximumf16.
   
@@ -6374,6 +6588,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_maximumf32 :
     M.IsFunction.C "core::intrinsics::maximumf32" maximumf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maximumf32.
   
@@ -6520,6 +6735,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_maximumf64 :
     M.IsFunction.C "core::intrinsics::maximumf64" maximumf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maximumf64.
   
@@ -6666,6 +6882,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_maximumf128 :
     M.IsFunction.C "core::intrinsics::maximumf128" maximumf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque maximumf128.
   
@@ -6687,6 +6904,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_fabsf16 : M.IsFunction.C "core::intrinsics::fabsf16" fabsf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fabsf16.
   
@@ -6708,6 +6926,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_fabsf32 : M.IsFunction.C "core::intrinsics::fabsf32" fabsf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fabsf32.
   
@@ -6729,6 +6948,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_fabsf64 : M.IsFunction.C "core::intrinsics::fabsf64" fabsf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fabsf64.
   
@@ -6751,6 +6971,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_fabsf128 :
     M.IsFunction.C "core::intrinsics::fabsf128" fabsf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fabsf128.
   
@@ -6774,6 +6995,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_copysignf16 :
     M.IsFunction.C "core::intrinsics::copysignf16" copysignf16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copysignf16.
   
@@ -6797,6 +7019,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_copysignf32 :
     M.IsFunction.C "core::intrinsics::copysignf32" copysignf32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copysignf32.
   
@@ -6820,6 +7043,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_copysignf64 :
     M.IsFunction.C "core::intrinsics::copysignf64" copysignf64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copysignf64.
   
@@ -6843,6 +7067,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_copysignf128 :
     M.IsFunction.C "core::intrinsics::copysignf128" copysignf128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copysignf128.
   
@@ -6867,6 +7092,7 @@ Module intrinsics.
   
   Global Instance Instance_IsFunction_autodiff :
     M.IsFunction.C "core::intrinsics::autodiff" autodiff.
+  Proof.
   Admitted.
   Global Typeclasses Opaque autodiff.
   
@@ -6889,6 +7115,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_offload : M.IsFunction.C "core::intrinsics::offload" offload.
+  Proof.
   Admitted.
   Global Typeclasses Opaque offload.
   
@@ -6916,6 +7143,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_va_copy : M.IsFunction.C "core::intrinsics::va_copy" va_copy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque va_copy.
   
@@ -6938,6 +7166,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_va_arg : M.IsFunction.C "core::intrinsics::va_arg" va_arg.
+  Proof.
   Admitted.
   Global Typeclasses Opaque va_arg.
   
@@ -6960,6 +7189,7 @@ Module intrinsics.
     end.
   
   Global Instance Instance_IsFunction_va_end : M.IsFunction.C "core::intrinsics::va_end" va_end.
+  Proof.
   Admitted.
   Global Typeclasses Opaque va_end.
 End intrinsics.
@@ -7107,6 +7337,7 @@ Module mem.
       
       Global Instance Instance_IsFunction_runtime :
         M.IsFunction.C "core::mem::conjure_zst::do_panic::runtime" runtime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque runtime.
       
@@ -7152,6 +7383,7 @@ Module mem.
       
       Global Instance Instance_IsFunction_compiletime :
         M.IsFunction.C "core::mem::conjure_zst::do_panic::compiletime" compiletime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compiletime.
     End do_panic.
@@ -7291,6 +7523,7 @@ Module ptr.
     
     Global Instance Instance_IsFunction_runtime :
       M.IsFunction.C "core::ptr::swap_nonoverlapping::runtime" runtime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque runtime.
     
@@ -7347,6 +7580,7 @@ Module ptr.
     
     Global Instance Instance_IsFunction_compiletime :
       M.IsFunction.C "core::ptr::swap_nonoverlapping::compiletime" compiletime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque compiletime.
   End swap_nonoverlapping.
@@ -7368,6 +7602,7 @@ Module ub_checks.
     
     Global Instance Instance_IsFunction_runtime :
       M.IsFunction.C "core::ub_checks::check_language_ub::runtime" runtime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque runtime.
     
@@ -7387,6 +7622,7 @@ Module ub_checks.
     
     Global Instance Instance_IsFunction_compiletime :
       M.IsFunction.C "core::ub_checks::check_language_ub::compiletime" compiletime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque compiletime.
   End check_language_ub.
@@ -7418,6 +7654,7 @@ Module ub_checks.
     
     Global Instance Instance_IsFunction_runtime :
       M.IsFunction.C "core::ub_checks::maybe_is_aligned::runtime" runtime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque runtime.
     
@@ -7453,6 +7690,7 @@ Module ub_checks.
     
     Global Instance Instance_IsFunction_compiletime :
       M.IsFunction.C "core::ub_checks::maybe_is_aligned::compiletime" compiletime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque compiletime.
   End maybe_is_aligned.
@@ -7552,6 +7790,7 @@ Module ub_checks.
     
     Global Instance Instance_IsFunction_runtime :
       M.IsFunction.C "core::ub_checks::maybe_is_nonoverlapping::runtime" runtime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque runtime.
     
@@ -7605,6 +7844,7 @@ Module ub_checks.
     
     Global Instance Instance_IsFunction_compiletime :
       M.IsFunction.C "core::ub_checks::maybe_is_nonoverlapping::compiletime" compiletime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque compiletime.
   End maybe_is_nonoverlapping.
@@ -7685,6 +7925,7 @@ Module cell.
       
       Global Instance Instance_IsFunction_runtime :
         M.IsFunction.C "core::cell::panic_already_borrowed::do_panic::runtime" runtime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque runtime.
       
@@ -7730,6 +7971,7 @@ Module cell.
       
       Global Instance Instance_IsFunction_compiletime :
         M.IsFunction.C "core::cell::panic_already_borrowed::do_panic::compiletime" compiletime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compiletime.
     End do_panic.
@@ -7809,6 +8051,7 @@ Module cell.
       
       Global Instance Instance_IsFunction_runtime :
         M.IsFunction.C "core::cell::panic_already_mutably_borrowed::do_panic::runtime" runtime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque runtime.
       
@@ -7856,6 +8099,7 @@ Module cell.
         M.IsFunction.C
           "core::cell::panic_already_mutably_borrowed::do_panic::compiletime"
           compiletime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compiletime.
     End do_panic.
@@ -8061,6 +8305,7 @@ Module char.
         
         Global Instance Instance_IsFunction_runtime :
           M.IsFunction.C "core::char::methods::encode_utf8_raw::do_panic::runtime" runtime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque runtime.
         
@@ -8128,6 +8373,7 @@ Module char.
         
         Global Instance Instance_IsFunction_compiletime :
           M.IsFunction.C "core::char::methods::encode_utf8_raw::do_panic::compiletime" compiletime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compiletime.
       End do_panic.
@@ -8331,6 +8577,7 @@ Module char.
         
         Global Instance Instance_IsFunction_runtime :
           M.IsFunction.C "core::char::methods::encode_utf16_raw::do_panic::runtime" runtime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque runtime.
         
@@ -8398,6 +8645,7 @@ Module char.
         
         Global Instance Instance_IsFunction_compiletime :
           M.IsFunction.C "core::char::methods::encode_utf16_raw::do_panic::compiletime" compiletime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compiletime.
       End do_panic.
@@ -8428,6 +8676,7 @@ Module ffi.
       
       Global Instance Instance_IsFunction_runtime :
         M.IsFunction.C "core::ffi::c_str::strlen::runtime" runtime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque runtime.
       
@@ -8538,6 +8787,7 @@ Module ffi.
       
       Global Instance Instance_IsFunction_compiletime :
         M.IsFunction.C "core::ffi::c_str::strlen::compiletime" compiletime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compiletime.
     End strlen.
@@ -8629,6 +8879,7 @@ Module panicking.
     
     Global Instance Instance_IsFunction_runtime :
       M.IsFunction.C "core::panicking::panic_nounwind_fmt::runtime" runtime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque runtime.
     
@@ -8672,6 +8923,7 @@ Module panicking.
     
     Global Instance Instance_IsFunction_compiletime :
       M.IsFunction.C "core::panicking::panic_nounwind_fmt::compiletime" compiletime.
+    Proof.
     Admitted.
     Global Typeclasses Opaque compiletime.
   End panic_nounwind_fmt.
@@ -9201,6 +9453,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_runtime :
         M.IsFunction.C "core::slice::memchr::memchr_aligned::runtime" runtime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque runtime.
       
@@ -9251,6 +9504,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_compiletime :
         M.IsFunction.C "core::slice::memchr::memchr_aligned::compiletime" compiletime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compiletime.
     End memchr_aligned.
@@ -9420,6 +9674,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_runtime :
           M.IsFunction.C "core::slice::index::slice_index_fail::do_panic::runtime" runtime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque runtime.
         
@@ -9474,6 +9729,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_compiletime :
           M.IsFunction.C "core::slice::index::slice_index_fail::do_panic::compiletime" compiletime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compiletime.
       End do_panic.
@@ -9638,6 +9894,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_runtime :
           M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'1::runtime" runtime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque runtime.
         
@@ -9694,6 +9951,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::index::slice_index_fail::do_panic'1::compiletime"
             compiletime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compiletime.
       End do_panic_1.
@@ -9843,6 +10101,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_runtime :
           M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'2::runtime" runtime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque runtime.
         
@@ -9899,6 +10158,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::index::slice_index_fail::do_panic'2::compiletime"
             compiletime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compiletime.
       End do_panic_2.
@@ -10063,6 +10323,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_runtime :
           M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'3::runtime" runtime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque runtime.
         
@@ -10119,6 +10380,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::index::slice_index_fail::do_panic'3::compiletime"
             compiletime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compiletime.
       End do_panic_3.
@@ -10322,6 +10584,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::copy_from_slice_impl::len_mismatch_fail::do_panic::runtime"
             runtime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque runtime.
         
@@ -10382,6 +10645,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::copy_from_slice_impl::len_mismatch_fail::do_panic::compiletime"
             compiletime.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compiletime.
       End do_panic.
@@ -10438,6 +10702,7 @@ Module str.
       
       Global Instance Instance_IsFunction_runtime :
         M.IsFunction.C "core::str::validations::run_utf8_validation::runtime" runtime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque runtime.
       
@@ -10474,6 +10739,7 @@ Module str.
       
       Global Instance Instance_IsFunction_compiletime :
         M.IsFunction.C "core::str::validations::run_utf8_validation::compiletime" compiletime.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compiletime.
     End run_utf8_validation.

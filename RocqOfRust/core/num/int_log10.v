@@ -71,6 +71,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u8 : M.IsFunction.C "core::num::int_log10::u8" u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u8.
     
@@ -88,6 +89,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_C1 :
         M.IsFunction.C "core::num::int_log10::u8::C1" value_C1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_C1.
       
@@ -104,6 +106,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_C2 :
         M.IsFunction.C "core::num::int_log10::u8::C2" value_C2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_C2.
     End u8.
@@ -215,6 +218,7 @@ Module num.
     
     Global Instance Instance_IsFunction_less_than_5 :
       M.IsFunction.C "core::num::int_log10::less_than_5" less_than_5.
+    Proof.
     Admitted.
     Global Typeclasses Opaque less_than_5.
     
@@ -232,6 +236,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_C1 :
         M.IsFunction.C "core::num::int_log10::less_than_5::C1" value_C1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_C1.
       
@@ -248,6 +253,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_C2 :
         M.IsFunction.C "core::num::int_log10::less_than_5::C2" value_C2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_C2.
       
@@ -264,6 +270,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_C3 :
         M.IsFunction.C "core::num::int_log10::less_than_5::C3" value_C3.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_C3.
       
@@ -280,6 +287,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_C4 :
         M.IsFunction.C "core::num::int_log10::less_than_5::C4" value_C4.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_C4.
     End less_than_5.
@@ -303,6 +311,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u16 : M.IsFunction.C "core::num::int_log10::u16" u16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u16.
     
@@ -386,6 +395,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u32 : M.IsFunction.C "core::num::int_log10::u32" u32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u32.
     
@@ -516,6 +526,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u64 : M.IsFunction.C "core::num::int_log10::u64" u64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u64.
     
@@ -677,6 +688,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u128 : M.IsFunction.C "core::num::int_log10::u128" u128.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u128.
     
@@ -699,6 +711,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_usize : M.IsFunction.C "core::num::int_log10::usize" usize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque usize.
     
@@ -721,6 +734,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i8 : M.IsFunction.C "core::num::int_log10::i8" i8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i8.
     
@@ -743,6 +757,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i16 : M.IsFunction.C "core::num::int_log10::i16" i16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i16.
     
@@ -765,6 +780,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i32 : M.IsFunction.C "core::num::int_log10::i32" i32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i32.
     
@@ -787,6 +803,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i64 : M.IsFunction.C "core::num::int_log10::i64" i64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i64.
     
@@ -809,6 +826,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i128 : M.IsFunction.C "core::num::int_log10::i128" i128.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i128.
     
@@ -843,6 +861,7 @@ Module num.
       M.IsFunction.C
         "core::num::int_log10::panic_for_nonpositive_argument"
         panic_for_nonpositive_argument.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_for_nonpositive_argument.
   End int_log10.

@@ -58,6 +58,7 @@ Module Impl_generics_new_type_idiom_Years.
     end.
   
   Global Instance AssociatedFunction_to_days : M.IsAssociatedFunction.C Self "to_days" to_days.
+  Proof.
   Admitted.
   Global Typeclasses Opaque to_days.
 End Impl_generics_new_type_idiom_Years.
@@ -103,6 +104,7 @@ Module Impl_generics_new_type_idiom_Days.
     end.
   
   Global Instance AssociatedFunction_to_years : M.IsAssociatedFunction.C Self "to_years" to_years.
+  Proof.
   Admitted.
   Global Typeclasses Opaque to_years.
 End Impl_generics_new_type_idiom_Days.
@@ -137,6 +139,7 @@ Definition old_enough (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
 
 Global Instance Instance_IsFunction_old_enough :
   M.IsFunction.C "generics_new_type_idiom::old_enough" old_enough.
+Proof.
 Admitted.
 Global Typeclasses Opaque old_enough.
 
@@ -396,5 +399,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "generics_new_type_idiom::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

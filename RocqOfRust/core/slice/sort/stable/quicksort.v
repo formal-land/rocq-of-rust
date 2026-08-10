@@ -851,6 +851,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_quicksort :
           M.IsFunction.C "core::slice::sort::stable::quicksort::quicksort" quicksort.
+        Proof.
         Admitted.
         Global Typeclasses Opaque quicksort.
         
@@ -2006,6 +2007,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_stable_partition :
           M.IsFunction.C "core::slice::sort::stable::quicksort::stable_partition" stable_partition.
+        Proof.
         Admitted.
         Global Typeclasses Opaque stable_partition.
         
@@ -2017,6 +2019,7 @@ Module slice.
             M.IsFunction.C
               "core::slice::sort::stable::quicksort::stable_partition::UNROLL_LEN"
               value_UNROLL_LEN.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_UNROLL_LEN.
         End stable_partition.
@@ -2079,6 +2082,7 @@ Module slice.
           Global Instance AssociatedFunction_new :
             forall (T : Ty.t),
             M.IsAssociatedFunction.C (Self T) "new" (new T).
+          Proof.
           Admitted.
           Global Typeclasses Opaque new.
           
@@ -2270,6 +2274,7 @@ Module slice.
           Global Instance AssociatedFunction_partition_one :
             forall (T : Ty.t),
             M.IsAssociatedFunction.C (Self T) "partition_one" (partition_one T).
+          Proof.
           Admitted.
           Global Typeclasses Opaque partition_one.
         End Impl_core_slice_sort_stable_quicksort_PartitionState_T.
@@ -2379,6 +2384,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::stable::quicksort::has_direct_interior_mutability"
             has_direct_interior_mutability.
+        Proof.
         Admitted.
         Global Typeclasses Opaque has_direct_interior_mutability.
       End quicksort.

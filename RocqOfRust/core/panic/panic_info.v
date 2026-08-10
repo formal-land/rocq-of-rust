@@ -212,6 +212,7 @@ Module panic.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -252,6 +253,7 @@ Module panic.
         end.
       
       Global Instance AssociatedFunction_message : M.IsAssociatedFunction.C Self "message" message.
+      Proof.
       Admitted.
       Global Typeclasses Opaque message.
       
@@ -299,6 +301,7 @@ Module panic.
       
       Global Instance AssociatedFunction_location :
         M.IsAssociatedFunction.C Self "location" location.
+      Proof.
       Admitted.
       Global Typeclasses Opaque location.
       
@@ -387,6 +390,7 @@ Module panic.
         end.
       
       Global Instance AssociatedFunction_payload : M.IsAssociatedFunction.C Self "payload" payload.
+      Proof.
       Admitted.
       Global Typeclasses Opaque payload.
       
@@ -416,6 +420,7 @@ Module panic.
       
       Global Instance AssociatedFunction_can_unwind :
         M.IsAssociatedFunction.C Self "can_unwind" can_unwind.
+      Proof.
       Admitted.
       Global Typeclasses Opaque can_unwind.
       
@@ -445,6 +450,7 @@ Module panic.
       
       Global Instance AssociatedFunction_force_no_backtrace :
         M.IsAssociatedFunction.C Self "force_no_backtrace" force_no_backtrace.
+      Proof.
       Admitted.
       Global Typeclasses Opaque force_no_backtrace.
     End Impl_core_panic_panic_info_PanicInfo.
@@ -1069,6 +1075,7 @@ Module panic.
         end.
       
       Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_str.
     End Impl_core_panic_panic_info_PanicMessage.

@@ -154,6 +154,7 @@ Module future.
       Global Instance AssociatedFunction_take_output :
         forall (F : Ty.t),
         M.IsAssociatedFunction.C (Self F) "take_output" (take_output F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque take_output.
     End Impl_core_future_join_MaybeDone_F.

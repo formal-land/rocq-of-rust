@@ -553,6 +553,7 @@ Module stack_usage_verifier.
       end.
     
     Global Instance AssociatedFunction_verify : M.IsAssociatedFunction.C Self "verify" verify.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify.
     
@@ -1858,6 +1859,7 @@ Module stack_usage_verifier.
     
     Global Instance AssociatedFunction_verify_block :
       M.IsAssociatedFunction.C Self "verify_block" verify_block.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_block.
     
@@ -3889,6 +3891,7 @@ Module stack_usage_verifier.
     
     Global Instance AssociatedFunction_instruction_effect :
       M.IsAssociatedFunction.C Self "instruction_effect" instruction_effect.
+    Proof.
     Admitted.
     Global Typeclasses Opaque instruction_effect.
     
@@ -3940,6 +3943,7 @@ Module stack_usage_verifier.
     
     Global Instance AssociatedFunction_current_function :
       M.IsAssociatedFunction.C Self "current_function" current_function.
+    Proof.
     Admitted.
     Global Typeclasses Opaque current_function.
   End Impl_move_bytecode_verifier_stack_usage_verifier_StackUsageVerifier.

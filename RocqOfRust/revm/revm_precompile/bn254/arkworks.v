@@ -468,6 +468,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_read_fq :
       M.IsFunction.C "revm_precompile::bn254::arkworks::read_fq" read_fq.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_fq.
     
@@ -1131,6 +1132,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_read_fq2 :
       M.IsFunction.C "revm_precompile::bn254::arkworks::read_fq2" read_fq2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_fq2.
     
@@ -1439,6 +1441,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_new_g1_point :
       M.IsFunction.C "revm_precompile::bn254::arkworks::new_g1_point" new_g1_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_g1_point.
     
@@ -1742,6 +1745,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_new_g2_point :
       M.IsFunction.C "revm_precompile::bn254::arkworks::new_g2_point" new_g2_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_g2_point.
     
@@ -2349,6 +2353,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_read_g1_point :
       M.IsFunction.C "revm_precompile::bn254::arkworks::read_g1_point" read_g1_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_g1_point.
     
@@ -2995,6 +3000,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_encode_g1_point :
       M.IsFunction.C "revm_precompile::bn254::arkworks::encode_g1_point" encode_g1_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque encode_g1_point.
     
@@ -3598,6 +3604,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_read_g2_point :
       M.IsFunction.C "revm_precompile::bn254::arkworks::read_g2_point" read_g2_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_g2_point.
     
@@ -3957,6 +3964,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_read_scalar :
       M.IsFunction.C "revm_precompile::bn254::arkworks::read_scalar" read_scalar.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_scalar.
     
@@ -4458,6 +4466,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_g1_point_add :
       M.IsFunction.C "revm_precompile::bn254::arkworks::g1_point_add" g1_point_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque g1_point_add.
     
@@ -4822,6 +4831,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_g1_point_mul :
       M.IsFunction.C "revm_precompile::bn254::arkworks::g1_point_mul" g1_point_mul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque g1_point_mul.
     
@@ -6063,6 +6073,7 @@ Module bn254.
     
     Global Instance Instance_IsFunction_pairing_check :
       M.IsFunction.C "revm_precompile::bn254::arkworks::pairing_check" pairing_check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pairing_check.
   End arkworks.

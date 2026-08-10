@@ -20,6 +20,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "inline_assembly_memory_address_operands::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.
 
@@ -47,6 +48,7 @@ Module main.
     M.IsFunction.C
       "inline_assembly_memory_address_operands::main::load_fpu_control_word"
       load_fpu_control_word.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_fpu_control_word.
 End main.

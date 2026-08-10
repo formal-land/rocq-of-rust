@@ -55,6 +55,7 @@ Definition checked_division (ε : list Value.t) (τ : list Ty.t) (α : list Valu
 
 Global Instance Instance_IsFunction_checked_division :
   M.IsFunction.C "option::checked_division" checked_division.
+Proof.
 Admitted.
 Global Typeclasses Opaque checked_division.
 
@@ -326,6 +327,7 @@ Definition try_division (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_try_division :
   M.IsFunction.C "option::try_division" try_division.
+Proof.
 Admitted.
 Global Typeclasses Opaque try_division.
 
@@ -642,5 +644,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "option::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

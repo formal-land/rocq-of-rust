@@ -37,26 +37,31 @@ Module Impl_enums_testcase_linked_list_List.
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter prepend : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_prepend : M.IsAssociatedFunction.C Self "prepend" prepend.
+  Proof.
   Admitted.
   
   Parameter len : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+  Proof.
   Admitted.
   
   Parameter stringify : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_stringify :
     M.IsAssociatedFunction.C Self "stringify" stringify.
+  Proof.
   Admitted.
 End Impl_enums_testcase_linked_list_List.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "enums_testcase_linked_list::main" main.
+Proof.
 Admitted.

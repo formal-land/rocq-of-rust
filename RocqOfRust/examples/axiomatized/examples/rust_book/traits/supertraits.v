@@ -17,9 +17,11 @@ Parameter comp_sci_student_greeting : (list Value.t) -> (list Ty.t) -> (list Val
 
 Global Instance Instance_IsFunction_comp_sci_student_greeting :
   M.IsFunction.C "supertraits::comp_sci_student_greeting" comp_sci_student_greeting.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "supertraits::main" main.
+Proof.
 Admitted.

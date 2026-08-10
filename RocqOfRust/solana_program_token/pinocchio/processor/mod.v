@@ -15,6 +15,7 @@ Module processor.
   
   Global Instance Instance_IsConstant_value_U64_BYTES :
     M.IsFunction.C "pinocchio_token_program::processor::U64_BYTES" value_U64_BYTES.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_U64_BYTES.
   
@@ -38,6 +39,7 @@ Module processor.
     M.IsFunction.C
       "pinocchio_token_program::processor::MAX_FORMATTED_DIGITS"
       value_MAX_FORMATTED_DIGITS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_FORMATTED_DIGITS.
   
@@ -134,6 +136,7 @@ Module processor.
   
   Global Instance Instance_IsFunction_check_account_owner :
     M.IsFunction.C "pinocchio_token_program::processor::check_account_owner" check_account_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_account_owner.
   
@@ -1661,6 +1664,7 @@ Module processor.
   
   Global Instance Instance_IsFunction_validate_owner :
     M.IsFunction.C "pinocchio_token_program::processor::validate_owner" validate_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_owner.
   
@@ -2254,6 +2258,7 @@ Module processor.
     M.IsFunction.C
       "pinocchio_token_program::processor::try_ui_amount_into_amount"
       try_ui_amount_into_amount.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_ui_amount_into_amount.
   
@@ -2379,6 +2384,7 @@ Module processor.
   
   Global Instance Instance_IsFunction_unpack_amount :
     M.IsFunction.C "pinocchio_token_program::processor::unpack_amount" unpack_amount.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unpack_amount.
   
@@ -2600,6 +2606,7 @@ Module processor.
     M.IsFunction.C
       "pinocchio_token_program::processor::unpack_amount_and_decimals"
       unpack_amount_and_decimals.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unpack_amount_and_decimals.
 End processor.

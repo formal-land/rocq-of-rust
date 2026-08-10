@@ -14,6 +14,7 @@ Module num.
         
         Global Instance Instance_IsFunction_set_precision :
           M.IsFunction.C "core::num::dec2flt::fpu::fpu_precision::set_precision" set_precision.
+        Proof.
         Admitted.
         Global Typeclasses Opaque set_precision.
       End fpu_precision.

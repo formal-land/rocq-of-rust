@@ -2290,6 +2290,7 @@ Module entrypoint.
   
   Global Instance Instance_IsFunction_entrypoint :
     M.IsFunction.C "pinocchio_token_program::entrypoint::entrypoint" entrypoint.
+  Proof.
   Admitted.
   Global Typeclasses Opaque entrypoint.
   
@@ -2305,6 +2306,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT1_HEADER_OFFSET"
         value_ACCOUNT1_HEADER_OFFSET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ACCOUNT1_HEADER_OFFSET.
     
@@ -2315,6 +2317,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT1_DATA_LEN"
         value_ACCOUNT1_DATA_LEN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ACCOUNT1_DATA_LEN.
     
@@ -2329,6 +2332,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_HEADER_OFFSET"
         value_ACCOUNT2_HEADER_OFFSET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ACCOUNT2_HEADER_OFFSET.
     
@@ -2339,6 +2343,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_DATA_LEN"
         value_ACCOUNT2_DATA_LEN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ACCOUNT2_DATA_LEN.
     
@@ -2353,6 +2358,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT3_HEADER_OFFSET"
         value_IX12_ACCOUNT3_HEADER_OFFSET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX12_ACCOUNT3_HEADER_OFFSET.
     
@@ -2367,6 +2373,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT3_DATA_LEN"
         value_IX12_ACCOUNT3_DATA_LEN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX12_ACCOUNT3_DATA_LEN.
     
@@ -2381,6 +2388,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT4_HEADER_OFFSET"
         value_IX12_ACCOUNT4_HEADER_OFFSET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX12_ACCOUNT4_HEADER_OFFSET.
     
@@ -2395,6 +2403,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT4_DATA_LEN"
         value_IX12_ACCOUNT4_DATA_LEN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX12_ACCOUNT4_DATA_LEN.
     
@@ -2409,6 +2418,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::IX12_EXPECTED_INSTRUCTION_DATA_LEN_OFFSET"
         value_IX12_EXPECTED_INSTRUCTION_DATA_LEN_OFFSET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX12_EXPECTED_INSTRUCTION_DATA_LEN_OFFSET.
     
@@ -2423,6 +2433,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::IX3_ACCOUNT3_HEADER_OFFSET"
         value_IX3_ACCOUNT3_HEADER_OFFSET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX3_ACCOUNT3_HEADER_OFFSET.
     
@@ -2437,6 +2448,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::IX3_ACCOUNT3_DATA_LEN"
         value_IX3_ACCOUNT3_DATA_LEN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX3_ACCOUNT3_DATA_LEN.
     
@@ -2451,6 +2463,7 @@ Module entrypoint.
       M.IsFunction.C
         "pinocchio_token_program::entrypoint::entrypoint::IX3_INSTRUCTION_DATA_LEN_OFFSET"
         value_IX3_INSTRUCTION_DATA_LEN_OFFSET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX3_INSTRUCTION_DATA_LEN_OFFSET.
     
@@ -2481,6 +2494,7 @@ Module entrypoint.
     
     Global Instance Instance_IsFunction_align :
       M.IsFunction.C "pinocchio_token_program::entrypoint::entrypoint::align" align.
+    Proof.
     Admitted.
     Global Typeclasses Opaque align.
     
@@ -2511,6 +2525,7 @@ Module entrypoint.
     
     Global Instance Instance_IsConstant_value_UNINIT :
       M.IsFunction.C "pinocchio_token_program::entrypoint::entrypoint::UNINIT" value_UNINIT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_UNINIT.
   End entrypoint.
@@ -2562,6 +2577,7 @@ Module entrypoint.
   
   Global Instance Instance_IsFunction_log_error :
     M.IsFunction.C "pinocchio_token_program::entrypoint::log_error" log_error.
+  Proof.
   Admitted.
   Global Typeclasses Opaque log_error.
   
@@ -2787,6 +2803,7 @@ Module entrypoint.
   
   Global Instance Instance_IsFunction_process_instruction :
     M.IsFunction.C "pinocchio_token_program::entrypoint::process_instruction" process_instruction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque process_instruction.
   
@@ -3312,6 +3329,7 @@ Module entrypoint.
     M.IsFunction.C
       "pinocchio_token_program::entrypoint::inner_process_instruction"
       inner_process_instruction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque inner_process_instruction.
   
@@ -3799,6 +3817,7 @@ Module entrypoint.
     M.IsFunction.C
       "pinocchio_token_program::entrypoint::inner_process_remaining_instruction"
       inner_process_remaining_instruction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque inner_process_remaining_instruction.
 End entrypoint.

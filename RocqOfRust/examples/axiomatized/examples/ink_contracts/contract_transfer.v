@@ -77,22 +77,26 @@ Module Impl_contract_transfer_Env.
   Parameter caller : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   
   Parameter balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_balance : M.IsAssociatedFunction.C Self "balance" balance.
+  Proof.
   Admitted.
   
   Parameter transfer : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_transfer : M.IsAssociatedFunction.C Self "transfer" transfer.
+  Proof.
   Admitted.
   
   Parameter transferred_value : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_transferred_value :
     M.IsAssociatedFunction.C Self "transferred_value" transferred_value.
+  Proof.
   Admitted.
 End Impl_contract_transfer_Env.
 
@@ -110,26 +114,31 @@ Module Impl_contract_transfer_GiveMe.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter give_me : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_give_me : M.IsAssociatedFunction.C Self "give_me" give_me.
+  Proof.
   Admitted.
   
   Parameter was_it_ten : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_was_it_ten :
     M.IsAssociatedFunction.C Self "was_it_ten" was_it_ten.
+  Proof.
   Admitted.
 End Impl_contract_transfer_GiveMe.

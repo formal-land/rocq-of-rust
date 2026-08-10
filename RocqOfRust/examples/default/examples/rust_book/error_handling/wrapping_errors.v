@@ -719,6 +719,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_double_first :
   M.IsFunction.C "wrapping_errors::double_first" double_first.
+Proof.
 Admitted.
 Global Typeclasses Opaque double_first.
 
@@ -1111,6 +1112,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_print : M.IsFunction.C "wrapping_errors::print" print.
+Proof.
 Admitted.
 Global Typeclasses Opaque print.
 
@@ -1386,5 +1388,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "wrapping_errors::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

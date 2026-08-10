@@ -31,6 +31,7 @@ Module array.
     end.
   
   Global Instance Instance_IsFunction_repeat : M.IsFunction.C "core::array::repeat" repeat.
+  Proof.
   Admitted.
   Global Typeclasses Opaque repeat.
   
@@ -89,6 +90,7 @@ Module array.
     end.
   
   Global Instance Instance_IsFunction_from_fn : M.IsFunction.C "core::array::from_fn" from_fn.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_fn.
   
@@ -372,6 +374,7 @@ Module array.
   
   Global Instance Instance_IsFunction_try_from_fn :
     M.IsFunction.C "core::array::try_from_fn" try_from_fn.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_from_fn.
   
@@ -421,6 +424,7 @@ Module array.
     end.
   
   Global Instance Instance_IsFunction_from_ref : M.IsFunction.C "core::array::from_ref" from_ref.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_ref.
   
@@ -485,6 +489,7 @@ Module array.
     end.
   
   Global Instance Instance_IsFunction_from_mut : M.IsFunction.C "core::array::from_mut" from_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_mut.
   
@@ -6224,6 +6229,7 @@ Module array.
     Global Instance AssociatedFunction_map :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "map" (map N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map.
     
@@ -6357,6 +6363,7 @@ Module array.
     Global Instance AssociatedFunction_try_map :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "try_map" (try_map N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_map.
     
@@ -6395,6 +6402,7 @@ Module array.
     Global Instance AssociatedFunction_as_slice :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "as_slice" (as_slice N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_slice.
     
@@ -6438,6 +6446,7 @@ Module array.
     Global Instance AssociatedFunction_as_mut_slice :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "as_mut_slice" (as_mut_slice N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_slice.
     
@@ -6568,6 +6577,7 @@ Module array.
     Global Instance AssociatedFunction_each_ref :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "each_ref" (each_ref N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque each_ref.
     
@@ -6698,6 +6708,7 @@ Module array.
     Global Instance AssociatedFunction_each_mut :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "each_mut" (each_mut N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque each_mut.
     
@@ -6780,6 +6791,7 @@ Module array.
     Global Instance AssociatedFunction_split_array_ref :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "split_array_ref" (split_array_ref N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_array_ref.
     
@@ -6862,6 +6874,7 @@ Module array.
     Global Instance AssociatedFunction_split_array_mut :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "split_array_mut" (split_array_mut N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_array_mut.
     
@@ -6944,6 +6957,7 @@ Module array.
     Global Instance AssociatedFunction_rsplit_array_ref :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "rsplit_array_ref" (rsplit_array_ref N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplit_array_ref.
     
@@ -7026,6 +7040,7 @@ Module array.
     Global Instance AssociatedFunction_rsplit_array_mut :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "rsplit_array_mut" (rsplit_array_mut N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplit_array_mut.
   End Impl_array_N_T.
@@ -7111,6 +7126,7 @@ Module array.
   
   Global Instance Instance_IsFunction_from_trusted_iterator :
     M.IsFunction.C "core::array::from_trusted_iterator" from_trusted_iterator.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_trusted_iterator.
   
@@ -7240,6 +7256,7 @@ Module array.
   
   Global Instance Instance_IsFunction_try_from_trusted_iterator :
     M.IsFunction.C "core::array::try_from_trusted_iterator" try_from_trusted_iterator.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_from_trusted_iterator.
   
@@ -7292,6 +7309,7 @@ Module array.
     
     Global Instance Instance_IsFunction_next :
       M.IsFunction.C "core::array::try_from_trusted_iterator::next" next.
+    Proof.
     Admitted.
     Global Typeclasses Opaque next.
   End try_from_trusted_iterator.
@@ -7760,6 +7778,7 @@ Module array.
   
   Global Instance Instance_IsFunction_try_from_fn_erased :
     M.IsFunction.C "core::array::try_from_fn_erased" try_from_fn_erased.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_from_fn_erased.
   
@@ -7899,6 +7918,7 @@ Module array.
     Global Instance AssociatedFunction_push_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "push_unchecked" (push_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque push_unchecked.
   End Impl_core_array_Guard_T.
@@ -8276,6 +8296,7 @@ Module array.
   
   Global Instance Instance_IsFunction_iter_next_chunk :
     M.IsFunction.C "core::array::iter_next_chunk" iter_next_chunk.
+  Proof.
   Admitted.
   Global Typeclasses Opaque iter_next_chunk.
   
@@ -8521,6 +8542,7 @@ Module array.
   
   Global Instance Instance_IsFunction_iter_next_chunk_erased :
     M.IsFunction.C "core::array::iter_next_chunk_erased" iter_next_chunk_erased.
+  Proof.
   Admitted.
   Global Typeclasses Opaque iter_next_chunk_erased.
 End array.

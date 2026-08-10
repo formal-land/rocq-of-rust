@@ -5,10 +5,12 @@ Parameter destroy_box : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_destroy_box :
   M.IsFunction.C "scoping_rules_ownership_and_rules::destroy_box" destroy_box.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_ownership_and_rules::main" main.
+Proof.
 Admitted.

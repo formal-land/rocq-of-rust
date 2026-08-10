@@ -5,9 +5,11 @@ Parameter value_PANGRAM : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_PANGRAM :
   M.IsFunction.C "child_processes_pipes::PANGRAM" value_PANGRAM.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "child_processes_pipes::main" main.
+Proof.
 Admitted.

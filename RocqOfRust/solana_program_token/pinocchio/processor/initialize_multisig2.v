@@ -238,6 +238,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::initialize_multisig2::process_initialize_multisig2"
         process_initialize_multisig2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_multisig2.
   End initialize_multisig2.

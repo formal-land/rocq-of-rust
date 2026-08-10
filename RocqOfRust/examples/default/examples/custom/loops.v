@@ -175,6 +175,7 @@ Definition sum_checked (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
   end.
 
 Global Instance Instance_IsFunction_sum_checked : M.IsFunction.C "loops::sum_checked" sum_checked.
+Proof.
 Admitted.
 Global Typeclasses Opaque sum_checked.
 
@@ -352,6 +353,7 @@ Definition reverse_in_place (ε : list Value.t) (τ : list Ty.t) (α : list Valu
 
 Global Instance Instance_IsFunction_reverse_in_place :
   M.IsFunction.C "loops::reverse_in_place" reverse_in_place.
+Proof.
 Admitted.
 Global Typeclasses Opaque reverse_in_place.
 
@@ -502,6 +504,7 @@ Definition is_sorted (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
   end.
 
 Global Instance Instance_IsFunction_is_sorted : M.IsFunction.C "loops::is_sorted" is_sorted.
+Proof.
 Admitted.
 Global Typeclasses Opaque is_sorted.
 
@@ -634,5 +637,6 @@ Definition max_array (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
   end.
 
 Global Instance Instance_IsFunction_max_array : M.IsFunction.C "loops::max_array" max_array.
+Proof.
 Admitted.
 Global Typeclasses Opaque max_array.

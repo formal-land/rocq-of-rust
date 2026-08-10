@@ -36,6 +36,7 @@ Module Impl_mother_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   
   Parameter insert : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -43,6 +44,7 @@ Module Impl_mother_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
 End Impl_mother_Mapping_K_V.
 
@@ -616,12 +618,14 @@ Module Impl_mother_Env.
   Parameter caller : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   
   Parameter emit_event : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
 End Impl_mother_Env.
 
@@ -658,45 +662,53 @@ Module Impl_mother_Mother.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter new_default : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new_default :
     M.IsAssociatedFunction.C Self "new_default" new_default.
+  Proof.
   Admitted.
   
   Parameter failed_new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_failed_new :
     M.IsAssociatedFunction.C Self "failed_new" failed_new.
+  Proof.
   Admitted.
   
   Parameter echo_auction : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_echo_auction :
     M.IsAssociatedFunction.C Self "echo_auction" echo_auction.
+  Proof.
   Admitted.
   
   Parameter revert_or_trap : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_revert_or_trap :
     M.IsAssociatedFunction.C Self "revert_or_trap" revert_or_trap.
+  Proof.
   Admitted.
   
   Parameter debug_log : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_debug_log :
     M.IsAssociatedFunction.C Self "debug_log" debug_log.
+  Proof.
   Admitted.
 End Impl_mother_Mother.

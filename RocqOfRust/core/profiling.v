@@ -42,6 +42,7 @@ Module profiling.
   
   Global Instance Instance_IsFunction_compiler_move :
     M.IsFunction.C "core::profiling::compiler_move" compiler_move.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compiler_move.
   
@@ -85,6 +86,7 @@ Module profiling.
   
   Global Instance Instance_IsFunction_compiler_copy :
     M.IsFunction.C "core::profiling::compiler_copy" compiler_copy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compiler_copy.
 End profiling.

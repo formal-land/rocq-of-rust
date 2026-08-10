@@ -13,6 +13,7 @@ Definition value_BUILTIN_BIT_SHIFT (ε : list Value.t) (τ : list Ty.t) (α : li
 
 Global Instance Instance_IsConstant_value_BUILTIN_BIT_SHIFT :
   M.IsFunction.C "solana_program_error::BUILTIN_BIT_SHIFT" value_BUILTIN_BIT_SHIFT.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_BUILTIN_BIT_SHIFT.
 
@@ -32,6 +33,7 @@ Definition value_CUSTOM_ZERO (ε : list Value.t) (τ : list Ty.t) (α : list Val
 
 Global Instance Instance_IsConstant_value_CUSTOM_ZERO :
   M.IsFunction.C "solana_program_error::CUSTOM_ZERO" value_CUSTOM_ZERO.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_CUSTOM_ZERO.
 
@@ -51,6 +53,7 @@ Definition value_INVALID_ARGUMENT (ε : list Value.t) (τ : list Ty.t) (α : lis
 
 Global Instance Instance_IsConstant_value_INVALID_ARGUMENT :
   M.IsFunction.C "solana_program_error::INVALID_ARGUMENT" value_INVALID_ARGUMENT.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_INVALID_ARGUMENT.
 
@@ -74,6 +77,7 @@ Definition value_INVALID_INSTRUCTION_DATA
 
 Global Instance Instance_IsConstant_value_INVALID_INSTRUCTION_DATA :
   M.IsFunction.C "solana_program_error::INVALID_INSTRUCTION_DATA" value_INVALID_INSTRUCTION_DATA.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_INVALID_INSTRUCTION_DATA.
 
@@ -93,6 +97,7 @@ Definition value_INVALID_ACCOUNT_DATA (ε : list Value.t) (τ : list Ty.t) (α :
 
 Global Instance Instance_IsConstant_value_INVALID_ACCOUNT_DATA :
   M.IsFunction.C "solana_program_error::INVALID_ACCOUNT_DATA" value_INVALID_ACCOUNT_DATA.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_INVALID_ACCOUNT_DATA.
 
@@ -112,6 +117,7 @@ Definition value_ACCOUNT_DATA_TOO_SMALL (ε : list Value.t) (τ : list Ty.t) (α
 
 Global Instance Instance_IsConstant_value_ACCOUNT_DATA_TOO_SMALL :
   M.IsFunction.C "solana_program_error::ACCOUNT_DATA_TOO_SMALL" value_ACCOUNT_DATA_TOO_SMALL.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_ACCOUNT_DATA_TOO_SMALL.
 
@@ -131,6 +137,7 @@ Definition value_INSUFFICIENT_FUNDS (ε : list Value.t) (τ : list Ty.t) (α : l
 
 Global Instance Instance_IsConstant_value_INSUFFICIENT_FUNDS :
   M.IsFunction.C "solana_program_error::INSUFFICIENT_FUNDS" value_INSUFFICIENT_FUNDS.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_INSUFFICIENT_FUNDS.
 
@@ -150,6 +157,7 @@ Definition value_INCORRECT_PROGRAM_ID (ε : list Value.t) (τ : list Ty.t) (α :
 
 Global Instance Instance_IsConstant_value_INCORRECT_PROGRAM_ID :
   M.IsFunction.C "solana_program_error::INCORRECT_PROGRAM_ID" value_INCORRECT_PROGRAM_ID.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_INCORRECT_PROGRAM_ID.
 
@@ -175,6 +183,7 @@ Global Instance Instance_IsConstant_value_MISSING_REQUIRED_SIGNATURES :
   M.IsFunction.C
     "solana_program_error::MISSING_REQUIRED_SIGNATURES"
     value_MISSING_REQUIRED_SIGNATURES.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_MISSING_REQUIRED_SIGNATURES.
 
@@ -200,6 +209,7 @@ Global Instance Instance_IsConstant_value_ACCOUNT_ALREADY_INITIALIZED :
   M.IsFunction.C
     "solana_program_error::ACCOUNT_ALREADY_INITIALIZED"
     value_ACCOUNT_ALREADY_INITIALIZED.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_ACCOUNT_ALREADY_INITIALIZED.
 
@@ -219,6 +229,7 @@ Definition value_UNINITIALIZED_ACCOUNT (ε : list Value.t) (τ : list Ty.t) (α 
 
 Global Instance Instance_IsConstant_value_UNINITIALIZED_ACCOUNT :
   M.IsFunction.C "solana_program_error::UNINITIALIZED_ACCOUNT" value_UNINITIALIZED_ACCOUNT.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_UNINITIALIZED_ACCOUNT.
 
@@ -242,6 +253,7 @@ Definition value_NOT_ENOUGH_ACCOUNT_KEYS
 
 Global Instance Instance_IsConstant_value_NOT_ENOUGH_ACCOUNT_KEYS :
   M.IsFunction.C "solana_program_error::NOT_ENOUGH_ACCOUNT_KEYS" value_NOT_ENOUGH_ACCOUNT_KEYS.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_NOT_ENOUGH_ACCOUNT_KEYS.
 
@@ -261,6 +273,7 @@ Definition value_ACCOUNT_BORROW_FAILED (ε : list Value.t) (τ : list Ty.t) (α 
 
 Global Instance Instance_IsConstant_value_ACCOUNT_BORROW_FAILED :
   M.IsFunction.C "solana_program_error::ACCOUNT_BORROW_FAILED" value_ACCOUNT_BORROW_FAILED.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_ACCOUNT_BORROW_FAILED.
 
@@ -284,6 +297,7 @@ Definition value_MAX_SEED_LENGTH_EXCEEDED
 
 Global Instance Instance_IsConstant_value_MAX_SEED_LENGTH_EXCEEDED :
   M.IsFunction.C "solana_program_error::MAX_SEED_LENGTH_EXCEEDED" value_MAX_SEED_LENGTH_EXCEEDED.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_MAX_SEED_LENGTH_EXCEEDED.
 
@@ -303,6 +317,7 @@ Definition value_INVALID_SEEDS (ε : list Value.t) (τ : list Ty.t) (α : list V
 
 Global Instance Instance_IsConstant_value_INVALID_SEEDS :
   M.IsFunction.C "solana_program_error::INVALID_SEEDS" value_INVALID_SEEDS.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_INVALID_SEEDS.
 
@@ -322,6 +337,7 @@ Definition value_BORSH_IO_ERROR (ε : list Value.t) (τ : list Ty.t) (α : list 
 
 Global Instance Instance_IsConstant_value_BORSH_IO_ERROR :
   M.IsFunction.C "solana_program_error::BORSH_IO_ERROR" value_BORSH_IO_ERROR.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_BORSH_IO_ERROR.
 
@@ -345,6 +361,7 @@ Definition value_ACCOUNT_NOT_RENT_EXEMPT
 
 Global Instance Instance_IsConstant_value_ACCOUNT_NOT_RENT_EXEMPT :
   M.IsFunction.C "solana_program_error::ACCOUNT_NOT_RENT_EXEMPT" value_ACCOUNT_NOT_RENT_EXEMPT.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_ACCOUNT_NOT_RENT_EXEMPT.
 
@@ -364,6 +381,7 @@ Definition value_UNSUPPORTED_SYSVAR (ε : list Value.t) (τ : list Ty.t) (α : l
 
 Global Instance Instance_IsConstant_value_UNSUPPORTED_SYSVAR :
   M.IsFunction.C "solana_program_error::UNSUPPORTED_SYSVAR" value_UNSUPPORTED_SYSVAR.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_UNSUPPORTED_SYSVAR.
 
@@ -383,6 +401,7 @@ Definition value_ILLEGAL_OWNER (ε : list Value.t) (τ : list Ty.t) (α : list V
 
 Global Instance Instance_IsConstant_value_ILLEGAL_OWNER :
   M.IsFunction.C "solana_program_error::ILLEGAL_OWNER" value_ILLEGAL_OWNER.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_ILLEGAL_OWNER.
 
@@ -408,6 +427,7 @@ Global Instance Instance_IsConstant_value_MAX_ACCOUNTS_DATA_ALLOCATIONS_EXCEEDED
   M.IsFunction.C
     "solana_program_error::MAX_ACCOUNTS_DATA_ALLOCATIONS_EXCEEDED"
     value_MAX_ACCOUNTS_DATA_ALLOCATIONS_EXCEEDED.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_MAX_ACCOUNTS_DATA_ALLOCATIONS_EXCEEDED.
 
@@ -433,6 +453,7 @@ Global Instance Instance_IsConstant_value_INVALID_ACCOUNT_DATA_REALLOC :
   M.IsFunction.C
     "solana_program_error::INVALID_ACCOUNT_DATA_REALLOC"
     value_INVALID_ACCOUNT_DATA_REALLOC.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_INVALID_ACCOUNT_DATA_REALLOC.
 
@@ -458,6 +479,7 @@ Global Instance Instance_IsConstant_value_MAX_INSTRUCTION_TRACE_LENGTH_EXCEEDED 
   M.IsFunction.C
     "solana_program_error::MAX_INSTRUCTION_TRACE_LENGTH_EXCEEDED"
     value_MAX_INSTRUCTION_TRACE_LENGTH_EXCEEDED.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_MAX_INSTRUCTION_TRACE_LENGTH_EXCEEDED.
 
@@ -483,6 +505,7 @@ Global Instance Instance_IsConstant_value_BUILTIN_PROGRAMS_MUST_CONSUME_COMPUTE_
   M.IsFunction.C
     "solana_program_error::BUILTIN_PROGRAMS_MUST_CONSUME_COMPUTE_UNITS"
     value_BUILTIN_PROGRAMS_MUST_CONSUME_COMPUTE_UNITS.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_BUILTIN_PROGRAMS_MUST_CONSUME_COMPUTE_UNITS.
 
@@ -502,6 +525,7 @@ Definition value_INVALID_ACCOUNT_OWNER (ε : list Value.t) (τ : list Ty.t) (α 
 
 Global Instance Instance_IsConstant_value_INVALID_ACCOUNT_OWNER :
   M.IsFunction.C "solana_program_error::INVALID_ACCOUNT_OWNER" value_INVALID_ACCOUNT_OWNER.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_INVALID_ACCOUNT_OWNER.
 
@@ -521,6 +545,7 @@ Definition value_ARITHMETIC_OVERFLOW (ε : list Value.t) (τ : list Ty.t) (α : 
 
 Global Instance Instance_IsConstant_value_ARITHMETIC_OVERFLOW :
   M.IsFunction.C "solana_program_error::ARITHMETIC_OVERFLOW" value_ARITHMETIC_OVERFLOW.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_ARITHMETIC_OVERFLOW.
 
@@ -540,6 +565,7 @@ Definition value_IMMUTABLE (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsConstant_value_IMMUTABLE :
   M.IsFunction.C "solana_program_error::IMMUTABLE" value_IMMUTABLE.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_IMMUTABLE.
 
@@ -559,6 +585,7 @@ Definition value_INCORRECT_AUTHORITY (ε : list Value.t) (τ : list Ty.t) (α : 
 
 Global Instance Instance_IsConstant_value_INCORRECT_AUTHORITY :
   M.IsFunction.C "solana_program_error::INCORRECT_AUTHORITY" value_INCORRECT_AUTHORITY.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_INCORRECT_AUTHORITY.
 
@@ -3190,6 +3217,7 @@ Module Impl_solana_program_error_ProgramError.
     end.
   
   Global Instance AssociatedFunction_to_str : M.IsAssociatedFunction.C Self "to_str" to_str.
+  Proof.
   Admitted.
   Global Typeclasses Opaque to_str.
 End Impl_solana_program_error_ProgramError.

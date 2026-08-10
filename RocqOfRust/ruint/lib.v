@@ -329,6 +329,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedConstant_value_LIMBS :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "LIMBS" (value_LIMBS BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_LIMBS.
   
@@ -350,6 +351,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedConstant_value_MASK :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "MASK" (value_MASK BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MASK.
   
@@ -367,6 +369,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedConstant_value_BITS :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "BITS" (value_BITS BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BITS.
   
@@ -397,6 +400,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedConstant_value_ZERO :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "ZERO" (value_ZERO BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ZERO.
   
@@ -419,6 +423,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedConstant_value_MIN :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "MIN" (value_MIN BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MIN.
   
@@ -512,6 +517,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedConstant_value_MAX :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "MAX" (value_MAX BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX.
   
@@ -554,6 +560,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedFunction_as_limbs :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "as_limbs" (as_limbs BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque as_limbs.
   
@@ -601,6 +608,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedFunction_as_limbs_mut :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "as_limbs_mut" (as_limbs_mut BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque as_limbs_mut.
   
@@ -627,6 +635,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedFunction_into_limbs :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "into_limbs" (into_limbs BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque into_limbs.
   
@@ -787,6 +796,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedFunction_from_limbs :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "from_limbs" (from_limbs BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_limbs.
   
@@ -867,6 +877,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
   Global Instance AssociatedFunction_from_limbs_slice :
     forall (BITS LIMBS : Value.t),
     M.IsAssociatedFunction.C (Self BITS LIMBS) "from_limbs_slice" (from_limbs_slice BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_limbs_slice.
   
@@ -944,6 +955,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
       (Self BITS LIMBS)
       "checked_from_limbs_slice"
       (checked_from_limbs_slice BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque checked_from_limbs_slice.
   
@@ -994,6 +1006,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
       (Self BITS LIMBS)
       "wrapping_from_limbs_slice"
       (wrapping_from_limbs_slice BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque wrapping_from_limbs_slice.
   
@@ -1438,6 +1451,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
       (Self BITS LIMBS)
       "overflowing_from_limbs_slice"
       (overflowing_from_limbs_slice BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque overflowing_from_limbs_slice.
   
@@ -1510,6 +1524,7 @@ Module Impl_ruint_Uint_BITS_LIMBS.
       (Self BITS LIMBS)
       "saturating_from_limbs_slice"
       (saturating_from_limbs_slice BITS LIMBS).
+  Proof.
   Admitted.
   Global Typeclasses Opaque saturating_from_limbs_slice.
 End Impl_ruint_Uint_BITS_LIMBS.
@@ -1579,6 +1594,7 @@ Definition nlimbs (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :
   end.
 
 Global Instance Instance_IsFunction_nlimbs : M.IsFunction.C "ruint::nlimbs" nlimbs.
+Proof.
 Admitted.
 Global Typeclasses Opaque nlimbs.
 
@@ -1676,5 +1692,6 @@ Definition mask (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_mask : M.IsFunction.C "ruint::mask" mask.
+Proof.
 Admitted.
 Global Typeclasses Opaque mask.

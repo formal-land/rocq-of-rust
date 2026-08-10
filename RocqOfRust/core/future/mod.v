@@ -249,6 +249,7 @@ Module future.
   
   Global Instance Instance_IsFunction_get_context :
     M.IsFunction.C "core::future::get_context" get_context.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_context.
 End future.

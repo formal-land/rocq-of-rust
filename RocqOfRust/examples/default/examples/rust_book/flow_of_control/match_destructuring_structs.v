@@ -434,5 +434,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "match_destructuring_structs::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

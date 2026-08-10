@@ -5,6 +5,7 @@ Parameter decode_input : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_decode_input :
   M.IsFunction.C "wildcard_selector::decode_input" decode_input.
+Proof.
 Admitted.
 
 (* StructTuple
@@ -21,16 +22,19 @@ Module Impl_wildcard_selector_WildcardSelector.
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter wildcard : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_wildcard : M.IsAssociatedFunction.C Self "wildcard" wildcard.
+  Proof.
   Admitted.
   
   Parameter wildcard_complement : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_wildcard_complement :
     M.IsAssociatedFunction.C Self "wildcard_complement" wildcard_complement.
+  Proof.
   Admitted.
 End Impl_wildcard_selector_WildcardSelector.

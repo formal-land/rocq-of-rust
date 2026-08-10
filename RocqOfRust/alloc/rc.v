@@ -109,6 +109,7 @@ Module rc.
   
   Global Instance Instance_IsFunction_rc_inner_layout_for_value_layout :
     M.IsFunction.C "alloc::rc::rc_inner_layout_for_value_layout" rc_inner_layout_for_value_layout.
+  Proof.
   Admitted.
   Global Typeclasses Opaque rc_inner_layout_for_value_layout.
   
@@ -265,6 +266,7 @@ Module rc.
     Global Instance AssociatedFunction_from_inner :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "from_inner" (from_inner T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_inner.
     
@@ -316,6 +318,7 @@ Module rc.
     Global Instance AssociatedFunction_from_ptr :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "from_ptr" (from_ptr T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_ptr.
     (*
@@ -460,6 +463,7 @@ Module rc.
     Global Instance AssociatedFunction_new :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -493,6 +497,7 @@ Module rc.
     Global Instance AssociatedFunction_new_cyclic :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_cyclic" (new_cyclic T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_cyclic.
     
@@ -669,6 +674,7 @@ Module rc.
     Global Instance AssociatedFunction_new_uninit :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_uninit" (new_uninit T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_uninit.
     
@@ -845,6 +851,7 @@ Module rc.
     Global Instance AssociatedFunction_new_zeroed :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_zeroed" (new_zeroed T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_zeroed.
     
@@ -1191,6 +1198,7 @@ Module rc.
     Global Instance AssociatedFunction_try_new :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "try_new" (try_new T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_new.
     
@@ -1645,6 +1653,7 @@ Module rc.
     Global Instance AssociatedFunction_try_new_uninit :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "try_new_uninit" (try_new_uninit T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_new_uninit.
     
@@ -2099,6 +2108,7 @@ Module rc.
     Global Instance AssociatedFunction_try_new_zeroed :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "try_new_zeroed" (try_new_zeroed T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_new_zeroed.
     
@@ -2146,6 +2156,7 @@ Module rc.
     Global Instance AssociatedFunction_pin :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "pin" (pin T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque pin.
     
@@ -2477,6 +2488,7 @@ Module rc.
     Global Instance AssociatedFunction_map :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map" (map T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map.
     
@@ -3369,6 +3381,7 @@ Module rc.
     Global Instance AssociatedFunction_try_map :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "try_map" (try_map T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_map.
     (*
@@ -3406,6 +3419,7 @@ Module rc.
     Global Instance AssociatedFunction_clone_from_ref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "clone_from_ref" (clone_from_ref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque clone_from_ref.
     
@@ -3450,6 +3464,7 @@ Module rc.
     Global Instance AssociatedFunction_try_clone_from_ref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "try_clone_from_ref" (try_clone_from_ref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_clone_from_ref.
     (*
@@ -3479,6 +3494,7 @@ Module rc.
     Global Instance AssociatedFunction_from_raw :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "from_raw" (from_raw T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw.
     
@@ -3580,6 +3596,7 @@ Module rc.
     Global Instance AssociatedFunction_into_raw :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "into_raw" (into_raw T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_raw.
     
@@ -3615,6 +3632,7 @@ Module rc.
     Global Instance AssociatedFunction_increment_strong_count :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "increment_strong_count" (increment_strong_count T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque increment_strong_count.
     
@@ -3650,6 +3668,7 @@ Module rc.
     Global Instance AssociatedFunction_decrement_strong_count :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "decrement_strong_count" (decrement_strong_count T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque decrement_strong_count.
     (*
@@ -3782,6 +3801,7 @@ Module rc.
     Global Instance AssociatedFunction_allocate_for_layout :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "allocate_for_layout" (allocate_for_layout T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque allocate_for_layout.
     
@@ -4381,6 +4401,7 @@ Module rc.
     Global Instance AssociatedFunction_try_allocate_for_layout :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "try_allocate_for_layout" (try_allocate_for_layout T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_allocate_for_layout.
   End Impl_alloc_rc_Rc_T_alloc_alloc_Global.
@@ -4438,6 +4459,7 @@ Module rc.
     Global Instance AssociatedFunction_inner :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "inner" (inner T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque inner.
     
@@ -4569,6 +4591,7 @@ Module rc.
         (Self T A)
         "into_inner_with_allocator"
         (into_inner_with_allocator T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inner_with_allocator.
     
@@ -4616,6 +4639,7 @@ Module rc.
     Global Instance AssociatedFunction_from_inner_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "from_inner_in" (from_inner_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_inner_in.
     
@@ -4669,6 +4693,7 @@ Module rc.
     Global Instance AssociatedFunction_from_ptr_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "from_ptr_in" (from_ptr_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_ptr_in.
     
@@ -4775,6 +4800,7 @@ Module rc.
     Global Instance AssociatedFunction_drop_slow :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "drop_slow" (drop_slow T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque drop_slow.
     (*
@@ -4856,6 +4882,7 @@ Module rc.
     Global Instance AssociatedFunction_new_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new_in" (new_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_in.
     
@@ -5028,6 +5055,7 @@ Module rc.
     Global Instance AssociatedFunction_new_uninit_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new_uninit_in" (new_uninit_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_uninit_in.
     
@@ -5200,6 +5228,7 @@ Module rc.
     Global Instance AssociatedFunction_new_zeroed_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new_zeroed_in" (new_zeroed_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_zeroed_in.
     
@@ -5821,6 +5850,7 @@ Module rc.
     Global Instance AssociatedFunction_new_cyclic_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new_cyclic_in" (new_cyclic_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_cyclic_in.
     
@@ -6162,6 +6192,7 @@ Module rc.
     Global Instance AssociatedFunction_try_new_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "try_new_in" (try_new_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_new_in.
     
@@ -6599,6 +6630,7 @@ Module rc.
     Global Instance AssociatedFunction_try_new_uninit_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "try_new_uninit_in" (try_new_uninit_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_new_uninit_in.
     
@@ -7036,6 +7068,7 @@ Module rc.
     Global Instance AssociatedFunction_try_new_zeroed_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "try_new_zeroed_in" (try_new_zeroed_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_new_zeroed_in.
     
@@ -7087,6 +7120,7 @@ Module rc.
     Global Instance AssociatedFunction_pin_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "pin_in" (pin_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque pin_in.
     
@@ -7390,6 +7424,7 @@ Module rc.
     Global Instance AssociatedFunction_try_unwrap :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "try_unwrap" (try_unwrap T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_unwrap.
     
@@ -7437,6 +7472,7 @@ Module rc.
     Global Instance AssociatedFunction_into_inner :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "into_inner" (into_inner T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inner.
     (*
@@ -7543,6 +7579,7 @@ Module rc.
     Global Instance AssociatedFunction_clone_from_ref_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "clone_from_ref_in" (clone_from_ref_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque clone_from_ref_in.
     
@@ -7802,6 +7839,7 @@ Module rc.
     Global Instance AssociatedFunction_try_clone_from_ref_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "try_clone_from_ref_in" (try_clone_from_ref_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_clone_from_ref_in.
     (*
@@ -7838,6 +7876,7 @@ Module rc.
     Global Instance AssociatedFunction_allocator :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "allocator" (allocator T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque allocator.
     
@@ -7975,6 +8014,7 @@ Module rc.
     Global Instance AssociatedFunction_into_raw_with_allocator :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "into_raw_with_allocator" (into_raw_with_allocator T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_raw_with_allocator.
     
@@ -8049,6 +8089,7 @@ Module rc.
     Global Instance AssociatedFunction_as_ptr :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "as_ptr" (as_ptr T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ptr.
     
@@ -8110,6 +8151,7 @@ Module rc.
     Global Instance AssociatedFunction_from_raw_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "from_raw_in" (from_raw_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw_in.
     
@@ -8342,6 +8384,7 @@ Module rc.
     Global Instance AssociatedFunction_downgrade :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "downgrade" (downgrade T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque downgrade.
     
@@ -8405,6 +8448,7 @@ Module rc.
     Global Instance AssociatedFunction_weak_count :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "weak_count" (weak_count T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque weak_count.
     
@@ -8463,6 +8507,7 @@ Module rc.
     Global Instance AssociatedFunction_strong_count :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "strong_count" (strong_count T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque strong_count.
     
@@ -8557,6 +8602,7 @@ Module rc.
         (Self T A)
         "increment_strong_count_in"
         (increment_strong_count_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque increment_strong_count_in.
     
@@ -8610,6 +8656,7 @@ Module rc.
         (Self T A)
         "decrement_strong_count_in"
         (decrement_strong_count_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque decrement_strong_count_in.
     
@@ -8671,6 +8718,7 @@ Module rc.
     Global Instance AssociatedFunction_is_unique :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "is_unique" (is_unique T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_unique.
     
@@ -8746,6 +8794,7 @@ Module rc.
     Global Instance AssociatedFunction_get_mut :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "get_mut" (get_mut T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_mut.
     
@@ -8825,6 +8874,7 @@ Module rc.
     Global Instance AssociatedFunction_get_mut_unchecked :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "get_mut_unchecked" (get_mut_unchecked T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_mut_unchecked.
     
@@ -8945,6 +8995,7 @@ Module rc.
     Global Instance AssociatedFunction_ptr_eq :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "ptr_eq" (ptr_eq T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ptr_eq.
     (*
@@ -9503,6 +9554,7 @@ Module rc.
     Global Instance AssociatedFunction_make_mut :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "make_mut" (make_mut T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque make_mut.
     (*
@@ -9604,6 +9656,7 @@ Module rc.
     Global Instance AssociatedFunction_unwrap_or_clone :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "unwrap_or_clone" (unwrap_or_clone T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_or_clone.
     (*
@@ -9773,6 +9826,7 @@ Module rc.
     Global Instance AssociatedFunction_allocate_for_ptr_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "allocate_for_ptr_in" (allocate_for_ptr_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque allocate_for_ptr_in.
     
@@ -10008,6 +10062,7 @@ Module rc.
     Global Instance AssociatedFunction_from_box_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "from_box_in" (from_box_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_box_in.
   End Impl_alloc_rc_Rc_T_A.
@@ -10104,6 +10159,7 @@ Module rc.
     Global Instance AssociatedFunction_new_uninit_slice :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_uninit_slice" (new_uninit_slice T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_uninit_slice.
     
@@ -10404,6 +10460,7 @@ Module rc.
     Global Instance AssociatedFunction_new_zeroed_slice :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_zeroed_slice" (new_zeroed_slice T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_zeroed_slice.
     
@@ -10584,6 +10641,7 @@ Module rc.
     Global Instance AssociatedFunction_into_array :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "into_array" (into_array T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_array.
     (*
@@ -10807,6 +10865,7 @@ Module rc.
     Global Instance AssociatedFunction_allocate_for_slice :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "allocate_for_slice" (allocate_for_slice T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque allocate_for_slice.
     
@@ -10940,6 +10999,7 @@ Module rc.
     Global Instance AssociatedFunction_copy_from_slice :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "copy_from_slice" (copy_from_slice T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque copy_from_slice.
     
@@ -11337,6 +11397,7 @@ Module rc.
     Global Instance AssociatedFunction_from_iter_exact :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "from_iter_exact" (from_iter_exact T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_iter_exact.
   End Impl_alloc_rc_Rc_slice_T_alloc_alloc_Global.
@@ -11436,6 +11497,7 @@ Module rc.
     Global Instance AssociatedFunction_new_uninit_slice_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new_uninit_slice_in" (new_uninit_slice_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_uninit_slice_in.
     
@@ -11733,6 +11795,7 @@ Module rc.
     Global Instance AssociatedFunction_new_zeroed_slice_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new_zeroed_slice_in" (new_zeroed_slice_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_zeroed_slice_in.
     (*
@@ -11954,6 +12017,7 @@ Module rc.
     Global Instance AssociatedFunction_allocate_for_slice_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "allocate_for_slice_in" (allocate_for_slice_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque allocate_for_slice_in.
   End Impl_alloc_rc_Rc_slice_T_A.
@@ -12087,6 +12151,7 @@ Module rc.
     Global Instance AssociatedFunction_assume_init :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "assume_init" (assume_init T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque assume_init.
   End Impl_alloc_rc_Rc_core_mem_maybe_uninit_MaybeUninit_T_A.
@@ -12296,6 +12361,7 @@ Module rc.
     Global Instance AssociatedFunction_assume_init :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "assume_init" (assume_init T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque assume_init.
   End Impl_alloc_rc_Rc_slice_core_mem_maybe_uninit_MaybeUninit_T_A.
@@ -12541,6 +12607,7 @@ Module rc.
     Global Instance AssociatedFunction_downcast :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "downcast" (downcast A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast.
     
@@ -12669,6 +12736,7 @@ Module rc.
     Global Instance AssociatedFunction_downcast_unchecked :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "downcast_unchecked" (downcast_unchecked A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_unchecked.
   End Impl_alloc_rc_Rc_Dyn_core_any_Any_Trait_A.
@@ -16623,6 +16691,7 @@ Module rc.
     Global Instance AssociatedFunction_new :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     (*
@@ -16652,6 +16721,7 @@ Module rc.
     Global Instance AssociatedFunction_from_raw :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "from_raw" (from_raw T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw.
     
@@ -16762,6 +16832,7 @@ Module rc.
     Global Instance AssociatedFunction_into_raw :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "into_raw" (into_raw T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_raw.
   End Impl_alloc_rc_Weak_T_alloc_alloc_Global.
@@ -16818,6 +16889,7 @@ Module rc.
     Global Instance AssociatedFunction_new_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new_in" (new_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_in.
     (*
@@ -16854,6 +16926,7 @@ Module rc.
     Global Instance AssociatedFunction_allocator :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "allocator" (allocator T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque allocator.
     
@@ -16977,6 +17050,7 @@ Module rc.
     Global Instance AssociatedFunction_as_ptr :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "as_ptr" (as_ptr T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ptr.
     
@@ -17109,6 +17183,7 @@ Module rc.
     Global Instance AssociatedFunction_into_raw_with_allocator :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "into_raw_with_allocator" (into_raw_with_allocator T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_raw_with_allocator.
     
@@ -17231,6 +17306,7 @@ Module rc.
     Global Instance AssociatedFunction_from_raw_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "from_raw_in" (from_raw_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw_in.
     
@@ -17507,6 +17583,7 @@ Module rc.
     Global Instance AssociatedFunction_upgrade :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "upgrade" (upgrade T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque upgrade.
     
@@ -17581,6 +17658,7 @@ Module rc.
     Global Instance AssociatedFunction_strong_count :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "strong_count" (strong_count T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque strong_count.
     
@@ -17700,6 +17778,7 @@ Module rc.
     Global Instance AssociatedFunction_weak_count :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "weak_count" (weak_count T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque weak_count.
     
@@ -17880,6 +17959,7 @@ Module rc.
     Global Instance AssociatedFunction_inner :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "inner" (inner T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque inner.
     
@@ -18000,6 +18080,7 @@ Module rc.
     Global Instance AssociatedFunction_ptr_eq :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "ptr_eq" (ptr_eq T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ptr_eq.
   End Impl_alloc_rc_Weak_T_A.
@@ -18047,6 +18128,7 @@ Module rc.
   
   Global Instance Instance_IsFunction_is_dangling :
     M.IsFunction.C "alloc::rc::is_dangling" is_dangling.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_dangling.
   
@@ -19263,6 +19345,7 @@ Module rc.
   
   Global Instance Instance_IsFunction_data_offset :
     M.IsFunction.C "alloc::rc::data_offset" data_offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque data_offset.
   
@@ -19324,6 +19407,7 @@ Module rc.
   
   Global Instance Instance_IsFunction_data_offset_align :
     M.IsFunction.C "alloc::rc::data_offset_align" data_offset_align.
+  Proof.
   Admitted.
   Global Typeclasses Opaque data_offset_align.
   
@@ -20560,6 +20644,7 @@ Module rc.
     Global Instance AssociatedFunction_new :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -20886,6 +20971,7 @@ Module rc.
     Global Instance AssociatedFunction_map :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map" (map T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map.
     
@@ -21761,6 +21847,7 @@ Module rc.
     Global Instance AssociatedFunction_try_map :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "try_map" (try_map T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_map.
     
@@ -21944,6 +22031,7 @@ Module rc.
     Global Instance AssociatedFunction_unwrap :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "unwrap" (unwrap T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap.
     (*
@@ -22034,6 +22122,7 @@ Module rc.
     Global Instance AssociatedFunction_from_raw :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "from_raw" (from_raw T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw.
     
@@ -22150,6 +22239,7 @@ Module rc.
     Global Instance AssociatedFunction_into_raw :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "into_raw" (into_raw T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_raw.
   End Impl_alloc_rc_UniqueRc_T_alloc_alloc_Global.
@@ -22326,6 +22416,7 @@ Module rc.
     Global Instance AssociatedFunction_new_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new_in" (new_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_in.
     (*
@@ -22529,6 +22620,7 @@ Module rc.
     Global Instance AssociatedFunction_into_rc :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "into_rc" (into_rc T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_rc.
     
@@ -22592,6 +22684,7 @@ Module rc.
     Global Instance AssociatedFunction_weak_count :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "weak_count" (weak_count T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque weak_count.
     
@@ -22644,6 +22737,7 @@ Module rc.
     Global Instance AssociatedFunction_inner :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "inner" (inner T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque inner.
     
@@ -22718,6 +22812,7 @@ Module rc.
     Global Instance AssociatedFunction_as_ptr :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "as_ptr" (as_ptr T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ptr.
     
@@ -22849,6 +22944,7 @@ Module rc.
         (Self T A)
         "into_inner_with_allocator"
         (into_inner_with_allocator T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inner_with_allocator.
     
@@ -22902,6 +22998,7 @@ Module rc.
     Global Instance AssociatedFunction_from_inner_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "from_inner_in" (from_inner_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_inner_in.
     (*
@@ -23013,6 +23110,7 @@ Module rc.
     Global Instance AssociatedFunction_downgrade :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "downgrade" (downgrade T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque downgrade.
   End Impl_alloc_rc_UniqueRc_T_A.
@@ -23148,6 +23246,7 @@ Module rc.
     Global Instance AssociatedFunction_assume_init :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "assume_init" (assume_init T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque assume_init.
   End Impl_alloc_rc_UniqueRc_core_mem_maybe_uninit_MaybeUninit_T_A.
@@ -23848,6 +23947,7 @@ Module rc.
     Global Instance AssociatedFunction_new :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new" (new T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -24296,6 +24396,7 @@ Module rc.
     Global Instance AssociatedFunction_try_new :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "try_new" (try_new T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_new.
     
@@ -24396,6 +24497,7 @@ Module rc.
     Global Instance AssociatedFunction_data_ptr :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "data_ptr" (data_ptr T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque data_ptr.
     
@@ -24560,6 +24662,7 @@ Module rc.
     Global Instance AssociatedFunction_into_rc :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "into_rc" (into_rc T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_rc.
   End Impl_alloc_rc_UniqueRcUninit_T_A.

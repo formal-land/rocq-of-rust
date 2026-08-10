@@ -700,6 +700,7 @@ Module precompile_provider.
     
     Global Instance AssociatedFunction_warm_addresses :
       M.IsAssociatedFunction.C Self "warm_addresses" warm_addresses.
+    Proof.
     Admitted.
     Global Typeclasses Opaque warm_addresses.
     
@@ -753,6 +754,7 @@ Module precompile_provider.
       end.
     
     Global Instance AssociatedFunction_contains : M.IsAssociatedFunction.C Self "contains" contains.
+    Proof.
     Admitted.
     Global Typeclasses Opaque contains.
   End Impl_revm_handler_precompile_provider_EthPrecompiles.

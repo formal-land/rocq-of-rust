@@ -90,6 +90,7 @@ Module algorithms.
       end.
     
     Global Instance Instance_IsFunction_adc : M.IsFunction.C "ruint::algorithms::ops::adc" adc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque adc.
     
@@ -204,6 +205,7 @@ Module algorithms.
       end.
     
     Global Instance Instance_IsFunction_sbb : M.IsFunction.C "ruint::algorithms::ops::sbb" sbb.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sbb.
   End ops.

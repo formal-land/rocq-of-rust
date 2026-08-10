@@ -7,6 +7,7 @@ Module eip7907.
   
   Global Instance Instance_IsConstant_value_MAX_CODE_SIZE :
     M.IsFunction.C "revm_primitives::eip7907::MAX_CODE_SIZE" value_MAX_CODE_SIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_CODE_SIZE.
   
@@ -15,6 +16,7 @@ Module eip7907.
   
   Global Instance Instance_IsConstant_value_MAX_INITCODE_SIZE :
     M.IsFunction.C "revm_primitives::eip7907::MAX_INITCODE_SIZE" value_MAX_INITCODE_SIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_INITCODE_SIZE.
 End eip7907.

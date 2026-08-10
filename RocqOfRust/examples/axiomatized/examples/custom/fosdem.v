@@ -13,6 +13,7 @@ Parameter value_MAX_VALUE : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_MAX_VALUE :
   M.IsFunction.C "fosdem::MAX_VALUE" value_MAX_VALUE.
+Proof.
 Admitted.
 
 Module Impl_fosdem_Counter.
@@ -22,5 +23,6 @@ Module Impl_fosdem_Counter.
   
   Global Instance AssociatedFunction_increment :
     M.IsAssociatedFunction.C Self "increment" increment.
+  Proof.
   Admitted.
 End Impl_fosdem_Counter.

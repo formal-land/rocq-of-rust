@@ -190,6 +190,7 @@ Definition calculate_hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.
 
 Global Instance Instance_IsFunction_calculate_hash :
   M.IsFunction.C "hash::calculate_hash" calculate_hash.
+Proof.
 Admitted.
 Global Typeclasses Opaque calculate_hash.
 
@@ -332,5 +333,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "hash::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

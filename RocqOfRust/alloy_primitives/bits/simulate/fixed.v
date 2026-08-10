@@ -48,6 +48,7 @@ Module Impl_FixedBytes.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition new {N : usize} (bytes : array.t u8 N) : Self N :=
@@ -66,6 +67,7 @@ Module Impl_FixedBytes.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_FixedBytes.
 
@@ -83,6 +85,7 @@ Module Impl_From_FixedBytes_32_for_U256.
         stack 🌲
       (Output.Success (from value), stack)
     }}.
+  Proof.
   Admitted.
 
   Instance I : From.C Self (FixedBytes.t {| Integer.value := 32 |}) := {|
@@ -117,6 +120,7 @@ Module Impl_From_U256_for_FixedBytes_32.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Instance I : From.C Self aliases.U256.t := {|

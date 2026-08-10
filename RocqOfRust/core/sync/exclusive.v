@@ -156,6 +156,7 @@ Module sync.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -184,6 +185,7 @@ Module sync.
       Global Instance AssociatedFunction_into_inner :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       (*
@@ -228,6 +230,7 @@ Module sync.
       Global Instance AssociatedFunction_get_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut" (get_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -309,6 +312,7 @@ Module sync.
       Global Instance AssociatedFunction_get_pin_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_pin_mut" (get_pin_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_pin_mut.
       
@@ -365,6 +369,7 @@ Module sync.
       Global Instance AssociatedFunction_from_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "from_mut" (from_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_mut.
       
@@ -460,6 +465,7 @@ Module sync.
       Global Instance AssociatedFunction_from_pin_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "from_pin_mut" (from_pin_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_pin_mut.
     End Impl_core_sync_exclusive_Exclusive_T.

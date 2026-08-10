@@ -14,6 +14,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::VALIDATION_STATUS_MIN_CODE"
       value_VALIDATION_STATUS_MIN_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VALIDATION_STATUS_MIN_CODE.
   
@@ -32,6 +33,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::VALIDATION_STATUS_MAX_CODE"
       value_VALIDATION_STATUS_MAX_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VALIDATION_STATUS_MAX_CODE.
   
@@ -50,6 +52,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::VERIFICATION_STATUS_MIN_CODE"
       value_VERIFICATION_STATUS_MIN_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERIFICATION_STATUS_MIN_CODE.
   
@@ -68,6 +71,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::VERIFICATION_STATUS_MAX_CODE"
       value_VERIFICATION_STATUS_MAX_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERIFICATION_STATUS_MAX_CODE.
   
@@ -86,6 +90,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::INVARIANT_VIOLATION_STATUS_MIN_CODE"
       value_INVARIANT_VIOLATION_STATUS_MIN_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_INVARIANT_VIOLATION_STATUS_MIN_CODE.
   
@@ -104,6 +109,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::INVARIANT_VIOLATION_STATUS_MAX_CODE"
       value_INVARIANT_VIOLATION_STATUS_MAX_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_INVARIANT_VIOLATION_STATUS_MAX_CODE.
   
@@ -122,6 +128,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::DESERIALIZATION_STATUS_MIN_CODE"
       value_DESERIALIZATION_STATUS_MIN_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DESERIALIZATION_STATUS_MIN_CODE.
   
@@ -140,6 +147,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::DESERIALIZATION_STATUS_MAX_CODE"
       value_DESERIALIZATION_STATUS_MAX_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DESERIALIZATION_STATUS_MAX_CODE.
   
@@ -158,6 +166,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::EXECUTION_STATUS_MIN_CODE"
       value_EXECUTION_STATUS_MIN_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EXECUTION_STATUS_MIN_CODE.
   
@@ -176,6 +185,7 @@ Module vm_status.
     M.IsFunction.C
       "move_core_types::vm_status::EXECUTION_STATUS_MAX_CODE"
       value_EXECUTION_STATUS_MAX_CODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EXECUTION_STATUS_MAX_CODE.
   
@@ -9514,6 +9524,7 @@ Module vm_status.
     
     Global Instance AssociatedFunction_status_type :
       M.IsAssociatedFunction.C Self "status_type" status_type.
+    Proof.
     Admitted.
     Global Typeclasses Opaque status_type.
   End Impl_move_core_types_vm_status_StatusCode.
@@ -9685,6 +9696,7 @@ Module vm_status.
       M.IsFunction.C
         "move_core_types::vm_status::sub_status::NFE_VECTOR_ERROR_BASE"
         value_NFE_VECTOR_ERROR_BASE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NFE_VECTOR_ERROR_BASE.
     
@@ -9693,6 +9705,7 @@ Module vm_status.
     
     Global Instance Instance_IsConstant_value_NFE_OUT_OF_GAS :
       M.IsFunction.C "move_core_types::vm_status::sub_status::NFE_OUT_OF_GAS" value_NFE_OUT_OF_GAS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NFE_OUT_OF_GAS.
     
@@ -9707,6 +9720,7 @@ Module vm_status.
       M.IsFunction.C
         "move_core_types::vm_status::sub_status::NFE_BCS_SERIALIZATION_FAILURE"
         value_NFE_BCS_SERIALIZATION_FAILURE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NFE_BCS_SERIALIZATION_FAILURE.
   End sub_status.

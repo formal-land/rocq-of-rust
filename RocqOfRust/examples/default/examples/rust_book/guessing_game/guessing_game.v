@@ -21,6 +21,7 @@ Definition gen_range (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
   end.
 
 Global Instance Instance_IsFunction_gen_range : M.IsFunction.C "guessing_game::gen_range" gen_range.
+Proof.
 Admitted.
 Global Typeclasses Opaque gen_range.
 
@@ -430,5 +431,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "guessing_game::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

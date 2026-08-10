@@ -20,6 +20,7 @@ Module Impl_Address.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition into_word (self : Self) : FixedBytes.t {| Integer.value := 32 |} :=
@@ -33,5 +34,6 @@ Module Impl_Address.
         stack 🌲
       (Output.Success (into_word self), stack)
     }}.
+  Proof.
   Admitted.
 End Impl_Address.

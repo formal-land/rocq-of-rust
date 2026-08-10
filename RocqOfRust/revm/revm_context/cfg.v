@@ -1279,6 +1279,7 @@ Module cfg.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_revm_context_cfg_CfgEnv_revm_primitives_hardfork_SpecId.
@@ -1435,6 +1436,7 @@ Module cfg.
         (Self SPEC)
         "blob_base_fee_update_fraction"
         (blob_base_fee_update_fraction SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque blob_base_fee_update_fraction.
     (*
@@ -1507,6 +1509,7 @@ Module cfg.
     Global Instance AssociatedFunction_new_with_spec :
       forall (SPEC : Ty.t),
       M.IsAssociatedFunction.C (Self SPEC) "new_with_spec" (new_with_spec SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_with_spec.
     
@@ -1547,6 +1550,7 @@ Module cfg.
     Global Instance AssociatedFunction_with_chain_id :
       forall (SPEC : Ty.t),
       M.IsAssociatedFunction.C (Self SPEC) "with_chain_id" (with_chain_id SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_chain_id.
     
@@ -1589,6 +1593,7 @@ Module cfg.
         (Self SPEC)
         "enable_tx_chain_id_check"
         (enable_tx_chain_id_check SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque enable_tx_chain_id_check.
     
@@ -1631,6 +1636,7 @@ Module cfg.
         (Self SPEC)
         "disable_tx_chain_id_check"
         (disable_tx_chain_id_check SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque disable_tx_chain_id_check.
     
@@ -1752,6 +1758,7 @@ Module cfg.
     Global Instance AssociatedFunction_with_spec :
       forall (SPEC : Ty.t),
       M.IsAssociatedFunction.C (Self SPEC) "with_spec" (with_spec SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_spec.
     
@@ -1794,6 +1801,7 @@ Module cfg.
     Global Instance AssociatedFunction_with_max_blobs_per_tx :
       forall (SPEC : Ty.t),
       M.IsAssociatedFunction.C (Self SPEC) "with_max_blobs_per_tx" (with_max_blobs_per_tx SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_max_blobs_per_tx.
     
@@ -1843,6 +1851,7 @@ Module cfg.
     Global Instance AssociatedFunction_set_max_blobs_per_tx :
       forall (SPEC : Ty.t),
       M.IsAssociatedFunction.C (Self SPEC) "set_max_blobs_per_tx" (set_max_blobs_per_tx SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_max_blobs_per_tx.
     
@@ -1887,6 +1896,7 @@ Module cfg.
     Global Instance AssociatedFunction_clear_max_blobs_per_tx :
       forall (SPEC : Ty.t),
       M.IsAssociatedFunction.C (Self SPEC) "clear_max_blobs_per_tx" (clear_max_blobs_per_tx SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque clear_max_blobs_per_tx.
   End Impl_revm_context_cfg_CfgEnv_SPEC.

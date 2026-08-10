@@ -28,6 +28,7 @@ Export (hints) Ref.
 (* impl<T: ?Sized> Deref for Ref<'_, T> *)
 Module Impl_Deref_for_Ref.
   Instance run (T : Set) `{Link T} : Deref.Run (Ref.t T) T.
+  Proof.
   Admitted.
 End Impl_Deref_for_Ref.
 Export (hints) Impl_Deref_for_Ref.
@@ -59,6 +60,7 @@ Export (hints) RefMut.
 (* impl<T> Deref for RefMut<'_, T> *)
 Module Impl_Deref_for_RefMut.
   Instance run (T : Set) `{Link T} : Deref.Run (RefMut.t T) T.
+  Proof.
   Admitted.
 End Impl_Deref_for_RefMut.
 Export (hints) Impl_Deref_for_RefMut.
@@ -66,6 +68,7 @@ Export (hints) Impl_Deref_for_RefMut.
 (* impl<T> DerefMut for RefMut<'_, T> *)
 Module Impl_DerefMut_for_RefMut.
   Instance run (T : Set) `{Link T} : DerefMut.Run (RefMut.t T) T.
+  Proof.
   Admitted.
 End Impl_DerefMut_for_RefMut.
 Export (hints) Impl_DerefMut_for_RefMut.

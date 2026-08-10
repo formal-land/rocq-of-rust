@@ -217,6 +217,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::approve_checked::process_approve_checked"
         process_approve_checked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_approve_checked.
   End approve_checked.

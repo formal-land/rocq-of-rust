@@ -128,6 +128,7 @@ Module bls12_381_utils.
   
   Global Instance Instance_IsFunction_msm_required_gas :
     M.IsFunction.C "revm_precompile::bls12_381_utils::msm_required_gas" msm_required_gas.
+  Proof.
   Admitted.
   Global Typeclasses Opaque msm_required_gas.
 End bls12_381_utils.

@@ -1217,6 +1217,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_balance :
       M.IsFunction.C "revm_interpreter::instructions::host::balance" balance.
+    Proof.
     Admitted.
     Global Typeclasses Opaque balance.
     
@@ -1626,6 +1627,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_selfbalance :
       M.IsFunction.C "revm_interpreter::instructions::host::selfbalance" selfbalance.
+    Proof.
     Admitted.
     Global Typeclasses Opaque selfbalance.
     
@@ -3007,6 +3009,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_extcodesize :
       M.IsFunction.C "revm_interpreter::instructions::host::extcodesize" extcodesize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque extcodesize.
     
@@ -4344,6 +4347,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_extcodehash :
       M.IsFunction.C "revm_interpreter::instructions::host::extcodehash" extcodehash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque extcodehash.
     
@@ -6468,6 +6472,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_extcodecopy :
       M.IsFunction.C "revm_interpreter::instructions::host::extcodecopy" extcodecopy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque extcodecopy.
     
@@ -7582,6 +7587,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_blockhash :
       M.IsFunction.C "revm_interpreter::instructions::host::blockhash" blockhash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque blockhash.
     
@@ -8765,6 +8771,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_sload :
       M.IsFunction.C "revm_interpreter::instructions::host::sload" sload.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sload.
     
@@ -10079,6 +10086,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_sstore :
       M.IsFunction.C "revm_interpreter::instructions::host::sstore" sstore.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sstore.
     
@@ -10519,6 +10527,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_tstore :
       M.IsFunction.C "revm_interpreter::instructions::host::tstore" tstore.
+    Proof.
     Admitted.
     Global Typeclasses Opaque tstore.
     
@@ -11024,6 +11033,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_tload :
       M.IsFunction.C "revm_interpreter::instructions::host::tload" tload.
+    Proof.
     Admitted.
     Global Typeclasses Opaque tload.
     
@@ -12736,6 +12746,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_log :
       M.IsFunction.C "revm_interpreter::instructions::host::log" log.
+    Proof.
     Admitted.
     Global Typeclasses Opaque log.
     
@@ -13732,6 +13743,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_selfdestruct :
       M.IsFunction.C "revm_interpreter::instructions::host::selfdestruct" selfdestruct.
+    Proof.
     Admitted.
     Global Typeclasses Opaque selfdestruct.
   End host.

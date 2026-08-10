@@ -3237,6 +3237,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_mul_redc :
       M.IsFunction.C "ruint::algorithms::mul_redc::mul_redc" mul_redc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mul_redc.
   End mul_redc.

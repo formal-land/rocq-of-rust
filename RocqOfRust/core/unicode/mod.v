@@ -11,6 +11,7 @@ Module unicode.
   
   Global Instance Instance_IsConstant_value_UNICODE_VERSION :
     M.IsFunction.C "core::unicode::UNICODE_VERSION" value_UNICODE_VERSION.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_UNICODE_VERSION.
 End unicode.

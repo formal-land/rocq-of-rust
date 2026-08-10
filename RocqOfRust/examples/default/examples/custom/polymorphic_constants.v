@@ -61,6 +61,7 @@ Module Impl_polymorphic_constants_Foo_N_A.
   Global Instance AssociatedFunction_convert :
     forall (N : Value.t) (A : Ty.t),
     M.IsAssociatedFunction.C (Self N A) "convert" (convert N A).
+  Proof.
   Admitted.
   Global Typeclasses Opaque convert.
 End Impl_polymorphic_constants_Foo_N_A.
@@ -409,5 +410,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "polymorphic_constants::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

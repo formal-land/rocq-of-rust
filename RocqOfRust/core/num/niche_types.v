@@ -185,6 +185,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -205,6 +206,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -234,6 +236,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
       (*     pub const ZERO: Self = unsafe { Nanoseconds::new_unchecked(0) }; *)
@@ -256,6 +259,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_ZERO :
         M.IsAssociatedFunction.C Self "ZERO" value_ZERO.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ZERO.
     End Impl_core_num_niche_types_Nanoseconds.
@@ -812,6 +816,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -832,6 +837,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -861,6 +867,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroU8Inner.
@@ -1386,6 +1393,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1406,6 +1414,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -1435,6 +1444,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroU16Inner.
@@ -1963,6 +1973,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1983,6 +1994,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -2012,6 +2024,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroU32Inner.
@@ -2540,6 +2553,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2560,6 +2574,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -2589,6 +2604,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroU64Inner.
@@ -3119,6 +3135,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3143,6 +3160,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -3172,6 +3190,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroU128Inner.
@@ -3696,6 +3715,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3716,6 +3736,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -3745,6 +3766,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroI8Inner.
@@ -4270,6 +4292,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -4290,6 +4313,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -4319,6 +4343,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroI16Inner.
@@ -4847,6 +4872,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -4867,6 +4893,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -4896,6 +4923,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroI32Inner.
@@ -5424,6 +5452,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -5444,6 +5473,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -5473,6 +5503,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroI64Inner.
@@ -6003,6 +6034,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -6027,6 +6059,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -6056,6 +6089,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroI128Inner.
@@ -6581,6 +6615,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -6605,6 +6640,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -6634,6 +6670,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroCharInner.
@@ -7163,6 +7200,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -7183,6 +7221,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -7212,6 +7251,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_UsizeNoHighBit.
@@ -7741,6 +7781,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -7765,6 +7806,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -7794,6 +7836,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroUsizeInner.
@@ -8323,6 +8366,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -8347,6 +8391,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -8376,6 +8421,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_NonZeroIsizeInner.
@@ -8904,6 +8950,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -8924,6 +8971,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -8953,6 +9001,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_U32NotAllOnes.
@@ -9481,6 +9530,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -9501,6 +9551,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -9530,6 +9581,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_I32NotAllOnes.
@@ -10058,6 +10110,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -10078,6 +10131,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -10107,6 +10161,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_U64NotAllOnes.
@@ -10635,6 +10690,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -10655,6 +10711,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -10684,6 +10741,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
     End Impl_core_num_niche_types_I64NotAllOnes.
@@ -11277,6 +11335,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -11297,6 +11356,7 @@ Module num.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -11326,6 +11386,7 @@ Module num.
       
       Global Instance AssociatedFunction_as_inner :
         M.IsAssociatedFunction.C Self "as_inner" as_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_inner.
       (*     pub const ZERO: Self = CodePointInner::new(0).unwrap(); *)
@@ -11365,6 +11426,7 @@ Module num.
       
       Global Instance AssociatedConstant_value_ZERO :
         M.IsAssociatedFunction.C Self "ZERO" value_ZERO.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ZERO.
     End Impl_core_num_niche_types_CodePointInner.

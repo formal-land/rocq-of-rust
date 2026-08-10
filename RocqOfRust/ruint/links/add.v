@@ -16,6 +16,7 @@ Module Impl_Uint.
     Run.Trait
       (add.Impl_ruint_Uint_BITS_LIMBS.wrapping_add (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
       (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_wrapping_add.
 
@@ -26,6 +27,7 @@ Module Impl_Uint.
   Run.Trait
     (add.Impl_ruint_Uint_BITS_LIMBS.wrapping_neg (φ BITS) (φ LIMBS)) [] [] [ φ x ]
     (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_wrapping_neg.
 
@@ -36,6 +38,7 @@ Module Impl_Uint.
   Run.Trait
     (add.Impl_ruint_Uint_BITS_LIMBS.wrapping_sub (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
     (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_wrapping_sub.
 
@@ -46,6 +49,7 @@ Module Impl_Uint.
   Run.Trait
     (add.Impl_ruint_Uint_BITS_LIMBS.checked_sub (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
     (option (Self BITS LIMBS)).
+  Proof.
   Admitted.
   Global Opaque run_checked_sub.
 End Impl_Uint.
@@ -57,6 +61,7 @@ Module Impl_Add_for_Uint.
 
   Instance run (BITS LIMBS : usize) :
     Add.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_Add_for_Uint.
 Export (hints) Impl_Add_for_Uint.
@@ -67,6 +72,7 @@ Module Impl_Sub_for_Uint.
 
   Instance run (BITS LIMBS : usize) :
     Sub.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_Sub_for_Uint.
 Export (hints) Impl_Sub_for_Uint.

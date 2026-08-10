@@ -39,5 +39,6 @@ Definition foo (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_foo : M.IsFunction.C "let_else::foo" foo.
+Proof.
 Admitted.
 Global Typeclasses Opaque foo.

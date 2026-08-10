@@ -938,6 +938,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::sync_native::process_sync_native"
         process_sync_native.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_sync_native.
   End sync_native.

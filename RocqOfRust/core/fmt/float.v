@@ -486,6 +486,7 @@ Module fmt.
       M.IsFunction.C
         "core::fmt::float::float_to_decimal_common_exact"
         float_to_decimal_common_exact.
+    Proof.
     Admitted.
     Global Typeclasses Opaque float_to_decimal_common_exact.
     
@@ -776,6 +777,7 @@ Module fmt.
       M.IsFunction.C
         "core::fmt::float::float_to_decimal_common_shortest"
         float_to_decimal_common_shortest.
+    Proof.
     Admitted.
     Global Typeclasses Opaque float_to_decimal_common_shortest.
     
@@ -925,6 +927,7 @@ Module fmt.
     
     Global Instance Instance_IsFunction_float_to_decimal_display :
       M.IsFunction.C "core::fmt::float::float_to_decimal_display" float_to_decimal_display.
+    Proof.
     Admitted.
     Global Typeclasses Opaque float_to_decimal_display.
     
@@ -1214,6 +1217,7 @@ Module fmt.
       M.IsFunction.C
         "core::fmt::float::float_to_exponential_common_exact"
         float_to_exponential_common_exact.
+    Proof.
     Admitted.
     Global Typeclasses Opaque float_to_exponential_common_exact.
     
@@ -1494,6 +1498,7 @@ Module fmt.
       M.IsFunction.C
         "core::fmt::float::float_to_exponential_common_shortest"
         float_to_exponential_common_shortest.
+    Proof.
     Admitted.
     Global Typeclasses Opaque float_to_exponential_common_shortest.
     
@@ -1644,6 +1649,7 @@ Module fmt.
     
     Global Instance Instance_IsFunction_float_to_exponential_common :
       M.IsFunction.C "core::fmt::float::float_to_exponential_common" float_to_exponential_common.
+    Proof.
     Admitted.
     Global Typeclasses Opaque float_to_exponential_common.
     
@@ -1876,6 +1882,7 @@ Module fmt.
     
     Global Instance Instance_IsFunction_float_to_general_debug :
       M.IsFunction.C "core::fmt::float::float_to_general_debug" float_to_general_debug.
+    Proof.
     Admitted.
     Global Typeclasses Opaque float_to_general_debug.
     

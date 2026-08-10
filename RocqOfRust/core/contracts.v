@@ -21,6 +21,7 @@ Module contracts.
   
   Global Instance Instance_IsFunction_build_check_ensures :
     M.IsFunction.C "core::contracts::build_check_ensures" build_check_ensures.
+  Proof.
   Admitted.
   Global Typeclasses Opaque build_check_ensures.
 End contracts.

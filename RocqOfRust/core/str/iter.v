@@ -2180,6 +2180,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_str.
     End Impl_core_str_iter_Chars.
@@ -2879,6 +2880,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_str.
       
@@ -2907,6 +2909,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_offset : M.IsAssociatedFunction.C Self "offset" offset.
+      Proof.
       Admitted.
       Global Typeclasses Opaque offset.
     End Impl_core_str_iter_CharIndices.
@@ -4569,6 +4572,7 @@ Module str.
       Global Instance AssociatedFunction_get_end :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "get_end" (get_end P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_end.
       
@@ -4803,6 +4807,7 @@ Module str.
       Global Instance AssociatedFunction_next :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next" (next P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next.
       
@@ -5043,6 +5048,7 @@ Module str.
       Global Instance AssociatedFunction_next_inclusive :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next_inclusive" (next_inclusive P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_inclusive.
       
@@ -5524,6 +5530,7 @@ Module str.
       Global Instance AssociatedFunction_next_back :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next_back" (next_back P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back.
       
@@ -6015,6 +6022,7 @@ Module str.
       Global Instance AssociatedFunction_next_back_inclusive :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next_back_inclusive" (next_back_inclusive P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back_inclusive.
       
@@ -6173,6 +6181,7 @@ Module str.
       Global Instance AssociatedFunction_remainder :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "remainder" (remainder P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_SplitInternal_P.
@@ -6839,6 +6848,7 @@ Module str.
       Global Instance AssociatedFunction_remainder :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "remainder" (remainder P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_Split_P.
@@ -6889,6 +6899,7 @@ Module str.
       Global Instance AssociatedFunction_remainder :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "remainder" (remainder P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_RSplit_P.
@@ -7587,6 +7598,7 @@ Module str.
       Global Instance AssociatedFunction_remainder :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "remainder" (remainder P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_SplitTerminator_P.
@@ -7641,6 +7653,7 @@ Module str.
       Global Instance AssociatedFunction_remainder :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "remainder" (remainder P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_RSplitTerminator_P.
@@ -8060,6 +8073,7 @@ Module str.
       Global Instance AssociatedFunction_next :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next" (next P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next.
       
@@ -8218,6 +8232,7 @@ Module str.
       Global Instance AssociatedFunction_next_back :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next_back" (next_back P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back.
       
@@ -8267,6 +8282,7 @@ Module str.
       Global Instance AssociatedFunction_remainder :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "remainder" (remainder P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_SplitNInternal_P.
@@ -8830,6 +8846,7 @@ Module str.
       Global Instance AssociatedFunction_remainder :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "remainder" (remainder P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_SplitN_P.
@@ -8883,6 +8900,7 @@ Module str.
       Global Instance AssociatedFunction_remainder :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "remainder" (remainder P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_RSplitN_P.
@@ -9253,6 +9271,7 @@ Module str.
       Global Instance AssociatedFunction_next :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next" (next P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next.
       
@@ -9414,6 +9433,7 @@ Module str.
       Global Instance AssociatedFunction_next_back :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next_back" (next_back P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back.
     End Impl_core_str_iter_MatchIndicesInternal_P.
@@ -10425,6 +10445,7 @@ Module str.
       Global Instance AssociatedFunction_next :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next" (next P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next.
       
@@ -10579,6 +10600,7 @@ Module str.
       Global Instance AssociatedFunction_next_back :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "next_back" (next_back P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back.
     End Impl_core_str_iter_MatchesInternal_P.
@@ -11661,6 +11683,7 @@ Module str.
       
       Global Instance AssociatedFunction_remainder :
         M.IsAssociatedFunction.C Self "remainder" remainder.
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_Lines.
@@ -12695,6 +12718,7 @@ Module str.
       
       Global Instance AssociatedFunction_remainder :
         M.IsAssociatedFunction.C Self "remainder" remainder.
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_SplitWhitespace.
@@ -13076,6 +13100,7 @@ Module str.
       
       Global Instance AssociatedFunction_remainder :
         M.IsAssociatedFunction.C Self "remainder" remainder.
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_SplitAsciiWhitespace.
@@ -13443,6 +13468,7 @@ Module str.
       Global Instance AssociatedFunction_remainder :
         forall (P : Ty.t),
         M.IsAssociatedFunction.C (Self P) "remainder" (remainder P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_str_iter_SplitInclusive_P.

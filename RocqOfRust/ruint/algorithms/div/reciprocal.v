@@ -235,6 +235,7 @@ Module algorithms.
       
       Global Instance Instance_IsFunction_reciprocal_ref :
         M.IsFunction.C "ruint::algorithms::div::reciprocal::reciprocal_ref" reciprocal_ref.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reciprocal_ref.
       
@@ -980,6 +981,7 @@ Module algorithms.
       
       Global Instance Instance_IsFunction_reciprocal_mg10 :
         M.IsFunction.C "ruint::algorithms::div::reciprocal::reciprocal_mg10" reciprocal_mg10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reciprocal_mg10.
       
@@ -997,6 +999,7 @@ Module algorithms.
         
         Global Instance Instance_IsConstant_value_ZERO :
           M.IsFunction.C "ruint::algorithms::div::reciprocal::reciprocal_mg10::ZERO" value_ZERO.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_ZERO.
         
@@ -1013,6 +1016,7 @@ Module algorithms.
         
         Global Instance Instance_IsConstant_value_ONE :
           M.IsFunction.C "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE" value_ONE.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_ONE.
         
@@ -1289,6 +1293,7 @@ Module algorithms.
         
         Global Instance Instance_IsConstant_value_TABLE :
           M.IsFunction.C "ruint::algorithms::div::reciprocal::reciprocal_mg10::TABLE" value_TABLE.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_TABLE.
       End reciprocal_mg10.
@@ -1706,6 +1711,7 @@ Module algorithms.
       
       Global Instance Instance_IsFunction_reciprocal_2_mg10 :
         M.IsFunction.C "ruint::algorithms::div::reciprocal::reciprocal_2_mg10" reciprocal_2_mg10.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reciprocal_2_mg10.
       
@@ -1804,6 +1810,7 @@ Module algorithms.
       
       Global Instance Instance_IsFunction_mul_hi :
         M.IsFunction.C "ruint::algorithms::div::reciprocal::mul_hi" mul_hi.
+      Proof.
       Admitted.
       Global Typeclasses Opaque mul_hi.
       
@@ -1937,6 +1944,7 @@ Module algorithms.
       
       Global Instance Instance_IsFunction_muladd_hi :
         M.IsFunction.C "ruint::algorithms::div::reciprocal::muladd_hi" muladd_hi.
+      Proof.
       Admitted.
       Global Typeclasses Opaque muladd_hi.
     End reciprocal.

@@ -857,6 +857,7 @@ Module script_signature.
   
   Global Instance Instance_IsFunction_verify_module :
     M.IsFunction.C "move_bytecode_verifier::script_signature::verify_module" verify_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module.
   
@@ -1605,6 +1606,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::verify_module_function_signature_by_name"
       verify_module_function_signature_by_name.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_function_signature_by_name.
   
@@ -1873,6 +1875,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::verify_module_function_signature"
       verify_module_function_signature.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_function_signature.
   
@@ -2155,6 +2158,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::verify_main_signature_impl"
       verify_main_signature_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_main_signature_impl.
   
@@ -2204,6 +2208,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::no_additional_script_signature_checks"
       no_additional_script_signature_checks.
+  Proof.
   Admitted.
   Global Typeclasses Opaque no_additional_script_signature_checks.
   
@@ -3330,6 +3335,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::legacy_script_signature_checks"
       legacy_script_signature_checks.
+  Proof.
   Admitted.
   Global Typeclasses Opaque legacy_script_signature_checks.
 End script_signature.

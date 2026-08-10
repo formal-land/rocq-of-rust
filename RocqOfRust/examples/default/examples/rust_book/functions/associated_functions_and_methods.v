@@ -30,6 +30,7 @@ Module Impl_associated_functions_and_methods_Point.
     end.
   
   Global Instance AssociatedFunction_origin : M.IsAssociatedFunction.C Self "origin" origin.
+  Proof.
   Admitted.
   Global Typeclasses Opaque origin.
   
@@ -53,6 +54,7 @@ Module Impl_associated_functions_and_methods_Point.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
 End Impl_associated_functions_and_methods_Point.
@@ -97,6 +99,7 @@ Module Impl_associated_functions_and_methods_Rectangle.
     end.
   
   Global Instance AssociatedFunction_get_p1 : M.IsAssociatedFunction.C Self "get_p1" get_p1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_p1.
   
@@ -198,6 +201,7 @@ Module Impl_associated_functions_and_methods_Rectangle.
     end.
   
   Global Instance AssociatedFunction_area : M.IsAssociatedFunction.C Self "area" area.
+  Proof.
   Admitted.
   Global Typeclasses Opaque area.
   
@@ -310,6 +314,7 @@ Module Impl_associated_functions_and_methods_Rectangle.
   
   Global Instance AssociatedFunction_perimeter :
     M.IsAssociatedFunction.C Self "perimeter" perimeter.
+  Proof.
   Admitted.
   Global Typeclasses Opaque perimeter.
   
@@ -401,6 +406,7 @@ Module Impl_associated_functions_and_methods_Rectangle.
   
   Global Instance AssociatedFunction_translate :
     M.IsAssociatedFunction.C Self "translate" translate.
+  Proof.
   Admitted.
   Global Typeclasses Opaque translate.
 End Impl_associated_functions_and_methods_Rectangle.
@@ -626,6 +632,7 @@ Module Impl_associated_functions_and_methods_Pair.
     end.
   
   Global Instance AssociatedFunction_destroy : M.IsAssociatedFunction.C Self "destroy" destroy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque destroy.
 End Impl_associated_functions_and_methods_Pair.
@@ -1018,5 +1025,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "associated_functions_and_methods::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

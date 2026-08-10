@@ -195,6 +195,7 @@ Module vec.
     
     Global Instance Instance_IsFunction_in_place_collectible :
       M.IsFunction.C "alloc::vec::in_place_collect::in_place_collectible" in_place_collectible.
+    Proof.
     Admitted.
     Global Typeclasses Opaque in_place_collectible.
     
@@ -331,6 +332,7 @@ Module vec.
     
     Global Instance Instance_IsFunction_needs_realloc :
       M.IsFunction.C "alloc::vec::in_place_collect::needs_realloc" needs_realloc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque needs_realloc.
     
@@ -2426,6 +2428,7 @@ Module vec.
     
     Global Instance Instance_IsFunction_from_iter_in_place :
       M.IsFunction.C "alloc::vec::in_place_collect::from_iter_in_place" from_iter_in_place.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_iter_in_place.
     
@@ -2695,6 +2698,7 @@ Module vec.
       M.IsFunction.C
         "alloc::vec::in_place_collect::write_in_place_with_drop"
         write_in_place_with_drop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque write_in_place_with_drop.
     

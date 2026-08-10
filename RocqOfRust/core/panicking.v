@@ -95,6 +95,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_fmt :
     M.IsFunction.C "core::panicking::panic_fmt" panic_fmt.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_fmt.
   
@@ -103,6 +104,7 @@ Module panicking.
     
     Global Instance Instance_IsFunction_panic_impl :
       M.IsFunction.C "core::panicking::panic_fmt::panic_impl" panic_impl.
+    Proof.
     Admitted.
   End panic_fmt.
   
@@ -168,6 +170,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_nounwind_fmt :
     M.IsFunction.C "core::panicking::panic_nounwind_fmt" panic_nounwind_fmt.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_nounwind_fmt.
   
@@ -177,6 +180,7 @@ Module panicking.
       
       Global Instance Instance_IsFunction_panic_impl :
         M.IsFunction.C "core::panicking::panic_nounwind_fmt::runtime::panic_impl" panic_impl.
+      Proof.
       Admitted.
     End runtime.
   End panic_nounwind_fmt.
@@ -217,6 +221,7 @@ Module panicking.
     end.
   
   Global Instance Instance_IsFunction_panic : M.IsFunction.C "core::panicking::panic" panic.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic.
   
@@ -249,6 +254,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_add_overflow"
         panic_const_add_overflow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_add_overflow.
     
@@ -280,6 +286,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_sub_overflow"
         panic_const_sub_overflow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_sub_overflow.
     
@@ -311,6 +318,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_mul_overflow"
         panic_const_mul_overflow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_mul_overflow.
     
@@ -342,6 +350,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_div_overflow"
         panic_const_div_overflow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_div_overflow.
     
@@ -373,6 +382,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_rem_overflow"
         panic_const_rem_overflow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_rem_overflow.
     
@@ -404,6 +414,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_neg_overflow"
         panic_const_neg_overflow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_neg_overflow.
     
@@ -435,6 +446,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_shr_overflow"
         panic_const_shr_overflow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_shr_overflow.
     
@@ -466,6 +478,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_shl_overflow"
         panic_const_shl_overflow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_shl_overflow.
     
@@ -497,6 +510,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_div_by_zero"
         panic_const_div_by_zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_div_by_zero.
     
@@ -528,6 +542,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_rem_by_zero"
         panic_const_rem_by_zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_rem_by_zero.
     
@@ -563,6 +578,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_coroutine_resumed"
         panic_const_coroutine_resumed.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_coroutine_resumed.
     
@@ -598,6 +614,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_async_fn_resumed"
         panic_const_async_fn_resumed.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_async_fn_resumed.
     
@@ -633,6 +650,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_async_gen_fn_resumed"
         panic_const_async_gen_fn_resumed.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_async_gen_fn_resumed.
     
@@ -664,6 +682,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_gen_fn_none"
         panic_const_gen_fn_none.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_gen_fn_none.
     
@@ -699,6 +718,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_coroutine_resumed_panic"
         panic_const_coroutine_resumed_panic.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_coroutine_resumed_panic.
     
@@ -734,6 +754,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_async_fn_resumed_panic"
         panic_const_async_fn_resumed_panic.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_async_fn_resumed_panic.
     
@@ -769,6 +790,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_async_gen_fn_resumed_panic"
         panic_const_async_gen_fn_resumed_panic.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_async_gen_fn_resumed_panic.
     
@@ -804,6 +826,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_gen_fn_none_panic"
         panic_const_gen_fn_none_panic.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_gen_fn_none_panic.
     
@@ -839,6 +862,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_coroutine_resumed_drop"
         panic_const_coroutine_resumed_drop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_coroutine_resumed_drop.
     
@@ -874,6 +898,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_async_fn_resumed_drop"
         panic_const_async_fn_resumed_drop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_async_fn_resumed_drop.
     
@@ -909,6 +934,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_async_gen_fn_resumed_drop"
         panic_const_async_gen_fn_resumed_drop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_async_gen_fn_resumed_drop.
     
@@ -944,6 +970,7 @@ Module panicking.
       M.IsFunction.C
         "core::panicking::panic_const::panic_const_gen_fn_none_drop"
         panic_const_gen_fn_none_drop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_const_gen_fn_none_drop.
   End panic_const.
@@ -975,6 +1002,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_nounwind :
     M.IsFunction.C "core::panicking::panic_nounwind" panic_nounwind.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_nounwind.
   
@@ -1005,6 +1033,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_nounwind_nobacktrace :
     M.IsFunction.C "core::panicking::panic_nounwind_nobacktrace" panic_nounwind_nobacktrace.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_nounwind_nobacktrace.
   
@@ -1128,6 +1157,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_unreachable_display :
     M.IsFunction.C "core::panicking::unreachable_display" unreachable_display.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unreachable_display.
   
@@ -1155,6 +1185,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_str_2015 :
     M.IsFunction.C "core::panicking::panic_str_2015" panic_str_2015.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_str_2015.
   
@@ -1225,6 +1256,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_display :
     M.IsFunction.C "core::panicking::panic_display" panic_display.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_display.
   
@@ -1409,6 +1441,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_bounds_check :
     M.IsFunction.C "core::panicking::panic_bounds_check" panic_bounds_check.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_bounds_check.
   
@@ -1635,6 +1668,7 @@ Module panicking.
     M.IsFunction.C
       "core::panicking::panic_misaligned_pointer_dereference"
       panic_misaligned_pointer_dereference.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_misaligned_pointer_dereference.
   
@@ -1704,6 +1738,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_null_pointer_dereference :
     M.IsFunction.C "core::panicking::panic_null_pointer_dereference" panic_null_pointer_dereference.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_null_pointer_dereference.
   
@@ -1877,6 +1912,7 @@ Module panicking.
     M.IsFunction.C
       "core::panicking::panic_invalid_enum_construction"
       panic_invalid_enum_construction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_invalid_enum_construction.
   
@@ -1900,6 +1936,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_cannot_unwind :
     M.IsFunction.C "core::panicking::panic_cannot_unwind" panic_cannot_unwind.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_cannot_unwind.
   
@@ -1923,6 +1960,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_panic_in_cleanup :
     M.IsFunction.C "core::panicking::panic_in_cleanup" panic_in_cleanup.
+  Proof.
   Admitted.
   Global Typeclasses Opaque panic_in_cleanup.
   
@@ -2001,6 +2039,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_const_panic_fmt :
     M.IsFunction.C "core::panicking::const_panic_fmt" const_panic_fmt.
+  Proof.
   Admitted.
   Global Typeclasses Opaque const_panic_fmt.
   
@@ -2150,6 +2189,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_assert_failed :
     M.IsFunction.C "core::panicking::assert_failed" assert_failed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque assert_failed.
   
@@ -2230,6 +2270,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_assert_matches_failed :
     M.IsFunction.C "core::panicking::assert_matches_failed" assert_matches_failed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque assert_matches_failed.
   
@@ -2804,6 +2845,7 @@ Module panicking.
   
   Global Instance Instance_IsFunction_assert_failed_inner :
     M.IsFunction.C "core::panicking::assert_failed_inner" assert_failed_inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque assert_failed_inner.
 End panicking.

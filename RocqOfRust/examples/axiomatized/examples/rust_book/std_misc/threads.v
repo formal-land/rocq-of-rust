@@ -5,9 +5,11 @@ Parameter value_NTHREADS : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_NTHREADS :
   M.IsFunction.C "threads::NTHREADS" value_NTHREADS.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "threads::main" main.
+Proof.
 Admitted.

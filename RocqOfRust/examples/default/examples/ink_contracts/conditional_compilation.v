@@ -190,6 +190,7 @@ Module Impl_conditional_compilation_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -220,6 +221,7 @@ Module Impl_conditional_compilation_Env.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   Global Typeclasses Opaque emit_event.
   
@@ -249,6 +251,7 @@ Module Impl_conditional_compilation_Env.
   
   Global Instance AssociatedFunction_block_number :
     M.IsAssociatedFunction.C Self "block_number" block_number.
+  Proof.
   Admitted.
   Global Typeclasses Opaque block_number.
 End Impl_conditional_compilation_Env.
@@ -284,6 +287,7 @@ Module Impl_conditional_compilation_ConditionalCompilation.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -315,6 +319,7 @@ Module Impl_conditional_compilation_ConditionalCompilation.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -353,6 +358,7 @@ Module Impl_conditional_compilation_ConditionalCompilation.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -375,6 +381,7 @@ Module Impl_conditional_compilation_ConditionalCompilation.
     end.
   
   Global Instance AssociatedFunction_new_foo : M.IsAssociatedFunction.C Self "new_foo" new_foo.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_foo.
   
@@ -397,6 +404,7 @@ Module Impl_conditional_compilation_ConditionalCompilation.
     end.
   
   Global Instance AssociatedFunction_new_bar : M.IsAssociatedFunction.C Self "new_bar" new_bar.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_bar.
   
@@ -420,6 +428,7 @@ Module Impl_conditional_compilation_ConditionalCompilation.
   
   Global Instance AssociatedFunction_new_foo_bar :
     M.IsAssociatedFunction.C Self "new_foo_bar" new_foo_bar.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_foo_bar.
   
@@ -551,6 +560,7 @@ Module Impl_conditional_compilation_ConditionalCompilation.
   
   Global Instance AssociatedFunction_inherent_flip_foo :
     M.IsAssociatedFunction.C Self "inherent_flip_foo" inherent_flip_foo.
+  Proof.
   Admitted.
   Global Typeclasses Opaque inherent_flip_foo.
   
@@ -713,6 +723,7 @@ Module Impl_conditional_compilation_ConditionalCompilation.
   
   Global Instance AssociatedFunction_inherent_flip_bar :
     M.IsAssociatedFunction.C Self "inherent_flip_bar" inherent_flip_bar.
+  Proof.
   Admitted.
   Global Typeclasses Opaque inherent_flip_bar.
 End Impl_conditional_compilation_ConditionalCompilation.

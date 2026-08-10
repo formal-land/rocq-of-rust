@@ -201,6 +201,7 @@ Module processor.
     
     Global Instance Instance_IsFunction_process_burn :
       M.IsFunction.C "pinocchio_token_program::processor::burn::process_burn" process_burn.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_burn.
   End burn.
