@@ -107,7 +107,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.CallNotAllowedInsideStatic \/
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
@@ -129,7 +129,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHostWithAccount.t := TestHostWithAccount.Make in
   let '(result_interpreter, _) := call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.CallNotAllowedInsideStatic \/
   is_call_frame result_interpreter.
 Proof.
