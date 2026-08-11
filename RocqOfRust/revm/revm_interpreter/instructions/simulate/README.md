@@ -96,7 +96,7 @@ Rust source: [`../host.rs`](../host.rs)
 | [blockhash](host/blockhash.v) | ✓ |
 | [extcodecopy](host/extcodecopy.v) | ✗ |
 | [extcodehash](host/extcodehash.v) | ✗ |
-| [extcodesize](host/extcodesize.v) | ✗ |
+| [extcodesize](host/extcodesize.v) | ✓ |
 | [log](host/log.v) | ✗ |
 | [selfdestruct](host/selfdestruct.v) | ✗ |
 | [selfbalance](host/selfbalance.v) | ✓ |
@@ -164,9 +164,9 @@ Rust source: [`../tx_info.rs`](../tx_info.rs)
 | block_info | 8 | 0 | 8 |
 | contract | 4 | 1 | 5 |
 | control | 11 | 0 | 11 |
-| host | 6 | 6 | 12 |
+| host | 7 | 5 | 12 |
 | memory | 5 | 0 | 5 |
 | stack | 5 | 0 | 5 |
 | system | 11 | 2 | 13 |
 | tx_info | 3 | 0 | 3 |
-| **Total** | **79** | **9** | **88** |
+| **Total** | **80** | **8** | **88** |

@@ -3,14 +3,18 @@ Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
+Require Import bytes.simulate.bytes.
 Require Import alloy_primitives.log.links.mod.
 Require Import core.links.result.
+Require Import core.links.option.
 Require Import revm.revm_context_interface.links.block.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
+Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_context_interface.simulate.block.
 Require Import revm.revm_context_interface.simulate.cfg.
+Require Import revm.revm_context_interface.simulate.journaled_state.
 Require Import revm.revm_context_interface.simulate.transaction.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.lib.
@@ -244,6 +248,62 @@ Module Host.
             (interpreter :: snd result_self :: stack)%stack
           )
         }};
+      (** A successful code-loading call must return an account whose generated
+          code observation is present and agrees with the pure host model. *)
+      load_account_info_skip_cold_load_code_len
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self self_after : Self)
+          (address : Address.t)
+          (skip_cold_load : bool)
+          (account : AccountInfoLoad.t)
+          (stack : Stack.t)
+          (ref_account : '& AccountInfoLoad.t) :
+        I.(Host.load_account_info_skip_cold_load)
+            self address true skip_cold_load =
+          (Result.Ok account, self_after) ->
+        CanRead.t
+          (interpreter :: self_after :: stack)%stack
+          account
+          ref_account ->
+        exists
+          (ref_account_info : '& AccountInfo.t)
+          (ref_bytecode : '& Bytecode.t),
+          {{
+            SimulateM.eval_f
+              (Impl_Deref_for_AccountInfoLoad.run_deref ref_account)
+              (interpreter :: self_after :: stack)%stack 🌲
+            (
+              Output.Success ref_account_info,
+              (interpreter :: self_after :: stack)%stack
+            )
+          }} /\
+          {{
+            SimulateM.eval_f
+              (option.Impl_Option.run_as_ref
+                {|
+                  Ref.core :=
+                    SubPointer.Runner.apply
+                      ref_account_info.(Ref.core)
+                      AccountInfo.SubPointer.get_code;
+                |})
+              (interpreter :: self_after :: stack)%stack 🌲
+            (
+              Output.Success (Some ref_bytecode),
+              (interpreter :: self_after :: stack)%stack
+            )
+          }} /\
+          {{
+            SimulateM.eval_f
+              (bytecode.Impl_Bytecode.run_len ref_bytecode)
+              (interpreter :: self_after :: stack)%stack 🌲
+            (
+              Output.Success
+                (bytes.simulate.bytes.Impl_Bytes.len
+                  (account_info_load_original_bytes account).(Bytes.value)),
+              (interpreter :: self_after :: stack)%stack
+            )
+          }};
       load_account_delegated
           {Interpreter : Set}
           (interpreter : Interpreter)
