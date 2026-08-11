@@ -72,6 +72,9 @@ Export (hints) Impl_Eip7702CodeLoad.
 Parameter account_info_load_original_bytes :
   AccountInfoLoad.t -> Bytes.t.
 
+Parameter account_info_load_is_empty :
+  AccountInfoLoad.t -> bool.
+
 Parameter account_info_load_code_hash :
   AccountInfoLoad.t -> aliases.B256.t.
 
