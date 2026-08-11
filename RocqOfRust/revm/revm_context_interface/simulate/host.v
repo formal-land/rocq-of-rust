@@ -16,6 +16,7 @@ Require Import revm.revm_context_interface.simulate.block.
 Require Import revm.revm_context_interface.simulate.cfg.
 Require Import revm.revm_context_interface.simulate.journaled_state.
 Require Import revm.revm_context_interface.simulate.transaction.
+Require Import revm.revm_state.links.account_info.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.lib.
 
@@ -304,6 +305,53 @@ Module Host.
               (interpreter :: self_after :: stack)%stack
             )
           }};
+      (** A successful code-loading call must expose the same emptiness and
+          code-hash observations to generated code and the pure host model. *)
+      load_account_info_skip_cold_load_code_hash
+          {Interpreter : Set}
+          (interpreter : Interpreter)
+          (self self_after : Self)
+          (address : Address.t)
+          (skip_cold_load : bool)
+          (account : AccountInfoLoad.t)
+          (stack : Stack.t)
+          (ref_account : '& AccountInfoLoad.t) :
+        I.(Host.load_account_info_skip_cold_load)
+            self address true skip_cold_load =
+          (Result.Ok account, self_after) ->
+        CanRead.t
+          (interpreter :: self_after :: stack)%stack
+          account
+          ref_account ->
+        exists ref_account_info : '& AccountInfo.t,
+          {{
+            SimulateM.eval_f
+              (Impl_Deref_for_AccountInfoLoad.run_deref ref_account)
+              (interpreter :: self_after :: stack)%stack 🌲
+            (
+              Output.Success ref_account_info,
+              (interpreter :: self_after :: stack)%stack
+            )
+          }} /\
+          {{
+            SimulateM.eval_f
+              (Impl_AccountInfo.run_is_empty ref_account_info)
+              (interpreter :: self_after :: stack)%stack 🌲
+            (
+              Output.Success (account_info_load_is_empty account),
+              (interpreter :: self_after :: stack)%stack
+            )
+          }} /\
+          (account_info_load_is_empty account = false ->
+            CanRead.t
+              (interpreter :: self_after :: stack)%stack
+              (account_info_load_code_hash account)
+              ({|
+                  Ref.core :=
+                    SubPointer.Runner.apply
+                      ref_account_info.(Ref.core)
+                      AccountInfo.SubPointer.get_code_hash;
+                |} : '& aliases.B256.t));
       load_account_delegated
           {Interpreter : Set}
           (interpreter : Interpreter)
